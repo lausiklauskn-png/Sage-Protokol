@@ -316,6 +316,37 @@ Der Brief steht in
 Drei offene Punkte, alle im Browser: der Zenodo-DOI, Sages Netz-Identität, und
 die Beschreibung, die in die App gehört und nicht in die Datei.
 
+### Die PDFs für Zenodo — und zwei Funde beim Bauen
+
+Zenodo schreibt kein Format vor; ein Preprint gehört trotzdem als PDF hinein,
+weil HTML dort nur zum Herunterladen angeboten wird. Beide Fassungen gebaut,
+A4, Schriften eingebettet.
+
+**Die Schriften fehlten zuerst.** Chromium kam durch den Proxy nicht an Google
+Fonts (`ERR_CONNECTION_RESET`) und setzte still Liberation Serif ein — das PDF
+hätte anders ausgesehen als die Seite im Browser. `curl` kommt durch; die acht
+lateinischen Schnitte liegen jetzt als `data:`-URI in einer **Arbeitskopie**,
+das Depot bleibt unberührt.
+
+**Der Titel strandete ein Wort** (#937): in echter Druckbreite stand
+„Bidirektionales" allein auf einer Zeile. Das `<br>` stammte aus der Zeit vor der
+Namensberichtigung. Ohne ihn drei ausgewogene Zeilen statt vier — gemessen
+*und* als Bild angesehen.
+
+⚠ **Und der PDF-Prüfer hat zuerst gelogen.** Er meldete „§ 3.5 fehlt, Kürzel
+nicht aufgelöst, Adresse nicht lesbar" — alles drei falsch. Er las die
+**eingebetteten Schriftdaten**; die 15.168 „Textzeichen" waren Fonttabellen.
+Beinahe wäre gemeldet worden, die PDFs seien kaputt. Geprüft wird jetzt **vor**
+dem Druck im geladenen Dokument, mit Abbruch: Titel löst das Kürzel auf ·
+§ 3.5 steht im Text · die verlangte Schrift ist wirklich geladen.
+
+### Sitzungs-Abschluss
+
+Dreizehn Merges auf `main`, 13:30 bis 23:46 UTC. Übergabeprotokoll des Abends:
+[`sessions/archiv/2026-09-02_sporen-befund-und-doi.md`](sessions/archiv/2026-09-02_sporen-befund-und-doi.md)
+(der erste Teil steht in `2026-09-02_papers-feldbericht.md`).
+Proben: **90 grün, 0 rot, 0 nicht lauffähig.**
+
 ### Nächster sinnvoller Schritt
 
 Zwei Dinge, in dieser Reihenfolge. **Erst** die Beschreibung dort eintragen, wo
