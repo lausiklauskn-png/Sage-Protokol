@@ -78,10 +78,42 @@ for (const rel of PAPIERE) {
   /* Die Gegenprobe zur Gegenprobe: eine Datei ohne jeden Verweis würde die
      Prüfung oben mühelos bestehen und nichts messen. Die Papers tragen
      mindestens den Verweis auf das Protokoll-Depot. */
-  ok(
-    ziele.some((z) => /^https?:\/\//i.test(z) && !/fonts\.googleapis/i.test(z)),
-    rel + ": es steht mindestens ein echter Sach-Verweis darin (nicht nur die Schriftart)",
+  const sachlich = ziele.filter(
+    (z) => /^https?:\/\//i.test(z) && !/fonts\.(googleapis|gstatic)/i.test(z),
   );
+  ok(sachlich.length > 0,
+     rel + ": es steht mindestens ein echter Sach-Verweis darin (nicht nur die Schriftart)");
+
+  /* KEIN target="_blank" (Befund 2026-09-02, abends).
+     Nachdem die Adressen absolut waren, tat ein Klick aus Klaus' Datei-Betrachter
+     heraus GAR NICHTS — ohne Fehlermeldung. Getippt funktionierten dieselben
+     Adressen. Ursache: ein eingebetteter Betrachter ohne Popup-Erlaubnis
+     verschluckt `target="_blank"` stillschweigend.
+
+     Ein Papier wird in unbekannten Betrachtern gelesen: Vorschau-Fenster,
+     Mail-Programme, PDF-Anzeigen, eingebettete Rahmen. Ein Verweis, der eine
+     Popup-Erlaubnis BRAUCHT, ist dort ein toter Knopf. Ohne das Attribut
+     navigiert er an Ort und Stelle, und der Zurück-Knopf bringt einen wieder
+     her. Das geht überall. */
+  ok(!/target\s*=\s*"_blank"/i.test(roh),
+     rel + ': kein target="_blank" — sonst schluckt ein eingebetteter Betrachter den Klick');
+
+  /* Jede Adresse muss auch LESBAR dastehen, nicht nur anklickbar.
+     Ein Papier wird gedruckt und als PDF weitergegeben. Wer es auf Papier vor
+     sich hat, kann nichts anklicken. Steht die Adresse nur im href und der
+     Knopf heißt "Live-Demo →", ist sie für diesen Leser verloren. */
+  const text = roh
+    .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<[^>]+>/g, " ");
+  const unsichtbar = [...new Set(sachlich)].filter(
+    (z) => !text.includes(z.replace(/^https?:\/\//i, "")),
+  );
+  ok(unsichtbar.length === 0,
+     rel + ": jede Adresse steht auch als lesbarer Text da, nicht nur im Verweis",
+     unsichtbar.length
+       ? "nur anklickbar: " + unsichtbar.join(" · ") +
+         "\n       Auf Papier kann niemand klicken."
+       : "");
 }
 
 console.log(`\nPapier-Verweise: ${pass} bestanden, ${fail} fehlgeschlagen.`);
