@@ -140,7 +140,7 @@ const AUFGABEN = [
   { nr: 4, titel: 'Englische Projektseite, eine Seite', strang: 'alle drei',
     sichtbar: true,
     belege: ['docs/PROJEKT_EN.md', 'docs/projekt-en.html'],
-    wozu: 'Grundlage für den OTF-Antrag. Ohne sie ist dieser Weg zu.',
+    wozu: 'Grundlage für die englischsprachige Fassung. Ohne sie ist dieser Weg zu.',
     fehlt: 'Alles. Und sie ist KEINE Übersetzung der deutschen Seite: der OTF '
       + 'fragt nach anderen Dingen. Zum Übersetzen liegt vor: `ABGRENZUNG.md`, '
       + 'das englische SBKIM-Paper, die Zahlen aus `04_BESTAND.md`.',
