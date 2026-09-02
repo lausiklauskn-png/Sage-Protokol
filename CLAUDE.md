@@ -263,15 +263,25 @@ als eine benannte: die eine wirft Fragen auf, die andere beantwortet sie.
   herabstufen; Identität vor Inhalt prüfen. Tafel:
   [`docs/SICHERHEIT-BRIEFKASTEN.md`](docs/SICHERHEIT-BRIEFKASTEN.md).
 
-## Das Ziel im Auge behalten
+## Das Ziel im Auge behalten — beide
 
 Eine Sitzung hat ein Ziel, und das Ziel hat einen Zweck darüber. Jede Aufgabe, die
 unterwegs dazukommt, wird gegen **beide** gehalten — und unterwegs kommt immer
 etwas dazu. **Mitziehen heißt nicht abbrechen:** ein echter Fund wird
-aufgeschrieben und eingereiht, das Ziel läuft weiter. Wer merkt, dass er seit
-einer Weile etwas anderes tut als das, wofür er losgeschickt wurde, **sagt das von
-selbst** — nicht erst auf Nachfrage.
+aufgeschrieben und eingereiht, das Ziel läuft weiter.
+
+**Eine Frage zieht in beide Richtungen.** Klaus' Frage kann die Sitzung von ihrem
+Ziel wegführen, die Frage der Sitzung ihn von seinem. Beides ohne bösen Willen,
+meistens weil die Frage gut ist. Deshalb erinnern **beide** einander an die
+Richtung — *„wo wollten wir eigentlich hin?"* —, statt hinterher zuzuordnen, wer
+abgelenkt hat. **Eine Schuldfrage bringt keine Minute zurück.**
 Volltext und Anlass: [`docs/NETZWEIT.md` § 6a](docs/NETZWEIT.md).
+
+**Und die Regeln binden beide.** Die Sitzung arbeitet nach Anleitung; wer die
+Anleitung gibt, setzt mit aus, was gilt. Eine Bitte, die gegen eine Regel steht,
+wird **benannt** — von der Sitzung, statt sie stumm zu umfahren, und von Klaus,
+wenn er sie ausdrücklich aussetzen will. [`docs/NETZWEIT.md` § Für wen sie
+gelten](docs/NETZWEIT.md).
 
 ## Was du tust
 
