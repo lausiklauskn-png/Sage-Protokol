@@ -65,6 +65,7 @@ die Methoden-Grenzen der Literatursuche und § 9 zur Entstehung des Textes.
 | | |
 |---|---|
 | § 2.1/2.2 **neu** | die Vorarbeiten, aus denen die Bausteine stammen: reziproke Empfehlungssysteme, semantische Überlagerungsnetze, Agent Cards |
+| § 3.5 **neu** | die Selbstbeschreibung folgt dem Inhalt. Vektor aus dem Bestand gerechnet, Versionszähler als Drift-Merkmal, neu signiert. War seit Spore v0.2 gebaut und stand in keinem Papier |
 | § 5 **neu** | wie das entstanden ist, samt der zwei Genauigkeiten („keine KIs, die sich erkennen" · „server-los" in Anführungszeichen) |
 | § 6 **überarbeitet** | 33 Depots statt zwei HTML-Dateien, mit den Zahlen und der Messung vom 10.07. |
 | § 7.1 **aufgeteilt** | was belegt ist ⟷ was offen bleibt, samt der Hintergrund-Tab-Grenze |

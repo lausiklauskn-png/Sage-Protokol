@@ -173,6 +173,32 @@ ausgegeben. § 6.3 stellt sie gegenüber.
 Daraus ein Satz, der vorher nirgends stand: **das Verfahren ist an keinen
 Transport gebunden, zwei haben es getragen.**
 
+### Und ein Abschnitt, der ganz gefehlt hat
+
+**§ 3.5 „Die Selbstbeschreibung folgt dem Inhalt"** ist neu in beiden Papers.
+Nachgeprüft, dass es fehlte: „Spore" kam dreimal vor, „Version" einmal, und
+§ 3.4 beschrieb das Protokoll als zustandslos. Dass der Vektor einer Partei aus
+ihrem Bestand gerechnet wird und mit ihm wandert, stand nirgends.
+
+Belegt in `docs/INTERFACES.md` und `src/modules/02_spore.js`:
+`embedContentVector` liefert `source:"content"` · `embeddingSource` hält fest,
+woher der Vektor stammt · `embeddingVersion` steigt bei geändertem Vektor
+(Drift-Merkmal) und die Spore wird neu signiert · `SPORE_SNIPPET_MAX = 20`
+satz-granulare Vektoren neben dem Gesamtvektor · `PROVIDER_MIN_MATCH = 0.80`
+bei gemessenem Boden mean 0,8214 sd 0,0236.
+
+Klaus' Kochbuch-Beispiel steht als Beispiel im Papier: ein Buch, das nur noch
+Sushi führt, wird für eine Sushi-Anfrage höher bewertet als eines mit drei
+Sushi-Rezepten unter zweihundert. **Ein wandernder Vektor ist kein Mangel,
+sondern die Funktion.**
+
+Zwei Sätze stehen dabei, weil sie sonst fehlten: die Zustandslosigkeit aus
+§ 3.4 bleibt unberührt (es ändert sich die Beschreibung, nicht das Verfahren),
+und der hohe Boden begrenzt die Eigenschaft (kleine Änderungen bewegen den
+Vektor, aber nicht den Platz in der Liste).
+
+**Station 8 der Geschichts-Galerie** ist entsprechend nachgezogen.
+
 Gemessen nach allen Runden: **90 Proben, 90 grün, 0 rot.**
 
 ### Nächster sinnvoller Schritt
