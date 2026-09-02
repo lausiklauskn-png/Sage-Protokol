@@ -240,6 +240,40 @@ genauesten hinsehen musst.
 
 ---
 
+## 6a · Das Ziel im Auge behalten (Klaus 2026-09-02)
+
+> *„verliere das Ziel nicht aus dem Auge … auch wenn etwas dazwischen kommt. Das
+> Ziel im Auge behalten heißt mitziehen und die ergänzenden Aufgaben abgleichen
+> mit dem Ziel der Sitzung und das mit der übergeordneten Vision."*
+
+Eine Sitzung hat ein Ziel, und das Ziel hat einen Zweck über der Sitzung. Beides
+gilt weiter, wenn unterwegs etwas Interessantes auftaucht — und unterwegs taucht
+immer etwas auf.
+
+**Drei Ebenen, und jede neue Aufgabe wird gegen alle drei gehalten:**
+
+| | Frage |
+|---|---|
+| **Sitzungs-Ziel** | wofür bin ich losgeschickt worden, und steht das noch offen? |
+| **Vision** | zahlt das hier darauf ein, oder nur auf meine Neugier? |
+| **Der Fund selbst** | ist er so schwer, dass er das Ziel verdrängen *darf*? |
+
+**Mitziehen heißt nicht abbrechen.** Ein echter Fund wird nicht weggeworfen, weil
+er nicht ins Ziel passt — er wird **aufgeschrieben und eingereiht**, und das Ziel
+läuft weiter. Ein Fund, den man liegen lässt, kommt teurer zurück; ein Ziel, das
+man liegen lässt, kommt gar nicht wieder.
+
+**Und es wird gesagt, wenn abgebogen wird.** Wer merkt, dass er seit einer Weile
+etwas anderes tut als das, wofür er losgeschickt wurde, sagt das von selbst —
+nicht erst, wenn gefragt wird.
+
+> **Anlass:** eine Sitzung, die für die Veröffentlichung der Papers und den
+> Zenodo-DOI losgeschickt war, hat vier Stunden lang eine Sporen-Diagnose
+> betrieben. Die Diagnose war richtig und hat drei Irrtümer aufgedeckt. Der DOI
+> stand am Ende trotzdem noch offen, und **gefragt hat Klaus, nicht ich.**
+
+---
+
 ## 6b · Was eine Webseite NICHT kann — nachschlagen statt neu herausfinden
 
 **Anlass (Klaus, 2026-08-22, nach einer verlorenen Stunde):** *„Wir hatten das
