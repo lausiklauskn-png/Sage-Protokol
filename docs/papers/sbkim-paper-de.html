@@ -124,7 +124,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
   <p class="paper-authors">Unabhängige Forschung · Offener Protokoll-Vorschlag</p>
   <p class="paper-date">Mai 2026 · v0.1 (Vorab-Veröffentlichung)</p>
   <div class="paper-links">
-    <a href="https://github.com/lausiklauskn-png/semantic-match-demo" target="_blank">Referenz-Implementierung →</a>
+    <a href="https://github.com/lausiklauskn-png/Sage-Protokol" target="_blank">Referenz-Implementierung →</a>
     <a href="index.html">Live-Demo Layer 1 →</a>
     <a href="sbkim-network.html">Live-Demo Layer 2 →</a>
   </div>
@@ -394,17 +394,22 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
   <h2>5. Referenz-Implementierung</h2>
 
   <p>
-    Eine funktionsfähige Referenz-Implementierung ist verfügbar unter:
-    <a href="https://github.com/lausiklauskn-png/semantic-match-demo" target="_blank">
-    github.com/lausiklauskn-png/semantic-match-demo</a>
+    Die Referenz-Implementierung liegt im Protokoll-Depot:
+    <a href="https://github.com/lausiklauskn-png/Sage-Protokol" target="_blank">
+    github.com/lausiklauskn-png/Sage-Protokol</a>
   </p>
   <p>
-    Die Implementierung besteht aus zwei eigenständigen HTML-Anwendungen, die nur
-    einen Browser und einen Anthropic-API-Schlüssel erfordern. Kein Backend,
-    keine Datenbank, keine Registrierung. Layer 1 (<code>index.html</code>)
-    demonstriert Mensch-zu-Mensch-Matching über WebRTC. Layer 2
-    (<code>sbkim-network.html</code>) demonstriert Agentennetzwerk-Matching
-    mit bis zu 6 gleichzeitigen Agenten auf verschiedenen Geräten.
+    Sie besteht aus einzeln übernehmbaren Modulen — Speicher, Identität,
+    Einbettung, Match, Anastomose und Rendezvous —, die nur einen Browser
+    erfordern. Kein Backend, keine Datenbank, keine Registrierung. Die Module
+    werden byte-genau in die anwendenden Web-Anwendungen kopiert; eine Prüfung
+    im Depot wacht darüber, dass die Kopien nicht auseinanderlaufen.
+  </p>
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Berichtigt am 2. September 2026.</strong> Hier stand zuvor die
+    Adresse einer frühen Demonstration aus zwei HTML-Dateien. Dieses Depot
+    existiert nicht mehr; die Angabe ging ins Leere. Der Verweis zeigt jetzt auf
+    das Protokoll-Depot, in dem die Module gepflegt werden.
   </p>
   <p>
     Das in der Implementierung verwendete Referenz-Prompt-Template ist bewusst minimal
@@ -486,7 +491,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <p>[5] Richards, M. et al. „AgentProtocol: A common interface for AI agents." agentprotocol.ai, 2023.</p>
     <br>
     <p><strong>Kontakt &amp; Ressourcen</strong><br>
-    Referenz-Implementierung: github.com/lausiklauskn-png/semantic-match-demo<br>
+    Referenz-Implementierung: github.com/lausiklauskn-png/Sage-Protokol<br>
     Protokoll-Version: SBKIM-0.1 · Mai 2026 · Gemeinfrei (Public Domain)</p>
   </div>
 

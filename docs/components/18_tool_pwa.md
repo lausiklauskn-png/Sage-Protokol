@@ -700,8 +700,9 @@ Geschwister-Sporen → Modul 15 Sub (b) der Geschwister-Knoten rufen
 
 **Pepo-Demo-Studie (Referenz):**
 
-Klaus' [Semantic Match Demo](https://github.com/lausiklauskn-png/semantic-match-demo)
-(extern, NICHT Sage-Protokol-Repo) ist eine **andere Architektur-
+Klaus' **Semantic Match Demo** — ein externes Depot, das es seit dem
+2026-09-02 **nicht mehr gibt** (der frühere Verweis führte ins Leere und ist
+deshalb entfernt) — war eine **andere Architektur-
 Vorlage** für die bidirektionale Match-UI, NICHT für die Transport-
 Schicht. Wichtige Übertragbare Pattern:
 
