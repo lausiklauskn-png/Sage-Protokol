@@ -108,7 +108,7 @@ das nicht schon".
 
 ### 4 · Englische Projektseite, eine Seite
 
-**Wozu:** Grundlage für den OTF-Antrag. Ohne sie ist dieser Weg zu.
+**Wozu:** Grundlage für die englischsprachige Fassung. Ohne sie ist dieser Weg zu.
 
 | | |
 |---|---|

@@ -206,6 +206,44 @@ falscher Grundlage und sucht Spuren, die nur in ungemergten Branches lebten.
 
 ---
 
+## ✍ Befund ins Dokument, Rat in den Chat (Klaus 2026-09-02)
+
+**Die Arbeitsweise IST die Forschung.** Paper A heißt „Regeln und Grundsätze";
+wie Regeln und Grundsätze eine Arbeit steuern, ist der Untersuchungsgegenstand.
+Die Protokolle, die Lehren und die Gegenproben sind deshalb **Belegmaterial**
+und gehören ins offene Depot. Wer sie herausnimmt, nimmt der Untersuchung ihre
+Daten.
+
+> Am 2026-09-02 habe ich genau das getan und musste es zurückholen. Die Regel
+> steht hier, damit es nicht von der Tagesform abhängt.
+
+**Was nicht hineingehört, ist etwas anderes: die Schlussfolgerung.** Klaus:
+
+> *„Es geht nur darum, wenn wir etwas dokumentieren, das in dem Dokument nicht
+> drinsteht … deine Art und Weise, deine Schlussfolgerung, die nicht zwingend
+> mit in das Dokument müssen."*
+
+| ins Dokument | in den Chat |
+|---|---|
+| was **gemessen** wurde, mit Zahl und Datum | was ich daraus **schließe** |
+| was **getan** wurde, und was dabei schieflief | was Klaus **tun sollte** |
+| welche Frage offen ist | welchen **Weg** er wählen sollte |
+| dass nachgefragt statt geraten wurde | die **Antwort**, wenn sie seine Lage betrifft |
+
+**Der Prüfstein:** *Steht das hier, weil das Dokument es braucht — oder weil ich
+es gerade gedacht habe?* Beim Zweiten gehört es in die Antwort an Klaus.
+
+**Das gilt besonders, wo Geld dranhängt.** Ein Entscheider muss nicht wissen, wie
+überlegt wurde, um etwas durchzubringen. Der Befund trägt sich selbst; die
+Erwägung darüber macht ihn nicht besser, nur angreifbar.
+
+⚠ **Auch Commit-Nachrichten und PR-Texte sind Dokumente** — in einem öffentlichen
+Depot sogar besonders sichtbare. Ein Commit „Strategie verschoben" verrät, was
+der Commit verbergen soll.
+
+**Wo gekürzt wurde, steht dass gekürzt wurde.** Eine stille Lücke ist schlimmer
+als eine benannte: die eine wirft Fragen auf, die andere beantwortet sie.
+
 ## Was du nicht tust
 
 - **Kein Modul-Code ohne Auftrag.** Eine Sitzung, die orientieren oder spezifizieren

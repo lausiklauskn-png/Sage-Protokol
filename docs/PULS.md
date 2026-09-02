@@ -31,76 +31,850 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
-## Stand 2026-08-23 bis 2026-08-26 — Unterlagen (nicht hier)
+## Stand 2026-08-26 (Bau, 3.) · 🔬 Forschungsaufgaben, und jede Sitzung wird eine Messung
 
-Zwölf Sitzungen an Klaus' eigenen Unterlagen. **Der Verlauf steht nicht in
-diesem Depot** — er gehört nicht hierher, und seit dem 2026-09-02 liegt er
-dort, wo er hingehört.
+**Rolle:** Fortsetzung derselben Sitzung, nach Klaus' Rückfragen. PR #923
+(Sage) und PR #67 (Kimhub).
 
-Was hier bleibt, ist das Fachliche: `docs/papers/`, `docs/ABGRENZUNG.md`,
-`docs/werkstatt/` und die daraus erzeugten Blätter. Das ist die Arbeit; alles
-Weitere ist Klaus' Sache und keine Angelegenheit dieses Depots.
+### Klaus hatte recht zu fragen
 
-> **Warum der Verlauf nicht einfach gekürzt wurde.** Ein PULS-Eintrag nennt
-> Absichten, Fristen und Erwägungen — nützlich in einer Sitzung, nichts, was
-> ein Depot der Welt erzählen muss. Gelöscht ist er nicht: er ist umgezogen,
-> vollständig und mit Datum.
+Er las im heruntergeladenen PDF, dass vier Dinge fehlen, und bat um eine
+Nachprüfung. **Sein PDF war älter als das Depot**: es führte das Blatt zum
+Stand der Technik als fehlend, während es am selben Tag entstanden war.
+Nachgesehen über den ganzen Baum:
 
-## Als nächstes ✨
+| | Stand |
+|---|---|
+| Blatt „Stand der Technik" | **existiert**, `docs/ABGRENZUNG.md` |
+| Englische Projektseite | **existiert nicht**, kein Entwurf |
+| Paper C · KI-Kompetenz | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+| Paper B · Wirkung | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
 
-Module mit Code-Stub, **Sichttest durch Klaus 2026-05-14 erledigt** —
-ergab fünf reproduzierbare Cosinus-Messwerte (siehe Karte 04 Beleg-
-Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
-0.55 → 0.80 geführt haben:
+Einen DOI gibt es auch nicht.
 
-- 🟦 **[01 Storage](components/01_storage.md)** — geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 (Klaus, im Browser); init/round-trip/Unknown-Store sauber, jetzt acht Pflicht-Stores plus dynamische Stores ab v=4 (Bau 01.Y `ensureStore` 2026-05-19 grün — Knöpfe 6/7/8 3/3, happy-path / Idempotenz / Pattern-Verstoß); **Pflege „`init()` versions-fail-soft" 2026-05-19 live grün** (Klaus, DeX-Chrome: Knopf 9 `db_version_vor: 16 → nach_bump: 17`, dann Tab-Reload + Bonus-Probe Panel-02-Knöpfe 8/9/10 alle grün ohne Cleanup-Workaround). Headless-Smoke-Test 8/8 grün + Bau-02.Y-Regression 33/33 grün.
-- 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 + 2026-05-16 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt; **Bau 02.X Backup-Export Sichttest 2026-05-16 grün** — Knöpfe 6/7/7b alle drei Hauptpfade ohne Modul-Bug. **Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump Sichttest 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6): 3/3 grün** (nach Mini-Fix + Cleanup-Workaround) — Knopf 8 „Identitäts-Wechsel OK", Knopf 9 „Persona-Apoptose OK", Knopf 10 „Multi-ID-Backup OK"; Erst-Befund Multi-Tab-onblocked auf Knopf 8 + Rollback-Bug in `getOrCreateIdentity` durch Mini-Fix (Reihenfolge `ensureIdentityStores` vor `put(sbkim_keys)`) behoben; Headless-Smoke-Test 33/33 grün. Panel 01 (1–8) ebenfalls grün. Klaus' Beobachtung: zweiter Lauf gelang erst nach „Storage init"-Klick in Panel 01 — bestätigt offene Folge-Pflege Modul 01 `init()` versions-fail-soft.
-- 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
-- 🟩 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser) + Bau 04.A `matchDimensions` sync 2026-05-19 live grün + **Bau 04.B `explainMatchLLM` 2026-05-20** (Stufe-B-LLM-Pass gegen Anthropic-API, fail-soft) + **Bau 04.C `queryLocal` 2026-05-26 + Sichttest 5/5 grün 2026-05-26** (Klaus, DeX-Chrome auf Galaxy Tab S6, Panel 04 Tests 11–15 alle live grün: Happy-Path Top 0.9501 + Mittel 0.8627, Schwelle-Cut leere Liste, Top-k-Cut T1 0.9488 + T2 0.9144, Provider-Pfad registriert=true 2 Treffer, Leerer Korpus beide 0). Modul 04 jetzt **fertig** (Cosinus + Drei-Schichten + Stufe-B-LLM + lokales Such-Backend). Cross-Knoten-Such-Lücke geschlossen — Modul 15 Sub (b) `op:"query"`-Empfänger ruft jetzt live `queryLocal`. **Bau 04.B Sichttest mit echtem API-Key noch offen** (Knopf 10, CORS-Workaround echtes PWA-Setup).
-- 🟦 **[06 Heterokaryose](components/06_heterokaryose.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 06) + Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15 + **Bau 06.Y transparenter Slot-Pfad 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur — Modul 06 schreibt jetzt slot-spezifisch in `sbkim_hetero_inbox_<key>` + `sbkim_anastomosis_log_<key>`; liest aus `sbkim_hetero_outbox_<key>` + `sbkim_siblings_<key>`; Receiver-Pfad nutzt `nodeId → slotKey`-Map; Sender cached `opSlot` zur Op-Zeit; volle 06/05/08-Achse jetzt geschlossen-konsistent slot-suffixed). Sichttest 2026-05-16 rasch grob durchgeklickt (Panel 06 14 Knöpfe), volle 12-Knopf-Sichttest-Runde 2026-05-20 grün im Bau-08.Y-Lauf inkl. Test 9 `HETERO_MAX_ANCHORS`. **Bau 06.Y Sichttest ungeprüft** (headless 25/25 smoke grün — wartet auf Klaus' Browser-Lauf Panel 06 + Knopf 15 Sekundär-Persona-Test).
+### Abteilung 7: die Forschungsaufgaben
 
-Code-Stub frisch aus den Bau-Sitzungen 2026-05-14/15, **Sichttest ausstehend bzw. teilweise erledigt:**
+`docs/unterlagen/06_FORSCHUNGSAUFGABEN.md`, erzeugt aus
+`tools/forschungsaufgaben-bauen.mjs`. Sieben Aufgaben mit Frage, Beleg,
+Abhängigkeit und Reihenfolge, dazu die drei Stränge.
 
-- 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung) + BroadcastChannel-Bridge 2026-05-17 + **Bau 05.Y transparenter Slot-Pfad 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur — Modul 05 schreibt jetzt slot-spezifisch in `sbkim_siblings_<key>` und `sbkim_anastomosis_log_<key>`; Receiver-Pfad nutzt `nodeId → slotKey`-Map zur Persona-Auflösung; Sender cached `opSlot` zur Op-Zeit). Sichttest geprüft 2026-05-15 (6/7 → Test 2 in Pflege als Vektor-Trias repariert); BroadcastChannel-Sichttest 2026-05-17 grün (4/4); volle Regression Panels 01-07 im Bau-08.Y-Sichttest 2026-05-20 grün. **Bau 05.Y Sichttest ungeprüft** (headless 25/25 smoke grün — wartet auf Klaus' Browser-Lauf Panel 05 + Knopf 10 Sekundär-Persona).
-- 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung) + Pflege 02+07-Cache-Invalidate 2026-05-15 + Pflege Cleanup-Reihenfolge Bau 06 2026-05-15 + **Bau 07.Y transparenter Slot-Pfad + `_sendLegacyForIdentity`-Hook 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur außer optionalen `key`-Parametern). Modul 07 schreibt jetzt slot-spezifisch (`sbkim_legacy_inbox_<key>` + `sbkim_anastomosis_log_<key>`); globale `confirmSelfApoptose` iteriert über ALLE Slots; neuer Hook `_sendLegacyForIdentity(key)` — **Bau-02.Y-fail-soft-Klausel aufgelöst**. **Konsumenten-Achse 05/06/07/08 jetzt vollständig slot-suffixed.** Sichttest 8/8 grün 2026-05-15 (Klaus, Re-Sichttest nach Cache-Invalidate); volle 8-Knopf-Sichttest-Runde 2026-05-20 im Bau-08.Y-Lauf grün inkl. Test 6 Self-Apoptose IRREVERSIBEL. **Bau 07.Y Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 07 Test 6 globale Slot-Iteration + Panel 02 Knopf 9 Persona-Apoptose-Hook produktiv ohne `console.warn`).
-- 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 5 von 6 Tests grün im ersten Lauf (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + Timeout, Test 5 TTL-Sweep, Selbstcheck-Hinweis); **Test 4 Test-Bug** mit Mini-Werten 81/100 (freeBytes=19 Bytes ist trivial < 50 MiB → `warningLevel:"both"` statt erwartetem `"ratio"`) → **Pflege-Sitzung 2026-05-15** repariert mit GiB-Skalierung (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Modul-Vertrag und INTERFACES.md unangetastet
+**Zwei Dinge werden darin getrennt gehalten**, weil ihre Vermischung das Blatt
+wertlos machte: ob ein **Beleg im Depot liegt** (messbar) und ob die **Aufgabe
+erledigt** ist (nicht messbar). **Keine der sieben ist erledigt.** Der
+Zenodo-Upload ist der deutlichste Fall: die Papers liegen seit Mai vor,
+hochgeladen ist nichts, und eine Nummer wäre ohnehin keine Datei.
 
-Spec frisch, **Bau ausstehend**:
+### Eine Zahl, die ihre eigene Historie mitzählt
 
-- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert. **Bau-Sitzung 2026-05-15 vor Schritt 1 sauber abgebrochen** (Befund-Sitzung): beide Endknoten haben aktiven `app-sw.js` im Repo-Root (Mein-Mixarium Z. 12543, Mein-Rezeptbuch Z. 10453), Karte 09 antizipiert diesen Fall nicht; zusätzlich Karte 09 § Sichtkontrolle implizit auf Desktop-DevTools gemünzt — Klaus' Tablet (Galaxy Tab S6 + DeX) braucht Eruda-Pfad. **Vor erneuter Bau-Sitzung 09** zwei Karten-Lücken in einer Pflege-Sitzung Karte 09 zu schließen (Empfehlung Option α: Patch in bestehenden `app-sw.js`; plus Eruda-Pfad für Tablet-Sichtkontrolle). Details in [Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
+Nach dem Merge stand die Unterlagen-Mappe als geändert da: 238 auf 239
+Stände. Der Merge hatte ein Sitzungsprotokoll abgelegt, und die
+Bestandsaufnahme zählt genau das mit. **Kein Fehler, eine Eigenschaft**, und
+sie steht jetzt im Blatt: das Blatt ist nach jedem Commit veraltet, bis es neu
+gebaut wird, und der Wächter sagt das auch.
 
-Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
+⚠ **Beim Aufschreiben dieser Erklärung ein Beinahe-Fehler**, und er ist der
+lehrreichere: die Backticks um einen Dateinamen standen in einem
+Template-Literal und haben es geschlossen. Der Bau brach mit einem
+Syntaxfehler ab, **und die Proben blieben grün**. Sie messen das Erzeugnis,
+und das Erzeugnis war noch das alte, in sich stimmige. **Ein Werkzeug, das gar
+nicht läuft, hinterlässt keine Spur in einer Probe, die nur sein Erzeugnis
+ansieht.** Gesehen nur, weil die Fehlermeldung zufällig über der grünen Zeile
+stand.
 
-- 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08), **Bau 08.Y slot-spezifische Outbox 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox_<activeSlotKey>` (Anker-Vorrat, slot-spezifisch seit Bau 08.Y) und `sbkim_siblings_<activeSlotKey>[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15). **Bau 08.Y Sichttest 2026-05-20 (Klaus, DeX-Chrome auf Galaxy Tab S6): Setup + Tests 1–6 grün** — Setup zeigt `active_slot_key:"main"` + `outbox_store:"sbkim_hetero_outbox_main"` + `siblings_store:"sbkim_siblings_main"`, Test 4 OutboxFullError-Message zitiert „sbkim_hetero_outbox_main am Limit (5 Einträge pro Slot)" (Slot-Suffix + „pro Slot"-Wortlaut live), Test 6 Co-Schreiber-Pfad auf slot-suffixed `sbkim_siblings_main` + `InvalidOptInArgError` für `1`/`"true"`. **Vollständige Regression Panels 01–07 grün** im selben Lauf (Storage / Spore Multi-Persona / Embedding / Match `matchDimensions` / Anastomose 9c Auto-Fallback / Heterokaryose Test 9 `HETERO_MAX_ANCHORS`-Begrenzung / Apoptose Self-Apoptose IRREVERSIBEL) — keine Bau-08.Y-Regression.
+### Und Kimhub zeichnet ab heute jede Sitzung auf
 
-Empfehlung Hauptsitzung: **Klaus' Re-Andock beider Endknoten mit
-PWA-Suffix**. Die Pflege-Sitzung 2026-05-16 „Karten 01 + 09 PWA-
-Suffix" hat die Architektur-Erweiterung abgeschlossen (Modul 01 hat
-jetzt `init({dbSuffix})`, Karten 01 + 09 und INTERFACES.md §1 Modul 01
-sind nachgezogen, `PROTOCOL_VERSION` bleibt `"0.1"`, Modul 02 unangetastet).
-Nächster Schritt liegt **in Klaus' Endknoten-Repos**:
+Klaus: *„handhabe ab dem heutigen Zeitpunkt jede Sitzung so wie ein
+Forschungsprojekt, mit dokumentierten Messungen."* Gebaut in Kimhub
+(`forschung/`), PR #67. Gemessen wird, **woher jeder Befund kam**: `regel` ·
+`gegenprobe` · `hinsehen` · `klaus`.
 
-1. In **beiden** Endknoten-Repos (`Mein-Mixarium`, `Mein-Rezeptbuch`)
-   muss `sbkim/sbkim-init.js` erweitert werden: vor dem bestehenden
-   `await SbkimAnastomose.init()` einen Aufruf
-   `await SbkimStorage.init({ dbSuffix: "mixarium" })` (bzw.
-   `"rezeptbuch"`) hinzufügen.
-2. In beiden Tab-Sessions `__sbkimErzeugeSpore()` erneut triggern
-   (Klaus in der jeweiligen Eruda-Konsole) → neue, getrennte nodeIds
-   pro PWA.
-3. Neue `spore.json` jeweils nach `~/<Endknoten>/sbkim/spore.json`
-   verschieben + Commit + Push (überschreibt die alte Pages-Spore).
-4. Erst nach Re-Andock kann eine Folge-Sitzung `status.json`
-   `pingStatus` von `"blocked-origin-collision"` auf `"live"`
-   wechseln (sobald Klaus den ersten Cross-Knoten-Handshake gefahren
-   hat) und die `nodeId`-Werte in der Endknoten-Tabelle aktualisieren.
+Auf seine Frage *„Ist da schon Forschung, wenn dokumentiert?"* war die Antwort
+**nein**. Was fehlte, war eine Vorhersage, die scheitern kann und **vor** den
+Daten dasteht. Sie steht seitdem fest, mit Wortlaut-Riegel.
 
-Andere offene Punkte (Mini-Pflege „Sushi-Kategorie sichtbar machen"
-in Mein-Mixarium, INTERFACES.md §6 Tabellen-Bug) sind unverändert
-offen. Details im [Übergabeprotokoll 2026-05-16 Pflege PWA-Suffix](sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md),
-zur Andock-Hintergrund [Übergabeprotokoll 2026-05-16 Andock
-Mein-Rezeptbuch](sessions/archiv/2026-05-16_andock-mein-rezeptbuch-iteration-3-live.md)
-und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_andock-mein-mixarium-iteration-3-live.md).
+> **Für die nächste Sitzung, netzweit:** wer hier arbeitet, trägt sich am Ende
+> in `Kimhub/forschung/sitzungen.json` ein. Sonst stirbt der Datensatz nach
+> einem Eintrag, und die Vorhersage wird nie auswertbar.
+
+**Gemessen:** 93 Proben grün, 0 rot · fünf Gegenproben einzeln nacheinander,
+alle vollständig (11 · 35 · 14 · 17 · 13).
+
+**Offen:** Klaus' Sichttest · Paper C, englische Seite, Paper B · die
+Entscheidungen aus `BRIEF_nach_bestandsaufnahme.md` § 1.
+
+---
+
+## Stand 2026-08-26 (Bau, 2.) · 📚 Die lückenlose Dokumentation
+
+**Rolle:** Fortsetzung. Zweig `claude/dokumentation-bestandsaufnahme-ph81s1`,
+PR #922. Auftrag aus `BRIEF_lueckenlose_dokumentation.md`, dazu drei
+Nachforderungen von Klaus im Lauf der Sitzung.
+
+**Zuerst ausgelagert, dann geschrieben.** Die Datei stand bei 2.833 Zeilen. Die
+siebte Auslagerung nimmt beide Einträge vom 19.08. wortwörtlich heraus, jetzt
+2.709.
+
+### Die Frage des Briefes, beantwortet, und sie war falsch gestellt
+
+Fällt die Protokoll-Dichte, weil die Dokumentation nachlässt, oder weil die
+Sitzungen länger wurden? Beides ergibt dieselbe Kurve, wenn man Einträge je
+Protokoll zählt. **Tage lassen sich dagegen zählen:** von 128 Arbeitstagen
+tragen **48** ein Protokoll, das sind 38 Prozent.
+
+Der April löst sich dabei auf. Seine 551 Einträge liegen in **Mein-Rezeptbuch
+(288), Muttis-Rezeptbuch (206) und Mein-Mixarium (55)**; Sage-Protokol hatte in
+diesem Monat **einen**. Die Protokollpflicht ist eine Sage-Regel. Das erste
+Protokoll überhaupt stammt vom **10.05.**, in den App-Depots beginnt die Praxis
+Ende Mai. **Im April gab es sie nirgends.**
+
+> Der Befund davor verglich netzweite Einträge gegen Protokolle eines einzigen
+> Depots. Beide Zahlen waren richtig, ihr Verhältnis war es nicht. **Eine
+> Differenz aus zwei ungleichen Messungen ist keine Messung**, und diesmal
+> stand sie im eigenen Brief.
+
+### Was gebaut wurde
+
+| | |
+|---|---|
+| `tools/bestand-rechnen.mjs` | die **eine** Quelle der Rechnung |
+| `tools/bestand-bauen.mjs` | schreibt beide Blätter, Zeitraum und Umfang aus `git log` |
+| `docs/unterlagen/04_BESTAND.md` | Abteilung 5: was es gibt, wo, seit wann, welche Lücke |
+| `docs/unterlagen/05_APRIL.md` | Abteilung 6: der April, als Rekonstruktion gekennzeichnet |
+| `docs/ABGRENZUNG.md` | Abteilung 2 der Antragsmappe, vor Paper A |
+| `tests/smoke_bestand.mjs` · `smoke_zahlen.mjs` | zwei neue Wächter, beide mit Gegenprobe |
+
+Die Bestandsaufnahme zeigt **dieselbe Liste zweimal**: nach Vorgehen und
+chronologisch. Zwei Listen wären eine Drift-Quelle mit Ansage.
+
+### Vier Widersprüche, alle in Unterlagen, die aus dem Haus gehen
+
+| stand da | gemessen |
+|---|---|
+| „27 Tage nichts" | **26** |
+| „140 Kalendertage" | **141** |
+| „genau **eine** Lücke von vier Tagen" | **neun** Unterbrechungen, die längste **drei** Tage |
+| 5.823 und 5.775, beide „Einträge" | beide richtig, die Differenz sind die 48 zeitgesteuerten Läufe |
+
+**Die dritte war die gefährlichste.** Neben dem Text liegt die Tages-Tabelle,
+in der jeder die Unterbrechungen nachzählen kann. Eine Zahl, die man selbst
+berichtigt, trägt weiter als eine, die jemand anders berichtigt.
+
+Dazu eine Angabe, die **wahr ist und beim Nachprüfen falsch aussieht**: der
+Forschungskorpus nennt die Demo „erster lauffähiger Stand vom 10. März 2026".
+Der Inhalt stimmt, der Ordner kam am **2026-08-15** ins Depot (#855), weil er
+bis dahin an eine konkrete Anfrage gebunden war. Beides steht jetzt da.
+
+Und in `ENTSTEHUNG.md` war „mehr als doppelte Arbeitszeit" seit dem 24.08.
+nachrechenbar: die **Spanne** ergibt 81,1 Stunden je Woche (2,03-fach), die
+**aktive Zeit** 49,7 (1,24-fach). Klaus' Schätzung trifft die erste. Wer sie im
+Antrag verwendet, schreibt dazu, welche gemeint ist.
+
+### Fünf eigene Fehler, jeder von einer Gegenprobe gefunden
+
+- **Ein flacher Klon liefert Zeiträume, die wie Messungen aussehen.** Der erste
+  Lauf gab für `LEHREN.md` „2026-08-22 bis 2026-08-22" aus. Der Container-Klon
+  trug nur die letzten fünfzig Einträge. **Nichts daran sah falsch aus.** Das
+  Werkzeug bricht jetzt ab, statt zu stempeln. Dieselbe Falle steht seit dem
+  24.08. in der Historie, wo achtzehn Klone vor dem Auslesen vervollständigt
+  wurden. Hier hatte niemand daran gedacht.
+- **Der Wächter dazu fand sein Datum woanders** im Blatt, in einem Abschnitt
+  aus einer anderen Rechnung, und blieb grün, während jede Zeitraum-Angabe
+  gestempelt war.
+- **Zwei Kennzahlen mit demselben Namen** fing keine Prüfung. Genau der Fehler,
+  gegen den das Blatt gebaut ist.
+- **Die Zahl der Unterbrechungen** wurde nie gegen den Text geprüft. Ein
+  Wächter, der nur das Falsche verbietet, misst nicht, ob das Richtige dasteht.
+- **Ein erfundenes Zitat** in `werkstatt/BEFUND.md`: die Regel heißt „Du hast
+  keine Werkzeuge", der längere Satz in Anführungszeichen stand so in keiner
+  Quelle. Der Gedankenstrich-Wächter ließ ihn durch, **weil** er in
+  Anführungszeichen stand.
+
+### Zwei Wächter, die zu eng gemessen haben
+
+Die Zahl der Quelldateien stand als `9` daneben und wurde beim Einbau des
+Abgrenzungs-Blattes rot. Sie prüfte damit nur sich selbst. Jetzt steht dort
+eine **Namensliste**, und ein Ausfall sagt, welche Datei fehlt.
+
+Der Lücken-Wächter zählte das Wort „existiert nicht" und wurde rot, **weil eine
+Lücke geschlossen wurde**. Die zweite Fassung zählte mehr Wörter und war zu
+nachsichtig: die Gegenprobe ersetzte eine Zeile durch „in Arbeit", und die
+anderen trugen die Zahl allein. Jetzt braucht **jede Zeile** der Tabelle einen
+Stand aus einer anerkannten Liste.
+
+### Gedankenstriche, netzweit gemessen (Klaus' Frage)
+
+| was aus dem Haus geht | sichtbar | wovon |
+|---|---|---|
+| Unterlagen-Mappe, sechs Abteilungen | **0** | |
+| Fragen-Blatt | **0** | |
+| Antragsmappe | 18 | **alle** aus den zwei Byte-Kopien aus Kimhub, Prüfsummen in `werkstatt/README.md` |
+| Historie | 5.349 | **alle** aus zitierten Commit-Betreffen, eigener Rahmen **0** |
+| Arbeitszeit-Nachweis | 847 | dasselbe, eigener Rahmen **0** |
+| SBKIM-Papers DE/EN | 20 / 17 | **v0.1-Vorabveröffentlichung, Mai 2026**, in `INTERFACES.md` mit Paragraphennummern zitiert |
+
+Im Depot insgesamt: **13.131**, davon 7.238 in lebenden Arbeitstexten (Doku
+4.943, Briefe 1.674, Wurzel 316, Skills 305). Das sind keine Unterlagen.
+
+**Die Papers sind die eine offene Entscheidung.** Eine datierte v0.1 still
+umzuschreiben, während `INTERFACES.md` sie mit Paragraphennummern zitiert,
+erzeugte zwei Fassungen mit derselben Nummer. Das braucht eine v0.2 und Klaus'
+Wort.
+
+### Klaus' Downloads, geprüft
+
+Elf Dateien von seinem Gerät, byte-weise gegen das Depot gehalten: **neun
+identisch**, BOM vorhanden, PDFs vollständig. Zwei sind **ältere Downloads**:
+`antragsmappe.html` steht auf Stand 23.08., `historie.html` stammt von vor der
+BOM-Reparatur am 24.08. Kein Fehler, aber der Beleg dafür, dass eine
+heruntergeladene Datei keinen Rückweg hat. Beide tragen ihr Erzeugungsdatum im
+Dokument, deshalb war es überhaupt zu sehen.
+
+Dazu `klauszeit.txt`, der Export von Kimhubs Stechuhr: **zweimal gedrückt, 16
+Sekunden**. Als Zeitquelle unbrauchbar, und genau deshalb wird der Nachweis aus
+den Einträgen gerechnet. Steht so in der Bestandsaufnahme.
+
+**Gemessen:** 92 Proben grün, 0 rot, 0 nicht lauffähig · Gegenproben einzeln
+nacheinander: Antragsmappe 35 von 35, Unterlagen 14 von 14, Bestand 17 von 17,
+Zahlen 13 von 13 · neun PDFs neu gebaut, vier davon neu.
+
+**Offen:** Klaus' Sichttest · die Gedankenstriche in den beiden Papers
+(braucht v0.2 und sein Wort) · der Werkzeug-Widerspruch in Paper A · die
+Literatursuche zum Abgrenzungs-Blatt · die englische Projektseite · die
+Anmeldung nach § 5c.
+
+---
+
+## Stand 2026-08-26 (Bau) · 📁 Die Unterlagen der Reihe nach
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+Klaus: *„Gib mir bitte aus allen Sitzungen der Reihe nach die Download-Dokumente:
+Fahrplan, Fragen-Blatt, Behörden-Blatt, Arbeitszeit-Nachweis,
+Forschungsunterlagen inkl. Papers, und was noch fehlt für die Erreichung bei den
+entsprechenden Stellen. Schaue gründlich nach, gegebenenfalls passe an."*
+
+### ⚠ Zum zweiten Mal an drei Tagen: eine Sitzung lief parallel
+
+Während dieser Bau lief, hat eine **zweite Sitzung dasselbe gebaut** (PR #917
+bis #919): ein Fragen-Blatt, mit eigener Probe und
+Gegenprobe. Gemerkt beim Push, nicht davor.
+
+**Ihres gewinnt, und das ist keine Höflichkeit.** Es ist gründlicher:
+Sachverhalt in sieben Sätzen, sieben nummerierte Fragen, 75 Rechnungen, echte
+Zahlen. Meines ist **gelöscht**; Abteilung 3 der neuen Mappe zeigt jetzt auf
+das Fragen-Blatt. Zwei Blätter zur selben Auskunft wären zwei
+Quellen der Wahrheit gewesen, und die eine wüsste nichts von der anderen.
+
+**Beim Zusammenführen fiel eine Lücke in ihrem Blatt auf:** die
+**Kleinunternehmerregelung** steht dort nur als Aufzählungspunkt unter Frage 7,
+nicht als eigene Frage. Der Fragebogen zur steuerlichen Erfassung verlangt aber
+ein Kreuz. Benannt, nicht umfahren.
+
+**Und ihr Text hat einen Messfehler in meinem Wächter aufgedeckt:**
+`klartext()` entfernte Sternchen **auch innerhalb eines Code-Abschnitts**. An
+`docs/historie/arbeitstage.*` meldete er eine Zeile als fehlend, die
+vollständig dastand. Dieselbe Sorte wie beim Unterstrich in Dateinamen, nur ein
+Zeichen weiter. Behoben, und beide Mappen-Proben sind dadurch genauer.
+
+### Der Bestand, nachgesehen statt angenommen
+
+**Drei der fünf gab es, zwei nicht** (das Frageblatt kam parallel dazu). Fahrplan (`FORSCHUNGSFOERDERUNG.md`),
+Arbeitszeit-Nachweis (`historie/arbeitstage.*`) und Forschungsunterlagen
+(Antragsmappe, Abteilung 2) lagen vor. **Fragen-Blatt und
+Behörden-Blatt existierten überhaupt nicht.**
+
+Neu, unter `docs/unterlagen/`: Übersicht mit „Was noch fehlt" · die Schritte in
+der Reihenfolge ihrer Abhängigkeiten · Vorbereitung für die Behörde. Zusammengebaut zu die Unterlagen-Mappe, vier Abteilungen, **jede
+einzeln herunterzuladen und einzeln zu drucken**.
+
+### Der Widerspruch, den das gründliche Nachsehen gefunden hat
+
+**Schritt B4 des Fahrplans stand gegen § 4 derselben Datei.** B4 verlangte
+Lizenz-Dateien für `BookLedgerPro` und `Meine-In-and-Out-Book`; § 4 hatte am
+2026-08-24 nachgemessen, dass `BookLedgerPro` seit dem 16.08. eine trägt (im
+Container lag ein veralteter Klon) und `Meine-In-and-Out-Book` ein leeres Depot
+ohne einen einzigen Commit ist. **§ 4 war gemessen, B4 abgeschrieben.**
+Nachgezogen, mit dem Grund daneben.
+
+### Ein Werkzeug für zwei Mappen, nicht zwei Werkzeuge
+
+`antragsmappe-bauen.mjs` kannte eine Mappe, und **zwei Druckregeln nannten deren
+Abteilungen mit Namen**. Sie werden jetzt aus der Liste erzeugt. Eine dritte
+Abteilung wäre sonst stumm nicht druckbar gewesen: der Knopf hätte gearbeitet,
+das Blatt hätte alles gezeigt.
+
+**Und dabei ist ein echter Fehler entstanden, den die Gegenprobe gefunden hat:**
+die Anker-Karte galt zuerst über **beide** Mappen. Ein Verweis aus der
+Unterlagen-Mappe auf `FORSCHUNGSFOERDERUNG.md` wurde damit zu `#q-docs-...`,
+dessen Ziel nur in der **anderen** Datei steht. Ein Sprung ins Leere, der
+aussieht wie ein Verweis. Anker jetzt je Mappe.
+
+### Fünf blinde Wächter, alle von der Gegenprobe entlarvt
+
+| | |
+|---|---|
+| Der Download-Wächter **klonte die Abteilung selbst** statt den Knopf zu drücken | er maß seine eigene Funktion |
+| „keine Abschrift des Formulars" | fand den Satz im **Warnkasten des Generators** |
+| „keine steuerliche Beratung" | fand ihn im **anderen** Blatt |
+| „Was noch fehlt" mit `/i` | fand „was noch fehlt" klein in der Einleitung derselben Abteilung |
+| der Anker-Fall | sabotierte nichts, weil es gar keinen relativen Verweis mehr gab |
+
+Die drei mittleren sind dieselbe Sorte: **die Prüfung findet ihren Satz
+woanders.** Gemessen wird jetzt im Abschnitt, zu dem die Aussage gehört, und
+beim letzten am **Inhalt** statt an der Überschrift.
+
+**Nebenbefund:** vier Gedankenstriche in der Markier-Legende. Der bestehende
+Wächter misst die **Quellen**, der neue die **Ansicht** und ist damit strenger.
+Aufgelöst.
+
+**Gemessen:** 90 von 90 Proben grün · Gegenprobe Unterlagen 14 von 14 ·
+Antragsmappe 32 von 32 · Historie 9 von 9 · Arbeitstage 16 von 16 ·
+Frageblatt der Nachbarsitzung unberührt grün.
+
+**PDFs:** `unterlagen.pdf` (15 Seiten) und je Abteilung eines, über
+`tools/html-zu-pdf.mjs --nur <id>`. Das setzt **dieselbe** Klasse wie der Knopf
+in der Seite, statt eine zweite Auswahl-Logik zu bauen.
+
+**Offen:** Klaus' Sichttest · der Werkzeug-Widerspruch in Paper A (**vor**
+Zenodo) · das Blatt „Stand der Technik und Abgrenzung", das es noch gar nicht
+gibt und das jeder Leser zuerst braucht · die Anmeldung nach § 5c.
+
+---
+
+## Stand 2026-08-24 (Bau, 3.) · ⏱ Die Arbeitstage einzeln, für das Finanzamt
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+Klaus: *„Kannst Du diese Tage einzeln auflisten, sodass wenn das Finanzamt mal
+nachfragen sollte, ob ich wirklich so lange an den einzelnen Tagen gearbeitet
+habe?"* Dazu: *„Excel und PDF und in die historie html"*, *„im Stil einer
+täglichen Dokumentation"*.
+
+**Zuerst ausgelagert, dann geschrieben.** Die Datei stand bei 2.985 Zeilen. Die
+sechste Auslagerung nimmt den 15. bis 17.08. wortwörtlich heraus, jetzt 2.662.
+
+### Der Befund, der das Blatt gerettet hat, kam vor dem Bauen
+
+**48 Einträge stammen von `github-actions[bot]`**, 32 davon nachts um drei.
+Ungefiltert wiese das Blatt **64,9 Stunden zu viel** aus, und zwar an genau der
+Stelle, an der eine Prüfung zuerst hinsieht: eine Zeile „erster Eintrag 03:04"
+an einem Tag, an dem in Wahrheit ab neun gearbeitet wurde. **Ein einziger
+solcher Fund macht die ganze Aufstellung wertlos, auch die richtigen Zeilen
+darin.** Eine Zahl, die man selbst nach unten korrigiert hat, trägt weiter als
+eine, die jemand anders nach unten korrigieren muss.
+
+### Die Spalten sagen, was sie messen
+
+Keine heißt „gearbeitet". Sie heißen *erster Eintrag*, *letzter Eintrag*,
+*Spanne*, *aktive Zeit*. „19,9 h gearbeitet" wäre eine Behauptung; „Spanne vom
+ersten bis zum letzten Eintrag: 19,9 h" ist eine aus fremden Zeitstempeln
+nachprüfbare Tatsache. **Die Überschrift trägt die Ehrlichkeit**, damit
+darunter kein Absatz voller Einschränkungen stehen muss.
+
+| | |
+|---|---|
+| Tage mit Arbeit | **128**, 10.03. bis 24.08.2026 |
+| Spanne, aufsummiert | **1.935,9 h** |
+| aktive Zeit, ohne Pausen | **1.186,6 h** |
+| Einträge gezählt · herausgerechnet | 5.775 · 48 |
+
+Der **22.08. war Samstag**: gemessene Spanne **19,9 h**. Klaus hat denselben Tag
+unabhängig davon mit „zwanzig Stunden" angegeben. Die Methode trifft den einen
+Tag, an dem die Antwort von außen bekannt ist.
+
+### Was gebaut wurde
+
+| | |
+|---|---|
+| `tools/arbeitstage-rechnen.mjs` | die **eine** Quelle der Rechnung |
+| `tools/arbeitstage-bauen.mjs` | Blatt + zwei Tabellenblätter |
+| `tools/arbeitstage-pdf.mjs` | druckt über Chromium, 301 Seiten |
+| `docs/historie/arbeitstage.html` | Übersicht **und** Tag für Tag, nichts gekürzt |
+| `docs/historie/arbeitstage-tage.csv` | eine Zeile je Tag, für Excel |
+| `docs/historie/arbeitstage-taetigkeiten.csv` | eine Zeile je Eintrag |
+| `historie.html` § Arbeitszeit | derselbe Stand, aus derselben Quelle |
+
+**Die Probe baut die Rechnung nicht nach.** Sie wäre sonst grün, wenn beide
+denselben Denkfehler machen. Teil A misst die **Regeln** an erfundenen Tagen mit
+bekannter Antwort, samt der Grenzfälle genau auf der Lücken-Schwelle und eine
+Minute darüber. Teil B misst, ob das Blatt wiedergibt, was das Modul rechnet.
+
+**Der BOM.** Beim Herunterladen geht `charset=utf-8` verloren, Androids
+Betrachter rät dann Latin-1 und aus jedem Umlaut werden zwei Zeichen. Blatt,
+Historie, Antragsmappe und beide Tabellen tragen ihn jetzt. Geprüft an den
+**Bytes**, im Browser zusätzlich am gezeichneten Text.
+
+**Das ⓘ „Verbindung ist nicht sicher" bleibt.** Das sagt Chrome über den *Weg*,
+nicht über die Datei, und erscheint bei jedem `http://` und jeder lokalen Datei.
+Keine Änderung am Dokument entfernt es. Ein Schloss gibt es nur über `https`.
+
+**Gemessen:** 88 von 88 Proben grün · Gegenprobe Arbeitstage 16 von 16 ·
+Gegenprobe Historie 9 von 9 · Gegenprobe Antragsmappe 32 von 32.
+
+**Offen:** Klaus' Sichttest am Tablet · der Werkzeug-Widerspruch in Paper A ·
+die Anmeldung nach § 5c.
+
+---
+
+## Stand 2026-08-24 (Bau, 2.) · 🟡 Die gelbe Runde, und zwei Funde daneben
+
+**Rolle:** Fortsetzung. Zweig `claude/yellow-markings-funding-application-h9n5sr`.
+Auftrag: Klaus' **vierzig gelbe Markierungen** in der Antragsmappe. Gelb heißt
+„kann bleiben oder weg, Claude wägt ab", darüber steht „im Zweifel bleiben".
+**Nichts wurde gestrichen.**
+
+**Zuerst PR #913 gemergt.** Er lag als Entwurf und trug die Markierungs-Akte, die
+Mappe und die Historie, also die ganze Grundlage dieser Runde. Ein Auftrag, der
+einen ungemergten PR voraussetzt, stößt den Merge an, statt gegen eine Basis zu
+arbeiten, die es auf `main` nicht gibt (Anker, § „Vor dem nächsten Sitzungs-Brief").
+
+**1 · Die acht mit Notiz.** Alle erledigt. Der schwerste war Klaus' Berichtigung
+zu *„ein Werkzeug, das nie ‚nein' sagt"*: **es sagt nein, es hört nur nicht auf.**
+Nicht die Willfährigkeit ist das Suchtmerkmal, sondern die **Ausdauer**, und das
+ist zugleich die messbarere Frage. „Sagt zu oft ja" ist eine Behauptung über
+Haltung; „hört nicht auf, nachdem ein Mensch aufgehört hätte" ist an Runden,
+Dauer und Kosten zählbar, und die Daten liegen im Fahrtenbuch. Weitergetragen
+nach **Paper B** (dort fiel die Zeile „ohne Nein") und **Paper C** (das
+Gegenstück: selbst zu entscheiden, wann Schluss ist, ist eine Kompetenz, die es
+vorher nicht brauchte, weil die eigene Erschöpfung sie erledigte).
+
+**2 · Die zweiunddreißig ohne Notiz.** Sie liegen auf Zahlen und Fristen.
+Gestrichen wäre der falsche Griff gewesen, ein Fahrplan ohne Zahlen ist nicht
+besser, nur nicht mehr nachprüfbar. Stattdessen **nachgeprüft und mit Herkunft
+versehen** — was bestätigt wurde und was ausdrücklich ungeprüft blieb, steht
+jeweils dran, und die gesperrten Quellen sind benannt.
+
+> *(Hier ist gekürzt.* **Was gemessen und getan wurde, steht oben; was daraus
+> für Klaus' Lage folgt, gehört nicht in ein öffentliches Depot.** *Der Befund
+> bleibt, der Rat ist heraus — die Regel dazu steht in `CLAUDE.md`.)*
+
+> ⚠ **Der Brief an diese Sitzung stimmte an einer Stelle nicht.** Er sagte, die
+> vierzig gelben stünden vollständig in der Markierungs-Akte. Das gilt nur für
+> die acht mit Notiz; der Wortlaut der übrigen liegt in Klaus' Browser und im
+> Chat. Gearbeitet wurde deshalb an den **benannten Themen**, und das ist
+> hingeschrieben statt stillschweigend gleichgesetzt.
+
+**3 · Die Lizenz-Tafel war in beide Richtungen falsch.** Klaus' Notiz *„andere
+Repos wurden auch zu Open Source erklärt"* stimmte. Gemessen gegen `origin/main`
+aller 33 Depots: **6 MIT · 26 eigene · 1 ohne** statt 3 · 28 · 2. Zwei
+verschiedene Ursachen, und beide sind eine Lehre wert:
+
+| | |
+|---|---|
+| **zu wenig MIT** | `Kim-Bell`, `Kimseek`, `Kimboard` bekamen MIT am **2026-08-23**, am Tag der Zählung. Gezählt vorher, geändert danach, **nachgezählt nie** |
+| **zu viel „ohne"** | `BookLedgerPro` trägt seit dem 2026-08-16 eine Lizenz. Im Container lag ein alter Klon. Die Falle aus dem Anker: eine Aussage ohne `fetch` ist kein Befund |
+
+Und die eine verbliebene Null ist keine Nachlässigkeit: `Meine-In-and-Out-Book`
+hat **überhaupt keinen Commit**. Ein leeres Depot ohne Lizenz ist ein anderer
+Sachverhalt als Quelltext ohne Lizenz.
+
+**4 · Klaus' Zuruf mitten in der Sitzung:** *„die ganze mögliche KIM-Familie
+sollte mitwirken."* Drei sind drin. **Zwei können nicht**, beide Gründe gemessen:
+Kimhub trägt Rechnungsdaten in der Historie (`werkstatt/buchhaltung/*.json`,
+eingecheckt 20.08., entfernt 22.08.; **ein Fork nimmt die Historie mit**), und in
+Kim-sync liegt `Company-Brain/VISION.md`, das selbst **„Sichtbarkeit: privat"**
+trägt. **Eine MIT-Lizenz hätte es mit freigegeben.** Der Handgriff hätte fünf
+Minuten gedauert und wäre still gewesen. Klaus hat entschieden: Kimhub bleibt zu.
+
+> *(Hier ist gekürzt.* **Was gemessen und getan wurde, steht oben; was daraus
+> für Klaus' Lage folgt, gehört nicht in ein öffentliches Depot.** *Der Befund
+> bleibt, der Rat ist heraus — die Regel dazu steht in `CLAUDE.md`.)*
+
+
+**6 · Ein neuer Wächter samt Gegenprobe.** `tests/smoke_lizenz_konsistenz.mjs`
+bewacht **nicht** die Lizenzen im Netz (das kann eine Probe hier nicht, und eine
+Probe, die still ins Netz greift, misst irgendwann etwas anderes als das, was sie
+zu messen glaubt). Bewacht wird **die Sorte Fehler, die wirklich passiert ist**:
+eine Tafel, die nur zur Hälfte nachgezogen wird, und ein Urteil, das in zwei
+Dateien auseinanderläuft. `gegenprobe_lizenz_konsistenz.mjs` fährt **beide
+Richtungen** (zu viel MIT und zu wenig), weil eine Prüfung mit nur einer Richtung
+gegen den Fehler von 2026-08-24 blind gewesen wäre.
+
+**Gemessen (echter Rückgabewert, nicht hinter `| tail`):**
+
+| | |
+|---|---|
+| `node tests/run_alle.mjs` | **87 grün, 0 rot, 0 nicht lauffähig** |
+| `gegenprobe_antragsmappe` | 32 von 32 gefangen |
+| `gegenprobe_historie` | 9 von 9 gefangen |
+| `gegenprobe_lizenz_konsistenz` | 8 von 8 gefangen |
+
+**Kein Gedankenstrich im neuen Text**, gegen den eigenen Diff nachgezählt: 0.
+
+**Offen:**
+- **Klaus' Sichttest** der Mappe am Tablet, besonders Ziehen mit dem Finger und
+  Androids Kopieren-Leiste. Von hier aus ungeprüft, nicht grün.
+- **Der Werkzeug-Widerspruch in Paper A** (vier Stellen sagen, die Rollen hätten
+  keine Werkzeuge; Kimhubs Verfassung sagt seit 2026-08-23 das Gegenteil).
+  Unverändert Klaus' Entscheidung, drei Wege im Protokoll vom 2026-08-23.
+- **Klaus’ eigene Punkte, dazu ORCID und Zenodo.** Nur Klaus,
+  und der erste Punkt ist seit heute der eiligste.
+- **Nebenbefund, nicht angefasst:** `Kim-sync/CLAUDE.md` beschreibt den eigenen
+  Inhalt falsch („enthält nur README, LICENSE, RECHTE.md").
+
+**Nächster Schritt:** Anmeldung nach § 5c rückwärts vom 30.11.2026 planen.
+
+---
+
+## Stand 2026-08-24 (Bau) · 📜 Die Historie ausgelesen, Gedankenstriche raus
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+Drei Aufträge von Klaus an einem Tag.
+
+**1 · Gedankenstriche.** *„Nimm bitte alle Gedankenstriche von dir heraus. Es
+gibt Sätze."* 613 Striche aufgelöst, in elf Dateien, mit
+`tools/gedankenstriche-aufloesen.mjs`. Entschieden wird an dem, was rechts
+steht: Konjunktion wird Komma, Hauptsatz-Anfang wird Punkt, Aufzählung wird
+Doppelpunkt. **Geprüft wird nicht „es steht kein Strich mehr da"**, sondern die
+**Wortfolge** vorher und nachher, samt der Auflage, dass jede geänderte
+Großschreibung eine bewusste ist.
+
+**Drei eigene Fehler dabei, jeder von einer Prüfung gefunden:** die erste
+Fassung verdoppelte ein Wort · die Aufräum-Regel fraß die **Einrückung** von
+Fortsetzungszeilen, wodurch vier Zeilen aus der Antragsmappe fielen · und das
+Werkzeug lief über die **Byte-Kopien** aus Kimhub mit, deren Prüfsummen in
+`werkstatt/README.md` stehen. Zurückgenommen. Dort bleiben die Striche, bis sie
+in Kimhub geändert und neu kopiert werden.
+
+**2 · Klaus' Markierungen.** 100 Stück, ausgelesen aus der Mappe. **Alle
+sechzehn roten erledigt**; elf davon waren in Paper A die Gedankenstriche
+selbst. Die **vierzig gelben stehen offen**, Klaus: *„die roten schon mal raus,
+über gelb reden wir später."* Vollständig mit seinen Notizen in
+[`docs/sessions/2026-08-24_markierungen-klaus.md`](sessions/2026-08-24_markierungen-klaus.md).
+
+**3 · Die Historie.** *„Nimm bitte eine vollständige Dokumentation der gesamten
+History vor."* **Achtzehn der dreiunddreißig Klone waren flach** und trugen nur
+die letzten fünfzig Commits. Erst nachgeholt, dann gemessen:
+
+| | |
+|---|---|
+| Commits | **5.823** |
+| Depots · Zweige | 33 · 1.388 |
+| Tage mit Arbeit | **128**, vom 10.03. bis 24.08.2026 |
+| Zeilen dazu · entfernt | 1.852.315 · 292.930 |
+| Commits nie auf `main` | **1.662** (die Sackgassen) |
+
+Daraus `docs/historie/historie.html` (7,9 MB): jeder Commit, Tag für Tag, mit
+Uhrzeit, filterbar nach sieben Marken. Vier Rollen mit Aufgabe, Erfüllung,
+gemessener Zahl **und der Grenze dieser Zahl**.
+
+**Die Daten liegen als `docs/historie/historie.json` im Depot**, weil der
+nächste Container wieder flach anfängt. Wer sie neu holen will, braucht erst
+`git fetch --unshallow` über alle Depots.
+
+**Ein blinder Wächter, von der Gegenprobe entlarvt:** „Commits ohne main sind
+gekennzeichnet" fand `data-main="nein"` in der **CSS-Regel** und war deshalb
+wahr, als kein einziger Commit mehr so gekennzeichnet war.
+
+**Gemessen:** 86 von 86 Proben grün · Gegenprobe Antragsmappe 32 von 32 ·
+Gegenprobe Historie 9 von 9.
+
+**Offen:** die vierzig gelben Markierungen · der Werkzeug-Widerspruch in
+Paper A · die Chat-Archive, die Klaus hat und die nicht in Git stehen · die
+Striche in den zwei Byte-Kopien.
+
+**Nächster sinnvoller Schritt:** Klaus sieht die Historie an; dann die gelbe
+Runde, unter der Regel „im Zweifel bleiben".
+
+---
+
+## Stand 2026-08-24 (Bau) — ✎ Markieren in der Antragsmappe (Kürzen)
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+**Klaus' Bitte:** in der Mappe mit der Maus etwas markieren können, grün oder
+rot, und die Markierungen später auslesen, um zu sehen, wo etwas zu verbessern
+ist.
+
+**Gebaut:** `tools/antragsmappe-markieren.mjs`. Text ziehen → Farbleiste →
+🟩 *gut so* · 🟨 *unklar* · 🟥 *ändern*, dazu eine Notiz. Der Knopf in der
+Kopfleiste öffnet die Tafel; von dort geht die Liste als `.md`-Datei oder in
+die Zwischenablage — eine Auslese nach Quelldatei und Farbe, mit dem markierten
+Satz, dem Abschnitt und der Notiz.
+
+**Der wichtigste Riegel ist nicht die Farbe, sondern was sie NICHT tut:**
+Markierungen werden **nie gedruckt und nie mitgeladen**. Die Einreich-Abteilung
+geht zur Behörde; ein „muss geändert werden"-Streifen darin wäre das Gegenteil
+dessen, wofür sie da sind — und der Fehler fiele niemandem auf, bis er draußen
+ist. Gemessen wird an den **Bytes der heruntergeladenen Datei** und an der
+**Hintergrundfarbe im Druck-Medium**, nicht an einer CSS-Regel im Quelltext.
+
+**Geankert wird am Text, nicht an der Stelle.** Die Mappe wird neu gebaut,
+sobald sich eine `.md` ändert — eine Markierung an „Absatz 412" säße danach
+lautlos woanders. Gespeichert werden Quelldatei, markierter Text und das
+wievielte Vorkommen. Findet sich das nicht mehr, heißt die Markierung
+**verwaist** und wird gemeldet, statt zu verschwinden. Ebenso beim Speicher:
+wirft `localStorage`, sagt die Tafel es — wer fünfzig Stellen markiert und es
+erst beim nächsten Öffnen merkt, hat umsonst gearbeitet.
+
+**Zwei Fehler in meinen eigenen Wächtern, beide von der Sache selbst
+aufgedeckt:**
+
+1. Die Probe markierte die Zeile „Quelle: …" statt echten Text — 33 Zeichen.
+   Aufgefallen erst, als der Längen-Vergleich am Ende darüber stolperte. *Eine
+   Probe, die die falsche Stelle nimmt, misst nicht, was sie zu messen glaubt.*
+2. „Schrift und Grund sind verschieden" lief **nur im hellen Thema** und war
+   dort immer grün — im dunklen hätte fast weiße Schrift auf hellgrünem Grund
+   gestanden. **Die Gegenprobe hat es gefangen.** Gemessen wird jetzt der
+   Kontrast nach WCAG, in hell **und** dunkel: 🟩 10,3 · 🟨 12,0 · 🟥 8,6 zu 1.
+
+Dazu ein dritter, im Wächter der Mappe selbst: er las `data-quelle` auch aus
+den Wähler-Zeichenketten des neuen Skripts und suchte danach eine Datei, deren
+Name aus einem Stück JavaScript bestand. Jetzt strukturell auf `<article>`.
+
+**Gemessen:** 85 von 85 Proben grün, 0 rot, 0 nicht lauffähig · Gegenprobe
+**25 von 25 gefangen** (acht davon neu, alle zur Markier-Schicht).
+**Klaus' Sichttest am Tablet steht aus** — besonders, ob sich mit dem Finger
+bequem ziehen lässt und ob Androids eigene Kopieren-Leiste der Farbleiste in
+die Quere kommt.
+
+**Nachtrag desselben Tages — Klaus hat es ausprobiert, und zweimal lag ich
+falsch:**
+
+1. **Die Farben bedeuten etwas anderes, als ich angenommen hatte.** Es geht
+   nicht ums Verbessern, sondern ums **Kürzen**: *„Rot kann komplett weg, Gelb
+   kann bleiben oder auch weg — entscheidest du mit, Grün soll bleiben. Lieber
+   bleiben als weg."* Beschriftung, Legende und Auslese sind nachgezogen; die
+   Schlüssel heißen weiter `gruen/gelb/rot`, vorhandene Markierungen behalten
+   also ihre Farbe. **Gelb bleibt** (meine Entscheidung, wie erbeten): ohne
+   Gelb landet jede unsichere Stelle bei Rot, und Rot heißt „weg" — das kippt
+   gegen Klaus' eigene Regel. Der Grundsatz *im Zweifel bleiben* reist jetzt in
+   der ausgelesenen Liste mit, weil die ohne diesen Chat gelesen wird.
+
+2. **Man konnte nicht erkennen, was die Knöpfe bedeuten.** Klaus: *„Du hast da
+   stehen nur Zahlen, deswegen konnte ich nicht erkennen, was du damit
+   meinst."* Zwei eigene Fehler steckten darin: die Bedeutung stand nur im
+   `title` — **auf einem Tablet gibt es kein Hover**, dort ist ein Tooltip
+   unerreichbar. Und die Farben waren **Emoji**; fehlt die Schrift des Geräts,
+   wird aus „🟩 1 · 🟨 1 · 🟥 1" schlicht „1 · 1 · 1". Seitdem trägt jeder
+   Knopf ein **Wort**, der Farbtupfen ist eine **gezeichnete CSS-Fläche**, und
+   die Tafel hat eine sichtbare **Legende**. Gemessen wird die Erkennbarkeit,
+   nicht die Regel: Wort vorhanden, Tupfen mit Größe und Grundfarbe, Knopf
+   mindestens 44 px hoch.
+
+Die Auslese nennt jetzt zusätzlich, **wie viel** je Farbe betroffen ist —
+„zwölf Stellen" sagt beim Kürzen nichts, „zwölf Stellen, zusammen 4.800
+Zeichen" schon.
+
+**Und ein schlechter Gegenprobe-Fall, benannt statt versteckt:** „Die Auslese
+sagt nicht mehr, was die Farben bedeuten" rutschte zuerst durch — zu Recht, er
+hatte nur eine von zwei Stellen angefasst und die Zusicherung stand weiter.
+Sabotiert wird die **Zusicherung**, nicht eine Zeile.
+
+**Gemessen nach dem Nachtrag:** 85 von 85 Proben grün · Gegenprobe **31 von 31
+gefangen**.
+
+**Nächster sinnvoller Schritt:** Klaus markiert; dann die ausgelesene Liste in
+den Chat geben, damit eine Sitzung die roten Stellen abarbeitet — unter der
+Regel „im Zweifel bleiben".
+
+---
+
+## Stand 2026-08-23 (Bau) — 📦 Antragsmappe: eine Datei, zwei Abteilungen
+
+**Rolle:** Bausitzung. Zweig `claude/research-funding-paper-delivery-vuppnj`,
+frisch von `origin/main`. Auftrag: Punkt 2 und 3 des Briefes vom 2026-08-23.
+
+**Gebaut:** die Arbeits-Mappe (242 KB) aus neun Markdown-Quellen —
+**Abteilung 1 privat** (Fahrplan Forschungsgelder), **Abteilung 2 einreichbar**
+(Entstehung · Paper A · Forschungskorpus · Paper-Plan · die vier
+Werkstatt-Unterlagen). Jede Abteilung hat einen eigenen Download- und
+Druck-Knopf, einen eigenen Kopf mit Datum und Herkunft, und nimmt beim
+Herausnehmen **nur sich selbst** mit.
+
+Dazu `tools/antragsmappe-bauen.mjs` + `tools/markdown-mini.mjs`. **Die Mappe
+wird erzeugt, nicht gepflegt** — sonst stünden dieselben Sätze zweimal im Depot
+und liefen auseinander. Wer eine `.md` ändert, ruft
+`node tools/antragsmappe-bauen.mjs`; die Probe schlägt sonst an.
+
+**Paper A · die 47-%-Stelle aus der Zusammenfassung heraus** (Klaus' Befund).
+Sie rechnete mit vier Begriffen, die bis dahin nirgends erklärt waren —
+nachgezählt: **„Schicht" kam dort zum ersten Mal im ganzen Papier vor**, Zeile
+50 von 1.833. Zahlen raus, der Rechenweg steht vollständig in § 3.8 (nachgesehen,
+nicht angenommen). **Davor** steht jetzt ein Absatz, der das Werkzeug einführt —
+samt der Unterscheidung *Dokumentation fünf Monate, Messung Tage*.
+
+**Drei echte Fehler im Markdown-Leser**, alle von der Nachzählung gefunden
+(jede der 2.799 Quellzeilen muss in der Ansicht wiederauftauchen): Kursiv brach
+am Zeilenumbruch ab · Fett vertrug kein Kursiv darin · und der Code-Platzhalter
+war „Leerzeichen + Zahl + Leerzeichen" — **jede nackte Zahl im Text** wäre
+ersetzt oder gelöscht worden. Der dritte stand nur im eigenen Nachlesen.
+
+**Und drei Fehler in den Wächtern selbst:** jedes Tag durch ein Leerzeichen zu
+ersetzen meldete **320 Zeilen** als fehlend, die alle dastanden · der
+Unterstrich als Auszeichnung zerlegte Dateinamen (70 weitere Fehlalarme) · und
+„der Download enthält die andere Abteilung nicht" am **Wortlaut** geprüft wurde
+rot, sobald der Fahrplan die Mappe selbst beschreibt. *Ein Wächter nagelt eine
+Aussage fest, keine Wörter* — jetzt strukturell.
+
+**Richtiggestellt:** `FORSCHUNGSFOERDERUNG.md` sagte, Kimhub führe „bereits" ein
+Fahrtenbuch. Stimmt — **seit dem 22.08.2026**. Neben der Aussage „fünf Monate
+Vorleistung" las sich das, als sei die ganze Zeit gestundet worden. § Weg 2, B3
+und D2 nachgezogen: **dokumentierte Zeit und gemessene Zeit sind zwei Dinge**,
+Älteres wird **rekonstruiert** und als solches gekennzeichnet.
+
+**Gemessen:** 84 von 84 Proben grün, 0 rot, 0 nicht lauffähig · Gegenprobe
+**17 von 17 gefangen**. Die Mappe im Browser: headless geöffnet, Drucken und
+Herunterladen wirklich ausgelöst. **Klaus' Sichttest am Tablet steht aus** —
+besonders der Download dort ist von hier aus ungeprüft.
+
+**Offen, und es gehört besprochen:** Paper A sagt an vier Stellen, die Rollen
+hätten **keine Werkzeuge**. Kimhubs Verfassung sagt seit dem 2026-08-23 das
+Gegenteil, auf Klaus' Wort — und die Momentaufnahme in `docs/werkstatt/` ist
+damit am Tag ihrer Anlage überholt. Für den beobachteten Zeitraum stimmt der
+Satz, aber er steht im **Präsens**, und das Papier verlinkt das Depot. Drei
+Wege stehen im Übergabeprotokoll; **Klaus entscheidet.**
+
+**Nächster sinnvoller Schritt:** Sichttest der Mappe; dann den
+Werkzeug-Widerspruch entscheiden, bevor das Papier eingereicht wird.
+
+Protokoll: [`docs/sessions/archiv/2026-08-23_antragsmappe-und-paper-a-zusammenfassung.md`](sessions/archiv/2026-08-23_antragsmappe-und-paper-a-zusammenfassung.md)
+
+---
+
+## Stand 2026-08-23 (Bau) — 📄 Paper A geschrieben
+
+**Rolle:** Fortsetzung derselben Sitzung. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Gebaut:** `docs/papers/PAPER_A_regeln-und-grundsaetze.md` (553 Zeilen, Fassung 1)
+— *„Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken — und warum keine
+allein genügt."*
+
+**Der Beitrag, sauber abgegrenzt.** Die Literatur besetzt zwei Positionen:
+Grundsätze zur **Trainingszeit** vom Modellanbieter (Constitutional AI, Bai et al.
+2022) und Regeln zur **Ausführungszeit** vom Einsetzenden (NeMo Guardrails,
+Rebedea et al. 2023). Dazu die Rechtsökonomie (Kaplow 1992, *rules versus
+standards*) und deren Übertragung auf die KI-Regulierung (Schuett et al. 2024).
+**Dünn besetzt ist die vierte Zelle: Grundsätze zur Ausführungszeit, gesetzt vom
+Betreiber**, in einer Textdatei, die auch ein Nicht-Programmierer ändern kann.
+Genau dort sitzt die Werkstatt. Alle vier Quellen recherchiert, nicht aus dem
+Gedächtnis zitiert.
+
+**Zwei eigene Beiträge über das Gerüst hinaus:**
+
+1. **Die Sättigungsgrenze.** Regeln addieren sich, Grundsätze verdünnen sich —
+   zwanzig wirken schlechter als fünf, weil Aufmerksamkeit begrenzt ist. Kaplow
+   und Schuett et al. behandeln das nicht, weil auf ihrer Ebene kein
+   Aufmerksamkeitsbudget im Spiel ist.
+2. **Der Versuchsaufbau** — beides Klaus' Vorschläge vom selben Tag, und der
+   zweite ist der wichtigere. **Drei Arme** (nur Regeln · nur Grundsätze ·
+   beides) mal **drei Aufgabenarten** (eigene Idee · Vorlage · Bestehendes
+   verbessern). Vorab festgelegte Fehlerkategorien, und ein Auswertungswerkzeug,
+   das dem Bewertenden **verbirgt, aus welchem Arm ein Lauf stammt** — ohne diese
+   Verblindung misst die Auswertung die Erwartung des Auswertenden, zumal er die
+   Grundsätze selbst geschrieben hat.
+
+   **Warum die zweite Achse den Unterschied macht:** eine bloße Rangfolge („R+G
+   gewinnt") lässt sich aus fast jedem Ergebnis herauslesen. Ein **Verlauf über
+   drei Stufen** nicht. Aus Kaplows Punkt folgt zwingend, dass der Vorteil der
+   Grundsätze mit der Vorhersehbarkeit des Falls fallen muss — bei der offenen
+   Aufgabe groß, bei der umrissenen klein oder umgekehrt. Läuft der Verlauf flach
+   oder gegenläufig, ist die These widerlegt, unabhängig vom Gesamtsieger.
+   Zusätzlich trennt Aufgabenart B endlich, was bisher vermischt war: ob die
+   Truppe Vorhandenes vorschlägt, weil sie unaufmerksam ist oder weil sie den
+   Bestand gar nicht sieht.
+
+**Ein Fehler von mir, von der eigenen Gegenprobe gefunden.** Ich hatte „die acht
+Regeln" geschrieben, an vier Stellen. **Es sind sechs.** Die Zahl war gesetzt,
+nicht gezählt — genau die Falle, gegen die Grundsatz 4 geschrieben wurde („eine
+geratene Zahl klingt genau wie eine gemessene"). Richtiggestellt im Paper, in
+`werkstatt/BEFUND.md` und in `werkstatt/README.md`. **Wer eine Zahl über das
+eigene Material schreibt, zählt sie ab.**
+
+**Nächster sinnvoller Schritt:** Zenodo-DOI für die beiden vorhandenen Papers und
+für dieses; parallel der der Termin, der Klaus’ Sache ist.
+
+---
+
+## Stand 2026-08-23 (Bau) — 🇩🇪 Hamburg nachgezogen, Paper-Plan angelegt
+
+**Rolle:** Fortsetzung derselben Sitzung. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Anlass:** Klaus hat das Bundesland genannt (**Hamburg**), nach dem Weg zur
+Anmeldung gefragt (Gewerbe oder freiberuflich, online?) und drei Paper-Themen
+umrissen.
+
+**Gebaut:**
+
+> *(Hier ist gekürzt.* **Was gemessen und getan wurde, steht oben; was daraus
+> für Klaus' Lage folgt, gehört nicht in ein öffentliches Depot.** *Der Befund
+> bleibt, der Rat ist heraus — die Regel dazu steht in `CLAUDE.md`.)*
+
+eigener dritter Punkt: **beides leistet Verschiedenes und keins genügt allein.**
+Steht so im Plan.
+
+**Nächster sinnvoller Schritt:** der Termin, der Klaus’ Sache ist (Mitte der Woche) plus
+der Behörden-Schritt parallel; danach Zenodo-DOI für die beiden vorhandenen Papers.
+
+---
+
+## Stand 2026-08-23 (Bau) — 🔓 Der Forschungskorpus steht
+
+**Rolle:** Fortsetzung derselben Sitzung. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Auftrag von Klaus:** die Repos suchen, die sich als offen lizenzierter Beleg
+der Forschung eignen — und die drei öffentlichen zuerst umlizenzieren.
+
+**Getan.** Drei Repos auf **MIT** gehoben, je vier Stellen (LICENSE,
+`package.json`, der `FP-COPYRIGHT`-Kopf in `index.html`, `RECHTE.md`):
+
+| Repo | PR | Proben |
+|---|---|---|
+| Kim-Bell | #52 | 4/4 grün |
+| Kimseek | #70 | 11/11 grün |
+| Kimboard | #128 | **31/31 grün** — `node tests/alle.mjs`, nicht `npm test` |
+
+**Der Korpus steht damit auf sechs Repos:** Sage-Protokol · SB·KIMTool·Point ·
+mycel-karte · Kim-Bell · Kimseek · Kimboard. Benannt in
+[das Korpus-Blatt](FORSCHUNGSKORPUS.md).
+
+**Dazu neu: [`docs/werkstatt/`](werkstatt/)** — der Forschungsteil aus Kimhub als
+Momentaufnahme (Weg C, Klaus' Entscheidung). `grundsaetze.md` byte-gleich,
+`WERKSTATTREGELN.md` als Auszug, beide mit der SHA-256 der Quelle festgehalten;
+`BEFUND.md` sagt, was sich beobachten ließ **und was daraus nicht folgt** (keine
+Kontrollgruppe, kein Maß, Fallzahl eins, nicht verblindet, Modellwechsel nicht
+getrennt).
+
+**Vier Befunde, die niemand gesucht hatte:**
+
+1. **Kim-Bell stand im Widerspruch zu sich selbst.** README und CLAUDE.md nennen
+   es eine „1:1-kopierbare Vorlage" — Ziffer 4 der alten Lizenz verbot
+   Weitergabe, Veränderung und Verbreitung veränderter Fassungen. Eine Vorlage,
+   die man nicht kopieren darf, ist keine. Seit Bestehen des Repos so drin.
+2. **Ziffer 5 macht die frühere Zählung genauer.** Alle 28 eigenen
+   Nutzungslizenzen stellen die SBKIM-Module unter MIT. Das Protokoll war also
+   längst überall offen; zu war nur die App-Hülle. „Nur 3 von 33 sind Open
+   Source" war zu grob.
+3. **Die SBKIM-Demo musste gar nicht angefasst werden** — sie liegt unter
+   `sbkim-demo/` in diesem Repo und ist damit seit jeher MIT.
+4. **Kimhubs Historie trägt die Rechnungsdaten weiter.** `git rm` am 2026-08-22
+   nahm sie aus dem Arbeitsbaum, nicht aus der Vergangenheit: 859 Zeilen, 75
+   Belege, über den Commit davor abrufbar. Deshalb bleibt Kimhub privat.
+
+**Vor jedem Push geprüft:** die Historien aller drei Repos vollständig entflacht
+(54 · 72 · 128 Commits) und auf Schlüssel, Tokens, private Schlüssel und
+Belegdateien durchsucht — **nichts gefunden**; die `sk-ant-api`-Treffer sind die
+Testdaten des eigenen Wächters. Die Kastenbreite im `FP-COPYRIGHT`-Kopf wurde aus
+der Datei gemessen (65), nicht geraten; `package.json` nach dem Schreiben mit
+`json.loads` gegengelesen.
+
+**Nächster sinnvoller Schritt:** Stufe A/B des Fahrplans — der Termin, der Klaus’ Sache ist,
+ORCID, Zenodo-DOI. Der Korpus steht, die Papers sind noch nicht zitierfähig.
+
+---
+
+## Stand 2026-08-23 (Recherche) — eine Recherche-Sitzung
+
+**Rolle:** Recherche, kein Modul-Code.
+
+**Gebaut:** ein Arbeitspapier für Klaus. Der Inhalt betrifft seine eigene Lage
+und liegt nicht in diesem Depot.
+
+> *Was diese Sitzung methodisch beigetragen hat, steht in den Einträgen darüber:
+> die Prüftiefe wird je Angabe genannt, gesperrte Quellen werden benannt statt
+> umgangen, und was nur Vermutung ist, steht als Vermutung da.*
+
+---
 
 ---
 
