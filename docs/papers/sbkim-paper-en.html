@@ -292,15 +292,12 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
       A working reference implementation is publicly available.
     </p>
     <p style="margin-top:1em">
-      <strong>On the September 2026 revision.</strong> The first version, from May
-      2026, was a proposal. Since then the protocol has been running. This revision
-      trades assumptions for measurements, names the prior work the building blocks
-      come from, and withdraws the novelty claim those building blocks do not
-      support. <em class="key">The building blocks are known; the operation is the
-      contribution.</em> What this text now presents is a field report: more than
-      twenty deployed web applications that recognise each other by meaning, with
-      measured response times, a public history and a written record of what broke.
-      Sections 2, 6, 7 and 8 have been revised; sections 5 and 9 are new.
+      <strong>September 2026 revision.</strong> The May 2026 version was a proposal;
+      since then the protocol has been running. This version names the prior work the
+      building blocks come from, replaces the description of the implementation with
+      the current state and its measurements, and withdraws the novelty claim.
+      <em class="key">The building blocks are known; the operation is the
+      contribution.</em> Sections 2, 6, 7 and 8 are revised; 5 and 9 are new.
     </p>
   </div>
 
@@ -372,11 +369,9 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <h3>2.1 The prior work the building blocks come from</h3>
 
   <p style="border-left:3px solid #c93;padding-left:.8em">
-    <strong>Added on 2 September 2026.</strong> The first version of this section
-    compared SBKIM against vector databases, agent frameworks and MCP, and
-    concluded that every component was new. A literature search in September 2026
-    refuted that. <strong>Every single component is prior art</strong>, and the
-    three fields below belong in this text before it claims anything.
+    <strong>Added on 2 September 2026.</strong> The May version compared SBKIM
+    against vector databases, agent frameworks and MCP and held every component to
+    be new. A literature search in September 2026 refuted that.
   </p>
 
   <p>
@@ -408,12 +403,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     That is conceptually very close to the spore in section 3.
   </p>
 
-  <p>
-    Nothing of the original novelty claim survives this, and it is stated here
-    because a reviewer would find it in ten minutes. The table below is rebuilt
-    accordingly. It lists the prior work and no longer claims that SBKIM stands
-    alone in any column.
-  </p>
+  
 
   <table>
     <thead>
@@ -431,7 +421,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     </tbody>
   </table>
 
-  <h3>2.2 What is left after this check</h3>
+  <h3>2.2 What is left</h3>
 
   <p>
     Each column of the table is occupied on its own. None of the work found
@@ -443,11 +433,9 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <p>
-    <strong>This is an observation from three searches, not a systematic
-    review.</strong> It falls the moment someone presents work that does both at
-    once. This text therefore does not rest on it. The contribution it claims is
-    in section 6, and it does not depend on this gap: <em class="key">the building
-    blocks are known; the operation is the contribution.</em>
+    <strong>This observation comes from three searches and is not a systematic
+    review.</strong> It falls the moment work does both at once. The contribution
+    of this work is in section 6 and does not depend on it.
   </p>
 
   <!-- 3. THE SBKIM PROTOCOL -->
@@ -607,18 +595,12 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <!-- 5. HOW THIS CAME ABOUT -->
   <h2>5. How this came about</h2>
 
-  <p>
-    This section is new. It is here because the first version began in the middle
-    of the subject and never said where the work came from. Anyone who knows the
-    path can check the decisions. Above all they can see which of them came from
-    an observation and which from the literature.
-  </p>
+  
 
   <p>
     <strong>It began as a platform, and that was discarded.</strong> The first form
-    was a server with a search and an index; everyone else would have been a
-    client. Thinking it through, that was another gatekeeper between small
-    websites and their readers. Small sites do not have a platform problem. They
+    was a server with a search and an index, every other node a client. That is
+    another gatekeeper between small websites and their readers. Small sites do not have a platform problem. They
     have a findability problem, and they do not want to hand over their identity
     for it. That is how "Sage platform" became the <em>Sage protocol</em>, a rule
     between equals.
@@ -635,36 +617,45 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <p style="border-left:3px solid #c93;padding-left:.8em">
-    <strong>This was found independently, not found first.</strong> The reciprocal
-    recommender systems in section 2.1 have worked with exactly this symmetry for
-    years. Knowing them would have saved the detour. The episode belongs in the
-    text anyway, because it is the honest answer to how an idea forms without a
-    connection to the literature.
+    <strong>Found independently, not found first.</strong> The reciprocal recommender
+    systems in section 2.1 have worked with this symmetry for years.
   </p>
 
-  <h3>5.1 Two precisions this text owes the reader</h3>
-
+  <h3>5.1 Where the language model sits</h3>
+  
   <p>
-    <strong>It is not AIs recognising each other.</strong> They are web
-    applications and websites. The language model sits in the embedding and the
-    ranking, not in the nodes. Reading the phrase "AI matching" any other way
-    reads more into it than is there.
+  It is not language models recognising each other. They are web applications and
+  websites. Every node computes its vectors with the same small embedding model
+  in its own browser: <code>multilingual-e5-small</code>, 384 dimensions. Because
+  all nodes use the same model, their vectors lie in the same space and are
+  directly comparable.
   </p>
-
+  
   <p>
-    <strong>"Server-less" belongs in quotation marks.</strong> There certainly is
-    a relay, and the operator of this network runs one himself. What is missing is
-    a server at each participant and a central index. Peer-to-peer here means that
-    nobody has to provide infrastructure of their own. It does not mean there is
-    none.
+  <strong>No model is distributed across several machines for this.</strong> Each
+  node holds a complete copy of a small model, and only the 384 numbers that come
+  out of it are exchanged. This is not distributed inference; it is replicated
+  computation in a shared vector space.
+  </p>
+  
+  <p>
+  The language-model judge is a second, optional stage. It re-ranks the candidates
+  from the vector search and runs on the respective user's own key. If it cannot
+  be reached, it reports so and the vector search remains complete.
+  </p>
+  
+  <p>
+  <strong>"Server-less" belongs in quotation marks.</strong> There is a relay, and
+  the operator of this network runs one himself. What is missing is a server at
+  each participant and a central index. Peer-to-peer here means that nobody has to
+  provide infrastructure of their own.
   </p>
 
-  <h3>5.2 The finding that cost the most</h3>
+  <h3>5.2 The high similarity floor</h3>
 
   <p>
     An accounting application matched a mycelium library at 0.81, although the two
-    share nothing in content. The doubt about that was justified. The embedding
-    model in use is <em>anisotropic</em>: it places all texts into a narrow cone
+    share nothing in content. The embedding model in use is <em>anisotropic</em>: it places all texts into a narrow cone
     instead of spreading them over the sphere. Any two German technical texts
     therefore already sit at around 0.82. The floor is thus <strong>above</strong>
     the threshold of 0.80 set at the time, and almost everything matched almost
@@ -675,8 +666,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     Subtracting the mean vector leaves only genuine relatedness, and every pair
     between the protocol node and the end nodes turns negative. The high raw value
     measured the model, not the topic. <strong>Reporting similarity scores from
-    such a model without this correction reports the cone.</strong> That is why the
-    values in section 6 carry this caveat.
+    such a model without this correction reports the cone.</strong>
   </p>
 
   <!-- 6. THE RUNNING NETWORK -->
@@ -722,14 +712,9 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     </tbody>
   </table>
 
-  <p>
-    <strong>Both entry counts are given because both are correct.</strong> 5,823 is
-    everything, 5,775 is what was made by hand, and the 48 in between are scheduled
-    runs. Naming only one of them would be either too high or too low, depending on
-    the choice.
-  </p>
+  
 
-  <h3>6.2 The measurement this report rests on</h3>
+  <h3>6.2 The measurement of 10 July 2026</h3>
 
   <p>
     On 10 July 2026 the full bidirectional search ran between two independent
@@ -746,16 +731,15 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </table>
 
   <p>
-    The point is not the speed. The point is that a question travels as a question
-    over the relay and a meaning-ranked answer comes back from the <em>current</em>
-    holdings of the other node. Neither participant holds an index of the other.
+    A question travels as a question over the relay, and a meaning-ranked answer
+    comes back from the <em>current</em> holdings of the other node. Neither
+    participant holds an index of the other.
   </p>
 
   <p style="border-left:3px solid #c93;padding-left:.8em">
     <strong>On the values 0.83 and 0.84.</strong> They are raw cosine values from an
     anisotropic model, and section 5.2 explains why such values have a high floor.
-    As a <em>ranking within one answer</em> they are usable. As an absolute measure
-    of relatedness they are not, and this text does not claim otherwise.
+    As a <em>ranking within one answer</em> they are usable. As an absolute measure of relatedness they do not serve.
   </p>
 
   <p>
@@ -771,10 +755,8 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
 
   <p style="border-left:3px solid #c93;padding-left:.8em">
     <strong>Revised on 2 September 2026.</strong> This said: "It is an unsolved
-    problem." The paragraph threw four things into one sentence, and two of them
-    have since been settled. The other two have not. They are now listed
-    separately, because a blanket "solved" here would be the most expensive
-    mistake this text could make.
+    problem." The paragraph threw four sub-problems into one sentence. Two of them
+    have since been settled, two have not.
   </p>
 
   <table>
@@ -791,9 +773,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     <strong>And one limit that surfaced in operation.</strong> An answer arrives
     reliably only while the answering node's tab is in the foreground and awake.
     Phones and tablets throttle background tabs. A repeat question against an aged
-    card ran into nothing until the node refreshed its card. Anyone wanting to use
-    this protocol for a service that answers unattended has to solve that. It is
-    open.
+    card ran into nothing until the node refreshed its card. For a service that answers unattended, this is an open point.
   </p>
 
   <h3>7.2 Evaluator Consistency</h3>
@@ -832,14 +812,11 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <p style="border-left:3px solid #c93;padding-left:.8em">
     <strong>Withdrawn on 2 September 2026.</strong> This said that the symmetry
     constraint was the central contribution and was not offered by existing
-    protocols. <strong>That was wrong.</strong> Reciprocal recommender systems
-    require the same symmetry and have done so for years; the evidence is in
-    section 2.1. The sentence is left standing here as a withdrawn claim rather
-    than quietly removed, so that anyone who read the May version can see the
-    change.
+    protocols. Reciprocal recommender systems have required the same
+    symmetry for years; the evidence is in section 2.1.
   </p>
   <p>
-    <strong>What this text presents instead is a field report.</strong> The
+    <strong>What remains is a field report.</strong> The
     building blocks are known: the transport is borrowed, the embedding is state
     of the art, the cryptography is standard, and the symmetry is a research field
     of its own. What is new is that they run together, have done for months, in
@@ -852,8 +829,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     That includes what broke. The high similarity floor from section 5.2 nearly
     led to a property of the model being reported as topical relatedness. The
     throttled background tab from section 7.1 still limits what the protocol is
-    good for. Both are in this text, because a report about an operation without
-    the faults is not a report but an advertisement.
+    good for. 
   </p>
   <p>
     The two-layer architecture demonstrates that the same protocol applies across
@@ -872,9 +848,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <h2>9. How this text came about</h2>
 
   <p>
-    This text was written with the help of a language model, and that is stated
-    here because a paper about steering AI systems must not leave the question
-    open.
+    This text was written with the help of a language model.
   </p>
 
   <p>
@@ -899,16 +873,14 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <p>
     <strong>What this explicitly was not.</strong> Not a spell check and not the
     rewording of a finished text. The content emerged in alternation: proposal,
-    objection, measurement, correction. Several statements from the May version
-    fell in the process, and they stand in the text as withdrawn rather than being
-    replaced.
+    objection, measurement, correction. Several statements from the May version fell in the process and stand in the
+    text as withdrawn.
   </p>
 
   <p>
     <strong>Where the evidence sits.</strong> The protocol repository from section 6
     holds the session records, the lessons drawn from mistakes, and the worksheets
-    on days worked. The history is public and dated. Anyone who does not believe
-    this text can look there; that is the purpose of giving the address.
+    on days worked. The history is public and dated.
   </p>
 
   <hr class="divider">
