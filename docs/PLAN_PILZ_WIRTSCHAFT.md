@@ -62,9 +62,14 @@ Nicht-bauen-Liste (§ 12). Was ersetzt wird: die Diagnose und die Reihenfolge.
 
 ## 2. Kassensturz — was das Konzept kostete, was schon dasteht
 
-Die `Kosten_Nutzen_Analyse_PWA_Plattform.pdf` (Mai 2026, im Repo
-`semantic-match-demo`) beziffert die Plattform auf **65.000–116.500 €** in
-26–36 Wochen. Posten für Posten gegen den Ist-Stand:
+Die `Kosten_Nutzen_Analyse_PWA_Plattform.pdf` (Mai 2026) beziffert die Plattform
+auf **65.000–116.500 €** in 26–36 Wochen.
+
+> ⚠ **Diese Quelle ist seit dem 2026-09-02 nicht mehr erreichbar.** Sie lag in
+> einem externen Depot, das nicht mehr existiert. Die Zahlen stehen weiter da,
+> weil sie damals aus ihr stammten — aber **sie sind nicht mehr nachprüfbar**.
+> Wer sie weiterverwendet, sagt das dazu oder ersetzt sie durch eine Quelle, die
+> jemand aufschlagen kann. Eine Zahl ohne prüfbare Herkunft ist eine Behauptung. Posten für Posten gegen den Ist-Stand:
 
 | Baustein laut Konzept | Preisschild im Papier | Ist-Stand 2026-08-09 |
 |---|---|---|
