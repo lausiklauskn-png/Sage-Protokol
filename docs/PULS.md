@@ -201,9 +201,46 @@ Vektor, aber nicht den Platz in der Liste).
 
 Gemessen nach allen Runden: **90 Proben, 90 grün, 0 rot.**
 
+### ✅ Gemerged am 2026-09-02, 19:42 UTC
+
+**PR #929, Squash auf `main` als `80276d4`.** Klaus hat die drei Adressen im
+Papier an seinem Tablet bestätigt und die Freigabe gegeben. Gegen `main` selbst
+nachgeprüft, nicht gegen die Zweig-Erwartung: beide Papers, der neue Wächter,
+§ 3.5, das Datum „September 2026 · Erstveröffentlichung" und Station 8 liegen
+dort. Rest-Unterschied Zweig gegen `main`: keiner. Proben auf dem `main`-Stand:
+**90 grün, 0 rot.**
+
+**Stundennachweis**, gemessen an den Commits: erster `ef81cd6` 15:30 UTC,
+letzter `e5a8dfc` 19:41 UTC, **Spanne 4 h 10 min**, 12 Commits (squash-gemergt).
+⚠ Das ist die Spanne des Ablegens, nicht der Aufwand: Pflichtlektüre,
+Literatursuchen und das Schreiben der neuen Abschnitte liegen davor und
+hinterlassen keine Spur. Und sie ist nicht Klaus' Arbeitszeit.
+
+### 🔴 PR #401 muss GESCHLOSSEN werden, nicht gemergt
+
+Beim Pflicht-Check vor dem Sitzungsbrief gefunden. **Der einzige offene PR**,
+Entwurf vom 2026-06-23, „Discovery-Expedition: Bildmaterial".
+
+| Gemessen | |
+|---|---|
+| `main` ist voraus | **51 Commits** |
+| `git diff main..zweig` | 562 Dateien, 9.276 Zugänge, **176.893 Abgänge** |
+| eigene Bilder in `main`? | **alle fünf liegen dort** |
+| byte-gleich? | **nein**, `main` hat neuere (17.08.) und größere Fassungen |
+
+Der Zweig trägt nichts, was `main` fehlt. Ein Merge würde rund
+**177.000 Zeilen zurückdrehen**, darunter die heutige Arbeit, und fünf Bilder
+durch zwei Monate ältere, kleinere ersetzen.
+
+> Das ist die Squash-Merge-Falle: `git log main..zweig` zeigt Commits, deren
+> Inhalt längst in `main` ist. Erst `git diff --stat` zeigt die Richtung.
+
+**Nicht von dieser Sitzung geschlossen** — das Schließen eines fremden PR ist
+Klaus' Entscheidung.
+
 ### Nächster sinnvoller Schritt
 
-Klaus sieht die zwei Papers im Browser an. Danach der DOI, nicht davor.
+Der Zenodo-DOI. Er hat auf den Sichttest gewartet, und der ist erfolgt.
 
 ---
 
