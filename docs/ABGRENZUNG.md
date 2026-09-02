@@ -1,11 +1,16 @@
 # Stand der Technik und Abgrenzung
 
-**Stand: 2026-08-26.** Eine Seite. Sie beantwortet die Frage, die eine
+**Stand: 2026-09-02.** Eine Seite. Sie beantwortet die Frage, die eine
 Gutachterin zuerst stellt: *gibt es das nicht schon?*
 
-> **Die ehrliche Antwort ist zweiteilig.** Die einzelnen Bausteine gibt es
-> alle, und SBKIM benutzt einige davon. Was es nicht gibt, ist die eine
-> Eigenschaft, um die es geht.
+> **Die ehrliche Antwort, Fassung 2026-09-02:** die einzelnen Bausteine gibt es
+> alle, und SBKIM benutzt einige davon. **Auch die Symmetrie gibt es schon.**
+> Das ist seit der Literatursuche in § 6 belegt. Was in den gefundenen Arbeiten
+> fehlt, ist keine einzelne Eigenschaft. Es ist der **laufende Betrieb**, in dem
+> alle drei zusammenkommen.
+>
+> Vorher stand hier: *„Was es nicht gibt, ist die eine Eigenschaft, um die es
+> geht."* Dieser Satz ist widerlegt und bleibt als widerlegt stehen.
 
 ---
 
@@ -57,6 +62,20 @@ seine wirklich neue Stelle mit begräbt.
 **Semantische Entdeckung, bevor kommuniziert wird, in beide Richtungen, ohne
 zentralen Index.**
 
+> ⚠ **Eingeschränkt am 2026-09-02, nachdem die Literatursuche aus § 6 gemacht
+> wurde.** Dieser Satz stand hier als *der Anspruch*. Er beschreibt weiterhin
+> richtig, was SBKIM tut. Aber **keiner seiner Bestandteile ist neu**, und die
+> Belege dafür stehen in § 6. Die **Symmetrie** ist der Kern der reziproken
+> Empfehlungssysteme. Die **indexfreie semantische Entdeckung** ist seit etwa
+> 2008 als semantische Überlagerungsnetze beschrieben. Die **signierte
+> Selbstbeschreibung** gibt es als Agent Cards.
+>
+> Was in den gefundenen Arbeiten nicht vorkommt, ist die **Verbindung aller
+> drei in einem laufenden Betrieb**. Genau darauf stellen die Papers seit dem
+> 2026-09-02 um: *die Bausteine sind bekannt; der Betrieb ist der Beitrag.*
+> Diese Seite behält den Satz, weil er die Lage der Verfahren richtig
+> beschreibt. Ein **Neuheits-Anspruch ist er nicht mehr**.
+
 Die vorhandenen Verfahren teilen sich in zwei Lager. Das eine kann **finden,
 aber nur einseitig und nur mit einem Betreiber in der Mitte**. Das andere kann
 **verbinden, aber erst, wenn man schon weiß, mit wem**. Zwischen beiden liegt
@@ -83,10 +102,36 @@ systematische Recherche mit Zitaten. Für einen Antrag reicht das, um die Frage
 *gibt es das nicht schon* zu beantworten. Für eine Veröffentlichung reicht es
 nicht.
 
-**Was dafür fehlt:** eine Suche in der Fachliteratur nach Arbeiten zu
+**Was dafür fehlte:** eine Suche in der Fachliteratur nach Arbeiten zu
 bidirektionalem semantischem Matching, und die Prüfung, ob eine davon dieselbe
-Symmetrie-Anforderung stellt. Das ist der Punkt, an dem ein methodischer
-Partner den größten Unterschied macht, und er steht offen.
+Symmetrie-Anforderung stellt.
+
+### ✅ Am 2026-09-02 gemacht, und sie ist gegen uns ausgegangen
+
+| Bestandteil | existiert als | seit |
+|---|---|---|
+| **bidirektional / symmetrisch** | reziproke Empfehlungssysteme (Partner- und Stellenvermittlung), eigenes Feld mit eigenen Metriken | Jahre |
+| **semantische Entdeckung ohne zentralen Index** | semantische Überlagerungsnetze | ~2008 |
+| **signierte Selbstbeschreibung** | A2A Agent Cards · Fähigkeits-Beschreibungen mit Verfallsdatum | 2026 |
+
+**Die Frage aus dem alten Absatz ist beantwortet: ja, es gibt Arbeiten mit
+derselben Symmetrie-Anforderung.** Reziproke Empfehlungssysteme verlangen
+ausdrücklich, dass **beide** Seiten zustimmen. Sie setzen dafür allerdings eine
+**Plattform** voraus, die beide kennt, und ein Kandidatenfeld, das feststeht.
+Semantische Überlagerungsnetze brauchen keine Plattform, kennen aber nur **eine**
+Richtung. Agent Cards nennen, was einer **kann**, und schweigen darüber, was er
+**sucht**.
+
+**Was daraus folgt, steht in den Papers und nicht hier:** der Neuheits-Anspruch
+ist zurückgenommen, die Vorarbeiten sind benannt, und der Beitrag heißt jetzt
+Feldbericht. Siehe `papers/sbkim-paper-de.html` § 2.1 und § 8.
+
+**Und die Grenzen dieser Suche, damit sie nicht mehr wiegt, als sie kann:**
+drei Suchen, keine systematische Übersicht. Geprüft wurde an Titeln und
+Zusammenfassungen, **nicht an den Volltexten**. `arxiv.org` und die
+Verlagsseiten sind aus der Arbeitsumgebung gesperrt. **Für eine Veröffentlichung
+reicht das immer noch nicht.** Der methodische Partner macht hier weiterhin den
+größten Unterschied; nur ist die Lage jetzt bekannt statt unbekannt.
 
 **Und eine Selbstbeschränkung:** ein Vergleich, der die eigene Sache gewinnen
 lässt, ist zuerst verdächtig. Die Tabelle oben nennt bei jedem Verfahren, was

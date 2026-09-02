@@ -35,6 +35,14 @@ body {
 }
 @media(max-width:860px) { .paper { padding:40px 28px; } }
 @media print {
+  h2 { break-before:auto; break-after:avoid; }
+  h3 { break-after:avoid; }
+  h2 + p, h3 + p { break-before:avoid; }
+  .protocol-box, .dim-grid, .dim-card, .abstract,
+  .layer-diagram, table, .footnotes { break-inside:avoid; }
+  tr { break-inside:avoid; }
+  p { orphans:3; widows:3; }
+
   body { background:#fff; }
   .paper { box-shadow:none; padding:40px; }
   .no-print { display:none; }
@@ -122,11 +130,11 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     KI-Matching in Menschen- und Agentennetzwerken
   </h1>
   <p class="paper-authors">Unabhängige Forschung · Offener Protokoll-Vorschlag</p>
-  <p class="paper-date">Mai 2026 · v0.1 (Vorab-Veröffentlichung)</p>
+  <p class="paper-date">Mai 2026 · Überarbeitet im September 2026 · v0.2 (Feldbericht)</p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol" target="_blank">Referenz-Implementierung →</a>
-    <a href="index.html">Live-Demo Layer 1 →</a>
-    <a href="sbkim-network.html">Live-Demo Layer 2 →</a>
+    <a href="../../sbkim-demo/demo.html">Live-Demo Layer 1 →</a>
+    <a href="../../sbkim-demo/sbkim-network.html">Live-Demo Layer 2 →</a>
   </div>
 
   <hr class="divider">
@@ -147,6 +155,18 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
       behandeltes Problem im aktuellen Agenten-Ökosystem adressiert — semantische
       Entdeckung vor der Kommunikation — und schlagen es als offenen Kandidaten-Standard
       vor. Eine funktionsfähige Referenz-Implementierung ist öffentlich verfügbar.
+    </p>
+    <p style="margin-top:1em">
+      <strong>Zur Fassung vom September 2026.</strong> Die erste Fassung vom Mai 2026
+      war ein Vorschlag. Seitdem läuft das Protokoll. Diese Überarbeitung tauscht
+      Annahmen gegen Messwerte, benennt die Vorarbeiten, aus denen die Bausteine
+      stammen, und nimmt den Neuheits-Anspruch zurück, den die Bausteine nicht
+      tragen. <em class="key">Die Bausteine sind bekannt; der Betrieb ist der
+      Beitrag.</em> Was dieser Text heute vorlegt, ist ein Feldbericht: über zwanzig
+      ausgelieferte Web-Anwendungen, die einander an Bedeutung erkennen, mit
+      gemessenen Antwortzeiten, einer öffentlichen Historie und einer
+      aufgeschriebenen Fehlergeschichte. Die Abschnitte 2, 6, 7 und 8 sind dafür
+      überarbeitet, die Abschnitte 5 und 9 sind neu.
     </p>
   </div>
 
@@ -221,18 +241,90 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     menschlichen Marktplätzen wieder ein.
   </p>
 
+  <h3>2.1 Die Vorarbeiten, aus denen die Bausteine stammen</h3>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Ergänzt am 2. September 2026.</strong> Die erste Fassung dieses
+    Abschnitts verglich SBKIM mit Vektordatenbanken, Agenten-Frameworks und MCP
+    und kam zu dem Schluss, jeder Bestandteil sei neu. Eine Literatursuche im
+    September 2026 hat das widerlegt. <strong>Jeder einzelne Bestandteil ist
+    bekannte Kunst</strong>, und die drei folgenden Felder gehören genannt, bevor
+    dieser Text irgendetwas beansprucht.
+  </p>
+
+  <p>
+    <strong>Reziproke Empfehlungssysteme</strong> (<em>reciprocal recommender
+    systems</em>)<sup>[6]</sup> sind ein eigenes Forschungsfeld mit eigenen
+    Metriken. Sie entstanden für Partnervermittlung und Stellenvermittlung, und
+    ihr Kern ist genau die Symmetrie, die Abschnitt 3.1 als Grundprinzip
+    beschreibt: eine Empfehlung gilt erst dann als gelungen, wenn <em>beide</em>
+    Seiten zustimmen. Die Symmetrie-Anforderung ist damit <strong>nicht neu.</strong>
+    Was diese Systeme voraussetzen, ist eine Plattform, die beide Seiten kennt,
+    und ein Kandidatenfeld, das schon feststeht.
+  </p>
+
+  <p>
+    <strong>Semantische Überlagerungsnetze</strong> (<em>semantic overlay
+    networks</em>)<sup>[7]</sup> lösen die andere Hälfte, und das seit etwa 2008.
+    Knoten ordnen sich nach inhaltlicher Nähe, und eine Anfrage findet ihren Weg
+    ohne zentrales Verzeichnis. Semantische Entdeckung ohne Index ist damit
+    ebenfalls <strong>nicht neu.</strong> Diese Netze sind aber einseitig: eine
+    Anfrage sucht Inhalte, und die Inhalte suchen nichts.
+  </p>
+
+  <p>
+    <strong>Signierte Selbstbeschreibungen von Agenten</strong> gibt es seit 2026
+    als <em>Agent Cards</em> im A2A-Protokoll<sup>[8]</sup>. Eine Agent Card nennt
+    Fähigkeiten, Fertigkeiten und die Bedingungen, unter denen ein Agent
+    arbeitet. Sie nennt <strong>nicht</strong>, was der Agent von anderen sucht.
+    Eine Arbeit vom März 2026 geht weiter und beschreibt signierte, kurzlebige
+    Fähigkeits-Beschreibungen mit Verfallsdatum, die nach semantischer Ähnlichkeit
+    weitergereicht werden<sup>[9]</sup>. Das ist der Spore aus Abschnitt 3
+    konzeptionell sehr nah.
+  </p>
+
+  <p>
+    Damit bleibt von der ursprünglichen Neuheits-Behauptung nichts übrig, und das
+    steht hier, weil ein Gutachter es in zehn Minuten selbst findet. Die Tabelle
+    unten ist entsprechend umgebaut. Sie führt die Vorarbeiten mit auf und
+    behauptet in keiner Spalte mehr, SBKIM sei allein.
+  </p>
+
   <table>
     <thead>
-      <tr><th>Ansatz</th><th>Bidirektional</th><th>Natürliche Sprache</th><th>Agenten-nativ</th><th>Dezentral</th></tr>
+      <tr><th>Ansatz</th><th>Beide Seiten nennen Können <em>und</em> Bedarf</th><th>Freier Text</th><th>Ohne zentralen Index</th><th>Ausgeliefert und gemessen</th></tr>
     </thead>
     <tbody>
       <tr><td>Vektorsuche</td><td>✗</td><td>Teilweise</td><td>✗</td><td>✓</td></tr>
       <tr><td>Agenten-Frameworks</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
       <tr><td>MCP</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
-      <tr><td>Agenten-Marktplätze</td><td>✗</td><td>Teilweise</td><td>✓</td><td>✗</td></tr>
+      <tr><td>Agenten-Marktplätze</td><td>✗</td><td>Teilweise</td><td>✗</td><td>✓</td></tr>
+      <tr><td>Reziproke Empfehlungssysteme<sup>[6]</sup></td><td><strong>✓</strong></td><td>Teilweise</td><td>✗</td><td>✓</td></tr>
+      <tr><td>Semantische Überlagerungsnetze<sup>[7]</sup></td><td>✗</td><td>✓</td><td><strong>✓</strong></td><td>Prototypen</td></tr>
+      <tr><td>Agent Cards / Fähigkeits-Beschreibungen<sup>[8][9]</sup></td><td>✗</td><td>✓</td><td><strong>✓</strong></td><td>teils Entwurf</td></tr>
       <tr><td><strong>SBKIM (diese Arbeit)</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td></tr>
     </tbody>
   </table>
+
+  <h3>2.2 Was nach dieser Prüfung übrig bleibt</h3>
+
+  <p>
+    Die Spalten der Tabelle sind einzeln alle besetzt. Keine der gefundenen
+    Arbeiten besetzt sie <em>zusammen</em>. Reziproke Empfehlungssysteme haben die
+    Symmetrie, brauchen dafür aber einen Betreiber in der Mitte. Semantische
+    Überlagerungsnetze kommen ohne Betreiber aus, kennen aber nur eine Richtung.
+    Agent Cards sind Anzeigen: sie sagen, was einer kann, und schweigen darüber,
+    was er sucht.
+  </p>
+
+  <p>
+    <strong>Das ist eine Beobachtung aus drei Suchen, keine systematische
+    Übersicht.</strong> Sie kann fallen, sobald jemand eine Arbeit vorlegt, die
+    beides zugleich tut. Deshalb stützt sich dieser Text nicht darauf. Der
+    Beitrag, den er beansprucht, steht in Abschnitt 6, und er hängt nicht an
+    dieser Lücke: <em class="key">die Bausteine sind bekannt; der Betrieb ist der
+    Beitrag.</em>
+  </p>
 
   <h2>3. Das SBKIM-Protokoll</h2>
 
@@ -391,7 +483,91 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     SBKIM schlägt eine dynamische, semantisch begründete Alternative vor.
   </p>
 
-  <h2>5. Referenz-Implementierung</h2>
+  <h2>5. Wie das entstanden ist</h2>
+
+  <p>
+    Dieser Abschnitt ist neu. Er steht hier, weil die erste Fassung mitten im
+    Thema anfing und nie sagte, woher die Sache kommt. Wer den Weg kennt, kann
+    die Entscheidungen prüfen. Er kann vor allem sehen, welche davon aus einer
+    Beobachtung kamen und welche aus der Literatur.
+  </p>
+
+  <p>
+    <strong>Am Anfang stand eine Plattform, und die wurde verworfen.</strong> Die
+    erste Form war ein Server mit einer Suche und einem Index; alle anderen wären
+    Klienten gewesen. Beim Durchdenken war das wieder ein Türsteher zwischen
+    kleinen Webseiten und ihren Lesern. Kleine Seiten haben kein
+    Plattform-Problem. Sie haben ein Findbarkeits-Problem, und sie wollen dafür
+    nicht ihre Identität abgeben. Aus „Sage-Plattform" wurde damit das
+    <em>Sage-Protokol</em>, eine Spielregel zwischen Gleichberechtigten.
+  </p>
+
+  <p>
+    <strong>Die Symmetrie kam aus einer Beobachtung, nicht aus einem Papier.</strong>
+    Anfangs war das Netz eine Einbahn: Ein Sucher schickt eine Frage, ein Anbieter
+    prüft, ob er antworten kann. Das rechnete nur eine Richtung. Dann fiel auf,
+    dass jede kleine Seite beides ist. Wer Cocktails anbietet, sucht vielleicht
+    Glaswaren. Wer Kochrezepte zeigt, sucht passende Getränke. Daraus wurden die
+    zwei Felder <code>capabilities</code> und <code>needs</code>, und aus dem
+    einseitigen Vergleich wurde ein Spiegel.
+  </p>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Das ist unabhängig gefunden, nicht zuerst gefunden.</strong> Die
+    reziproken Empfehlungssysteme aus Abschnitt 2.1 arbeiten seit Jahren mit
+    genau dieser Symmetrie. Wer sie kannte, hätte sich den Umweg gespart. Der
+    Vorgang gehört trotzdem in den Text, weil er die ehrliche Antwort auf die
+    Frage ist, wie eine Idee ohne Literaturanschluss entsteht.
+  </p>
+
+  <p>
+    <strong>Auch der Name ist zweimal gewachsen.</strong> Zuerst stand SBKIM für
+    <em>Semantisch-Empfangendes Bidirektionales KI-Matching</em>, ein technisches
+    Versprechen. Heute wird es meist als <em>Semantisch-Biologisch Koordiniertes
+    Inter-Knoten-Mycel</em> gelesen, dieselbe Sache in einer biologischen
+    Metapher. Zwei Buchstaben tragen durch: das <strong>S</strong> für Semantik
+    und das <strong>I</strong> für die Knoten ohne Zentrum.
+  </p>
+
+  <h3>5.1 Zwei Genauigkeiten, die dieser Text schuldig ist</h3>
+
+  <p>
+    <strong>Es sind keine KIs, die einander erkennen.</strong> Es sind Web-
+    Anwendungen und Seiten. Das Sprachmodell steckt im Einbetten und im
+    Sortieren, nicht in den Knoten. Wer die Überschrift „KI-Matching" anders
+    liest, liest mehr hinein, als dasteht.
+  </p>
+
+  <p>
+    <strong>„Server-los" gehört in Anführungszeichen.</strong> Ein Relais gibt es
+    sehr wohl, und der Betreiber dieses Netzes stellt selbst eines. Was fehlt,
+    ist ein Server beim Einzelnen und ein zentraler Index. Peer-to-peer heißt
+    hier: niemand muss eigene Infrastruktur stellen. Es heißt nicht, dass gar
+    keine da ist.
+  </p>
+
+  <h3>5.2 Der Befund, der am meisten gekostet hat</h3>
+
+  <p>
+    Eine Buchhaltungs-Anwendung passte zu 0,81 auf eine Mycel-Bibliothek, obwohl
+    beide inhaltlich nichts teilen. Der Zweifel daran war berechtigt. Das
+    verwendete Einbettungs-Modell ist <em>anisotrop</em>: es legt alle Texte in
+    einen engen Kegel, statt sie über die Kugel zu verteilen. Zwei beliebige
+    deutsche Fachtexte liegen dadurch schon bei etwa 0,82. Der Boden liegt also
+    <strong>über</strong> der damals gesetzten Schwelle von 0,80, und fast alles
+    passte zu fast allem.
+  </p>
+
+  <p>
+    Zieht man den Mittelwert-Vektor ab, bleiben nur echte Verwandtschaften übrig,
+    und alle Paare zwischen dem Protokoll-Knoten und den Endknoten werden
+    negativ. Der hohe Rohwert maß das Modell, nicht das Thema. <strong>Wer
+    Ähnlichkeitswerte aus einem solchen Modell ohne diese Korrektur berichtet,
+    berichtet den Kegel.</strong> Das ist der Grund, warum die Werte in
+    Abschnitt 6 mit dieser Einschränkung dastehen.
+  </p>
+
+  <h2>6. Das laufende Netz</h2>
 
   <p>
     Die Referenz-Implementierung liegt im Protokoll-Depot:
@@ -411,6 +587,66 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     existiert nicht mehr; die Angabe ging ins Leere. Der Verweis zeigt jetzt auf
     das Protokoll-Depot, in dem die Module gepflegt werden.
   </p>
+
+  <h3>6.1 Was daraus geworden ist</h3>
+
+  <p>
+    Die Beschreibung „zwei HTML-Anwendungen" traf den Mai 2026. Sie trifft den
+    heutigen Stand um Größenordnungen nicht mehr. Stand 24. August 2026, ausgezählt
+    aus den Zeitstempeln der Quelltext-Verwaltung:
+  </p>
+
+  <table>
+    <thead><tr><th>Was</th><th>Stand</th><th>Nachprüfbar an</th></tr></thead>
+    <tbody>
+      <tr><td>Quelltext-Depots</td><td>33</td><td>Depot-Übersicht</td></tr>
+      <tr><td>davon ausgelieferte Web-Anwendungen</td><td>über zwanzig</td><td>je eine eigene Adresse</td></tr>
+      <tr><td>Module</td><td>00 bis 23</td><td><code>src/modules/</code>, byte-genau kopiert</td></tr>
+      <tr><td>Endknoten mit eigener Identität, Spore und Postfach</td><td>mehrere</td><td>je <code>sbkim/spore.json</code></td></tr>
+      <tr><td>Gespeicherte Arbeitsstände</td><td>5.823</td><td>Zeitstempel, öffentlich</td></tr>
+      <tr><td>davon von Hand</td><td>5.775</td><td>Differenz sind 48 zeitgesteuerte Läufe</td></tr>
+      <tr><td>Tage mit Arbeit</td><td>128</td><td>10.03. bis 24.08.2026</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Die beiden Eintrags-Zahlen stehen beide da, weil beide stimmen.</strong>
+    5.823 ist alles, 5.775 ist das von Hand Gemachte, und die 48 dazwischen sind
+    zeitgesteuerte Läufe. Eine der beiden allein zu nennen wäre je nach Wahl zu
+    hoch oder zu niedrig.
+  </p>
+
+  <h3>6.2 Die Messung, auf der dieser Bericht steht</h3>
+
+  <p>
+    Am 10. Juli 2026 lief die vollständige bidirektionale Suche zwischen zwei
+    unabhängigen Knoten. Zwei echte Browser, zwei Schlüsselpaare, ein Relais
+    dazwischen, das keine Inhalte kennt und keine Rechte hat.
+  </p>
+
+  <table>
+    <thead><tr><th>Richtung</th><th>Frage</th><th>Antwort</th><th>Dauer</th></tr></thead>
+    <tbody>
+      <tr><td>Protokoll-Knoten → Getränke-Knoten</td><td>„Cocktails mit anderen Waldfrüchten"</td><td>5 nach Bedeutung sortierte Treffer aus dessen eigenem Bestand (0,83 bis 0,84)</td><td><strong>39 s</strong></td></tr>
+      <tr><td>Getränke-Knoten → Protokoll-Knoten</td><td>„wer weiß was über Pilze"</td><td>4 Module aus dessen eigener Bibliothek</td><td><strong>0,5 s</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Der Punkt ist nicht die Geschwindigkeit. Der Punkt ist, dass eine Frage als
+    Frage über das Relais reist und eine nach Bedeutung sortierte Antwort aus dem
+    <em>aktuellen</em> Bestand des anderen Knotens zurückkommt. Kein Beteiligter
+    hat einen Index des anderen.
+  </p>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Zu den Zahlen 0,83 und 0,84.</strong> Sie sind rohe Kosinus-Werte aus
+    einem anisotropen Modell, und Abschnitt 5.2 erklärt, warum solche Werte einen
+    hohen Boden haben. Als <em>Rangfolge innerhalb einer Antwort</em> sind sie
+    brauchbar. Als absolutes Maß für Verwandtschaft sind sie es nicht, und dieser
+    Text behauptet das auch nicht.
+  </p>
+
   <p>
     Das in der Implementierung verwendete Referenz-Prompt-Template ist bewusst minimal
     gehalten. Implementierende werden ermutigt, es zu erweitern und anzupassen,
@@ -418,19 +654,38 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     beibehalten.
   </p>
 
-  <h2>6. Offene Probleme</h2>
+  <h2>7. Offene Probleme</h2>
 
-  <h3>6.1 Semantische Entdeckung ohne Sitzungscodes</h3>
-  <p>
-    Die aktuelle Implementierung erfordert einen gemeinsamen Sitzungsbezeichner.
-    Die langfristige Vision ist passive semantische Entdeckung: Eine Partei beschreibt
-    sich einmal; das Protokoll bewertet kontinuierlich Kompatibilität mit anderen
-    sich beschreibenden Parteien, sobald sie im Netzwerk erscheinen — ohne explizite
-    Paarung. Dies erfordert einen verteilten Index semantischer Einbettungen mit
-    datenschutzerhaltender Abfrage. Es ist ein ungelöstes Problem.
+  <h3>7.1 Semantische Entdeckung ohne Sitzungscodes</h3>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Überarbeitet am 2. September 2026.</strong> Hier stand: „Es ist ein
+    ungelöstes Problem." Der Absatz warf vier Dinge in einen Satz, und seitdem
+    sind zwei davon erledigt. Die anderen zwei sind es nicht. Sie stehen jetzt
+    einzeln da, weil ein pauschales „gelöst" an dieser Stelle der teuerste Fehler
+    wäre, den dieser Text machen könnte.
   </p>
 
-  <h3>6.2 Evaluator-Konsistenz</h3>
+  <table>
+    <thead><tr><th>Teilproblem</th><th>Stand</th></tr></thead>
+    <tbody>
+      <tr><td>Gemeinsamer Sitzungsbezeichner nötig</td><td><strong>entfällt.</strong> Die Knoten finden einander über das Relais und ihre signierten Karten</td></tr>
+      <tr><td>Bidirektionale Bedeutungs-Suche zwischen unabhängigen Knoten</td><td><strong>belegt</strong> am 10.07.2026, siehe Abschnitt 6.2</td></tr>
+      <tr><td>Verteilter Index mit datenschutzerhaltender Abfrage</td><td><strong>weiterhin offen.</strong> Das Relais ist ein gemeinsames Medium, und die Fragen laufen im Klartext darüber</td></tr>
+      <tr><td>Wirklich passive Entdeckung, also einmal beschreiben und danach fortlaufend bewertet werden</td><td><strong>weiterhin offen.</strong> Es fragt immer noch jemand aktiv an</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Und eine Grenze, die im Betrieb sichtbar wurde.</strong> Eine Antwort
+    kommt zuverlässig nur, wenn der Tab des antwortenden Knotens im Vordergrund
+    und wach ist. Handys und Tablets drosseln Tabs im Hintergrund. Eine
+    Wiederhol-Frage auf eine gealterte Karte lief ins Leere, bis der Knoten seine
+    Karte erneuerte. Wer dieses Protokoll für einen Dienst einsetzen will, der
+    ohne Zutun antwortet, muss diese Stelle lösen. Sie ist offen.
+  </p>
+
+  <h3>7.2 Evaluator-Konsistenz</h3>
   <p>
     LLM-basierte Evaluatoren sind nicht-deterministisch. Zwei Bewertungen desselben
     Paares können unterschiedliche Scores liefern. Eine produktive SBKIM-Implementierung
@@ -438,7 +693,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     oder deterministische Scoring-Heuristiken verwenden.
   </p>
 
-  <h3>6.3 Adversarielle Eingaben</h3>
+  <h3>7.3 Adversarielle Eingaben</h3>
   <p>
     Im Gegensatz zu Keyword-Systemen ist SBKIM resistent gegenüber SEO-artiger
     Manipulation — das Auffüllen einer Selbstbeschreibung mit Keywords verbessert
@@ -448,7 +703,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     Produktivumgebungen.
   </p>
 
-  <h3>6.4 Standard für Agenten-Selbstbeschreibung</h3>
+  <h3>7.4 Standard für Agenten-Selbstbeschreibung</h3>
   <p>
     Damit Layer 2 skaliert, benötigen Agenten ein Standardformat für Selbstbeschreibung.
     Wir schlagen vor, dass Agentensysteme einen <code>/.well-known/sbkim.json</code>
@@ -456,14 +711,39 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <code>robots.txt</code> oder OpenAPI-Schemata. Dies ist noch nicht standardisiert.
   </p>
 
-  <h2>7. Schlussfolgerung</h2>
+  <h2>8. Schlussfolgerung</h2>
 
   <p>
     SBKIM ist ein minimales, offenes Protokoll zur semantischen bidirektionalen
     Kompatibilitätsbewertung zwischen zwei natürlichsprachlich beschreibenden Parteien.
-    Sein zentraler Beitrag ist die Symmetrie-Anforderung — beide Parteien beschreiben
-    sowohl Fähigkeiten als auch Bedarf — was echtes bidirektionales Matching ermöglicht,
-    das bestehende Retrieval- und Agenten-Kommunikationsprotokolle nicht bieten.
+    Es verlangt von beiden Seiten, Fähigkeiten und Bedarf zu nennen.
+  </p>
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Zurückgenommen am 2. September 2026.</strong> Hier stand, die
+    Symmetrie-Anforderung sei der zentrale Beitrag und werde von bestehenden
+    Protokollen nicht geboten. <strong>Das war falsch.</strong> Reziproke
+    Empfehlungssysteme verlangen dieselbe Symmetrie und tun es seit Jahren; die
+    Belege stehen in Abschnitt 2.1. Der Satz bleibt hier als gestrichener Anspruch
+    stehen, statt still zu verschwinden, damit jemand, der die Mai-Fassung gelesen
+    hat, die Änderung sieht.
+  </p>
+  <p>
+    <strong>Was dieser Text stattdessen vorlegt, ist ein Feldbericht.</strong> Die
+    Bausteine sind bekannt: der Transport ist geliehen, die Einbettung ist Stand
+    der Technik, die Kryptographie ist Standard, und die Symmetrie ist ein
+    eigenes Forschungsfeld. Neu ist, dass sie zusammen laufen, seit Monaten, in
+    über zwanzig ausgelieferten Anwendungen, die niemand betreibt außer ihren
+    Nutzern. Die gefundenen Vorarbeiten sind Architekturen, Entwürfe und
+    Prototypen. <em class="key">Die Bausteine sind bekannt; der Betrieb ist der
+    Beitrag.</em>
+  </p>
+  <p>
+    Dazu gehört, was dabei kaputtging. Der hohe Ähnlichkeits-Boden aus
+    Abschnitt 5.2 hätte fast dazu geführt, eine Modell-Eigenschaft als
+    inhaltliche Verwandtschaft zu berichten. Der gedrosselte Hintergrund-Tab aus
+    Abschnitt 7.1 begrenzt bis heute, wofür das Protokoll taugt. Beides steht in
+    diesem Text, weil ein Bericht über einen Betrieb ohne die Störungen kein
+    Bericht ist, sondern eine Werbung.
   </p>
   <p>
     Die Zwei-Ebenen-Architektur zeigt, dass dasselbe Protokoll über Ebenen hinweg
@@ -480,6 +760,50 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     gemeinfrei (Public Domain) freigegeben.
   </p>
 
+  <h2>9. Zur Entstehung dieses Textes</h2>
+
+  <p>
+    Dieser Text ist mit Hilfe eines Sprachmodells entstanden, und das steht hier,
+    weil ein Papier über die Lenkung von KI-Systemen die Frage nicht offenlassen
+    darf.
+  </p>
+
+  <p>
+    <strong>Die redaktionelle Verantwortung liegt bei einer Person</strong>, dem
+    Betreiber des beschriebenen Netzes. Er hat die Fragestellung gesetzt, die
+    Belege geliefert und jede Fassung gegengelesen. Die Wendepunkte dieses Textes
+    kamen von ihm: der Auftrag, die Neuheits-Behauptung gegen die Literatur zu
+    prüfen, statt sie stehen zu lassen; die Anweisung, den toten Verweis in
+    Abschnitt 6 im Browser nachzusehen, statt ihn zu vermuten; und die Vorgabe,
+    lieber als Feldbericht aufzutreten als mit einem Anspruch, der bei der ersten
+    Rückfrage fällt.
+  </p>
+
+  <p>
+    <strong>Worin die Prüfung bestand.</strong> Die Zahlen in Abschnitt 6.1
+    stammen aus den Zeitstempeln der Quelltext-Verwaltung und sind dort
+    nachzurechnen. Die Messwerte in Abschnitt 6.2 stammen aus einem Lauf an
+    echten Geräten, mit Datum. Die Vorarbeiten in Abschnitt 2.1 wurden gesucht,
+    nachdem der erste Entwurf behauptet hatte, es gebe keine; die Behauptung fiel
+    dabei. Wo eine Angabe nicht nachzuprüfen war, steht sie als Beobachtung da
+    oder gar nicht.
+  </p>
+
+  <p>
+    <strong>Was das ausdrücklich nicht war.</strong> Keine Rechtschreibprüfung
+    und kein Umformulieren eines fertigen Textes. Der Inhalt ist im Wechsel
+    entstanden: Vorschlag, Einwand, Messung, Berichtigung. Mehrere Aussagen der
+    Mai-Fassung sind dabei gefallen, und sie stehen als gestrichen im Text, statt
+    ersetzt zu werden.
+  </p>
+
+  <p>
+    <strong>Wo die Belege liegen.</strong> Das Protokoll-Depot aus Abschnitt 6
+    trägt die Sitzungsprotokolle, die Lehren aus Fehlern und die Prüfblätter zu
+    den Arbeitstagen. Die Historie ist öffentlich und mit Datum versehen. Wer
+    diesem Text nicht glaubt, kann dort nachsehen; das ist der Zweck der Angabe.
+  </p>
+
   <hr class="divider">
 
   <div class="footnotes">
@@ -489,10 +813,15 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <p>[3] Anthropic. „Model Context Protocol." modelcontextprotocol.io, 2024.</p>
     <p>[4] Berners-Lee, T. „Information Management: A Proposal." CERN, 1989.</p>
     <p>[5] Richards, M. et al. „AgentProtocol: A common interface for AI agents." agentprotocol.ai, 2023.</p>
+    <p>[6] Pizzato, L. et al. „RECON: A reciprocal recommender for online dating." RecSys, 2010. — Übersichten zum Feld: Palomares, I. et al. „Reciprocal Recommender Systems: Analysis of state-of-art literature, challenges and opportunities." Information Fusion, 2021.</p>
+    <p>[7] Crespo, A. und Garcia-Molina, H. „Semantic Overlay Networks for P2P Systems." Springer LNCS, 2004. — Fortführung: „A Semantic Peer-to-Peer Overlay for Web Services Discovery." Springer, ca. 2008.</p>
+    <p>[8] Google. „Agent2Agent (A2A) Protocol — Agent Card." a2a-protocol.org, v1.0, 2026.</p>
+    <p>[9] „Agentic Peer-to-Peer Networks: From Content Distribution to Capability and Action Sharing." arXiv:2603.03753, März 2026.</p>
+    <p style="font-size:.9em;color:#666">Die Angaben [6] bis [9] wurden über Websuche ermittelt und anhand von Titeln und Zusammenfassungen geprüft, nicht an den Volltexten. Für eine Einreichung ist eine richtige Literaturarbeit nachzuholen.</p>
     <br>
     <p><strong>Kontakt &amp; Ressourcen</strong><br>
     Referenz-Implementierung: github.com/lausiklauskn-png/Sage-Protokol<br>
-    Protokoll-Version: SBKIM-0.1 · Mai 2026 · Gemeinfrei (Public Domain)</p>
+    Protokoll-Version: SBKIM-0.1 · Text-Fassung v0.2, überarbeitet am 2. September 2026 · Gemeinfrei (Public Domain)</p>
   </div>
 
 </div>

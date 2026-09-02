@@ -11,7 +11,15 @@ räumen die Muster weg. Klaus' Einwand, der das ausgelöst hat: „logisch, aber
 nicht menschlich nachvollziehbar — wo fängt der Satz an, worauf bezieht sich
 das?"
 
-**Ziel:** Ein Fremder liest den Text und denkt: das hat ein Mensch geschrieben.
+**Ziel:** Ein Fremder liest den Text und **versteht ihn beim ersten Mal, ohne
+zu stocken.**
+
+> **Präzisiert am 2026-09-02.** Vorher stand hier: „denkt: das hat ein Mensch
+> geschrieben." Das ist das falsche Maß — es lädt dazu ein, Fehler einzubauen,
+> damit ein Text menschlich *wirkt*. Worauf es ankommt, ist, ob er ankommt.
+> Ein Text, den man beim ersten Mal versteht, klingt ohnehin nach Mensch; der
+> Umkehrschluss gilt nicht. **Die acht Durchgänge bleiben unverändert** — sie
+> dienten schon immer diesem Ziel.
 
 ## Die acht Durchgänge
 

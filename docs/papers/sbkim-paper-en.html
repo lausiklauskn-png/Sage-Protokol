@@ -39,6 +39,14 @@ body {
   .paper { padding:40px 28px; }
 }
 @media print {
+  h2 { break-before:auto; break-after:avoid; }
+  h3 { break-after:avoid; }
+  h2 + p, h3 + p { break-before:avoid; }
+  .protocol-box, .dim-grid, .dim-card, .abstract,
+  .layer-diagram, table, .footnotes { break-inside:avoid; }
+  tr { break-inside:avoid; }
+  p { orphans:3; widows:3; }
+
   body { background:#fff; }
   .paper { box-shadow:none; padding:40px; }
   .no-print { display:none; }
@@ -257,11 +265,11 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     Matching in Human and Agent Networks
   </h1>
   <p class="paper-authors">Independent Research · Open Protocol Proposal</p>
-  <p class="paper-date">May 2026 · v0.1 (Pre-print)</p>
+  <p class="paper-date">May 2026 · Revised September 2026 · v0.2 (field report)</p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol" target="_blank">Reference Implementation →</a>
-    <a href="index.html">Live Demo Layer 1 →</a>
-    <a href="sbkim-network.html">Live Demo Layer 2 →</a>
+    <a href="../../sbkim-demo/demo.html">Live Demo Layer 1 →</a>
+    <a href="../../sbkim-demo/sbkim-network.html">Live Demo Layer 2 →</a>
   </div>
 
   <hr class="divider">
@@ -282,6 +290,17 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
       underspecified problem in the current agent ecosystem — semantic discovery
       before communication — and propose it as a candidate open standard.
       A working reference implementation is publicly available.
+    </p>
+    <p style="margin-top:1em">
+      <strong>On the September 2026 revision.</strong> The first version, from May
+      2026, was a proposal. Since then the protocol has been running. This revision
+      trades assumptions for measurements, names the prior work the building blocks
+      come from, and withdraws the novelty claim those building blocks do not
+      support. <em class="key">The building blocks are known; the operation is the
+      contribution.</em> What this text now presents is a field report: more than
+      twenty deployed web applications that recognise each other by meaning, with
+      measured response times, a public history and a written record of what broke.
+      Sections 2, 6, 7 and 8 have been revised; sections 5 and 9 are new.
     </p>
   </div>
 
@@ -350,18 +369,86 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     and the same keyword-matching failure modes as human marketplaces.
   </p>
 
+  <h3>2.1 The prior work the building blocks come from</h3>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Added on 2 September 2026.</strong> The first version of this section
+    compared SBKIM against vector databases, agent frameworks and MCP, and
+    concluded that every component was new. A literature search in September 2026
+    refuted that. <strong>Every single component is prior art</strong>, and the
+    three fields below belong in this text before it claims anything.
+  </p>
+
+  <p>
+    <strong>Reciprocal recommender systems</strong><sup>[6]</sup> are a research
+    field of their own, with their own metrics. They grew out of online dating and
+    job matching, and their core is exactly the symmetry that section 3.1 presents
+    as the core principle: a recommendation counts as successful only when
+    <em>both</em> sides agree. The symmetry constraint is therefore
+    <strong>not new.</strong> What these systems require is a platform that knows
+    both sides, and a candidate set that is already fixed.
+  </p>
+
+  <p>
+    <strong>Semantic overlay networks</strong><sup>[7]</sup> solve the other half,
+    and have done so since around 2008. Nodes arrange themselves by topical
+    proximity, and a query finds its way without a central directory. Semantic
+    discovery without an index is therefore <strong>not new</strong> either. Those
+    networks are one-sided, though: a query looks for content, and the content
+    looks for nothing.
+  </p>
+
+  <p>
+    <strong>Signed agent self-descriptions</strong> have existed since 2026 as
+    <em>Agent Cards</em> in the A2A protocol<sup>[8]</sup>. An Agent Card states
+    capabilities, skills and the conditions an agent operates under. It does
+    <strong>not</strong> state what the agent is looking for from others. A paper
+    from March 2026 goes further and describes signed, short-lived capability
+    descriptors with a time to live, routed by semantic similarity<sup>[9]</sup>.
+    That is conceptually very close to the spore in section 3.
+  </p>
+
+  <p>
+    Nothing of the original novelty claim survives this, and it is stated here
+    because a reviewer would find it in ten minutes. The table below is rebuilt
+    accordingly. It lists the prior work and no longer claims that SBKIM stands
+    alone in any column.
+  </p>
+
   <table>
     <thead>
-      <tr><th>Approach</th><th>Bidirectional</th><th>Natural Language</th><th>Agent-native</th><th>Decentralized</th></tr>
+      <tr><th>Approach</th><th>Both sides state capability <em>and</em> need</th><th>Free text</th><th>No central index</th><th>Deployed and measured</th></tr>
     </thead>
     <tbody>
       <tr><td>Vector Search</td><td>✗</td><td>Partial</td><td>✗</td><td>✓</td></tr>
       <tr><td>Agent Frameworks</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
       <tr><td>MCP</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
-      <tr><td>Agent Marketplaces</td><td>✗</td><td>Partial</td><td>✓</td><td>✗</td></tr>
+      <tr><td>Agent Marketplaces</td><td>✗</td><td>Partial</td><td>✗</td><td>✓</td></tr>
+      <tr><td>Reciprocal recommender systems<sup>[6]</sup></td><td><strong>✓</strong></td><td>Partial</td><td>✗</td><td>✓</td></tr>
+      <tr><td>Semantic overlay networks<sup>[7]</sup></td><td>✗</td><td>✓</td><td><strong>✓</strong></td><td>prototypes</td></tr>
+      <tr><td>Agent Cards / capability descriptors<sup>[8][9]</sup></td><td>✗</td><td>✓</td><td><strong>✓</strong></td><td>partly draft</td></tr>
       <tr><td><strong>SBKIM (this work)</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td></tr>
     </tbody>
   </table>
+
+  <h3>2.2 What is left after this check</h3>
+
+  <p>
+    Each column of the table is occupied on its own. None of the work found
+    occupies them <em>together</em>. Reciprocal recommender systems have the
+    symmetry but need an operator in the middle. Semantic overlay networks manage
+    without an operator but know only one direction. Agent Cards are
+    advertisements: they say what someone can do and stay silent about what they
+    are looking for.
+  </p>
+
+  <p>
+    <strong>This is an observation from three searches, not a systematic
+    review.</strong> It falls the moment someone presents work that does both at
+    once. This text therefore does not rest on it. The contribution it claims is
+    in section 6, and it does not depend on this gap: <em class="key">the building
+    blocks are known; the operation is the contribution.</em>
+  </p>
 
   <!-- 3. THE SBKIM PROTOCOL -->
   <h2>3. The SBKIM Protocol</h2>
@@ -517,8 +604,83 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     static human-defined routing. SBKIM proposes a dynamic, semantically grounded alternative.
   </p>
 
-  <!-- 5. REFERENCE IMPLEMENTATION -->
-  <h2>5. Reference Implementation</h2>
+  <!-- 5. HOW THIS CAME ABOUT -->
+  <h2>5. How this came about</h2>
+
+  <p>
+    This section is new. It is here because the first version began in the middle
+    of the subject and never said where the work came from. Anyone who knows the
+    path can check the decisions. Above all they can see which of them came from
+    an observation and which from the literature.
+  </p>
+
+  <p>
+    <strong>It began as a platform, and that was discarded.</strong> The first form
+    was a server with a search and an index; everyone else would have been a
+    client. Thinking it through, that was another gatekeeper between small
+    websites and their readers. Small sites do not have a platform problem. They
+    have a findability problem, and they do not want to hand over their identity
+    for it. That is how "Sage platform" became the <em>Sage protocol</em>, a rule
+    between equals.
+  </p>
+
+  <p>
+    <strong>The symmetry came from an observation, not from a paper.</strong> At
+    first the network was one-way: a seeker sends a question, a provider checks
+    whether it can answer. That computed one direction only. Then it became
+    apparent that every small site is both. Someone offering cocktails may be
+    looking for glassware. Someone showing recipes may be looking for drinks. That
+    is where the two fields <code>capabilities</code> and <code>needs</code> came
+    from, and the one-sided comparison became a mirror.
+  </p>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>This was found independently, not found first.</strong> The reciprocal
+    recommender systems in section 2.1 have worked with exactly this symmetry for
+    years. Knowing them would have saved the detour. The episode belongs in the
+    text anyway, because it is the honest answer to how an idea forms without a
+    connection to the literature.
+  </p>
+
+  <h3>5.1 Two precisions this text owes the reader</h3>
+
+  <p>
+    <strong>It is not AIs recognising each other.</strong> They are web
+    applications and websites. The language model sits in the embedding and the
+    ranking, not in the nodes. Reading the phrase "AI matching" any other way
+    reads more into it than is there.
+  </p>
+
+  <p>
+    <strong>"Server-less" belongs in quotation marks.</strong> There certainly is
+    a relay, and the operator of this network runs one himself. What is missing is
+    a server at each participant and a central index. Peer-to-peer here means that
+    nobody has to provide infrastructure of their own. It does not mean there is
+    none.
+  </p>
+
+  <h3>5.2 The finding that cost the most</h3>
+
+  <p>
+    An accounting application matched a mycelium library at 0.81, although the two
+    share nothing in content. The doubt about that was justified. The embedding
+    model in use is <em>anisotropic</em>: it places all texts into a narrow cone
+    instead of spreading them over the sphere. Any two German technical texts
+    therefore already sit at around 0.82. The floor is thus <strong>above</strong>
+    the threshold of 0.80 set at the time, and almost everything matched almost
+    everything.
+  </p>
+
+  <p>
+    Subtracting the mean vector leaves only genuine relatedness, and every pair
+    between the protocol node and the end nodes turns negative. The high raw value
+    measured the model, not the topic. <strong>Reporting similarity scores from
+    such a model without this correction reports the cone.</strong> That is why the
+    values in section 6 carry this caveat.
+  </p>
+
+  <!-- 6. THE RUNNING NETWORK -->
+  <h2>6. The running network</h2>
 
   <p>
     The reference implementation lives in the protocol repository:
@@ -538,6 +700,64 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     exists and the reference led nowhere. The link now points to the protocol
     repository where the modules are maintained.
   </p>
+
+  <h3>6.1 What it has grown into</h3>
+
+  <p>
+    The description "two HTML applications" was accurate in May 2026. It is wrong
+    about today's state by orders of magnitude. As of 24 August 2026, counted from
+    the timestamps of the version control system:
+  </p>
+
+  <table>
+    <thead><tr><th>What</th><th>State</th><th>Verifiable from</th></tr></thead>
+    <tbody>
+      <tr><td>Source repositories</td><td>33</td><td>repository listing</td></tr>
+      <tr><td>of those, deployed web applications</td><td>more than twenty</td><td>one address each</td></tr>
+      <tr><td>Modules</td><td>00 to 23</td><td><code>src/modules/</code>, copied byte-for-byte</td></tr>
+      <tr><td>End nodes with own identity, spore and mailbox</td><td>several</td><td>each <code>sbkim/spore.json</code></td></tr>
+      <tr><td>Stored working states</td><td>5,823</td><td>timestamps, public</td></tr>
+      <tr><td>of those, made by hand</td><td>5,775</td><td>the difference is 48 scheduled runs</td></tr>
+      <tr><td>Days worked</td><td>128</td><td>10 March to 24 August 2026</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Both entry counts are given because both are correct.</strong> 5,823 is
+    everything, 5,775 is what was made by hand, and the 48 in between are scheduled
+    runs. Naming only one of them would be either too high or too low, depending on
+    the choice.
+  </p>
+
+  <h3>6.2 The measurement this report rests on</h3>
+
+  <p>
+    On 10 July 2026 the full bidirectional search ran between two independent
+    nodes. Two real browsers, two key pairs, and a relay in between that knows no
+    content and holds no authority.
+  </p>
+
+  <table>
+    <thead><tr><th>Direction</th><th>Question</th><th>Answer</th><th>Time</th></tr></thead>
+    <tbody>
+      <tr><td>protocol node → drinks node</td><td>"cocktails with other forest fruits"</td><td>5 meaning-ranked hits from its own holdings (0.83 to 0.84)</td><td><strong>39 s</strong></td></tr>
+      <tr><td>drinks node → protocol node</td><td>"who knows anything about fungi"</td><td>4 modules from its own library</td><td><strong>0.5 s</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    The point is not the speed. The point is that a question travels as a question
+    over the relay and a meaning-ranked answer comes back from the <em>current</em>
+    holdings of the other node. Neither participant holds an index of the other.
+  </p>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>On the values 0.83 and 0.84.</strong> They are raw cosine values from an
+    anisotropic model, and section 5.2 explains why such values have a high floor.
+    As a <em>ranking within one answer</em> they are usable. As an absolute measure
+    of relatedness they are not, and this text does not claim otherwise.
+  </p>
+
   <p>
     The reference prompt template used in the implementation is intentionally
     kept minimal. Implementors are encouraged to extend and adapt it while
@@ -545,19 +765,38 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <!-- 6. OPEN PROBLEMS -->
-  <h2>6. Open Problems</h2>
+  <h2>7. Open Problems</h2>
 
-  <h3>6.1 Semantic Discovery Without Session Codes</h3>
-  <p>
-    The current implementation requires a shared session identifier. The long-term
-    vision is passive semantic discovery: a party describes itself once;
-    the protocol continuously evaluates compatibility with other self-describing parties
-    as they appear in the network — without explicit pairing. This requires a
-    distributed index of semantic embeddings with privacy-preserving retrieval.
-    It is an unsolved problem.
+  <h3>7.1 Semantic Discovery Without Session Codes</h3>
+
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Revised on 2 September 2026.</strong> This said: "It is an unsolved
+    problem." The paragraph threw four things into one sentence, and two of them
+    have since been settled. The other two have not. They are now listed
+    separately, because a blanket "solved" here would be the most expensive
+    mistake this text could make.
   </p>
 
-  <h3>6.2 Evaluator Consistency</h3>
+  <table>
+    <thead><tr><th>Sub-problem</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td>Shared session identifier required</td><td><strong>no longer needed.</strong> Nodes find each other through the relay and their signed cards</td></tr>
+      <tr><td>Bidirectional semantic search between independent nodes</td><td><strong>demonstrated</strong> on 10 July 2026, see section 6.2</td></tr>
+      <tr><td>Distributed index with privacy-preserving retrieval</td><td><strong>still open.</strong> The relay is a shared medium, and queries travel over it in clear text</td></tr>
+      <tr><td>Genuinely passive discovery, that is, describe once and be evaluated continuously thereafter</td><td><strong>still open.</strong> Someone still asks actively</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>And one limit that surfaced in operation.</strong> An answer arrives
+    reliably only while the answering node's tab is in the foreground and awake.
+    Phones and tablets throttle background tabs. A repeat question against an aged
+    card ran into nothing until the node refreshed its card. Anyone wanting to use
+    this protocol for a service that answers unattended has to solve that. It is
+    open.
+  </p>
+
+  <h3>7.2 Evaluator Consistency</h3>
   <p>
     LLM-based evaluators are non-deterministic. Two evaluations of the same pair
     may return different scores. A production SBKIM implementation should define
@@ -565,7 +804,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     deterministic scoring heuristics.
   </p>
 
-  <h3>6.3 Adversarial Inputs</h3>
+  <h3>7.3 Adversarial Inputs</h3>
   <p>
     Unlike keyword systems, SBKIM is resistant to SEO-style gaming — padding a
     self-description with keywords does not directly improve match scores because
@@ -574,7 +813,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     input sanitization in production deployments.
   </p>
 
-  <h3>6.4 Agent Self-Description Standards</h3>
+  <h3>7.4 Agent Self-Description Standards</h3>
   <p>
     For Layer 2 to scale, agents need a standard format for self-description.
     We propose that agent systems expose a <code>/.well-known/sbkim.json</code>
@@ -583,14 +822,38 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <!-- 7. CONCLUSION -->
-  <h2>7. Conclusion</h2>
+  <h2>8. Conclusion</h2>
 
   <p>
     SBKIM is a minimal, open protocol for semantic bidirectional compatibility
-    assessment between two natural-language-describing parties. Its core contribution
-    is the symmetry constraint — both parties describe both capabilities and needs —
-    which enables genuine bidirectional matching that existing retrieval and
-    agent-communication protocols do not provide.
+    assessment between two parties describing themselves in natural language. It
+    requires both sides to state capabilities and needs.
+  </p>
+  <p style="border-left:3px solid #c93;padding-left:.8em">
+    <strong>Withdrawn on 2 September 2026.</strong> This said that the symmetry
+    constraint was the central contribution and was not offered by existing
+    protocols. <strong>That was wrong.</strong> Reciprocal recommender systems
+    require the same symmetry and have done so for years; the evidence is in
+    section 2.1. The sentence is left standing here as a withdrawn claim rather
+    than quietly removed, so that anyone who read the May version can see the
+    change.
+  </p>
+  <p>
+    <strong>What this text presents instead is a field report.</strong> The
+    building blocks are known: the transport is borrowed, the embedding is state
+    of the art, the cryptography is standard, and the symmetry is a research field
+    of its own. What is new is that they run together, have done for months, in
+    more than twenty deployed applications that nobody operates but their users.
+    The prior work found consists of architectures, designs and prototypes.
+    <em class="key">The building blocks are known; the operation is the
+    contribution.</em>
+  </p>
+  <p>
+    That includes what broke. The high similarity floor from section 5.2 nearly
+    led to a property of the model being reported as topical relatedness. The
+    throttled background tab from section 7.1 still limits what the protocol is
+    good for. Both are in this text, because a report about an operation without
+    the faults is not a report but an advertisement.
   </p>
   <p>
     The two-layer architecture demonstrates that the same protocol applies across
@@ -605,6 +868,49 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     The protocol specification in this document is released into the public domain.
   </p>
 
+  <!-- 9. HOW THIS TEXT CAME ABOUT -->
+  <h2>9. How this text came about</h2>
+
+  <p>
+    This text was written with the help of a language model, and that is stated
+    here because a paper about steering AI systems must not leave the question
+    open.
+  </p>
+
+  <p>
+    <strong>Editorial responsibility rests with one person</strong>, the operator of
+    the network described. He set the question, supplied the evidence and read
+    every version against it. The turning points of this text came from him: the
+    instruction to test the novelty claim against the literature rather than let it
+    stand; the instruction to check the dead link in section 6 in a browser rather
+    than assume it; and the decision to appear as a field report rather than with a
+    claim that collapses at the first question.
+  </p>
+
+  <p>
+    <strong>What the checking consisted of.</strong> The figures in section 6.1 come
+    from the timestamps of the version control system and can be recomputed there.
+    The measurements in section 6.2 come from a run on real devices, with a date.
+    The prior work in section 2.1 was searched for after the first draft had claimed
+    there was none; the claim fell in the process. Where a statement could not be
+    verified, it stands as an observation or not at all.
+  </p>
+
+  <p>
+    <strong>What this explicitly was not.</strong> Not a spell check and not the
+    rewording of a finished text. The content emerged in alternation: proposal,
+    objection, measurement, correction. Several statements from the May version
+    fell in the process, and they stand in the text as withdrawn rather than being
+    replaced.
+  </p>
+
+  <p>
+    <strong>Where the evidence sits.</strong> The protocol repository from section 6
+    holds the session records, the lessons drawn from mistakes, and the worksheets
+    on days worked. The history is public and dated. Anyone who does not believe
+    this text can look there; that is the purpose of giving the address.
+  </p>
+
   <hr class="divider">
 
   <!-- FOOTNOTES -->
@@ -615,10 +921,15 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     <p>[3] Anthropic. "Model Context Protocol." modelcontextprotocol.io, 2024.</p>
     <p>[4] Berners-Lee, T. "Information Management: A Proposal." CERN, 1989.</p>
     <p>[5] Richards, M. et al. "AgentProtocol: A common interface for AI agents." agentprotocol.ai, 2023.</p>
+    <p>[6] Pizzato, L. et al. "RECON: A reciprocal recommender for online dating." RecSys, 2010. — Field surveys: Palomares, I. et al. "Reciprocal Recommender Systems: Analysis of state-of-art literature, challenges and opportunities." Information Fusion, 2021.</p>
+    <p>[7] Crespo, A. and Garcia-Molina, H. "Semantic Overlay Networks for P2P Systems." Springer LNCS, 2004. — Continued in: "A Semantic Peer-to-Peer Overlay for Web Services Discovery." Springer, c. 2008.</p>
+    <p>[8] Google. "Agent2Agent (A2A) Protocol — Agent Card." a2a-protocol.org, v1.0, 2026.</p>
+    <p>[9] "Agentic Peer-to-Peer Networks: From Content Distribution to Capability and Action Sharing." arXiv:2603.03753, March 2026.</p>
+    <p style="font-size:.9em;color:#666">References [6] to [9] were identified through web search and checked against titles and abstracts, not against the full texts. A proper literature review remains to be done before submission.</p>
     <br>
     <p><strong>Correspondence</strong><br>
     Reference implementation: github.com/lausiklauskn-png/Sage-Protokol<br>
-    Protocol version: SBKIM-0.1 · May 2026 · Public Domain</p>
+    Protocol version: SBKIM-0.1 · Text revision v0.2, revised 2 September 2026 · Public Domain</p>
   </div>
 
 </div>
