@@ -793,10 +793,10 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <p>
-    <strong>And one about the demonstrations.</strong> They depend on a CDN and on
-    a foreign broker, and they require a paid key. The modules in section 6 do
-    none of this. Taking the demonstration as the measure of the protocol means
-    taking the dependencies of the demonstration for its own.
+    <strong>And one about the demonstrations.</strong> They depend on a CDN, on a
+    foreign broker and on a paid key. The protocol itself needs none of these: the
+    modules in section 6 run without a CDN, without a broker and without a key.
+    Those three dependencies belong to the demonstration, not to the protocol.
   </p>
 
   <h2>7. Open Problems</h2>
@@ -813,14 +813,22 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     <tbody>
       <tr><td>Shared session identifier required</td><td><strong>no longer needed.</strong> Nodes find each other through the relay and their signed cards</td></tr>
       <tr><td>Bidirectional semantic search between independent nodes</td><td><strong>demonstrated</strong> on 10 July 2026, see section 6.2</td></tr>
-      <tr><td>Distributed index with privacy-preserving retrieval</td><td><strong>still open.</strong> The relay is a shared medium, and queries travel over it in clear text</td></tr>
-      <tr><td>Genuinely passive discovery, that is, describe once and be evaluated continuously thereafter</td><td><strong>still open.</strong> Someone still asks actively</td></tr>
+      <tr><td>Distributed index with privacy-preserving retrieval</td><td><strong>half open.</strong> For delivery to a counterpart already known, encrypted paths exist and one node of this network uses them; the relay then sees only ciphertext. The other half is open: to be found at all, a query today has to sit readable on a shared medium</td></tr>
+      <tr><td>Genuinely passive discovery, that is, describe once and be evaluated continuously thereafter</td><td><strong>open, and at the same time excluded.</strong> Someone asks actively, and that is a decision: the nodes of this network issue no queries of their own into the open net</td></tr>
     </tbody>
   </table>
 
   <p>
-    <strong>And one limit that surfaced in operation.</strong> An answer arrives
-    reliably only while the answering node's tab is in the foreground and awake.
+  <strong>The last row is not a gap but a rule.</strong> A node of this network
+  answers when asked and does not ask on its own. Building continuous evaluation
+  lifts that rule and brings in what it guards against: a network in which twenty
+  applications issue queries unprompted. The rule is not untouchable, but lifting
+  it is a decision and not a by-product.
+  </p>
+  
+  <p>
+  <strong>And one limit that surfaced in operation.</strong> An answer arrives
+  reliably only while the answering node's tab is in the foreground and awake.
     Phones and tablets throttle background tabs. A repeat question against an aged
     card ran into nothing until the node refreshed its card. For a service that answers unattended, this is an open point.
   </p>

@@ -476,8 +476,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
 
   <p>
     <strong>Die Symmetrie kam aus einer Beobachtung, nicht aus einem Papier.</strong>
-    Anfangs war das Netz eine Einbahn: Ein Sucher schickt eine Frage, ein Anbieter
-    prüft, ob er antworten kann. Das rechnete nur eine Richtung. Dann fiel auf,
+    Anfangs war das Netz eine Einbahnstraße: Ein Sucher schickt eine Frage, ein Anbieter prüft, ob er antworten kann. Das rechnete nur eine Richtung. Dann fiel auf,
     dass jede kleine Seite beides ist. Wer Cocktails anbietet, sucht vielleicht
     Glaswaren. Wer Kochrezepte zeigt, sucht passende Getränke. Daraus wurden die
     zwei Felder <code>capabilities</code> und <code>needs</code>, und aus dem
@@ -675,11 +674,11 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
   </p>
 
   <p>
-    <strong>Und eine über die Vorführungen.</strong> Sie hängen an einem CDN und
-    an einem fremden Vermittler, und sie brauchen einen bezahlten Schlüssel. Die
-    Module aus Abschnitt 6 tun das alles nicht. Wer die Vorführung für den
-    Maßstab des Protokolls hält, hält die Abhängigkeiten der Vorführung für
-    dessen Abhängigkeiten.
+    <strong>Und eine über die Vorführungen.</strong> Sie hängen an einem CDN, an
+    einem fremden Vermittler und an einem bezahlten Schlüssel. Das Protokoll
+    selbst braucht nichts davon: die Module aus Abschnitt 6 laufen ohne CDN, ohne
+    Vermittler und ohne Schlüssel. Diese drei Abhängigkeiten gehören der
+    Vorführung, nicht dem Protokoll.
   </p>
 
   <h2>7. Offene Probleme</h2>
@@ -696,15 +695,24 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <tbody>
       <tr><td>Gemeinsamer Sitzungsbezeichner nötig</td><td><strong>entfällt.</strong> Die Knoten finden einander über das Relais und ihre signierten Karten</td></tr>
       <tr><td>Bidirektionale Bedeutungs-Suche zwischen unabhängigen Knoten</td><td><strong>belegt</strong> am 10.07.2026, siehe Abschnitt 6.2</td></tr>
-      <tr><td>Verteilter Index mit datenschutzerhaltender Abfrage</td><td><strong>weiterhin offen.</strong> Das Relais ist ein gemeinsames Medium, und die Fragen laufen im Klartext darüber</td></tr>
-      <tr><td>Wirklich passive Entdeckung, also einmal beschreiben und danach fortlaufend bewertet werden</td><td><strong>weiterhin offen.</strong> Es fragt immer noch jemand aktiv an</td></tr>
+      <tr><td>Verteilter Index mit datenschutzerhaltender Abfrage</td><td><strong>zur Hälfte offen.</strong> Für die Zustellung an einen bereits bekannten Gegenüber gibt es verschlüsselte Wege, und ein Knoten dieses Netzes benutzt sie; das Relais sieht dann nur Geheimtext. Offen ist die andere Hälfte: um gefunden zu werden, muss eine Frage heute lesbar auf einem gemeinsamen Medium stehen</td></tr>
+      <tr><td>Wirklich passive Entdeckung, also einmal beschreiben und danach fortlaufend bewertet werden</td><td><strong>offen, und zugleich ausgeschlossen.</strong> Es fragt jemand aktiv an, und das ist eine Entscheidung: die Knoten dieses Netzes stellen von sich aus keine Anfragen ins offene Netz</td></tr>
     </tbody>
   </table>
 
   <p>
-    <strong>Und eine Grenze, die im Betrieb sichtbar wurde.</strong> Eine Antwort
-    kommt zuverlässig nur, wenn der Tab des antwortenden Knotens im Vordergrund
-    und wach ist. Handys und Tablets drosseln Tabs im Hintergrund. Eine
+  <strong>Die letzte Zeile ist keine Lücke, sondern eine Regel.</strong> Ein
+  Knoten dieses Netzes antwortet, wenn er gefragt wird, und fragt nicht von
+  selbst. Wer die fortlaufende Bewertung baut, hebt diese Regel auf und handelt
+  sich ein, wovor sie schützt: ein Netz, in dem zwanzig Anwendungen unaufgefordert
+  Anfragen stellen. Die Regel ist nicht unantastbar, aber ihre Aufhebung ist eine
+  Entscheidung und kein Nebenprodukt.
+  </p>
+  
+  <p>
+  <strong>Und eine Grenze, die im Betrieb sichtbar wurde.</strong> Eine Antwort
+  kommt zuverlässig nur, wenn der Tab des antwortenden Knotens im Vordergrund
+  und wach ist. Handys und Tablets drosseln Tabs im Hintergrund. Eine
     Wiederhol-Frage auf eine gealterte Karte lief ins Leere, bis der Knoten seine
     Karte erneuerte. Für einen Dienst, der ohne Zutun antwortet, ist das eine offene Stelle.
   </p>
