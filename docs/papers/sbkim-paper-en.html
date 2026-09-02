@@ -270,6 +270,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Reference Implementation →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live Demo Layer 1 →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html">Live Demo Layer 2 →</a>
+        <a href="https://lausiklauskn-png.github.io/Sage-Protokol/mycel-karte/">Network map, read-only →</a>
   </div>
 
   <hr class="divider">
@@ -289,7 +290,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
       matching in multi-agent systems. We argue that SBKIM addresses an
       underspecified problem in the current agent ecosystem — semantic discovery
       before communication — and propose it as a candidate open standard.
-      A working reference implementation is publicly available.
+      A working reference implementation is publicly available, and the traffic of the running network can be observed directly through a read-only network map.
     </p>
     
   </div>
@@ -678,16 +679,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
   
 
-  <p>
-    The two demonstrations for section 4 run in the browser, without registration
-    and without installation:
-  </p>
-  <p style="font-family:'Source Code Pro',monospace;font-size:.88em;line-height:1.9">
-    Layer 1, human to human:<br>
-    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html</a><br>
-    Layer 2, agent network:<br>
-    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html</a>
-  </p>
+  
 
   <h3>6.1 What it has grown into</h3>
 
@@ -747,6 +739,66 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <!-- 6. OPEN PROBLEMS -->
+    <h3>6.3 Two ways to check</h3>
+
+  <p>
+    There are two public entry points, and they show different things. The
+    demonstrations walk through the procedure on a staged case. The network map
+    watches the running network. They also use different transports, and that is
+    not an accident: the procedure is not tied to any one of them.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th></th><th>The demonstrations</th><th>The network map</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>What is visible</td><td>the procedure from self-description to report, on a staged case</td><td>which nodes are announcing themselves and answering each other right now</td></tr>
+      <tr><td>Setup</td><td>three devices: one is the host, the other two join by QR code, one as provider, one as seeker</td><td>one device that only watches</td></tr>
+      <tr><td>Transport</td><td>WebRTC, directly between the devices, brokered by the default PeerJS broker</td><td>five Nostr relays, <strong>three of them foreign</strong>: <code>relay.damus.io</code>, <code>nos.lol</code>, <code>relay.primal.net</code></td></tr>
+      <tr><td>Requirements</td><td>a browser, internet, an <strong>Anthropic key of your own</strong>; the pages load three libraries from a CDN</td><td>a browser, nothing else</td></tr>
+      <tr><td>Can send</td><td>yes, that is the point</td><td><strong>no</strong></td></tr>
+      <tr><td>Time window</td><td>the session, while it runs</td><td>the last thirty minutes</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-family:'Source Code Pro',monospace;font-size:.88em;line-height:1.9">
+    Demonstration Layer 1, human to human:<br>
+    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html</a><br>
+    Demonstration Layer 2, agent network:<br>
+    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html</a><br>
+    Network map, read-only:<br>
+    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/mycel-karte/">https://lausiklauskn-png.github.io/Sage-Protokol/mycel-karte/</a>
+  </p>
+
+  <p>
+    <strong>The network map cannot send.</strong> The only call it makes on a
+    connection is a subscription; it never writes an event. This is in the source
+    and can be counted in one line. An instrument that can only listen cannot have
+    produced the traffic it displays. It subscribes to the five tags
+    <code>sbkim-rdv</code>, <code>sbkim-anastomosis</code>,
+    <code>sbkim-anastomosis-reply</code>, <code>sbkim-query</code> and
+    <code>sbkim-query-reply</code>; every node that announces itself is drawn,
+    every handshake between two of them appears as a thread.
+  </p>
+
+  <p>
+    <strong>Three limitations belong with it.</strong> The map shows a window of
+    thirty minutes; if no node is active during that time, it stays empty. That is
+    the normal state of a network without a permanent process: it runs while
+    someone has one of the applications open, and not otherwise. Second, it shows
+    <em>that</em> nodes announce themselves and answer each other, not
+    <em>what</em> they answer. And third, it has a rehearsal button that is
+    explicitly marked as a simulation, both in the source and in the interface.
+  </p>
+
+  <p>
+    <strong>And one about the demonstrations.</strong> They depend on a CDN and on
+    a foreign broker, and they require a paid key. The modules in section 6 do
+    none of this. Taking the demonstration as the measure of the protocol means
+    taking the dependencies of the demonstration for its own.
+  </p>
+
   <h2>7. Open Problems</h2>
 
   <h3>7.1 Semantic Discovery Without Session Codes</h3>

@@ -135,6 +135,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Referenz-Implementierung →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live-Demo Layer 1 →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html">Live-Demo Layer 2 →</a>
+        <a href="https://lausiklauskn-png.github.io/Sage-Protokol/mycel-karte/">Netz-Karte, mitlesend →</a>
   </div>
 
   <hr class="divider">
@@ -154,7 +155,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
       Multi-Agenten-Systemen. Wir argumentieren, dass SBKIM ein bislang unzureichend
       behandeltes Problem im aktuellen Agenten-Ökosystem adressiert — semantische
       Entdeckung vor der Kommunikation — und schlagen es als offenen Kandidaten-Standard
-      vor. Eine funktionsfähige Referenz-Implementierung ist öffentlich verfügbar.
+      vor. Eine funktionsfähige Referenz-Implementierung ist öffentlich verfügbar; der Verkehr des laufenden Netzes lässt sich über eine mitlesende Netz-Karte selbst nachsehen.
     </p>
     
   </div>
@@ -557,16 +558,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
   </p>
   
 
-  <p>
-    Die beiden Vorführungen zu Abschnitt 4 laufen im Browser, ohne Anmeldung und
-    ohne Installation:
-  </p>
-  <p style="font-family:'Source Code Pro',monospace;font-size:.88em;line-height:1.9">
-    Layer 1, Mensch zu Mensch:<br>
-    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html</a><br>
-    Layer 2, Agentennetz:<br>
-    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html</a>
-  </p>
+  
 
   <h3>6.1 Was daraus geworden ist</h3>
 
@@ -625,6 +617,69 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     gehalten. Implementierende werden ermutigt, es zu erweitern und anzupassen,
     während sie die Vier-Felder-Eingabestruktur und das Drei-Dimensionen-Ausgabeschema
     beibehalten.
+  </p>
+
+    <h3>6.3 Zwei Wege, das nachzusehen</h3>
+
+  <p>
+    Es gibt zwei öffentliche Zugänge, und sie zeigen Verschiedenes. Die
+    Vorführungen führen das Verfahren an einem gestellten Fall vor. Die
+    Netz-Karte sieht dem laufenden Netz zu. Sie benutzen auch verschiedene
+    Transporte, und das ist kein Versehen: das Verfahren ist an keinen
+    gebunden.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th></th><th>Die Vorführungen</th><th>Die Netz-Karte</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Was zu sehen ist</td><td>das Verfahren vom Selbstporträt bis zum Bericht, an einem gestellten Fall</td><td>welche Knoten sich gerade melden und einander antworten</td></tr>
+      <tr><td>Aufbau</td><td>drei Geräte: eines ist der Gastgeber, die beiden anderen treten per QR-Code bei, eines als Anbieter, eines als Suchender</td><td>ein Gerät, das nur zusieht</td></tr>
+      <tr><td>Transport</td><td>WebRTC, unmittelbar zwischen den Geräten, vermittelt über den Vorgabe-Vermittler von PeerJS</td><td>fünf Nostr-Relais, davon <strong>drei fremde</strong>: <code>relay.damus.io</code>, <code>nos.lol</code>, <code>relay.primal.net</code></td></tr>
+      <tr><td>Voraussetzungen</td><td>Browser, Internet, ein <strong>eigener Anthropic-Schlüssel</strong>; die Seiten laden drei Bibliotheken von einem CDN</td><td>ein Browser, sonst nichts</td></tr>
+      <tr><td>Kann senden</td><td>ja, das ist der Zweck</td><td><strong>nein</strong></td></tr>
+      <tr><td>Zeitfenster</td><td>die Sitzung, solange sie läuft</td><td>die letzten dreißig Minuten</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-family:'Source Code Pro',monospace;font-size:.88em;line-height:1.9">
+    Vorführung Layer 1, Mensch zu Mensch:<br>
+    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html</a><br>
+    Vorführung Layer 2, Agentennetz:<br>
+    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html">https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/sbkim-network.html</a><br>
+    Netz-Karte, mitlesend:<br>
+    <a href="https://lausiklauskn-png.github.io/Sage-Protokol/mycel-karte/">https://lausiklauskn-png.github.io/Sage-Protokol/mycel-karte/</a>
+  </p>
+
+  <p>
+    <strong>Die Netz-Karte kann nicht senden.</strong> Der einzige Aufruf, den
+    sie an eine Verbindung richtet, ist ein Abonnement; ein Ereignis schreibt sie
+    nie. Das steht im Quelltext und ist in einer Zeile nachzuzählen. Ein
+    Instrument, das nur lauschen kann, kann den Verkehr nicht hergestellt haben,
+    den es anzeigt. Sie abonniert die fünf Marken <code>sbkim-rdv</code>,
+    <code>sbkim-anastomosis</code>, <code>sbkim-anastomosis-reply</code>,
+    <code>sbkim-query</code> und <code>sbkim-query-reply</code>; jeder Knoten,
+    der sich meldet, wird gezeichnet, jeder Handschlag zwischen zweien als Faden.
+  </p>
+
+  <p>
+    <strong>Drei Einschränkungen gehören dazu.</strong> Die Karte zeigt ein
+    Fenster von dreißig Minuten; läuft in dieser Zeit kein Knoten, bleibt sie
+    leer. Das ist der Normalzustand eines Netzes ohne Dauerprozess: es läuft,
+    wenn jemand eine der Anwendungen offen hat, und sonst nicht. Zweitens zeigt
+    sie, <em>dass</em> Knoten sich melden und einander antworten, nicht
+    <em>was</em> sie einander antworten. Und drittens hat sie einen
+    Probelauf-Knopf, der im Quelltext und in der Oberfläche ausdrücklich als
+    Simulation gekennzeichnet ist.
+  </p>
+
+  <p>
+    <strong>Und eine über die Vorführungen.</strong> Sie hängen an einem CDN und
+    an einem fremden Vermittler, und sie brauchen einen bezahlten Schlüssel. Die
+    Module aus Abschnitt 6 tun das alles nicht. Wer die Vorführung für den
+    Maßstab des Protokolls hält, hält die Abhängigkeiten der Vorführung für
+    dessen Abhängigkeiten.
   </p>
 
   <h2>7. Offene Probleme</h2>
