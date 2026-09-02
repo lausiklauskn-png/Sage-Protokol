@@ -263,6 +263,16 @@ als eine benannte: die eine wirft Fragen auf, die andere beantwortet sie.
   herabstufen; Identität vor Inhalt prüfen. Tafel:
   [`docs/SICHERHEIT-BRIEFKASTEN.md`](docs/SICHERHEIT-BRIEFKASTEN.md).
 
+## Das Ziel im Auge behalten
+
+Eine Sitzung hat ein Ziel, und das Ziel hat einen Zweck darüber. Jede Aufgabe, die
+unterwegs dazukommt, wird gegen **beide** gehalten — und unterwegs kommt immer
+etwas dazu. **Mitziehen heißt nicht abbrechen:** ein echter Fund wird
+aufgeschrieben und eingereiht, das Ziel läuft weiter. Wer merkt, dass er seit
+einer Weile etwas anderes tut als das, wofür er losgeschickt wurde, **sagt das von
+selbst** — nicht erst auf Nachfrage.
+Volltext und Anlass: [`docs/NETZWEIT.md` § 6a](docs/NETZWEIT.md).
+
 ## Was du tust
 
 Die Regeln in Kurzform. **Jede stammt aus einem echten Schaden — die Begründungen
@@ -278,6 +288,12 @@ jeweiligen Stelle baut.
   Andock-Bezug die `SIGNAL.json` jeder Gegenstelle lesen, bei `seq > ack` handeln und
   **quittieren**; bei Sitzungsende, das etwas gemeldet hat, `seq`+1 und pushen — **das
   Pushen IST das Signal.** Netz-Karte zuerst: `sbkim/NETZ-STAND.md`.
+- **Die Spore im Netz ist nicht die Spore im Depot.** Was ein Knoten ankündigt,
+  entsteht **im Browser** — `sbkim/spore.json` ist Ablage und Beleg, kein Sender.
+  Wer den Netz-Auftritt eines Knotens beurteilt, braucht einen **Mitschnitt** der
+  Mycel-Karte; die Datei zu lesen beantwortet eine andere Frage. Gemessen an zwei
+  Knoten am 2026-09-02, nachdem ich das Gegenteil behauptet hatte —
+  [`docs/LEHREN.md` § 9](docs/LEHREN.md).
 - **Sicherheits-Module pflegen Aspekte.** Wer ein Schutz-Modul (10/11/12/14/15.B/…)
   baut oder pflegt, ergänzt in `src/modules/16_siegel.js` einen
   `ZERTIFIKAT_ASPEKTE`-Eintrag ans Listen-Ende (Datum + Modul-ID + ein Satz). So werden

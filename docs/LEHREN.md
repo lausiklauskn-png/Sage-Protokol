@@ -21,6 +21,7 @@
 6. [Wie eine Probe stumm wird — vier Wege, jeder einmal passiert](#6)
 7. [Aufräumen — der erste Lauf hat die Annahme umgeworfen](#7)
 8. [Die Pinnwand hängt am selben Brett wie Kimboard](#8)
+9. [Die Spore im Netz ist nicht die Spore im Depot](#9)
 
 ---
 
@@ -670,3 +671,96 @@ ihn nachzubauen.
 
 
 ---
+
+<a id="9"></a>
+
+# 9. Die Spore im Netz ist nicht die Spore im Depot
+
+*Gemessen am 2026-09-02 an zwei Knoten. Die Kernaussage stand schon im Depot —
+ich habe am selben Tag das Gegenteil behauptet.*
+
+## Was gemessen wurde
+
+Klaus hat mit dem Analyse-Rekorder der Mycel-Karte zwei Mitschnitte aufgenommen,
+20:42 und 20:49 UTC. Darin liegt, was Sage und Mein Mixarium wirklich ins Netz
+gestellt haben. Daneben gehalten: die `sbkim/spore.json` derselben Repos.
+
+| | Depot-Datei | auf der Leitung |
+|---|---|---|
+| Sage, Beschreibung | 2.527 Zeichen | 160 |
+| Mixarium, Beschreibung | 1.476 Zeichen | 88, **anderer Text** |
+| `embeddingSource` | fehlt in **allen 18** Depot-Sporen | vorhanden |
+| `embeddingVersion` | fehlt in allen 18 | vorhanden |
+| Signatur · `createdAt` · Kennung | | jeweils andere |
+
+Mixariums Text auf der Leitung lautet *„Klaus Mixarium - Cocktails, Mocktails,
+Smoothies und mehr; Knabbereien als Begleit-Plus."* Er ist **kein Anfang** des
+Depot-Textes, sondern ein eigener, von Hand geschriebener Satz — mit Bindestrich
+statt Gedankenstrich.
+
+**Daraus folgt:** die Spore, die ein Knoten ankündigt, wird **im Browser
+erzeugt**, aus dem, was in der App selbst eingetragen ist. Die Datei im Depot ist
+Ablage und Beleg, kein Sender. Dass die Leitungs-Sporen `embeddingSource` tragen
+und **keine einzige** Depot-Datei, belegt es ein zweites Mal: der sendende Pfad
+ist neuer als jede committete Fassung.
+
+## Warum das teuer war
+
+Klaus hatte am selben Abend seine Sage-Beschreibung neu signiert, die Datei
+heruntergeladen und gefragt, ob er die anderen Apps davon in Kenntnis setzen
+müsse. Ich habe geantwortet, jede App lese ihre eigene `sbkim/spore.json` — es
+sei nichts zu tun.
+
+**Das war falsch, und es stand schon widerlegt im Depot.**
+[`OBSERVATORIUM_BROWSER.md`](OBSERVATORIUM_BROWSER.md) § Konsequenzen für SBKIM
+sagt seit dem Mai:
+
+> *„Spore-Identitäten sind pro Browser-Instanz." · „Pages-deployte `spore.json`
+> ist ein Snapshot einer einzigen Andock-Session."*
+
+Die Folge des Irrtums war kein Datenverlust, sondern **verlorene Arbeit an der
+falschen Stelle**: eine signierte Datei, die nichts sendet, und eine Messung der
+Vektor-Verschiebung, die eine Beschreibung verglich, die so nie ins Netz ging.
+
+Das ist die Familie von Fehlern aus
+[NETZWEIT § 6b](https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/NETZWEIT.md)
+— **eine Grenze, die man kennt, kostet eine Zeile; eine, die man jedes Mal neu
+entdeckt, kostet eine Stunde.** Hier war sie sogar aufgeschrieben.
+
+## Zwei Fehlschlüsse auf dem Weg, beide von der zweiten Messung widerlegt
+
+**Erster Fehlschluss: eine Kappung bei 160 Zeichen.** Sages Leitungs-Text ist
+genau 160 Zeichen lang, und `SNIPPET_TEXT_MAX` in Modul 03 ist 160. Der
+Zusammenhang lag nahe und war keiner: Sages **erster Satz** ist zufällig genau so
+lang. Mixariums 88 Zeichen zeigen es — unter jeder Grenze und trotzdem gekürzt
+gegenüber dem Depot.
+
+> **Eine Zahl, die zu einer Konstante im Code passt, ist noch keine Ursache.**
+> Aus einer Probe sind „bei 160 abgeschnitten" und „nur der erste Satz" nicht zu
+> trennen. Es brauchte einen zweiten Knoten.
+
+**Zweiter Fehlschluss: ein Fehler im Protokoll.** Ich hatte gemeldet, 94 % der
+Selbstbeschreibung gingen verloren. Die Zahl stimmt, der Vorwurf nicht: es geht
+nichts verloren, es geht nur etwas **anderes** hinaus als das, was im Depot
+liegt. Kein Modul arbeitet falsch.
+
+## Was daraus für die Arbeit folgt
+
+- **Wer ändern will, was ein Knoten ankündigt, ändert es in der App**, nicht in
+  der Datei. Die Datei danach nachziehen, damit beide dasselbe sagen.
+- **Eine Aussage über den Netz-Auftritt eines Knotens braucht einen Mitschnitt.**
+  Die Depot-Datei zu lesen beantwortet eine andere Frage — dieselbe Disziplin wie
+  „frisch von `origin/main`", nur eine Ebene weiter: nicht der Klon lügt, sondern
+  die Datei ist gar nicht die Quelle.
+- **Der Analyse-Rekorder der Mycel-Karte ist das Messgerät dafür.** Er hat in
+  zwei Mitschnitten drei Irrtümer aufgedeckt, von denen keine Probe im Depot
+  einen einzigen sehen konnte: alle Wächter prüfen Dateien, und die Dateien
+  waren nicht der Gegenstand.
+
+## Was NICHT gemessen ist
+
+Wo im Browser der Beschreibungstext herkommt — ein Eingabefeld, IndexedDB oder
+eine Voreinstellung der App — und ob dieses Feld selbst eine Längengrenze hat.
+Beide Mitschnitte zeigen das Ergebnis, nicht den Weg dorthin. Ebenso offen: ob
+die anderen 16 Knoten sich genauso verhalten; gemessen sind zwei.
+

@@ -74,6 +74,16 @@ Dasselbe Phänomen tritt auf in:
   Session.** Wer in mehreren Browser-Instanzen unterschiedlich andockt
   und dann pusht, hat eine Pages-Spore mit der ID der zuletzt-pushenden
   Instanz — die anderen Instanzen kennen diese ID nicht als ihre eigene.
+- **Und sie ist nicht nur bei der ID ein Snapshot — gemessen 2026-09-02.**
+  Zwei Mitschnitte des Analyse-Rekorders der Mycel-Karte gegen die Depot-
+  Dateien gehalten: Sage kündigt 160 statt 2.527 Zeichen Beschreibung an,
+  Mixarium 88 statt 1.476 — und Mixariums Leitungs-Text ist **kein Anfang**
+  des Depot-Textes, sondern ein eigener Satz. Die Leitungs-Sporen tragen
+  `embeddingSource` und `embeddingVersion`; **keine einzige** der 18
+  committeten Sporen tut das. Der sendende Pfad ist damit neuer als jede
+  Datei im Depot. **Wer den Netz-Auftritt eines Knotens beurteilt, braucht
+  einen Mitschnitt** — die Datei zu lesen beantwortet eine andere Frage.
+  Volltext und die zwei Fehlschlüsse auf dem Weg: [`LEHREN.md` § 9](LEHREN.md).
 
 ### Workarounds
 
