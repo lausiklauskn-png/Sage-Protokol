@@ -407,7 +407,59 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     oder vorausgesetzt.
   </p>
 
-  <h2>4. Zwei-Ebenen-Architektur</h2>
+    <h3>3.5 Die Selbstbeschreibung folgt dem Inhalt</h3>
+  
+    <p>
+      Die Selbstbeschreibung einer Partei wird nicht einmal verfasst und dann
+      festgehalten. Sie wird aus dem <em class="key">tatsächlichen Inhalt</em>
+      gerechnet, den die Partei führt, und sie wird neu gerechnet, wenn dieser
+      Inhalt sich ändert.
+    </p>
+  
+    <p>
+      Technisch trägt jede Partei zwei Auflösungen ihrer selbst. Einen
+      <strong>Domänen-Vektor</strong> über den gesamten Bestand, 384 Dimensionen.
+      Und bis zu <strong>zwanzig Satz-Vektoren</strong>, je einer für einen
+      einzelnen Satz aus dem Bestand. Die feinere Auflösung trennt Verwandtes, das
+      der Gesamtvektor verschmiert; fehlt sie, fällt die Bewertung auf den
+      Gesamtvektor zurück.
+    </p>
+  
+    <p>
+      Ändert sich der Inhalt, geschieht dreierlei: der Vektor wird neu gerechnet,
+      ein <strong>Versionszähler</strong> steigt, und die Selbstbeschreibung wird
+      neu signiert. Der Zähler ist ein Drift-Merkmal. An ihm erkennt eine
+      Gegenstelle, dass sie eine ältere Fassung derselben Partei kennt. Zusätzlich
+      hält die Selbstbeschreibung fest, <strong>woraus</strong> ihr Vektor stammt:
+      aus dem Inhalt oder aus einem von Hand geschriebenen Steckbrief.
+    </p>
+  
+    <p>
+      <strong>Was daraus folgt, ist der praktische Kern.</strong> Ein Kochbuch, das
+      nur noch Sushi-Rezepte enthält, beschreibt sich als Sushi-Sammlung, sobald
+      sein Vektor neu gerechnet wurde. Es wird für eine Sushi-Anfrage höher
+      bewertet als ein Kochbuch, in dem Sushi in drei von zweihundert Rezepten
+      vorkommt. Keine der beiden Parteien hat dafür etwas eingetragen, verschlagwortet
+      oder angemeldet.
+    </p>
+  
+    <p>
+      Die Zustandslosigkeit aus Abschnitt 3.4 bleibt davon unberührt. Was sich
+      ändert, ist die Beschreibung, nicht das Verfahren: jede einzelne Bewertung
+      arbeitet weiterhin nur mit den vier Feldern, die ihr vorliegen, ohne
+      Vorgeschichte und ohne Profil.
+    </p>
+  
+    <p>
+      <strong>Die Grenze dieser Eigenschaft ist eine Größenordnung.</strong> Der
+      rohe Kosinus-Abstand des verwendeten Einbettungs-Modells hat einen hohen
+      Boden: über einen gemessenen Bestand liegt der Mittelwert bei 0,82 bei einer
+      Streuung von 0,02. Eine inhaltliche Verschiebung muss diesen Boden
+      überschreiten, um in der Rangfolge sichtbar zu werden. Kleine Änderungen am
+      Bestand bewegen den Vektor, aber nicht unbedingt den Platz in der Liste.
+    </p>
+  
+    <h2>4. Zwei-Ebenen-Architektur</h2>
 
   <div class="layer-diagram">
     <span class="hi">SBKIM-Protokoll</span> (Fähigkeiten + Bedarf → Kompatibilitätsbericht)<br>

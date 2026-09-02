@@ -533,7 +533,55 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   </p>
 
   <!-- 4. LAYER ARCHITECTURE -->
-  <h2>4. Two-Layer Architecture</h2>
+    <h3>3.5 The self-description follows the content</h3>
+  
+    <p>
+      A party's self-description is not written once and then kept. It is computed
+      from the <em class="key">actual content</em> the party holds, and it is
+      recomputed when that content changes.
+    </p>
+  
+    <p>
+      Technically each party carries itself at two resolutions. A
+      <strong>domain vector</strong> over the whole holding, 384 dimensions. And up
+      to <strong>twenty sentence vectors</strong>, one per individual sentence from
+      the holding. The finer resolution separates related material that the overall
+      vector blurs; where it is absent, evaluation falls back to the overall vector.
+    </p>
+  
+    <p>
+      When the content changes, three things happen: the vector is recomputed, a
+      <strong>version counter</strong> increases, and the self-description is signed
+      again. The counter is a drift marker. By it a counterpart can tell that it
+      holds an older edition of the same party. The self-description also records
+      <strong>what</strong> its vector was derived from: the content, or a
+      hand-written profile.
+    </p>
+  
+    <p>
+      <strong>The practical consequence is the point.</strong> A cookbook that comes
+      to hold only sushi recipes describes itself as a sushi collection once its
+      vector has been recomputed. It is scored higher for a sushi query than a
+      cookbook in which sushi appears in three recipes out of two hundred. Neither
+      party registered, tagged or enrolled anything to make that happen.
+    </p>
+  
+    <p>
+      The statelessness of section 3.4 is untouched by this. What changes is the
+      description, not the procedure: each individual evaluation still works only
+      from the four fields in front of it, with no history and no profile.
+    </p>
+  
+    <p>
+      <strong>The limit of this property is a matter of scale.</strong> The raw
+      cosine distance of the embedding model in use has a high floor: across a
+      measured holding the mean sits at 0.82 with a spread of 0.02. A shift in
+      content has to exceed that floor before it becomes visible in the ranking.
+      Small changes to the holding move the vector, but not necessarily the position
+      in the list.
+    </p>
+  
+    <h2>4. Two-Layer Architecture</h2>
 
   <div class="layer-diagram">
     <span class="hi">SBKIM Protocol</span> (capabilities + needs → compatibility report)<br>
