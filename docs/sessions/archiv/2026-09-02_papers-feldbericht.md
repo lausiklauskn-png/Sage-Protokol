@@ -272,3 +272,38 @@ Installation". Ohne Anmeldung stimmt, ohne Schlüssel nicht.
 **Nicht gemessen:** ob die Pages-Adressen ausliefern. `github.io` ist aus dieser
 Umgebung gesperrt. Klaus hat für die zwei Demo-Adressen bestätigt, dass sie
 getippt funktionieren; die Karten-Adresse ist ungeprüft.
+
+---
+
+## Abschluss: gemerged am 2026-09-02, 19:42 UTC
+
+**PR #929 als Squash auf `main`, `80276d4`.** Klaus hat die drei Adressen im
+Papier an seinem Tablet bestätigt und die Freigabe zum Mergen gegeben.
+
+Gegen `main` selbst nachgeprüft, nicht gegen die Zweig-Erwartung: beide Papers,
+`tests/smoke_papers_verweise.mjs`, § 3.5, das Datum und Station 8 liegen dort.
+Rest-Unterschied Zweig gegen `main`: keiner. `node tests/run_alle.mjs` auf dem
+`main`-Stand: **90 Proben, 90 grün, 0 rot.**
+
+### Stundennachweis
+
+| | |
+|---|---|
+| Erster Commit | `ef81cd6` · 15:30 UTC |
+| Letzter Commit | `e5a8dfc` · 19:41 UTC |
+| **Spanne** | **4 h 10 min**, 12 Commits |
+
+⚠ Das ist die Spanne des Ablegens, nicht der Aufwand. Pflichtlektüre, drei
+Literatursuchen, das Vergleichen der vier Paper-Dateien und das Schreiben von
+drei neuen Abschnitten in zwei Sprachen liegen **vor** 15:30 und dazwischen.
+Und die Spanne ist nicht Klaus' Arbeitszeit.
+
+### Der Fund beim Pflicht-Check vor dem Brief
+
+**PR #401 gehört geschlossen, nicht gemergt.** Der einzige offene PR, Entwurf
+vom 2026-06-23. `main` ist 51 Commits voraus; der Diff zeigt 176.893 Abgänge.
+Seine fünf Bilder liegen alle schon in `main`, dort aber in neueren
+(17.08.) und größeren Fassungen.
+
+Ein Merge würde rund 177.000 Zeilen zurückdrehen und fünf Bilder verschlechtern.
+Die Entscheidung liegt bei Klaus.
