@@ -9,6 +9,75 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
 
+## 🚨 Dieser Ordner ist die EINZIGE Quelle der beiden Papers
+
+**Seit 2026-09-02.** Vorher gab es jedes Paper zweimal: hier und unter
+`sbkim-demo/`. Die beiden Fassungen waren **nicht gleich**, sie trugen sogar
+verschiedene Titel. Hier stand „Ein Protokoll für Semantisches Bidirektionales
+**KI-Matching**", dort „Ein Offenes Protokoll für Semantisches Bidirektionales
+**Wissensintegriertes** Matching".
+
+**Zwei Texte mit derselben Überschrift und verschiedenem Inhalt lassen sich
+nicht mehr reparieren, sobald jemand einen davon zitiert hat.** Deshalb:
+
+- **Gepflegt wird nur hier.** `sbkim-demo/SBKIM_Paper.html` und
+  `sbkim-demo/SBKIM_Paper_DE.html` sind seitdem **Zeiger-Seiten**, die hierher
+  weiterleiten und sagen, warum. Die vier Verweise aus `sbkim-demo/index.html`
+  und `sbkim-demo/hub.html` funktionieren weiter.
+- **Gültig ist die Lesart „Semantisches Bidirektionales KI-Matching."** So steht
+  der Name auch in den übrigen Depots dieses Netzes.
+- **Wer eine Änderung am Papier vornimmt, macht sie hier** und nirgends sonst.
+
+> Was beim Vergleich sonst noch herauskam: die Demo-Fassungen trugen bessere
+> Druck-Regeln (`break-inside`, `orphans`/`widows`). Die sind übernommen worden,
+> bevor die Dateien zu Zeigern wurden. **Vor dem Zusammenlegen vergleichen.**
+> Sonst wirft das Zusammenlegen etwas weg.
+
+## Die veröffentlichte Fassung ist die ERSTE (Klaus 2026-09-02)
+
+**Das Paper vom Mai 2026 ist nie veröffentlicht worden.** Es lag als Entwurf in
+diesem Depot. Was jetzt hinausgeht, ist die Erstveröffentlichung.
+
+⚠ **Daraus folgt eine Regel für den Text selbst.** In den Papers stehen **keine
+Berichtigungs-Vermerke** mehr. Ein Kasten „Berichtigt am 2. September" sagt einem
+Leser, es habe eine frühere öffentliche Aussage gegeben, die falsch war. Es gab
+keine. Der Leser zöge einen Rückschluss auf etwas, das nie stattgefunden hat, und
+lernte nichts über das, was vorgeschlagen wird.
+
+> Klaus: *„Gestalte es bitte so, dass es gedanklich nachvollziehbar ist und keiner
+> irgendwelche falschen Rückschlüsse zieht. Die Irreführungen sind, die auch nichts
+> zur Sache tun und nichts beitragen zur Aufklärung und zur Erklärung darüber, was
+> wir jetzt vorschlagen."*
+
+**Wo die Geschichte stattdessen steht:** in der Geschichts-Galerie auf der
+Startseite, **Station 8 „Die revidierte Ausgabe"** (`index.html`,
+`STATIONS_DATA[7]`). Dort gehört sie hin, und dort kann sie nachgelesen werden.
+Der vollständige Befund mit allen Messungen bleibt in
+[`REVISION_2026-09-02.md`](REVISION_2026-09-02.md).
+
+**Was in den Papers WEITERHIN steht**, weil es die Sache erklärt und nicht die
+Entstehung: die Vorarbeiten in § 2.1, die Zuschreibung „unabhängig gefunden, nicht
+zuerst gefunden" in § 5, der Vorbehalt zu den rohen Ähnlichkeitswerten in § 6.2,
+die Methoden-Grenzen der Literatursuche und § 9 zur Entstehung des Textes.
+
+### Was der Entwurf vom Mai nicht mehr hergab
+
+| | |
+|---|---|
+| § 2.1/2.2 **neu** | die Vorarbeiten, aus denen die Bausteine stammen: reziproke Empfehlungssysteme, semantische Überlagerungsnetze, Agent Cards |
+| § 3.5 **neu** | die Selbstbeschreibung folgt dem Inhalt. Vektor aus dem Bestand gerechnet, Versionszähler als Drift-Merkmal, neu signiert. War seit Spore v0.2 gebaut und stand in keinem Papier |
+| § 5 **neu** | wie das entstanden ist, samt der zwei Genauigkeiten („keine KIs, die sich erkennen" · „server-los" in Anführungszeichen) |
+| § 6 **überarbeitet** | 33 Depots statt zwei HTML-Dateien, mit den Zahlen und der Messung vom 10.07. |
+| § 7.1 **aufgeteilt** | was belegt ist ⟷ was offen bleibt, samt der Hintergrund-Tab-Grenze |
+| § 8 **zurückgenommen** | der Neuheits-Anspruch fällt; die gestrichene Fassung bleibt sichtbar stehen |
+| § 9 **neu** | zur Entstehung des Textes: wer die redaktionelle Verantwortung trägt und worin die Prüfung bestand |
+
+**Der Satz, auf den alles hinausläuft:** die Bausteine sind bekannt; der Betrieb
+ist der Beitrag.
+
+**Die Papers tragen als Datum „September 2026 · Erstveröffentlichung".** Kein
+Mai-Datum und keine Fassungsnummer, die eine frühere Ausgabe suggeriert.
+
 > **Kommende Papers:** drei weitere sind geplant, regelbasiertes und
 > grundsatzbasiertes Lenken · wie KI auf den Menschen wirkt · KI-Kompetenz im
 > täglichen Gebrauch. Gerüst, Gliederungen und die Stellen, an denen jedes
@@ -16,12 +85,12 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 
 ## Zweck
 
-Die Geschichts-Galerie zeigt **vier** Stationen der Sage-
-Entwicklung als Galaxien, die auf einer gemeinsamen Ellipsen-
-Bahn um ein zentrales Sonnen-Zentrum tanzen. Drei davon sind
-**text-only** und tragen ihren Erzähl-Text direkt im
-`STATIONS_DATA`-Array (per Folge-Mini-Pflegen nachgezogen). Die
-vierte Station ist **dokumentengestützt**. Ihr Modal verlinkt
+Die Geschichts-Galerie zeigt die Stationen der Sage-Entwicklung
+als Galaxien, die auf einer gemeinsamen Ellipsen-Bahn um ein
+zentrales Sonnen-Zentrum tanzen (Stand 2026-09-02: **acht**).
+Die meisten sind **text-only** und tragen ihren Erzähl-Text
+direkt im `STATIONS_DATA`-Array. Drei sind
+**dokumentengestützt**. Ihr Modal verlinkt
 auf eine echte HTML-Datei, die hier im Repo liegt. Das ist die
 einzige Daseinsberechtigung für diesen Ordner.
 

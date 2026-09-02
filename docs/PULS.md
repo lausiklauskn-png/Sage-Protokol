@@ -31,6 +31,182 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-02 (Bau) · 📄 Die Papers auf den heutigen Stand, als Feldbericht
+
+**Rolle:** Bausitzung nach dem Brief „Papers auf den heutigen Stand bringen".
+Grundlage war der genehmigte Plan in [`papers/REVISION_2026-09-02.md`](papers/REVISION_2026-09-02.md)
+(PR #927). Ergebnis: **PR #929**, Entwurf.
+
+### Was getan
+
+Beide SBKIM-Papers sind von Vorschlag auf **Feldbericht** umgestellt. Neun
+Abschnitte statt sieben, DE und EN parallel.
+
+⚠ **Nachtrag am selben Tag, auf Klaus'"'"' Einwand:** das Paper vom Mai ist **nie
+veröffentlicht** worden, es lag als Entwurf im Depot. Alle Berichtigungs-Vermerke
+(„Berichtigt am", „Zurückgenommen am") sind deshalb wieder aus den Papers heraus.
+Sie hätten einem Leser eine frühere öffentliche Ausgabe suggeriert, die es nie
+gab. Die Geschichte steht jetzt in **Station 8 der Geschichts-Galerie**; die
+Papers tragen „September 2026 · Erstveröffentlichung".
+
+| Abschnitt | Was |
+|---|---|
+| § 2.1 / 2.2 **neu** | die Vorarbeiten: reziproke Empfehlungssysteme, semantische Überlagerungsnetze (~2008), Agent Cards. Die Vergleichstabelle behauptet in keiner Spalte mehr, SBKIM sei allein |
+| § 5 **neu** | wie das entstanden ist, aus der Geschichts-Galerie und dem Meilenstein § 2 |
+| § 6 **überarbeitet** | 33 Depots statt zwei HTML-Dateien, mit der Messung vom 10.07.2026 |
+| § 7.1 **aufgeteilt** | zwei Teilprobleme belegt, zwei offen, dazu die Wach-Tab-Grenze |
+| § 8 **zurückgenommen** | der Neuheits-Anspruch fällt |
+| § 9 **neu** | zur Entstehung des Textes |
+
+Dazu: **eine Quelle statt zwei** (`docs/papers/` gilt, `sbkim-demo/` zeigt
+darauf), `ABGRENZUNG.md` nachgezogen, und im Skill `menschlich-schreiben` der
+präzisierte Zielsatz. **Kein Zenodo-DOI.** Er wartet auf Klaus' Sichttest.
+
+### Drei Funde, die im Plan noch nicht standen
+
+1. **Zwei weitere tote Verweise**, ausgerechnet in der zur Quelle erklärten
+   Fassung: die „Live-Demo Layer 1/2"-Verweise in
+   `docs/papers/sbkim-paper-{de,en}.html` zeigten auf `index.html` und
+   `sbkim-network.html`, die es in dem Ordner nicht gibt. **In der
+   Demo-Fassung liefen dieselben Verweise**, deshalb fielen sie beim ersten
+   Durchgang nicht auf. Eine Datei an zwei Orten hat an einem davon andere
+   Nachbarn.
+2. **Die beiden Fassungen trugen verschiedene TITEL**, nicht nur verschiedene
+   Prüfsummen: „Semantisches Bidirektionales **KI-Matching**" gegen
+   „Semantisches Bidirektionales **Wissensintegriertes** Matching". Das ist
+   die Drift in ihrer schlimmsten Form, weil sie zwei Zitationen erzeugt.
+3. **Die Demo-Fassungen hatten die besseren Druck-Regeln.** Übernommen, bevor
+   die Dateien zu Zeigern wurden. **Ohne den Vergleich hätte das
+   Zusammenlegen sie verloren.** Genau dafür stand „vorher vergleichen" im
+   Auftrag.
+
+### Die Zahl, die zweimal richtig ist
+
+Der Plan nennt 5.823 Commits, `historie/arbeitstage-zahlen.html` nennt 5.775.
+Beide stimmen; die Differenz sind **48 zeitgesteuerte Läufe**, und diese Datei
+hält das schon fest. **Die Papers nennen beide** mit ihrer Bedeutung. Eine
+allein wäre je nach Wahl zu hoch oder zu niedrig.
+
+### Was die Probe gefunden hat, und sie hatte recht
+
+`smoke_antragsmappe` schlug an: in `ABGRENZUNG.md` standen nach der Bearbeitung
+**fünf Gedankenstriche**. Klaus' Regel vom 2026-08-24 verbietet sie in seinen
+eigenen Texten, und der Wächter setzt sie durch. Aufgelöst zu Sätzen, die
+erzeugten Blätter der Antragsmappe neu gebaut.
+
+> Bemerkenswert daran ist nicht der Fehler, sondern dass ihn **kein Mensch**
+> finden musste. Der Wächter stand da, bevor die Zeile geschrieben wurde.
+
+### Gemessen
+
+| | |
+|---|---|
+| `node tests/run_alle.mjs` | **89 Proben · 89 grün · 0 rot · 0 nicht lauffähig** |
+| HTML beider Papers | wohlgeformt, gleiche Gliederung (9 × h2, 16 × h3) |
+| relative Verweise in den vier Paper-Dateien | jeder löst auf eine vorhandene Datei auf |
+| `git grep "semantic-match-demo" -- docs/papers sbkim-demo` | **1**, siehe unten |
+
+### Was offen ist
+
+- **Klaus' Sichttest der v0.2 im Browser.** Nicht ersetzbar, und der DOI hängt
+  daran.
+- **`git grep` gibt 1 statt der erwarteten 0.** Der Treffer steht in
+  `REVISION_2026-09-02.md` in einem Zitat-Block und ist die Aufzeichnung
+  dessen, *was* der tote Verweis war. **Kein klickbarer Verweis, das ist
+  nachgemessen.** Ihn zu entfernen hieße, den Befund zu löschen. Klaus
+  entscheidet.
+- **Der Anspruchs-Satz in `ABGRENZUNG.md` § 4** steht weiter da und ist nur
+  eingeordnet. Ob er ganz fällt, ist nicht entschieden.
+- **Abschnitte 1–4 und § 7.2–7.4 der Papers** sind ungeprüft geblieben, wie im
+  Auftrag vorgegeben.
+- **Die Literatursuche bleibt zu dünn für eine Veröffentlichung.** Drei
+  Suchen, an Titeln und Zusammenfassungen geprüft, nicht an den Volltexten;
+  `arxiv.org` und die Verlagsseiten sind aus dieser Umgebung gesperrt.
+
+### Drei weitere Runden am selben Abend, alle aus Klaus' Sichttest
+
+**1 · Die Berichtigungs-Vermerke mussten wieder raus.** Klaus: *„Ich habe noch
+nichts veröffentlicht. Das ist das erste Mal."* Das Mai-Paper lag als Entwurf im
+Depot. Ein Kasten „Berichtigt am 2. September" behauptet damit eine frühere
+öffentliche Aussage, die es nie gab. Vier Kästen je Sprache heraus, dazu die
+Fassungs-Notiz. Das Datum heißt jetzt **September 2026 · Erstveröffentlichung**.
+Die Geschichte steht in **Station 8** der Geschichts-Galerie.
+
+**2 · Die Verweise waren dreimal kaputt, jedes Mal anders.**
+
+| Runde | Fehler | Warum er durchkam |
+|---|---|---|
+| vormittags | Ziel gibt es im Ordner nicht | in der Demo-Fassung derselben Datei lief es |
+| abends | Ziel richtig, aber **relativ** | im Depot richtig, als Einzeldatei tot (`FORBIDDEN`) |
+| danach | Adresse richtig, aber `target="_blank"` | eingebetteter Betrachter verschluckt den Klick lautlos |
+
+> **Ein Verweis ist keine Eigenschaft des Textes. Er ist eine Eigenschaft des
+> Textes an seinem Ort.** Ein veröffentlichtes Papier hat keinen festen Ort.
+
+Neu: **`tests/smoke_papers_verweise.mjs`**. Prüft nicht, ob am Zielpfad eine
+Datei liegt (das sagt nur etwas über dieses Depot), sondern ob der Verweis von
+überall trägt: absolut · kein `target="_blank"` · und die Adresse steht auch als
+**lesbarer Text** da, weil auf Papier niemand klicken kann. Vier Gegenproben von
+Hand gefahren, alle vier fallen um, Datei danach per `md5sum` byte-gleich.
+
+**3 · Die Netz-Karte ist ein Beleg, keine Demo** (Klaus' Einwand). Beim
+Nachprüfen im Quelltext wurde der Punkt stärker als gestellt:
+
+| | |
+|---|---|
+| Relais | **fünf**, davon **drei fremde** (`damus.io`, `nos.lol`, `primal.net`) |
+| Senden | **kann sie nicht.** Einziger Aufruf ist `["REQ"`, null `["EVENT"` |
+| Probelauf | vorhanden, im Quelltext als Simulation gekennzeichnet |
+
+**Ein Instrument, das nur lauschen kann, kann den Verkehr nicht hergestellt
+haben, den es anzeigt.** Steht als § 6.3 im Papier, samt Probelauf-Knopf. Ein
+Prüfer findet den sonst selbst und hält die Auskunft für gestellt.
+
+⚠ **Und ein Befund gegen die naheliegende Annahme.** Klaus schlug vor, beides
+zusammen anzuführen (Tablet als Hub, zwei Geräte als Verkäufer und Käufer). Der
+Aufbau stimmt, **der Transport ist ein anderer**: die Vorführungen laufen über
+**WebRTC** mit dem Vorgabe-Vermittler von PeerJS, drei CDN-Bibliotheken und einem
+**bezahlten Anthropic-Schlüssel**. Das laufende Netz läuft über **Nostr-Relais**,
+ohne beides. Beides in einen Topf zu werfen hätte zwei Systeme als eines
+ausgegeben. § 6.3 stellt sie gegenüber.
+
+Daraus ein Satz, der vorher nirgends stand: **das Verfahren ist an keinen
+Transport gebunden, zwei haben es getragen.**
+
+### Und ein Abschnitt, der ganz gefehlt hat
+
+**§ 3.5 „Die Selbstbeschreibung folgt dem Inhalt"** ist neu in beiden Papers.
+Nachgeprüft, dass es fehlte: „Spore" kam dreimal vor, „Version" einmal, und
+§ 3.4 beschrieb das Protokoll als zustandslos. Dass der Vektor einer Partei aus
+ihrem Bestand gerechnet wird und mit ihm wandert, stand nirgends.
+
+Belegt in `docs/INTERFACES.md` und `src/modules/02_spore.js`:
+`embedContentVector` liefert `source:"content"` · `embeddingSource` hält fest,
+woher der Vektor stammt · `embeddingVersion` steigt bei geändertem Vektor
+(Drift-Merkmal) und die Spore wird neu signiert · `SPORE_SNIPPET_MAX = 20`
+satz-granulare Vektoren neben dem Gesamtvektor · `PROVIDER_MIN_MATCH = 0.80`
+bei gemessenem Boden mean 0,8214 sd 0,0236.
+
+Klaus' Kochbuch-Beispiel steht als Beispiel im Papier: ein Buch, das nur noch
+Sushi führt, wird für eine Sushi-Anfrage höher bewertet als eines mit drei
+Sushi-Rezepten unter zweihundert. **Ein wandernder Vektor ist kein Mangel,
+sondern die Funktion.**
+
+Zwei Sätze stehen dabei, weil sie sonst fehlten: die Zustandslosigkeit aus
+§ 3.4 bleibt unberührt (es ändert sich die Beschreibung, nicht das Verfahren),
+und der hohe Boden begrenzt die Eigenschaft (kleine Änderungen bewegen den
+Vektor, aber nicht den Platz in der Liste).
+
+**Station 8 der Geschichts-Galerie** ist entsprechend nachgezogen.
+
+Gemessen nach allen Runden: **90 Proben, 90 grün, 0 rot.**
+
+### Nächster sinnvoller Schritt
+
+Klaus sieht die zwei Papers im Browser an. Danach der DOI, nicht davor.
+
+---
+
 ## Stand 2026-08-26 (Bau, 3.) · 🔬 Forschungsaufgaben, und jede Sitzung wird eine Messung
 
 **Rolle:** Fortsetzung derselben Sitzung, nach Klaus' Rückfragen. PR #923
