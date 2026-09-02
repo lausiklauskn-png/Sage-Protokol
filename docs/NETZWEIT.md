@@ -17,6 +17,29 @@ welche DB-Schublade, welcher Test-Befehl).
 
 **Wer eine dieser Regeln ändert, ändert sie hier — und nur hier.**
 
+## Für wen sie gelten (Klaus 2026-09-02)
+
+**Für beide Seiten.** Was hier steht, ist keine Dienstanweisung an die Sitzung,
+sondern die gemeinsame Arbeitsgrundlage — Klaus hält sich daran wie die Sitzung.
+
+Der Grund ist keine Höflichkeit, sondern Mechanik: **die Sitzung arbeitet nach
+Anleitung.** Sie hält die Regeln, weil sie hier stehen. Wer die Anleitung gibt,
+setzt damit auch aus, was gilt — eine Regel, die nur die eine Seite bindet,
+während die andere die Richtung vorgibt, ist keine Regel, sondern ein Wunsch.
+
+Praktisch heißt das:
+
+| | |
+|---|---|
+| **Klaus** | sagt es dazu, wenn eine Bitte eine Regel aussetzen soll — dann gilt die Ausnahme benannt, wie bei jeder anderen Tafel |
+| **die Sitzung** | sagt es, wenn eine Bitte gegen eine Regel steht, statt sie stillschweigend zu umfahren |
+| **beide** | erinnern einander, statt hinterher zuzuordnen, wer schuld war |
+
+Das ist die **Tafel-Evolutions-Klausel** an einer anderen Tür: nicht stoisch
+befolgen, nicht stumm umfahren, sondern ausdrücklich benennen. Und es ist die
+Ehrlichkeits-Regel aus § 6, auf die Zusammenarbeit angewandt statt auf einen
+Befund.
+
 ---
 
 ## 1 · Selbst-Merge-Freibrief
@@ -240,11 +263,18 @@ genauesten hinsehen musst.
 
 ---
 
-## 6a · Das Ziel im Auge behalten (Klaus 2026-09-02)
+## 6a · Das Ziel im Auge behalten — beide (Klaus 2026-09-02)
 
 > *„verliere das Ziel nicht aus dem Auge … auch wenn etwas dazwischen kommt. Das
 > Ziel im Auge behalten heißt mitziehen und die ergänzenden Aufgaben abgleichen
 > mit dem Ziel der Sitzung und das mit der übergeordneten Vision."*
+>
+> Und einen Abend später, als daraus eine einseitige Regel geworden war:
+>
+> *„dass ich weder durch deine Fragestellung noch dass Du durch meine
+> Fragestellung vom Ziel abgelenkt werden. Vielleicht sollten wir uns beide in
+> die Richtung lenken, dass wir uns erinnern, in welche Richtung wir arbeiten
+> wurden. … Schuldzuweisung selber bringt nichts. Das ist unsinnig."*
 
 Eine Sitzung hat ein Ziel, und das Ziel hat einen Zweck über der Sitzung. Beides
 gilt weiter, wenn unterwegs etwas Interessantes auftaucht — und unterwegs taucht
@@ -254,8 +284,8 @@ immer etwas auf.
 
 | | Frage |
 |---|---|
-| **Sitzungs-Ziel** | wofür bin ich losgeschickt worden, und steht das noch offen? |
-| **Vision** | zahlt das hier darauf ein, oder nur auf meine Neugier? |
+| **Sitzungs-Ziel** | wofür sind wir losgegangen, und steht das noch offen? |
+| **Vision** | zahlt das hier darauf ein, oder nur auf die Neugier des Augenblicks? |
 | **Der Fund selbst** | ist er so schwer, dass er das Ziel verdrängen *darf*? |
 
 **Mitziehen heißt nicht abbrechen.** Ein echter Fund wird nicht weggeworfen, weil
@@ -263,14 +293,44 @@ er nicht ins Ziel passt — er wird **aufgeschrieben und eingereiht**, und das Z
 läuft weiter. Ein Fund, den man liegen lässt, kommt teurer zurück; ein Ziel, das
 man liegen lässt, kommt gar nicht wieder.
 
-**Und es wird gesagt, wenn abgebogen wird.** Wer merkt, dass er seit einer Weile
-etwas anderes tut als das, wofür er losgeschickt wurde, sagt das von selbst —
-nicht erst, wenn gefragt wird.
+### Die Regel bindet beide, und sie sucht keinen Schuldigen
+
+**Eine Frage kann in beide Richtungen ziehen.** Klaus' Frage kann die Sitzung vom
+Sitzungs-Ziel wegführen; die Frage der Sitzung kann Klaus von seinem wegführen.
+Beides passiert ohne bösen Willen und meistens, weil die Frage gut ist.
+
+Dazu kommt etwas, das an der Sitzung liegt: **sie arbeitet nach Anleitung.** Wo
+die Anleitung hinzeigt, geht sie hin. Eine Frage ist für sie faktisch eine
+Anleitung — sie kann sie nicht als Nebensache behandeln, nur weil sie nebenbei
+gestellt war. Deshalb kann die Regel nicht nur für die Sitzung gelten: **eine
+Regel, die nur eine Seite bindet, während die andere die Richtung vorgibt, wirkt
+nicht.**
+
+| | tut |
+|---|---|
+| **Klaus** | sagt beim Abbiegen dazu, ob das Sitzungs-Ziel warten soll oder mitläuft |
+| **die Sitzung** | sagt von selbst, wenn sie merkt, dass sie seit einer Weile etwas anderes tut |
+| **beide** | erinnern einander an die Richtung, **bevor** die Kleinigkeit groß wird |
+
+**Das Erinnern ist der Kern, nicht das Feststellen.** Wer sagt *„wir wollten
+eigentlich zu X"*, tut etwas Nützliches. Wer hinterher sagt *„du hast mich
+abgelenkt"* oder *„ich hätte es merken müssen"*, tut nichts — die Zeit ist
+gleich weg, und eine Schuldfrage bringt keine Minute zurück.
+
+> Die erste Fassung dieses Abschnitts, vom selben Tag, endete mit
+> *„gefragt hat Klaus, nicht ich."* Das war eine Schuldzuweisung an die eigene
+> Adresse, und Klaus hat sie zu Recht gestrichen. Sie beschreibt richtig, was
+> geschah, und hilft niemandem beim nächsten Mal.
+
+**Der Satz, der stattdessen dasteht:** *„Wo wollten wir eigentlich hin?"* — von
+beiden, jederzeit, ohne Vorwurf.
 
 > **Anlass:** eine Sitzung, die für die Veröffentlichung der Papers und den
-> Zenodo-DOI losgeschickt war, hat vier Stunden lang eine Sporen-Diagnose
-> betrieben. Die Diagnose war richtig und hat drei Irrtümer aufgedeckt. Der DOI
-> stand am Ende trotzdem noch offen, und **gefragt hat Klaus, nicht ich.**
+> Zenodo-DOI losgegangen war, hat vier Stunden an einer Sporen-Diagnose
+> gearbeitet. Die Diagnose war richtig und hat drei Irrtümer aufgedeckt, einen
+> davon in einer Auskunft der Sitzung selbst. Der DOI stand am Ende trotzdem
+> noch offen. **Beide Hälften gehören zum Befund** — der Fund war es wert, und
+> das Ziel ist trotzdem liegen geblieben.
 
 ---
 

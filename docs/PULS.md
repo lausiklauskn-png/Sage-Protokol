@@ -286,6 +286,36 @@ Diese Datei stand bei 3.000 Zeilen, der Grenze. Die fünf Einträge vom
 `sessions/archiv/2026-08-23_puls-eintraege-fuenf-sitzungen.md` gezogen; hier
 stehen fünf Verweis-Zeilen. Stand jetzt: 2.856 Zeilen.
 
+### Der Grundsatz noch einmal, und diesmal für beide
+
+Die erste Fassung von `NETZWEIT § 6a` band nur die Sitzung und endete mit einer
+Schuldzuweisung an die eigene Adresse. Klaus hat beides gestrichen:
+
+> *„dass ich weder durch deine Fragestellung noch dass Du durch meine
+> Fragestellung vom Ziel abgelenkt werden … Schuldzuweisung selber bringt nichts.
+> Das ist unsinnig."*
+
+Und der Grund, warum es nicht bei einer einseitigen Regel bleiben kann, kam
+gleich mit: **die Sitzung arbeitet nach Anleitung.** Wo die Anleitung hinzeigt,
+geht sie hin — eine Frage ist für sie faktisch eine Anleitung. Eine Regel, die
+nur eine Seite bindet, während die andere die Richtung vorgibt, wirkt nicht.
+
+Seitdem steht in `NETZWEIT.md` ein eigener Abschnitt **§ Für wen sie gelten**:
+die Regeln sind die gemeinsame Arbeitsgrundlage, nicht eine Dienstanweisung. Eine
+Bitte, die gegen eine Regel steht, wird **benannt** — von der Sitzung, statt sie
+stumm zu umfahren, und von Klaus, wenn er sie ausdrücklich aussetzen will. Das
+ist die Tafel-Evolutions-Klausel an einer anderen Tür.
+
+Der Satz, der die Schuldzuweisung ersetzt und von beiden kommen darf:
+**„Wo wollten wir eigentlich hin?"**
+
+### Für die nächste Sitzung
+
+Der Brief steht in
+[`sessions/BRIEF_nach_papers_veroeffentlichung.md`](sessions/BRIEF_nach_papers_veroeffentlichung.md).
+Drei offene Punkte, alle im Browser: der Zenodo-DOI, Sages Netz-Identität, und
+die Beschreibung, die in die App gehört und nicht in die Datei.
+
 ### Nächster sinnvoller Schritt
 
 Zwei Dinge, in dieser Reihenfolge. **Erst** die Beschreibung dort eintragen, wo
