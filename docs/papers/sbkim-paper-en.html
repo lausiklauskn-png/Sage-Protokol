@@ -145,8 +145,19 @@ body {
      drei Stellen, zusammen 1,4 leere Seiten. */
   .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
 
-  /* WAS UMBRECHEN DARF - aber nie mitten in einer Zeile oder Fussnote. */
-  .abstract, table, tbody, .footnotes { break-inside:auto; }
+  /* ⚠ TABELLEN BLEIBEN GANZ (Klaus 2026-09-03, zum zweiten Mal gemeldet:
+     „Tabelle zum Beispiel [falsch] umgebrochen").
+     #939 hatte sie am selben Tag auf `auto` gesetzt, und mit gutem Grund:
+     bei 987 px Nutzhoehe und Tabellen von 555 px blieben sonst 1,4 Seiten
+     leer. Seitdem sind die Raender enger (15/14 statt 18/16 mm) und die
+     Tabellenschrift kleiner (12,6 px, Innenabstand 6/10 px) -- die groesste
+     Tabelle misst jetzt rund 330 statt 555 px. Was damals ein schlechter
+     Tausch war, ist es heute nicht mehr; deshalb steht die Entscheidung
+     um, nicht die Messung.
+     Zusammenfassung und Fussnoten duerfen weiter fliessen: die eine ist
+     Text, die andere eine Liste, und beide liest niemand als Block. */
+  .abstract, .footnotes { break-inside:auto; }
+  table { break-inside:avoid; }
   tr, .footnotes p, .dim-card { break-inside:avoid; }
 
   p, li { orphans:3; widows:3; }

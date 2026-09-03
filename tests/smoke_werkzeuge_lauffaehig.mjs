@@ -55,6 +55,7 @@ const NUR_SYNTAX = {
   'html-zu-pdf.mjs': 'startet einen Browser',
   'paper-zu-pdf.mjs': 'startet einen Browser, holt Schriften und steigt ohne Argument mit exit(2) aus',
   'paper-umbruch-pruefen.mjs': 'startet einen Browser und steigt ohne Argument mit exit(2) aus',
+  'paper-pdf-pruefen.mjs': 'ruft pdftotext auf und steigt ohne Argument mit exit(2) aus',
   'arbeitstage-pdf.mjs': 'startet einen Browser',
   'antragsmappe-markieren.mjs': 'schreibt in die Mappe',
   'gedankenstriche-aufloesen.mjs': 'schreibt in die Quellen',
