@@ -9,6 +9,38 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
 
+## Der DOI (Zenodo, 2026-09-03)
+
+**[`10.5281/zenodo.22277738`](https://doi.org/10.5281/zenodo.22277738)** — die zitierfähige Adresse beider Papers.
+
+Beide Sprachfassungen liegen unter **einem** DOI, weil sie **ein** Werk sind:
+derselbe Text, zwei Sprachen, in einem Zenodo-Eintrag mit zwei Dateien. Zwei
+getrennte DOIs hätten aus einer Arbeit zwei gemacht, und wer eine davon
+zitiert, hätte die andere nicht mit erfasst.
+
+Eingetragen ist er an **vier** Stellen, und die Liste steht hier, damit die
+nächste Fassung keine davon vergisst:
+
+| Wo | Was |
+|---|---|
+| beide Papers, Zeile unter der Herkunft | `<p class="paper-doi">` |
+| diese Datei | dieser Abschnitt |
+| `index.html`, Station 4 und 5 | im Erzähl-Text der Galerie |
+| `index.html`, Station 8 | im Absatz zur zweiten Fassung |
+
+⚠ **Ein DOI ist unveränderlich.** Was unter dieser Nummer liegt, bleibt dort.
+Die Angaben daneben (Titel, Beschreibung, Schlüsselwörter) lassen sich bei
+Zenodo nachträglich ändern, die **Dateien nicht**. Wer eine neue Fassung
+veröffentlicht, legt bei Zenodo eine neue Version an — sie bekommt einen
+eigenen DOI und bleibt über den Concept-DOI mit dieser verbunden.
+
+**Lizenz: CC BY 4.0** für den Aufsatz. Die darin beschriebene
+Protokoll-Spezifikation ist gemeinfrei, wie im Text an zwei Stellen steht —
+das ist kein Widerspruch, sondern die übliche Trennung zwischen dem Text und
+dem darin beschriebenen Verfahren.
+
+---
+
 ## 🚨 Dieser Ordner ist die EINZIGE Quelle der beiden Papers
 
 **Seit 2026-09-02.** Vorher gab es jedes Paper zweimal: hier und unter

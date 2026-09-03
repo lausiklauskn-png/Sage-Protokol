@@ -206,6 +206,8 @@ body {
   color:var(--t3);
   margin-bottom:6px;
 }
+.paper-doi { font-family:'Inter',sans-serif; font-size:13px; margin-bottom:6px; }
+.paper-doi a { color:var(--accent); text-decoration:none; }
 .paper-links {
   font-family:'Inter', sans-serif;
   font-size:12.5px;
@@ -399,6 +401,10 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <p class="paper-authors">Independent Research · Open Protocol Proposal</p>
   <p class="paper-date">September 2026 · Second version · first version May 2026 in the open
     repository · second publication via Zenodo</p>
+  <!-- The DOI gets its OWN line under the provenance, not inside it: it is this
+       document's citable address, copied out rather than skimmed. As a link AND
+       as readable text -- on paper nobody can click. -->
+  <p class="paper-doi">DOI: <a href="https://doi.org/10.5281/zenodo.22277738">doi.org/10.5281/zenodo.22277738</a></p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Reference Implementation →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live Demo Layer 1 →</a>
