@@ -97,19 +97,40 @@ body {
      10,4 auf 8,8 px zu setzen aenderte an der Seitenzahl NICHTS -- die Regel
      traf kein einziges sichtbares Zeichen. Eine Regel, deren Fehlen nichts
      aendert, ist eine Behauptung. */
-  /* ⚠ DIE QUELLEN PASSEN NICHT MIT AUF DIE SEITE VON ABSCHNITT 9, und das
-     ist gemessen, nicht geschaetzt. Klaus' Bitte war, sie kleiner zu setzen,
-     damit beides zusammen aufgeht. Bei 1.009 px Nutzhoehe braucht Abschnitt 9
-     allein 681 px; die Quellen kamen einspaltig auf 373, zweispaltig auf 326,
-     dreispaltig bei 9,2 px auf rund 300. Rechnerisch passt das -- gedruckt
-     nicht: Chromium schiebt den Spalten-Kasten als GANZES weiter, sobald er
-     nicht vollstaendig auf die Restseite geht. Vier Anlaeufe mit immer
-     kleinerer Schrift aenderten an der Seitenzahl nichts.
-     Statt die Quellen mitten in der Liste zu zerreissen, bekommen sie eine
-     eigene Seite. Abschnitt 8 und 9 haben damit ihre, wie gewuenscht. */
-  .footnotes { break-before:page; column-count:3; column-gap:16px; }
-  .footnotes p { font-size:9.2px; line-height:1.38; margin-bottom:4px;
-                 break-inside:avoid; }
+  /* DIE QUELLEN STEHEN MIT AUF DER SEITE VON ABSCHNITT 9 (Klaus 2026-09-03):
+     „Beim Punkt neun noch die Quellen darunter packen. Und zwar deshalb
+     kleiner, damit sie auf die Seite mitpassen."
+
+     ⚠ NICHT die Schriftgroesse war das Hindernis, sondern MEIN EIGENER
+     SPALTEN-KASTEN. Ich hatte `column-count` gesetzt, um Platz zu sparen --
+     und damit den Fehler erst gebaut: Chromium schiebt einen mehrspaltigen
+     Kasten als GANZES auf die naechste Seite, sobald er nicht vollstaendig
+     auf die Restseite geht. Vier Anlaeufe mit immer kleinerer Schrift
+     aenderten deshalb an der Seitenzahl nichts, und ich habe daraus
+     geschlossen, es passe nicht. Es passte die ganze Zeit; nur floss es
+     nicht.
+     Einspaltig fliesst der Text wie jeder andere Absatz und fuellt die
+     Restseite. Gemessen bei 1.009 px Nutzhoehe: Abschnitt 9 braucht 681 px,
+     die Quellen bei 9,4 px rund 270. */
+  /* ⚠ `.paper` DAVOR IST NICHT ZIERDE, SONDERN NOTWENDIG. Der Bildschirm-Stil
+     setzt `.footnotes p { font-size:12.5px }` und steht in dieser Datei WEITER
+     UNTEN als der Druck-Block. `@media print` erhoeht die Spezifitaet nicht --
+     bei gleichem Gewicht gewinnt die spaetere Regel, also die fuer den
+     Bildschirm. Zweimal habe ich am 2026-09-03 Werte gedreht, die kein
+     einziges Zeichen trafen: von 10,4 auf 8,8 px aenderte nichts, von 9,4 auf
+     8,4 px aenderte 33 px statt der erwarteten 90.
+     Die Gegenprobe ist jedes Mal dieselbe: eine Zahl, die sich nach der
+     Aenderung NICHT bewegt. */
+  /* Vor den Quellen steht eine Trennlinie, und der Quellen-Block bringt
+     seine eigene Oberkante mit -- im Druck sind das zwei Striche und rund
+     40 px fuer dieselbe Aussage. Der Divider geht weg, die Kante bleibt.
+     Genau diese 40 px waren es, die den Rest der Liste auf eine 16. Seite
+     geschoben haben. */
+  .divider + .footnotes { margin-top:0; }
+  hr.divider:has(+ .footnotes) { display:none; }
+  .paper .footnotes { font-size:9px; margin-top:8px; padding-top:7px; }
+  .paper .footnotes p { font-size:9px; line-height:1.3; margin-bottom:1px;
+                        break-inside:avoid; }
 
   /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
      Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
