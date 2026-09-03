@@ -5,6 +5,14 @@
 > kürzen**. Kein Satz ist verändert, gekürzt oder umformuliert. In `PULS.md`
 > stehen an dieser Stelle jetzt fünf Tabellen-Zeilen, die hierher verweisen.
 
+> **Zu den Verweisen im Wortlaut:** die Links wurden geschrieben, als der Text in
+> `docs/PULS.md` stand, und sind deshalb relativ zu **`docs/`** gemeint. Aus diesem
+> Verzeichnis lösen sie nicht auf. Wer einem folgen will, stellt `docs/` davor —
+> ein Verweis auf `papers/…` meint `docs/papers/…`. Verweise auf `http…` und auf
+> Nachbardateien in diesem Verzeichnis stimmen. **Der Wortlaut wurde dafür NICHT
+> angefasst**: eine ausgelagerte Fassung, die sich vom Original unterscheidet, wäre
+> keine Auslagerung mehr.
+
 ---
 
 ## Stand 2026-08-23 (Bau) — 📦 Antragsmappe: eine Datei, zwei Abteilungen

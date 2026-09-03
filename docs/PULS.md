@@ -31,6 +31,90 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-03 (Bau) · 🗄 PULS ausgelagert — 2.927 → 2.079 Zeilen
+
+**Übergabeprotokoll:** [`sessions/archiv/2026-09-03_puls-auslagerung.md`](sessions/archiv/2026-09-03_puls-auslagerung.md)
+
+**Rolle:** Bausitzung. Auftrag: die Datei stand bei **2.927 von 3.000 Zeilen**,
+die Schutz-Klausel im Kopf verlangt **auslagern statt kürzen** und verbietet,
+die Grenze herabzusetzen. Kein Modul-Code angefasst, kein `status.json`, kein
+Pie-Block.
+
+| | |
+|---|---|
+| vorher | **2.927** Zeilen |
+| nach dem Auslagern | **2.079** Zeilen |
+| ausgelagert | **848** Zeilen Wortlaut in drei Archiv-Dateien |
+| mit diesem Eintrag | **2.163** Zeilen — das ist der Stand, den `wc -l` meldet |
+| Luft bis zur Grenze | **837** Zeilen |
+
+### Was wohin ging
+
+Ausgelagert wurden **alle Sitzungs-Einträge außer dem obersten**. Der neueste
+bleibt in voller Länge stehen; er trägt den Stand, den eine Folge-Sitzung
+zuerst braucht.
+
+| Archiv-Datei | Einträge | Zeilen |
+|---|---|---|
+| `sessions/archiv/2026-09-03_puls-eintraege-zwei-sitzungen.md` | DOI ist da · PDFs für Zenodo | 250 |
+| `sessions/archiv/2026-09-02_puls-eintrag-papers-feldbericht.md` | Papers als Feldbericht | 322 |
+| `sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md` | Forschungsaufgaben · lückenlose Dokumentation · Unterlagen der Reihe nach | 306 |
+
+Im PULS steht an jeder Stelle ein **Zeiger-Block** mit Überschrift, Zeilenzahl,
+Weg zum Wortlaut und — neu gegenüber den früheren Auslagerungen — dem Weg zum
+**Übergabeprotokoll** derselben Sitzung, wo es eines gibt.
+
+### Gemessen, nicht behauptet: es fehlt nichts
+
+Jede nicht-leere Zeile der alten Datei wurde gegen die neue Datei **und** gegen
+die drei Archiv-Dateien geprüft: **0 Zeilen ohne Fundstelle.**
+
+⚠ **Und die Prüfung ist nicht blind.** Dieselbe Prüfung, gegen ein um 50 Zeilen
+beschnittenes Archiv gefahren, meldet **37** fehlende Zeilen. Ohne diese
+Gegenprobe wäre „0 fehlt" nur ein grüner Haken — eine Prüfung, die dir recht
+gibt, ist der Ort, an dem man am genauesten hinsieht.
+
+### Ein Befund, der auch die früheren Auslagerungen betrifft
+
+Die Verweise **im ausgelagerten Wortlaut** waren relativ zu `docs/` geschrieben.
+Aus `docs/sessions/archiv/` lösen sie nicht auf — `](papers/REVISION_2026-09-02.md)`
+zeigt dort ins Leere. Dasselbe gilt für die beiden **früheren** Auslagerungs-Dateien
+(2026-08-23 und 2026-08-24); dort steht der Fehler seit dem 2026-09-02.
+
+Die Links wurden **nicht umgeschrieben**: eine ausgelagerte Fassung, die sich vom
+Original unterscheidet, wäre keine Auslagerung mehr, und der Kopf behauptet
+„Wortlaut unverändert". Stattdessen trägt jede der **fünf** Dateien jetzt einen
+Kasten, der die Lesart nennt (`docs/` davorstellen). **Eine benannte Lücke ist
+Arbeit, eine stille ist Schaden.**
+
+### Nicht geprüft
+
+- **Kein Browser-Lauf.** Diese Sitzung hat nur Markdown bewegt; `tests/manual_check.html`
+  wurde nicht geöffnet.
+- Die Zeiger-Tabellen sind **nicht** durchgeklickt worden. Geprüft ist, dass jede
+  verlinkte Datei existiert (siehe unten) — nicht, wie GitHub sie darstellt.
+- **zenodo.org und doi.org sind aus dieser Umgebung gesperrt** (403). Die DOI-Nummern
+  in den Zeiger-Tabellen sind aus dem ausgelagerten Text übernommen, **nicht aufgelöst**.
+
+### Offen (unverändert von der Vorsitzung)
+
+- Im Zenodo-Eintrag von Paper A: Doppel-Titel in einem Feld · `Version 1.0` statt
+  `1.0`. Beides ändert Klaus selbst, ohne neue Version.
+- Die **englische Fassung** von Paper A ist von niemandem außer der Sitzung vom
+  2026-09-03 gegengelesen.
+- **Kimhub PR #75** (Regel 6) liegt als Entwurf — 1093 grün, Gegenprobe 421/0/0.
+  Klaus hat nicht entschieden.
+
+### Nächster sinnvoller Schritt
+
+Die Datei hat wieder Luft; das Auslagern ist bis auf Weiteres **kein** Thema.
+Der nächste Griff ist eine der drei offenen Sachen oben — die Zenodo-Angaben
+sind Klaus' Handgriff, das Gegenlesen der englischen Fassung ist der einzige
+Punkt, an dem eine Sitzung etwas Nachprüfbares beitragen kann.
+
+---
+
+
 ## Stand 2026-09-03 (Bau) · ✅ PAPER A IST VERÖFFENTLICHT
 
 **Das zweite Papier dieses Depots ist draußen.** „Regeln und Grundsätze — zwei
@@ -102,890 +186,42 @@ lagert ins Archiv aus — auslagern, nicht kürzen** (Schutz-Klausel oben).
 
 ---
 
-## Stand 2026-09-03 (Bau) · ✅ DER DOI IST DA — und die PDFs, die ihn tragen
+## Zwei Sitzungen vom 2026-09-03 — ausgelagert
 
-**Das Ziel ist erreicht.** Zwei Sitzungen in Folge waren dafür losgegangen.
+> Diese zwei Einträge standen bis zum 2026-09-03 hier in voller Länge (250 Zeilen).
+> Die Datei stand bei 2.927 von 3.000; **ausgelagert, nicht gekürzt** — der Wortlaut
+> steht vollständig in [`sessions/archiv/2026-09-03_puls-eintraege-zwei-sitzungen.md`](sessions/archiv/2026-09-03_puls-eintraege-zwei-sitzungen.md).
 
-```
-10.5281/zenodo.22277738
-```
-
-**Veröffentlicht am 2026-09-03**, Vorabdruck, Version 2.0, offen zugänglich,
-CC BY 4.0. Beide Sprachfassungen unter **einer** Nummer, weil sie **ein** Werk
-sind: ein Zenodo-Eintrag mit zwei Dateien. Zwei getrennte DOIs hätten aus einer
-Arbeit zwei gemacht, und wer die eine zitiert, hätte die andere nicht erfasst.
-
-### Der Weg, der es gelöst hat: RESERVIEREN statt warten
-
-Die Sitzung vom 2026-09-02 stand vor einem Henne-Ei-Problem und hat es nicht
-benannt: das Papier soll seinen DOI tragen, aber den gibt es erst nach dem
-Veröffentlichen. Zenodo löst das selbst, und der Satz steht auf der Seite:
-
-> *„Reservieren Sie eine DOI, indem Sie auf die Schaltfläche klicken (damit sie
-> vor dem Hochladen in die Dateien eingefügt werden kann)."*
-
-Gefunden hat ihn Klaus, auf einem Bildschirmfoto, das er aus einem anderen
-Grund geschickt hatte. **Die Reihenfolge war danach:** reservieren → in die
-Papers eintragen → PDFs neu bauen → hochladen → veröffentlichen. Deshalb steht
-der DOI jetzt auf dem Titelblatt des Dokuments, das er bezeichnet.
-
-### Eingetragen an vier Stellen
-
-| Wo | Was |
-|---|---|
-| beide Papers | `<p class="paper-doi">` unter der Herkunftszeile |
-| `docs/papers/README.md` | eigener Abschnitt **mit der Stellen-Liste**, damit die nächste Fassung keine vergisst |
-| `index.html` Station 4 und 5 | im Erzähl-Text der Geschichts-Galerie |
-| `index.html` Station 8 | im Absatz zur zweiten Fassung |
-
-### Der Wächter hat dabei zugeschlagen, und er hatte recht
-
-Ich hatte `<a href="https://doi.org/10.5281/…">10.5281/zenodo.22277738</a>`
-geschrieben. `smoke_papers_verweise` wurde rot: *„jede Adresse steht auch als
-lesbarer Text da, nicht nur im Verweis."*
-
-Der Punkt ist feiner, als er aussieht: auf Papier stand damit eine **Kennung
-ohne den Weg dorthin**. Wer sie abtippen will, braucht `doi.org/` davor. Der
-Linktext ist jetzt die volle Adresse.
-
-> Das ist derselbe Wächter, der am selben Vormittag die fehlenden Kopf-Adressen
-> gemeldet hatte. Die Zusicherung stammt aus Klaus' eigenem Befund und hat
-> **zweimal an einem Tag** gegriffen.
-
-### ✅ Von Klaus geprüft, nicht von hier
-
-`doi.org/10.5281/zenodo.22277738` führt auf den Eintrag. **Diese Sitzung konnte
-es nicht messen** — `doi.org` und `zenodo.org` sind aus der Umgebung gesperrt
-(403 vom Egress-Proxy). Die Gegenprobe kam von Klaus.
-
-### Es sind ZWEI DOIs, und sie haben verschiedene Aufgaben
-
-| DOI | bezeichnet | gehört |
+| Sitzung | Wortlaut | Übergabeprotokoll |
 |---|---|---|
-| `…22277738` | **diese Fassung**, Version 2.0 | **ins Papier selbst** |
-| `…22277737` | **das Werk**, alle Fassungen | in jede dauerhafte Verlinkung |
-
-Zenodo legt den zweiten (**Concept-DOI**) automatisch an. Wer das nicht weiß,
-verwendet den falschen. Im gedruckten Papier muss der Versions-DOI stehen — wer
-das PDF in der Hand hält, hält Version 2.0; zeigte der DOI auf „die neueste",
-führte ein Zitat aus 2026 irgendwann auf einen Text, den der Zitierende nie
-gesehen hat.
-
-### 🔴 Die Netz-Identität ist ENTSCHIEDEN, nicht mehr offen
-
-**Sage bleibt bei `BgjXhSAp…`** (Klaus 2026-09-03):
-
-> *„Die alte ist wahrscheinlich gelöscht. Und wenn nicht, können wir das immer
-> noch machen. Es stört überhaupt nicht."*
-
-Damit fällt ein Punkt weg, der seit dem 2026-09-02 als offen geführt wurde. Der
-Weg zurück ist beschrieben, falls er je gebraucht wird: Siegel → „🔑 Eigene
-Identität & Spore" → **Baustein 5, Identitäts-Wechsler**. Steht die alte Kennung
-noch als Fach, genügt ein Klick, und es wird nichts gelöscht.
-
-⚠ **Und eine Berichtigung.** Ich hatte behauptet, der Löschen-Knopf für
-Zenodo-Entwürfe stehe in der Übersichtsliste. Klaus hat widersprochen und hatte
-recht — dort steht nur „Sicht". **Ich hatte über eine Seite gesprochen, die ich
-nicht sehen kann.** Dieselbe Sorte Fehler wie „die Spore im Depot ist die Spore
-im Netz": eine Auskunft über etwas, das man nicht vor sich hat.
+| 2026-09-03 (Bau) — ✅ DER DOI IST DA (`10.5281/zenodo.22277738`, SBKIM-Papier) | [→ Archiv](sessions/archiv/2026-09-03_puls-eintraege-zwei-sitzungen.md) | [→ Protokoll](sessions/archiv/2026-09-03_pdfs-und-parallelsitzung.md) |
+| 2026-09-03 (Bau) — 📄 Die PDFs für Zenodo, und zwei Sitzungen am selben Auftrag | [→ Archiv](sessions/archiv/2026-09-03_puls-eintraege-zwei-sitzungen.md) | [→ Protokoll](sessions/archiv/2026-09-03_pdfs-und-parallelsitzung.md) |
 
 ---
 
-## Stand 2026-09-03 (Bau) · 📄 Die PDFs für Zenodo, und zwei Sitzungen am selben Auftrag
+## Eine Sitzung vom 2026-09-02 — ausgelagert
 
-**Rolle:** Bausitzung nach dem Brief „nach der Papers-Veröffentlichung". Ziel war
-der **Zenodo-DOI**. Klaus hat vorher die PDFs vom Vortag beanstandet — das gehört
-zum selben Ziel, denn diese Dateien gehen bei Zenodo hinauf. Ergebnis: **PR #940**.
+> Dieser Eintrag stand bis zum 2026-09-03 hier in voller Länge (322 Zeilen) — der
+> längste der Datei. **Ausgelagert, nicht gekürzt**; der Wortlaut steht vollständig
+> in [`sessions/archiv/2026-09-02_puls-eintrag-papers-feldbericht.md`](sessions/archiv/2026-09-02_puls-eintrag-papers-feldbericht.md).
 
-⚠ **Der DOI steht am Ende immer noch offen.** Zum zweiten Mal in Folge. Diesmal
-nicht, weil eine Diagnose das Ziel verdrängt hätte, sondern weil die Nummer
-nur Klaus hat und er sie in dieser Sitzung nicht genannt hat. Die drei
-Einbau-Stellen sind lokalisiert; es fehlt allein die Zahl.
-
-### 🔴 Zwei Sitzungen haben am selben Tag dieselben Dateien bearbeitet
-
-Der wichtigste Befund, und er betrifft die Arbeitsweise, nicht den Code. Während
-diese Sitzung an den Papers arbeitete, hat eine **Parallel-Sitzung** denselben
-Auftrag bearbeitet und war zuerst auf `main`: **PR #939**, „Der Druck ist auf DIN
-A4 festgelegt". Aufgefallen ist es erst beim Anlegen des eigenen PR —
-`mergeable_state: "dirty"`.
-
-| | #939 (zuerst auf `main`) | diese Sitzung |
+| Sitzung | Wortlaut | Übergabeprotokoll |
 |---|---|---|
-| große Blöcke | **dürfen umbrechen**, gemessen | zusammenhalten |
-| Deckblatt | — | Einleitung ab Seite 2 |
-| Schriftgrößen | — | h2 war kleiner als der Fließtext |
-| Adressen im Druck-Kopf | ✓ | ✓ — **beide gebaut** |
-| Datumszeile | „Erstveröffentlichung … auf GitHub" | „Zweite Fassung · Erstfassung Mai 2026" |
-
-**In einem Punkt hatte #939 gemessen recht und diese Sitzung falsch.** Meine
-`break-inside:avoid`-Regel auf Tabellen, Fußnoten und Zusammenfassung erzeugt
-genau die Lücken, die Klaus beanstandet hat. #939 hat nachgerechnet: die größten
-Blöcke sind 555, 550, 503 und 450 px hoch bei 987 px Nutzhöhe — passt einer nicht
-mehr, springt er ganz auf die nächste Seite. **1.377 px an drei Stellen,
-zusammen 1,4 leere Seiten.** Die Regel von #939 gilt, meine ist heraus.
-
-**Zusammengeführt, nicht überschrieben.** Was diese Sitzung beiträgt, hatte #939
-nicht: die Deckblatt-Trennung, `h2 + p { orphans:4 }` und die Schriftgrößen. Zwei
-Regeln standen nach dem Merge **doppelt** da (Adressen im Kopf, `thead`), weil
-beide Sitzungen denselben Fehler sahen — auf je eine Fassung zusammengelegt.
-
-> **Die Lehre ist nicht „eine Sitzung hat sich geirrt".** Beide haben richtig
-> gearbeitet, beide haben gemessen, und die Zusammenführung ist besser als jede
-> Fassung für sich. Teuer war allein, dass keine von der anderen wusste. Wer
-> zwei Sitzungen auf dasselbe Depot setzt, zahlt das einmal pro Datei.
-
-### Was Klaus beanstandet hat, und was daraus wurde
-
-| | vorher | jetzt |
-|---|---|---|
-| Einleitung | teilte sich Seite 1 mit dem Deckblatt | eigene Seite ab S2 |
-| Tabellen | zerrissen, Kopf am Seitenfuß | keine über eine Seitengrenze |
-| Seiten | 19 (DE) / 17 (EN) | **15 / 15** |
-| Zeilen je Seite (DE) | 22–34, eine Delle bei 28 | **29–37**, keine Delle |
-| Ränder | 18 mm im Werkzeug **plus** 40 px im Stylesheet | 15/14 mm, allein in `@page` |
-| Überschrift `h2` | 15 px — **kleiner als der Fließtext** (15,5) | 16,5 px |
-
-### 🔴 Die Mai-Fassung war öffentlich — gemessen
-
-Klaus hat einer Entscheidung vom Vortag widersprochen: *„Das Datum für die
-Erstveröffentlichung über GitHub stimmt nicht, alte Fassung schon im Mai
-veröffentlicht."* Nachgemessen statt geglaubt, und er hat recht:
-
-```
-git log --diff-filter=A -- docs/papers/sbkim-paper-en.html   →  2026-05-18
-git show 9011aad:index.html                                   →  Station 4,
-    status:'live', href auf die Datei
-```
-
-Sie lag nicht nur im Depot, sie war **auf der Startseite verlinkt** und über
-Pages abrufbar. **Eine Datei, die auf einer öffentlichen Seite verlinkt ist, ist
-veröffentlicht** — ob jemand sie gelesen hat, ist eine andere Frage.
-
-Nachgezogen, damit das Depot nicht zwei Dinge sagt: die Datumszeile beider
-Papers, der Absatz in **Abschnitt 9** (den #939 angelegt hat, ohne Datum),
-`docs/papers/README.md` und **Station 8** der Geschichts-Galerie. Beide sagten
-„nie veröffentlicht".
-
-**Die Berichtigungs-Vermerke bleiben trotzdem draußen** (Klaus 2026-09-03) —
-aber mit einer Begründung, die trägt. Die alte lautete „es gab keine frühere
-Ausgabe" und war schlicht falsch. Die neue: ein solcher Kasten wendet sich an
-jemanden, der die frühere Fassung **gelesen** hat; sie wurde nirgends
-angekündigt und hatte keine Leserschaft.
-
-### Drei Funde beim Bauen
-
-**1 · Die Adressen fehlten auf Papier.** Klaus hat zwei PDFs verglichen: in
-seinem standen die Adressen hinter den Kopf-Verweisen, im frisch gedruckten
-nicht. Sie standen in einer **Arbeitskopie**, aus der am 2026-09-02 gedruckt
-wurde, und nie im Depot — genau die zweite Fassung, vor der
-`docs/papers/README.md` warnt. Der Wächter `smoke_papers_verweise` war dabei
-grün und zu Recht: die Adressen stehen lesbar in § 6.3. Nur nicht dort, wo ein
-Leser des Deckblatts sie sucht.
-
-**2 · Mein erster Umbruch-Prüfer hat gelogen.** Er suchte im ausgelesenen
-PDF-Text nach Seiten, die mit einer Großbuchstaben-Zeile beginnen. Er konnte den
-**Fehler** (Tabelle zerrissen) nicht vom **richtigen Fall** unterscheiden
-(Tabelle beginnt sauber oben auf einer neuen Seite) — beide sehen im Text gleich
-aus. Er meldete **fünf CSS-Varianten als wirkungslos, darunter eine, die
-wirkte**, und hätte mich beinahe eine Stunde in die falsche Richtung geschickt.
-
-> **Ein Wächter, der nach dem Textmuster sucht, misst das Textmuster.**
-> Aufgefallen ist es erst, als ich die Seite als **Bild** angesehen habe.
-
-`tools/paper-umbruch-pruefen.mjs` misst jetzt die **Lage** der Blöcke gegen die
-Seitengrenzen. Seine eigene Grenze steht im Kopf der Datei: das ist das
-Druck-Layout des Browsers, nicht das fertige PDF. Ein Befund dort ist ein
-Hinweis; **der Beweis ist das PDF.**
-
-**3 · Der Weg zum PDF war nicht abgelegt.** Die Sitzung vom 2026-09-02 ging ihn
-von Hand (Arbeitskopie, Schriften per `curl`) und hat ihn nicht ins Depot
-geschrieben — diese Sitzung musste ihn neu finden. Genau die Familie von Fehlern
-aus [NETZWEIT § 6b](NETZWEIT.md): *eine Grenze, die man kennt, kostet eine
-Zeile; eine, die man jedes Mal neu entdeckt, kostet eine Stunde.* Er liegt jetzt
-als `tools/paper-zu-pdf.mjs` im Depot, samt der Grenze, dass Chromium aus dem
-Container nicht an Google Fonts kommt und **still** eine Ersatzschrift setzt.
-
-### Gemessen
-
-| | |
-|---|---|
-| `node tests/run_alle.mjs` | **90 Proben · 90 grün · 0 rot · 0 nicht lauffähig** |
-| PDF DE / EN | je **15 Seiten**, Einleitung jeweils oben auf Seite 2 |
-| Zeilen je Seite (DE) | 23 · 32 · 37 · 31 · 32 · 32 · 34 · 34 · 32 · 29 · 32 · 31 · 33 · 34 · 25 |
-| Tabellen über eine Seitengrenze | **keine** — vor jeder endet die vorige Seite mit Fließtext |
-| `mergeable_state` von PR #940 | `dirty` → nach der Zusammenführung **`clean`** |
-
-**Nicht gemessen:** ob die PDFs auf Klaus' Tablet richtig aussehen. Sein
-Sichttest ist nicht ersetzbar und steht aus.
-
-### Was mitgerutscht ist, und dass es mitgerutscht ist
-
-Die vier Blätter unter `docs/lesen/` tragen im Commit einen neuen Datumsstempel
-(„Lesefassung vom 2026-09-03"). Er stammt **nicht** aus einer Überarbeitung,
-sondern daraus, dass ein Werkzeug beim Probenlauf mitschreibt. Inhaltlich
-richtig, aber es ist keine Arbeit dieser Sitzung. Im ersten Commit hatte ich es
-bemerkt und zurückgenommen; im dritten ist es durchgegangen.
-
-### Ausgelagert
-
-Diese Datei stand bei **2.917** Zeilen. Die vier Einträge vom 2026-08-24 sind
-**wortgleich** nach `sessions/archiv/2026-08-24_puls-eintraege-vier-sitzungen.md`
-gezogen; hier stehen vier Verweis-Zeilen. Stand vor diesem Eintrag: 2.603.
-
-### Was offen ist
-
-- **Der Zenodo-DOI.** Das Ziel. Drei Stellen sind lokalisiert (beide Papers unter
-  dem Titel, `docs/papers/README.md`, Station 4/5/8), es fehlt die Nummer.
-- **Sages Netz-Identität** steht weiter auf `BgjXhSAp…` statt `nysOZE3V…`. Der
-  Weg ist gefunden: Siegel → „🔑 Eigene Identität & Spore erzeugen / verwalten"
-  → **Baustein 5, Identitäts-Wechsler**. Steht die alte Kennung dort noch als
-  Fach, genügt ein Klick und es wird **nichts gelöscht**; sonst Baustein 4
-  („Identität wiederherstellen") mit der Sicherungsdatei. Läuft im Browser.
-- **Die neue Selbstbeschreibung** gehört ins Beschreibungsfeld der App, dort neu
-  signiert ([LEHREN § 9](LEHREN.md)). Nicht angefasst.
-- **Woher der Browser den Beschreibungstext nimmt** — nicht gemessen.
-- **Klaus' Sichttest** der neuen PDFs.
-
-### Nächster sinnvoller Schritt
-
-Den DOI eintragen, sobald die Nummer da ist. Danach im Browser die Identität
-zurückholen, **bevor** eine neue Selbstbeschreibung signiert wird — sonst
-signiert sie unter der falschen Kennung.
+| 2026-09-02 (Bau) — 📄 Die Papers auf den heutigen Stand, als Feldbericht | [→ Archiv](sessions/archiv/2026-09-02_puls-eintrag-papers-feldbericht.md) | [→ Protokoll](sessions/archiv/2026-09-02_papers-feldbericht.md) · [→ Abend](sessions/archiv/2026-09-02_sporen-befund-und-doi.md) |
 
 ---
 
-## Stand 2026-09-02 (Bau) · 📄 Die Papers auf den heutigen Stand, als Feldbericht
+## Drei Sitzungen vom 2026-08-26 — ausgelagert
 
-**Rolle:** Bausitzung nach dem Brief „Papers auf den heutigen Stand bringen".
-Grundlage war der genehmigte Plan in [`papers/REVISION_2026-09-02.md`](papers/REVISION_2026-09-02.md)
-(PR #927). Ergebnis: **PR #929**, Entwurf.
+> Diese drei Einträge standen bis zum 2026-09-03 hier in voller Länge (306 Zeilen).
+> **Ausgelagert, nicht gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md`](sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md).
 
-### Was getan
-
-Beide SBKIM-Papers sind von Vorschlag auf **Feldbericht** umgestellt. Neun
-Abschnitte statt sieben, DE und EN parallel.
-
-⚠ **Nachtrag am selben Tag, auf Klaus'"'"' Einwand:** das Paper vom Mai ist **nie
-veröffentlicht** worden, es lag als Entwurf im Depot. Alle Berichtigungs-Vermerke
-(„Berichtigt am", „Zurückgenommen am") sind deshalb wieder aus den Papers heraus.
-Sie hätten einem Leser eine frühere öffentliche Ausgabe suggeriert, die es nie
-gab. Die Geschichte steht jetzt in **Station 8 der Geschichts-Galerie**; die
-Papers tragen „September 2026 · Erstveröffentlichung".
-
-| Abschnitt | Was |
-|---|---|
-| § 2.1 / 2.2 **neu** | die Vorarbeiten: reziproke Empfehlungssysteme, semantische Überlagerungsnetze (~2008), Agent Cards. Die Vergleichstabelle behauptet in keiner Spalte mehr, SBKIM sei allein |
-| § 5 **neu** | wie das entstanden ist, aus der Geschichts-Galerie und dem Meilenstein § 2 |
-| § 6 **überarbeitet** | 33 Depots statt zwei HTML-Dateien, mit der Messung vom 10.07.2026 |
-| § 7.1 **aufgeteilt** | zwei Teilprobleme belegt, zwei offen, dazu die Wach-Tab-Grenze |
-| § 8 **zurückgenommen** | der Neuheits-Anspruch fällt |
-| § 9 **neu** | zur Entstehung des Textes |
-
-Dazu: **eine Quelle statt zwei** (`docs/papers/` gilt, `sbkim-demo/` zeigt
-darauf), `ABGRENZUNG.md` nachgezogen, und im Skill `menschlich-schreiben` der
-präzisierte Zielsatz. **Kein Zenodo-DOI.** Er wartet auf Klaus' Sichttest.
-
-### Drei Funde, die im Plan noch nicht standen
-
-1. **Zwei weitere tote Verweise**, ausgerechnet in der zur Quelle erklärten
-   Fassung: die „Live-Demo Layer 1/2"-Verweise in
-   `docs/papers/sbkim-paper-{de,en}.html` zeigten auf `index.html` und
-   `sbkim-network.html`, die es in dem Ordner nicht gibt. **In der
-   Demo-Fassung liefen dieselben Verweise**, deshalb fielen sie beim ersten
-   Durchgang nicht auf. Eine Datei an zwei Orten hat an einem davon andere
-   Nachbarn.
-2. **Die beiden Fassungen trugen verschiedene TITEL**, nicht nur verschiedene
-   Prüfsummen: „Semantisches Bidirektionales **KI-Matching**" gegen
-   „Semantisches Bidirektionales **Wissensintegriertes** Matching". Das ist
-   die Drift in ihrer schlimmsten Form, weil sie zwei Zitationen erzeugt.
-3. **Die Demo-Fassungen hatten die besseren Druck-Regeln.** Übernommen, bevor
-   die Dateien zu Zeigern wurden. **Ohne den Vergleich hätte das
-   Zusammenlegen sie verloren.** Genau dafür stand „vorher vergleichen" im
-   Auftrag.
-
-### Die Zahl, die zweimal richtig ist
-
-Der Plan nennt 5.823 Commits, `historie/arbeitstage-zahlen.html` nennt 5.775.
-Beide stimmen; die Differenz sind **48 zeitgesteuerte Läufe**, und diese Datei
-hält das schon fest. **Die Papers nennen beide** mit ihrer Bedeutung. Eine
-allein wäre je nach Wahl zu hoch oder zu niedrig.
-
-### Was die Probe gefunden hat, und sie hatte recht
-
-`smoke_antragsmappe` schlug an: in `ABGRENZUNG.md` standen nach der Bearbeitung
-**fünf Gedankenstriche**. Klaus' Regel vom 2026-08-24 verbietet sie in seinen
-eigenen Texten, und der Wächter setzt sie durch. Aufgelöst zu Sätzen, die
-erzeugten Blätter der Antragsmappe neu gebaut.
-
-> Bemerkenswert daran ist nicht der Fehler, sondern dass ihn **kein Mensch**
-> finden musste. Der Wächter stand da, bevor die Zeile geschrieben wurde.
-
-### Gemessen
-
-| | |
-|---|---|
-| `node tests/run_alle.mjs` | **89 Proben · 89 grün · 0 rot · 0 nicht lauffähig** |
-| HTML beider Papers | wohlgeformt, gleiche Gliederung (9 × h2, 16 × h3) |
-| relative Verweise in den vier Paper-Dateien | jeder löst auf eine vorhandene Datei auf |
-| `git grep "semantic-match-demo" -- docs/papers sbkim-demo` | **1**, siehe unten |
-
-### Was offen ist
-
-- **Klaus' Sichttest der v0.2 im Browser.** Nicht ersetzbar, und der DOI hängt
-  daran.
-- **`git grep` gibt 1 statt der erwarteten 0.** Der Treffer steht in
-  `REVISION_2026-09-02.md` in einem Zitat-Block und ist die Aufzeichnung
-  dessen, *was* der tote Verweis war. **Kein klickbarer Verweis, das ist
-  nachgemessen.** Ihn zu entfernen hieße, den Befund zu löschen. Klaus
-  entscheidet.
-- **Der Anspruchs-Satz in `ABGRENZUNG.md` § 4** steht weiter da und ist nur
-  eingeordnet. Ob er ganz fällt, ist nicht entschieden.
-- **Abschnitte 1–4 und § 7.2–7.4 der Papers** sind ungeprüft geblieben, wie im
-  Auftrag vorgegeben.
-- **Die Literatursuche bleibt zu dünn für eine Veröffentlichung.** Drei
-  Suchen, an Titeln und Zusammenfassungen geprüft, nicht an den Volltexten;
-  `arxiv.org` und die Verlagsseiten sind aus dieser Umgebung gesperrt.
-
-### Drei weitere Runden am selben Abend, alle aus Klaus' Sichttest
-
-**1 · Die Berichtigungs-Vermerke mussten wieder raus.** Klaus: *„Ich habe noch
-nichts veröffentlicht. Das ist das erste Mal."* Das Mai-Paper lag als Entwurf im
-Depot. Ein Kasten „Berichtigt am 2. September" behauptet damit eine frühere
-öffentliche Aussage, die es nie gab. Vier Kästen je Sprache heraus, dazu die
-Fassungs-Notiz. Das Datum heißt jetzt **September 2026 · Erstveröffentlichung**.
-Die Geschichte steht in **Station 8** der Geschichts-Galerie.
-
-**2 · Die Verweise waren dreimal kaputt, jedes Mal anders.**
-
-| Runde | Fehler | Warum er durchkam |
+| Sitzung | Wortlaut | Übergabeprotokoll |
 |---|---|---|
-| vormittags | Ziel gibt es im Ordner nicht | in der Demo-Fassung derselben Datei lief es |
-| abends | Ziel richtig, aber **relativ** | im Depot richtig, als Einzeldatei tot (`FORBIDDEN`) |
-| danach | Adresse richtig, aber `target="_blank"` | eingebetteter Betrachter verschluckt den Klick lautlos |
-
-> **Ein Verweis ist keine Eigenschaft des Textes. Er ist eine Eigenschaft des
-> Textes an seinem Ort.** Ein veröffentlichtes Papier hat keinen festen Ort.
-
-Neu: **`tests/smoke_papers_verweise.mjs`**. Prüft nicht, ob am Zielpfad eine
-Datei liegt (das sagt nur etwas über dieses Depot), sondern ob der Verweis von
-überall trägt: absolut · kein `target="_blank"` · und die Adresse steht auch als
-**lesbarer Text** da, weil auf Papier niemand klicken kann. Vier Gegenproben von
-Hand gefahren, alle vier fallen um, Datei danach per `md5sum` byte-gleich.
-
-**3 · Die Netz-Karte ist ein Beleg, keine Demo** (Klaus' Einwand). Beim
-Nachprüfen im Quelltext wurde der Punkt stärker als gestellt:
-
-| | |
-|---|---|
-| Relais | **fünf**, davon **drei fremde** (`damus.io`, `nos.lol`, `primal.net`) |
-| Senden | **kann sie nicht.** Einziger Aufruf ist `["REQ"`, null `["EVENT"` |
-| Probelauf | vorhanden, im Quelltext als Simulation gekennzeichnet |
-
-**Ein Instrument, das nur lauschen kann, kann den Verkehr nicht hergestellt
-haben, den es anzeigt.** Steht als § 6.3 im Papier, samt Probelauf-Knopf. Ein
-Prüfer findet den sonst selbst und hält die Auskunft für gestellt.
-
-⚠ **Und ein Befund gegen die naheliegende Annahme.** Klaus schlug vor, beides
-zusammen anzuführen (Tablet als Hub, zwei Geräte als Verkäufer und Käufer). Der
-Aufbau stimmt, **der Transport ist ein anderer**: die Vorführungen laufen über
-**WebRTC** mit dem Vorgabe-Vermittler von PeerJS, drei CDN-Bibliotheken und einem
-**bezahlten Anthropic-Schlüssel**. Das laufende Netz läuft über **Nostr-Relais**,
-ohne beides. Beides in einen Topf zu werfen hätte zwei Systeme als eines
-ausgegeben. § 6.3 stellt sie gegenüber.
-
-Daraus ein Satz, der vorher nirgends stand: **das Verfahren ist an keinen
-Transport gebunden, zwei haben es getragen.**
-
-### Und ein Abschnitt, der ganz gefehlt hat
-
-**§ 3.5 „Die Selbstbeschreibung folgt dem Inhalt"** ist neu in beiden Papers.
-Nachgeprüft, dass es fehlte: „Spore" kam dreimal vor, „Version" einmal, und
-§ 3.4 beschrieb das Protokoll als zustandslos. Dass der Vektor einer Partei aus
-ihrem Bestand gerechnet wird und mit ihm wandert, stand nirgends.
-
-Belegt in `docs/INTERFACES.md` und `src/modules/02_spore.js`:
-`embedContentVector` liefert `source:"content"` · `embeddingSource` hält fest,
-woher der Vektor stammt · `embeddingVersion` steigt bei geändertem Vektor
-(Drift-Merkmal) und die Spore wird neu signiert · `SPORE_SNIPPET_MAX = 20`
-satz-granulare Vektoren neben dem Gesamtvektor · `PROVIDER_MIN_MATCH = 0.80`
-bei gemessenem Boden mean 0,8214 sd 0,0236.
-
-Klaus' Kochbuch-Beispiel steht als Beispiel im Papier: ein Buch, das nur noch
-Sushi führt, wird für eine Sushi-Anfrage höher bewertet als eines mit drei
-Sushi-Rezepten unter zweihundert. **Ein wandernder Vektor ist kein Mangel,
-sondern die Funktion.**
-
-Zwei Sätze stehen dabei, weil sie sonst fehlten: die Zustandslosigkeit aus
-§ 3.4 bleibt unberührt (es ändert sich die Beschreibung, nicht das Verfahren),
-und der hohe Boden begrenzt die Eigenschaft (kleine Änderungen bewegen den
-Vektor, aber nicht den Platz in der Liste).
-
-**Station 8 der Geschichts-Galerie** ist entsprechend nachgezogen.
-
-Gemessen nach allen Runden: **90 Proben, 90 grün, 0 rot.**
-
-### ✅ Gemerged am 2026-09-02, 19:42 UTC
-
-**PR #929, Squash auf `main` als `80276d4`.** Klaus hat die drei Adressen im
-Papier an seinem Tablet bestätigt und die Freigabe gegeben. Gegen `main` selbst
-nachgeprüft, nicht gegen die Zweig-Erwartung: beide Papers, der neue Wächter,
-§ 3.5, das Datum „September 2026 · Erstveröffentlichung" und Station 8 liegen
-dort. Rest-Unterschied Zweig gegen `main`: keiner. Proben auf dem `main`-Stand:
-**90 grün, 0 rot.**
-
-**Stundennachweis**, gemessen an den Commits: erster `ef81cd6` 15:30 UTC,
-letzter `e5a8dfc` 19:41 UTC, **Spanne 4 h 10 min**, 12 Commits (squash-gemergt).
-⚠ Das ist die Spanne des Ablegens, nicht der Aufwand: Pflichtlektüre,
-Literatursuchen und das Schreiben der neuen Abschnitte liegen davor und
-hinterlassen keine Spur. Und sie ist nicht Klaus' Arbeitszeit.
-
-### 🔴 PR #401 muss GESCHLOSSEN werden, nicht gemergt
-
-Beim Pflicht-Check vor dem Sitzungsbrief gefunden. **Der einzige offene PR**,
-Entwurf vom 2026-06-23, „Discovery-Expedition: Bildmaterial".
-
-| Gemessen | |
-|---|---|
-| `main` ist voraus | **51 Commits** |
-| `git diff main..zweig` | 562 Dateien, 9.276 Zugänge, **176.893 Abgänge** |
-| eigene Bilder in `main`? | **alle fünf liegen dort** |
-| byte-gleich? | **nein**, `main` hat neuere (17.08.) und größere Fassungen |
-
-Der Zweig trägt nichts, was `main` fehlt. Ein Merge würde rund
-**177.000 Zeilen zurückdrehen**, darunter die heutige Arbeit, und fünf Bilder
-durch zwei Monate ältere, kleinere ersetzen.
-
-> Das ist die Squash-Merge-Falle: `git log main..zweig` zeigt Commits, deren
-> Inhalt längst in `main` ist. Erst `git diff --stat` zeigt die Richtung.
-
-**Nicht von dieser Sitzung geschlossen** — das Schließen eines fremden PR ist
-Klaus' Entscheidung.
-
-### 🔴 Spät am Abend gemessen: die Spore im Netz ist nicht die Spore im Depot
-
-Klaus hat mit dem Analyse-Rekorder der Mycel-Karte zwei Mitschnitte aufgenommen,
-20:42 und 20:49 UTC. Sie enthalten, was Sage und Mein Mixarium wirklich ins Netz
-gestellt haben.
-
-| | Depot-Datei | auf der Leitung |
-|---|---|---|
-| Sage, Beschreibung | 2.527 Zeichen | 160 |
-| Mixarium, Beschreibung | 1.476 Zeichen | 88, **anderer Text** |
-| `embeddingSource` | fehlt in **allen 18** Depot-Sporen | vorhanden |
-| Signatur · `createdAt` · Kennung | | jeweils andere |
-
-Mixariums Leitungs-Text ist kein Anfang seines Depot-Textes, sondern ein eigener
-Satz. Die Spore, die ein Knoten ankündigt, entsteht **im Browser**; die Datei im
-Depot ist Ablage, kein Sender.
-
-**Die Kernaussage stand schon im Depot** — `docs/OBSERVATORIUM_BROWSER.md` sagt
-seit Mai *„Pages-deployte `spore.json` ist ein Snapshot einer einzigen
-Andock-Session."* Ich habe an diesem Abend das Gegenteil behauptet und Klaus
-darauf eine signierte Datei erzeugen lassen, die nichts sendet.
-
-Zwei Fehlschlüsse davor, beide von der zweiten Messung widerlegt: eine
-angebliche Kappung bei 160 Zeichen (`SNIPPET_TEXT_MAX`) — Sages erster Satz ist
-zufällig genau so lang, Mixariums 88 Zeichen zeigen es. Und ein angeblicher
-Protokoll-Fehler — es geht nichts verloren, es geht etwas **anderes** hinaus.
-
-Aufgeschrieben in [`LEHREN.md` § 9](LEHREN.md), als Regel benannt in
-`CLAUDE.md` § Was du tust.
-
-**Nicht gemessen:** wo im Browser der Text herkommt, ob dieses Feld selbst eine
-Längengrenze hat, und ob die anderen 16 Knoten sich genauso verhalten.
-
-### 🔴 Sages Netz-Identität ist eine andere als die im Depot
-
-Die neu signierte Spore trägt `BgjXhSAp…` statt `nysOZE3V…`. **Nicht
-eingespielt.** Der Handschlag mit family-project lief damit erfolgreich
-(`established`, eine Sekunde) — das Protokoll arbeitet, nur unter der falschen
-Kennung. Zurückzuholen ist sie über den Identitäts-Wechsler aus der
-verschlüsselten Sicherung; das gehört in den Browser, nicht in eine Sitzung.
-
-### Ausgelagert
-
-Diese Datei stand bei 3.000 Zeilen, der Grenze. Die fünf Einträge vom
-2026-08-23 sind **wortgleich** nach
-`sessions/archiv/2026-08-23_puls-eintraege-fuenf-sitzungen.md` gezogen; hier
-stehen fünf Verweis-Zeilen. Stand jetzt: 2.856 Zeilen.
-
-### Der Grundsatz noch einmal, und diesmal für beide
-
-Die erste Fassung von `NETZWEIT § 6a` band nur die Sitzung und endete mit einer
-Schuldzuweisung an die eigene Adresse. Klaus hat beides gestrichen:
-
-> *„dass ich weder durch deine Fragestellung noch dass Du durch meine
-> Fragestellung vom Ziel abgelenkt werden … Schuldzuweisung selber bringt nichts.
-> Das ist unsinnig."*
-
-Und der Grund, warum es nicht bei einer einseitigen Regel bleiben kann, kam
-gleich mit: **die Sitzung arbeitet nach Anleitung.** Wo die Anleitung hinzeigt,
-geht sie hin — eine Frage ist für sie faktisch eine Anleitung. Eine Regel, die
-nur eine Seite bindet, während die andere die Richtung vorgibt, wirkt nicht.
-
-Seitdem steht in `NETZWEIT.md` ein eigener Abschnitt **§ Für wen sie gelten**:
-die Regeln sind die gemeinsame Arbeitsgrundlage, nicht eine Dienstanweisung. Eine
-Bitte, die gegen eine Regel steht, wird **benannt** — von der Sitzung, statt sie
-stumm zu umfahren, und von Klaus, wenn er sie ausdrücklich aussetzen will. Das
-ist die Tafel-Evolutions-Klausel an einer anderen Tür.
-
-Der Satz, der die Schuldzuweisung ersetzt und von beiden kommen darf:
-**„Wo wollten wir eigentlich hin?"**
-
-### Für die nächste Sitzung
-
-Der Brief steht in
-[`sessions/BRIEF_nach_papers_veroeffentlichung.md`](sessions/BRIEF_nach_papers_veroeffentlichung.md).
-Drei offene Punkte, alle im Browser: der Zenodo-DOI, Sages Netz-Identität, und
-die Beschreibung, die in die App gehört und nicht in die Datei.
-
-### Die PDFs für Zenodo — und zwei Funde beim Bauen
-
-Zenodo schreibt kein Format vor; ein Preprint gehört trotzdem als PDF hinein,
-weil HTML dort nur zum Herunterladen angeboten wird. Beide Fassungen gebaut,
-A4, Schriften eingebettet.
-
-**Die Schriften fehlten zuerst.** Chromium kam durch den Proxy nicht an Google
-Fonts (`ERR_CONNECTION_RESET`) und setzte still Liberation Serif ein — das PDF
-hätte anders ausgesehen als die Seite im Browser. `curl` kommt durch; die acht
-lateinischen Schnitte liegen jetzt als `data:`-URI in einer **Arbeitskopie**,
-das Depot bleibt unberührt.
-
-**Der Titel strandete ein Wort** (#937): in echter Druckbreite stand
-„Bidirektionales" allein auf einer Zeile. Das `<br>` stammte aus der Zeit vor der
-Namensberichtigung. Ohne ihn drei ausgewogene Zeilen statt vier — gemessen
-*und* als Bild angesehen.
-
-⚠ **Und der PDF-Prüfer hat zuerst gelogen.** Er meldete „§ 3.5 fehlt, Kürzel
-nicht aufgelöst, Adresse nicht lesbar" — alles drei falsch. Er las die
-**eingebetteten Schriftdaten**; die 15.168 „Textzeichen" waren Fonttabellen.
-Beinahe wäre gemeldet worden, die PDFs seien kaputt. Geprüft wird jetzt **vor**
-dem Druck im geladenen Dokument, mit Abbruch: Titel löst das Kürzel auf ·
-§ 3.5 steht im Text · die verlangte Schrift ist wirklich geladen.
-
-### Sitzungs-Abschluss
-
-Dreizehn Merges auf `main`, 13:30 bis 23:46 UTC. Übergabeprotokoll des Abends:
-[`sessions/archiv/2026-09-02_sporen-befund-und-doi.md`](sessions/archiv/2026-09-02_sporen-befund-und-doi.md)
-(der erste Teil steht in `2026-09-02_papers-feldbericht.md`).
-Proben: **90 grün, 0 rot, 0 nicht lauffähig.**
-
-### Nächster sinnvoller Schritt
-
-Zwei Dinge, in dieser Reihenfolge. **Erst** die Beschreibung dort eintragen, wo
-sie hingeht — in der App selbst, nicht in der Datei — und die Identität
-zurückholen; beides läuft im Browser. **Dann** der Zenodo-DOI, der auf den
-Sichttest gewartet hat und ihn bekommen hat.
-
----
-
-## Stand 2026-08-26 (Bau, 3.) · 🔬 Forschungsaufgaben, und jede Sitzung wird eine Messung
-
-**Rolle:** Fortsetzung derselben Sitzung, nach Klaus' Rückfragen. PR #923
-(Sage) und PR #67 (Kimhub).
-
-### Klaus hatte recht zu fragen
-
-Er las im heruntergeladenen PDF, dass vier Dinge fehlen, und bat um eine
-Nachprüfung. **Sein PDF war älter als das Depot**: es führte das Blatt zum
-Stand der Technik als fehlend, während es am selben Tag entstanden war.
-Nachgesehen über den ganzen Baum:
-
-| | Stand |
-|---|---|
-| Blatt „Stand der Technik" | **existiert**, `docs/ABGRENZUNG.md` |
-| Englische Projektseite | **existiert nicht**, kein Entwurf |
-| Paper C · KI-Kompetenz | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
-| Paper B · Wirkung | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
-
-Einen DOI gibt es auch nicht.
-
-### Abteilung 7: die Forschungsaufgaben
-
-`docs/unterlagen/06_FORSCHUNGSAUFGABEN.md`, erzeugt aus
-`tools/forschungsaufgaben-bauen.mjs`. Sieben Aufgaben mit Frage, Beleg,
-Abhängigkeit und Reihenfolge, dazu die drei Stränge.
-
-**Zwei Dinge werden darin getrennt gehalten**, weil ihre Vermischung das Blatt
-wertlos machte: ob ein **Beleg im Depot liegt** (messbar) und ob die **Aufgabe
-erledigt** ist (nicht messbar). **Keine der sieben ist erledigt.** Der
-Zenodo-Upload ist der deutlichste Fall: die Papers liegen seit Mai vor,
-hochgeladen ist nichts, und eine Nummer wäre ohnehin keine Datei.
-
-### Eine Zahl, die ihre eigene Historie mitzählt
-
-Nach dem Merge stand die Unterlagen-Mappe als geändert da: 238 auf 239
-Stände. Der Merge hatte ein Sitzungsprotokoll abgelegt, und die
-Bestandsaufnahme zählt genau das mit. **Kein Fehler, eine Eigenschaft**, und
-sie steht jetzt im Blatt: das Blatt ist nach jedem Commit veraltet, bis es neu
-gebaut wird, und der Wächter sagt das auch.
-
-⚠ **Beim Aufschreiben dieser Erklärung ein Beinahe-Fehler**, und er ist der
-lehrreichere: die Backticks um einen Dateinamen standen in einem
-Template-Literal und haben es geschlossen. Der Bau brach mit einem
-Syntaxfehler ab, **und die Proben blieben grün**. Sie messen das Erzeugnis,
-und das Erzeugnis war noch das alte, in sich stimmige. **Ein Werkzeug, das gar
-nicht läuft, hinterlässt keine Spur in einer Probe, die nur sein Erzeugnis
-ansieht.** Gesehen nur, weil die Fehlermeldung zufällig über der grünen Zeile
-stand.
-
-### Und Kimhub zeichnet ab heute jede Sitzung auf
-
-Klaus: *„handhabe ab dem heutigen Zeitpunkt jede Sitzung so wie ein
-Forschungsprojekt, mit dokumentierten Messungen."* Gebaut in Kimhub
-(`forschung/`), PR #67. Gemessen wird, **woher jeder Befund kam**: `regel` ·
-`gegenprobe` · `hinsehen` · `klaus`.
-
-Auf seine Frage *„Ist da schon Forschung, wenn dokumentiert?"* war die Antwort
-**nein**. Was fehlte, war eine Vorhersage, die scheitern kann und **vor** den
-Daten dasteht. Sie steht seitdem fest, mit Wortlaut-Riegel.
-
-> **Für die nächste Sitzung, netzweit:** wer hier arbeitet, trägt sich am Ende
-> in `Kimhub/forschung/sitzungen.json` ein. Sonst stirbt der Datensatz nach
-> einem Eintrag, und die Vorhersage wird nie auswertbar.
-
-**Gemessen:** 93 Proben grün, 0 rot · fünf Gegenproben einzeln nacheinander,
-alle vollständig (11 · 35 · 14 · 17 · 13).
-
-**Offen:** Klaus' Sichttest · Paper C, englische Seite, Paper B · die
-Entscheidungen aus `BRIEF_nach_bestandsaufnahme.md` § 1.
-
----
-
-## Stand 2026-08-26 (Bau, 2.) · 📚 Die lückenlose Dokumentation
-
-**Rolle:** Fortsetzung. Zweig `claude/dokumentation-bestandsaufnahme-ph81s1`,
-PR #922. Auftrag aus `BRIEF_lueckenlose_dokumentation.md`, dazu drei
-Nachforderungen von Klaus im Lauf der Sitzung.
-
-**Zuerst ausgelagert, dann geschrieben.** Die Datei stand bei 2.833 Zeilen. Die
-siebte Auslagerung nimmt beide Einträge vom 19.08. wortwörtlich heraus, jetzt
-2.709.
-
-### Die Frage des Briefes, beantwortet, und sie war falsch gestellt
-
-Fällt die Protokoll-Dichte, weil die Dokumentation nachlässt, oder weil die
-Sitzungen länger wurden? Beides ergibt dieselbe Kurve, wenn man Einträge je
-Protokoll zählt. **Tage lassen sich dagegen zählen:** von 128 Arbeitstagen
-tragen **48** ein Protokoll, das sind 38 Prozent.
-
-Der April löst sich dabei auf. Seine 551 Einträge liegen in **Mein-Rezeptbuch
-(288), Muttis-Rezeptbuch (206) und Mein-Mixarium (55)**; Sage-Protokol hatte in
-diesem Monat **einen**. Die Protokollpflicht ist eine Sage-Regel. Das erste
-Protokoll überhaupt stammt vom **10.05.**, in den App-Depots beginnt die Praxis
-Ende Mai. **Im April gab es sie nirgends.**
-
-> Der Befund davor verglich netzweite Einträge gegen Protokolle eines einzigen
-> Depots. Beide Zahlen waren richtig, ihr Verhältnis war es nicht. **Eine
-> Differenz aus zwei ungleichen Messungen ist keine Messung**, und diesmal
-> stand sie im eigenen Brief.
-
-### Was gebaut wurde
-
-| | |
-|---|---|
-| `tools/bestand-rechnen.mjs` | die **eine** Quelle der Rechnung |
-| `tools/bestand-bauen.mjs` | schreibt beide Blätter, Zeitraum und Umfang aus `git log` |
-| `docs/unterlagen/04_BESTAND.md` | Abteilung 5: was es gibt, wo, seit wann, welche Lücke |
-| `docs/unterlagen/05_APRIL.md` | Abteilung 6: der April, als Rekonstruktion gekennzeichnet |
-| `docs/ABGRENZUNG.md` | Abteilung 2 der Antragsmappe, vor Paper A |
-| `tests/smoke_bestand.mjs` · `smoke_zahlen.mjs` | zwei neue Wächter, beide mit Gegenprobe |
-
-Die Bestandsaufnahme zeigt **dieselbe Liste zweimal**: nach Vorgehen und
-chronologisch. Zwei Listen wären eine Drift-Quelle mit Ansage.
-
-### Vier Widersprüche, alle in Unterlagen, die aus dem Haus gehen
-
-| stand da | gemessen |
-|---|---|
-| „27 Tage nichts" | **26** |
-| „140 Kalendertage" | **141** |
-| „genau **eine** Lücke von vier Tagen" | **neun** Unterbrechungen, die längste **drei** Tage |
-| 5.823 und 5.775, beide „Einträge" | beide richtig, die Differenz sind die 48 zeitgesteuerten Läufe |
-
-**Die dritte war die gefährlichste.** Neben dem Text liegt die Tages-Tabelle,
-in der jeder die Unterbrechungen nachzählen kann. Eine Zahl, die man selbst
-berichtigt, trägt weiter als eine, die jemand anders berichtigt.
-
-Dazu eine Angabe, die **wahr ist und beim Nachprüfen falsch aussieht**: der
-Forschungskorpus nennt die Demo „erster lauffähiger Stand vom 10. März 2026".
-Der Inhalt stimmt, der Ordner kam am **2026-08-15** ins Depot (#855), weil er
-bis dahin an eine konkrete Anfrage gebunden war. Beides steht jetzt da.
-
-Und in `ENTSTEHUNG.md` war „mehr als doppelte Arbeitszeit" seit dem 24.08.
-nachrechenbar: die **Spanne** ergibt 81,1 Stunden je Woche (2,03-fach), die
-**aktive Zeit** 49,7 (1,24-fach). Klaus' Schätzung trifft die erste. Wer sie im
-Antrag verwendet, schreibt dazu, welche gemeint ist.
-
-### Fünf eigene Fehler, jeder von einer Gegenprobe gefunden
-
-- **Ein flacher Klon liefert Zeiträume, die wie Messungen aussehen.** Der erste
-  Lauf gab für `LEHREN.md` „2026-08-22 bis 2026-08-22" aus. Der Container-Klon
-  trug nur die letzten fünfzig Einträge. **Nichts daran sah falsch aus.** Das
-  Werkzeug bricht jetzt ab, statt zu stempeln. Dieselbe Falle steht seit dem
-  24.08. in der Historie, wo achtzehn Klone vor dem Auslesen vervollständigt
-  wurden. Hier hatte niemand daran gedacht.
-- **Der Wächter dazu fand sein Datum woanders** im Blatt, in einem Abschnitt
-  aus einer anderen Rechnung, und blieb grün, während jede Zeitraum-Angabe
-  gestempelt war.
-- **Zwei Kennzahlen mit demselben Namen** fing keine Prüfung. Genau der Fehler,
-  gegen den das Blatt gebaut ist.
-- **Die Zahl der Unterbrechungen** wurde nie gegen den Text geprüft. Ein
-  Wächter, der nur das Falsche verbietet, misst nicht, ob das Richtige dasteht.
-- **Ein erfundenes Zitat** in `werkstatt/BEFUND.md`: die Regel heißt „Du hast
-  keine Werkzeuge", der längere Satz in Anführungszeichen stand so in keiner
-  Quelle. Der Gedankenstrich-Wächter ließ ihn durch, **weil** er in
-  Anführungszeichen stand.
-
-### Zwei Wächter, die zu eng gemessen haben
-
-Die Zahl der Quelldateien stand als `9` daneben und wurde beim Einbau des
-Abgrenzungs-Blattes rot. Sie prüfte damit nur sich selbst. Jetzt steht dort
-eine **Namensliste**, und ein Ausfall sagt, welche Datei fehlt.
-
-Der Lücken-Wächter zählte das Wort „existiert nicht" und wurde rot, **weil eine
-Lücke geschlossen wurde**. Die zweite Fassung zählte mehr Wörter und war zu
-nachsichtig: die Gegenprobe ersetzte eine Zeile durch „in Arbeit", und die
-anderen trugen die Zahl allein. Jetzt braucht **jede Zeile** der Tabelle einen
-Stand aus einer anerkannten Liste.
-
-### Gedankenstriche, netzweit gemessen (Klaus' Frage)
-
-| was aus dem Haus geht | sichtbar | wovon |
-|---|---|---|
-| Unterlagen-Mappe, sechs Abteilungen | **0** | |
-| Fragen-Blatt | **0** | |
-| Antragsmappe | 18 | **alle** aus den zwei Byte-Kopien aus Kimhub, Prüfsummen in `werkstatt/README.md` |
-| Historie | 5.349 | **alle** aus zitierten Commit-Betreffen, eigener Rahmen **0** |
-| Arbeitszeit-Nachweis | 847 | dasselbe, eigener Rahmen **0** |
-| SBKIM-Papers DE/EN | 20 / 17 | **v0.1-Vorabveröffentlichung, Mai 2026**, in `INTERFACES.md` mit Paragraphennummern zitiert |
-
-Im Depot insgesamt: **13.131**, davon 7.238 in lebenden Arbeitstexten (Doku
-4.943, Briefe 1.674, Wurzel 316, Skills 305). Das sind keine Unterlagen.
-
-**Die Papers sind die eine offene Entscheidung.** Eine datierte v0.1 still
-umzuschreiben, während `INTERFACES.md` sie mit Paragraphennummern zitiert,
-erzeugte zwei Fassungen mit derselben Nummer. Das braucht eine v0.2 und Klaus'
-Wort.
-
-### Klaus' Downloads, geprüft
-
-Elf Dateien von seinem Gerät, byte-weise gegen das Depot gehalten: **neun
-identisch**, BOM vorhanden, PDFs vollständig. Zwei sind **ältere Downloads**:
-`antragsmappe.html` steht auf Stand 23.08., `historie.html` stammt von vor der
-BOM-Reparatur am 24.08. Kein Fehler, aber der Beleg dafür, dass eine
-heruntergeladene Datei keinen Rückweg hat. Beide tragen ihr Erzeugungsdatum im
-Dokument, deshalb war es überhaupt zu sehen.
-
-Dazu `klauszeit.txt`, der Export von Kimhubs Stechuhr: **zweimal gedrückt, 16
-Sekunden**. Als Zeitquelle unbrauchbar, und genau deshalb wird der Nachweis aus
-den Einträgen gerechnet. Steht so in der Bestandsaufnahme.
-
-**Gemessen:** 92 Proben grün, 0 rot, 0 nicht lauffähig · Gegenproben einzeln
-nacheinander: Antragsmappe 35 von 35, Unterlagen 14 von 14, Bestand 17 von 17,
-Zahlen 13 von 13 · neun PDFs neu gebaut, vier davon neu.
-
-**Offen:** Klaus' Sichttest · die Gedankenstriche in den beiden Papers
-(braucht v0.2 und sein Wort) · der Werkzeug-Widerspruch in Paper A · die
-Literatursuche zum Abgrenzungs-Blatt · die englische Projektseite · die
-Anmeldung nach § 5c.
-
----
-
-## Stand 2026-08-26 (Bau) · 📁 Die Unterlagen der Reihe nach
-
-**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
-Klaus: *„Gib mir bitte aus allen Sitzungen der Reihe nach die Download-Dokumente:
-Fahrplan, Fragen-Blatt, Behörden-Blatt, Arbeitszeit-Nachweis,
-Forschungsunterlagen inkl. Papers, und was noch fehlt für die Erreichung bei den
-entsprechenden Stellen. Schaue gründlich nach, gegebenenfalls passe an."*
-
-### ⚠ Zum zweiten Mal an drei Tagen: eine Sitzung lief parallel
-
-Während dieser Bau lief, hat eine **zweite Sitzung dasselbe gebaut** (PR #917
-bis #919): ein Fragen-Blatt, mit eigener Probe und
-Gegenprobe. Gemerkt beim Push, nicht davor.
-
-**Ihres gewinnt, und das ist keine Höflichkeit.** Es ist gründlicher:
-Sachverhalt in sieben Sätzen, sieben nummerierte Fragen, 75 Rechnungen, echte
-Zahlen. Meines ist **gelöscht**; Abteilung 3 der neuen Mappe zeigt jetzt auf
-das Fragen-Blatt. Zwei Blätter zur selben Auskunft wären zwei
-Quellen der Wahrheit gewesen, und die eine wüsste nichts von der anderen.
-
-**Beim Zusammenführen fiel eine Lücke in ihrem Blatt auf:** die
-**Kleinunternehmerregelung** steht dort nur als Aufzählungspunkt unter Frage 7,
-nicht als eigene Frage. Der Fragebogen zur steuerlichen Erfassung verlangt aber
-ein Kreuz. Benannt, nicht umfahren.
-
-**Und ihr Text hat einen Messfehler in meinem Wächter aufgedeckt:**
-`klartext()` entfernte Sternchen **auch innerhalb eines Code-Abschnitts**. An
-`docs/historie/arbeitstage.*` meldete er eine Zeile als fehlend, die
-vollständig dastand. Dieselbe Sorte wie beim Unterstrich in Dateinamen, nur ein
-Zeichen weiter. Behoben, und beide Mappen-Proben sind dadurch genauer.
-
-### Der Bestand, nachgesehen statt angenommen
-
-**Drei der fünf gab es, zwei nicht** (das Frageblatt kam parallel dazu). Fahrplan (`FORSCHUNGSFOERDERUNG.md`),
-Arbeitszeit-Nachweis (`historie/arbeitstage.*`) und Forschungsunterlagen
-(Antragsmappe, Abteilung 2) lagen vor. **Fragen-Blatt und
-Behörden-Blatt existierten überhaupt nicht.**
-
-Neu, unter `docs/unterlagen/`: Übersicht mit „Was noch fehlt" · die Schritte in
-der Reihenfolge ihrer Abhängigkeiten · Vorbereitung für die Behörde. Zusammengebaut zu die Unterlagen-Mappe, vier Abteilungen, **jede
-einzeln herunterzuladen und einzeln zu drucken**.
-
-### Der Widerspruch, den das gründliche Nachsehen gefunden hat
-
-**Schritt B4 des Fahrplans stand gegen § 4 derselben Datei.** B4 verlangte
-Lizenz-Dateien für `BookLedgerPro` und `Meine-In-and-Out-Book`; § 4 hatte am
-2026-08-24 nachgemessen, dass `BookLedgerPro` seit dem 16.08. eine trägt (im
-Container lag ein veralteter Klon) und `Meine-In-and-Out-Book` ein leeres Depot
-ohne einen einzigen Commit ist. **§ 4 war gemessen, B4 abgeschrieben.**
-Nachgezogen, mit dem Grund daneben.
-
-### Ein Werkzeug für zwei Mappen, nicht zwei Werkzeuge
-
-`antragsmappe-bauen.mjs` kannte eine Mappe, und **zwei Druckregeln nannten deren
-Abteilungen mit Namen**. Sie werden jetzt aus der Liste erzeugt. Eine dritte
-Abteilung wäre sonst stumm nicht druckbar gewesen: der Knopf hätte gearbeitet,
-das Blatt hätte alles gezeigt.
-
-**Und dabei ist ein echter Fehler entstanden, den die Gegenprobe gefunden hat:**
-die Anker-Karte galt zuerst über **beide** Mappen. Ein Verweis aus der
-Unterlagen-Mappe auf `FORSCHUNGSFOERDERUNG.md` wurde damit zu `#q-docs-...`,
-dessen Ziel nur in der **anderen** Datei steht. Ein Sprung ins Leere, der
-aussieht wie ein Verweis. Anker jetzt je Mappe.
-
-### Fünf blinde Wächter, alle von der Gegenprobe entlarvt
-
-| | |
-|---|---|
-| Der Download-Wächter **klonte die Abteilung selbst** statt den Knopf zu drücken | er maß seine eigene Funktion |
-| „keine Abschrift des Formulars" | fand den Satz im **Warnkasten des Generators** |
-| „keine steuerliche Beratung" | fand ihn im **anderen** Blatt |
-| „Was noch fehlt" mit `/i` | fand „was noch fehlt" klein in der Einleitung derselben Abteilung |
-| der Anker-Fall | sabotierte nichts, weil es gar keinen relativen Verweis mehr gab |
-
-Die drei mittleren sind dieselbe Sorte: **die Prüfung findet ihren Satz
-woanders.** Gemessen wird jetzt im Abschnitt, zu dem die Aussage gehört, und
-beim letzten am **Inhalt** statt an der Überschrift.
-
-**Nebenbefund:** vier Gedankenstriche in der Markier-Legende. Der bestehende
-Wächter misst die **Quellen**, der neue die **Ansicht** und ist damit strenger.
-Aufgelöst.
-
-**Gemessen:** 90 von 90 Proben grün · Gegenprobe Unterlagen 14 von 14 ·
-Antragsmappe 32 von 32 · Historie 9 von 9 · Arbeitstage 16 von 16 ·
-Frageblatt der Nachbarsitzung unberührt grün.
-
-**PDFs:** `unterlagen.pdf` (15 Seiten) und je Abteilung eines, über
-`tools/html-zu-pdf.mjs --nur <id>`. Das setzt **dieselbe** Klasse wie der Knopf
-in der Seite, statt eine zweite Auswahl-Logik zu bauen.
-
-**Offen:** Klaus' Sichttest · der Werkzeug-Widerspruch in Paper A (**vor**
-Zenodo) · das Blatt „Stand der Technik und Abgrenzung", das es noch gar nicht
-gibt und das jeder Leser zuerst braucht · die Anmeldung nach § 5c.
+| 2026-08-26 (Bau, 3.) — 🔬 Forschungsaufgaben, und jede Sitzung wird eine Messung | [→ Archiv](sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md) | **keins** — Fortsetzung derselben Sitzung; der Wortlaut im Archiv ist die einzige Fassung |
+| 2026-08-26 (Bau, 2.) — 📚 Die lückenlose Dokumentation | [→ Archiv](sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md) | [→ Protokoll](sessions/archiv/2026-08-26_lueckenlose-dokumentation.md) |
+| 2026-08-26 (Bau) — 📁 Die Unterlagen der Reihe nach | [→ Archiv](sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md) | [→ Protokoll](sessions/archiv/2026-08-26_unterlagen-der-reihe-nach.md) |
 
 ---
 
