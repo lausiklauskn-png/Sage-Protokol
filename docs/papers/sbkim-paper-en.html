@@ -1150,7 +1150,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
 
 </div>
 
-<!-- THE PRINT BUTTON AND THE THREE SETTINGS BESIDE IT (2026-09-03).
+<!-- THE PRINT BUTTON (2026-09-03).
 
      Printing from the browser must yield the same PDF. Measured: it does.
      Pagination depends only on this document's @page rule. Three print paths
@@ -1158,31 +1158,20 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
      colours) -- all three give the same 15 pages, section 8 on page 14,
      section 9 with the references on page 15, line for line.
 
-     What the print dialog still changes are three settings that do not
-     belong to the document: the browser header and footer, background
-     colours and the margin preset. They are stated here, where someone
-     reads them. The note carries `no-print` and stays off the paper.
+     ⚠ What the print dialog still changes does not belong to the document:
+     the browser header and footer, background colours, the margin preset. A
+     note box saying so stood here briefly and was taken out again at the
+     operator's request -- a paper does not carry an instruction manual for
+     the reader's browser. The three settings remain true; they are recorded
+     here instead of on screen.
 
-     ⚠ The button used to be labelled in GERMAN („PDF drucken / speichern")
-     on the English paper. Found while rebuilding it. -->
-<div class="no-print"
-  style="position:fixed;bottom:24px;right:24px;max-width:290px;text-align:right;
-         font-family:'Inter',sans-serif;">
-  <div style="background:#fff;border:1px solid #e4e4ef;border-radius:12px;
-              padding:11px 14px;margin-bottom:10px;font-size:11.5px;line-height:1.55;
-              color:#4b5563;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:left;">
-    <strong style="color:#3730a3;">To make it look like this:</strong><br>
-    Margins <em>Default</em> · Background graphics <em>on</em> ·
-    Headers and footers <em>off</em>.<br>
-    <span style="color:#6b7280;">Pagination lives in the document and does not change with these.</span>
-  </div>
-  <button onclick="window.print()"
-    style="background:#3730a3;color:#fff;border:none;padding:10px 20px;
-           border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;
-           font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(55,48,163,.3);">
-    Save as PDF
-  </button>
-</div>
+     The button used to be labelled in GERMAN on the English paper. -->
+<button class="no-print" onclick="window.print()"
+  style="position:fixed;bottom:24px;right:24px;background:#3730a3;color:#fff;border:none;
+         padding:10px 20px;border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;
+         font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(55,48,163,.3);">
+  Save as PDF
+</button>
 
 </body>
 </html>
