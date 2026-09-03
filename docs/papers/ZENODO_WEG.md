@@ -243,6 +243,24 @@ verlässlichere.
 
 **Beide Nummern in den Chat kopieren.**
 
+### ✅ Gemessen für Paper A (2026-09-03)
+
+| | |
+|---|---|
+| Eintrag | [zenodo.org/records/22286072](https://zenodo.org/records/22286072) |
+| Versions-DOI | `10.5281/zenodo.22286072` — Version 1.0 |
+| Concept-DOI | `10.5281/zenodo.22286071` |
+| Fundstelle | Kasten *Versionen*, Satz „Alle Versionen zitieren?" |
+
+**Der Concept-DOI ist um eins kleiner als der Versions-DOI** — bei Paper A wie
+beim SBKIM-Papier (22277737/22277738). Das sind **zwei Fälle**, und zwei Fälle
+sind eine Beobachtung, keine Zusicherung von Zenodo. Vor dem Eintragen wurde die
+Nummer deshalb am Satz im Versions-Kasten abgelesen und nicht gerechnet.
+
+⚠ **Bei einer einzigen Version gibt es den Concept-DOI trotzdem.** Er entsteht
+mit der ersten Veröffentlichung, nicht mit der zweiten — das ist sein Zweck:
+Verweise, die heute gesetzt werden, sollen die nächste Fassung überstehen.
+
 ---
 
 ## Schritt 4 · Die Sitzung: den DOI überall nachziehen
@@ -253,8 +271,11 @@ Beim SBKIM-Papier waren es **vier** Stellen. Für Paper A:
 |---|---|
 | `regeln-und-grundsaetze-in-ki-agentensystemen.html` | die `paper-doi`-Zeile (kommt aus `--doi`) |
 | `docs/papers/README.md` | der Abschnitt zu den DOIs |
-| `index.html` | die Geschichts-Galerie, wenn Paper A dort eine Station bekommt |
+| `index.html` | die Geschichts-Galerie, Station 9 und 10 |
 | `docs/PULS.md` | im Eintrag zur Veröffentlichung |
+
+**Alle vier sind am 2026-09-03 nachgezogen.** Die Zeile für die nächste Fassung
+bleibt stehen, weil sie dann wieder gebraucht wird.
 
 Danach `node tests/smoke_paper_a.mjs` — die Probe verlangt, dass der DOI
 entweder echt ist **oder** ausdrücklich als fehlend vermerkt.

@@ -60,13 +60,31 @@ sah es nicht und ist seitdem um ein Muster reicher (`smoke_antragsmappe.mjs`,
 
 ## Die DOIs (Zenodo, 2026-09-03)
 
-**Es sind zwei, und sie haben verschiedene Aufgaben.** Zenodo legt den zweiten
-automatisch an; wer das nicht weiß, verwendet den falschen.
+**Je Papier sind es zwei, und sie haben verschiedene Aufgaben.** Zenodo legt den
+zweiten automatisch an; wer das nicht weiß, verwendet den falschen.
+
+### SBKIM-Papier
 
 | DOI | Was er bezeichnet | Wofür |
 |---|---|---|
 | [`10.5281/zenodo.22277738`](https://doi.org/10.5281/zenodo.22277738) | **genau diese Fassung**, Version 2.0 vom 03.09.2026 | steht **in den Papers selbst** — ein Dokument bezeichnet sich, nicht seine Nachfolger |
 | [`10.5281/zenodo.22277737`](https://doi.org/10.5281/zenodo.22277737) | **das Werk**, alle Fassungen | überall, wo dauerhaft auf „das SBKIM-Papier" gezeigt wird: führt **immer zur neuesten** |
+
+### Paper A — Regeln und Grundsätze
+
+Veröffentlicht am 03.09.2026, Version 1.0, Preprint:
+[zenodo.org/records/22286072](https://zenodo.org/records/22286072).
+
+| DOI | Was er bezeichnet | Wofür |
+|---|---|---|
+| [`10.5281/zenodo.22286072`](https://doi.org/10.5281/zenodo.22286072) | **genau diese Fassung**, Version 1.0 vom 03.09.2026 | steht **in beiden Sprachfassungen selbst** |
+| [`10.5281/zenodo.22286071`](https://doi.org/10.5281/zenodo.22286071) | **das Werk**, alle Fassungen | überall, wo dauerhaft auf „Paper A" gezeigt wird: führt **immer zur neuesten** |
+
+⚠ **Der Concept-DOI ist um eins KLEINER als der Versions-DOI** — bei beiden
+Papers. Gemessen am 03.09.2026 an zwei Fällen: 22277737/22277738 und
+22286071/22286072. Zwei Fälle sind eine Beobachtung, keine Zusicherung von
+Zenodo. Wer die Nummer braucht, liest sie im Kasten *Versions* der
+Eintragsseite ab („Alle Versionen zitieren?"), statt sie zu rechnen.
 
 ⚠ **Die Zuordnung ist nicht Geschmackssache.** Im gedruckten Papier muss der
 Versions-DOI stehen: wer dieses PDF in der Hand hält, hält Version 2.0, und der
@@ -83,15 +101,22 @@ derselbe Text, zwei Sprachen, in einem Zenodo-Eintrag mit zwei Dateien. Zwei
 getrennte DOIs hätten aus einer Arbeit zwei gemacht, und wer eine davon
 zitiert, hätte die andere nicht mit erfasst.
 
-Eingetragen ist er an **vier** Stellen, und die Liste steht hier, damit die
+Eingetragen sind sie an diesen Stellen, und die Liste steht hier, damit die
 nächste Fassung keine davon vergisst:
 
-| Wo | Was |
-|---|---|
-| beide Papers, Zeile unter der Herkunft | `<p class="paper-doi">` |
-| diese Datei | dieser Abschnitt |
-| `index.html`, Station 4 und 5 | im Erzähl-Text der Galerie |
-| `index.html`, Station 8 | im Absatz zur zweiten Fassung |
+| Wo | Was | Papier |
+|---|---|---|
+| beide Sprachfassungen, Zeile unter der Herkunft | `<p class="paper-doi">` | beide |
+| diese Datei | der Abschnitt oben | beide |
+| `index.html`, Station 4 und 5 | im Erzähl-Text der Galerie | SBKIM |
+| `index.html`, Station 8 | im Absatz zur zweiten Fassung | SBKIM |
+| `index.html`, Station 9 und 10 | im Erzähl-Text der Galerie | Paper A |
+
+⚠ **Bei Paper A steht der Versions-DOI in der Markdown-QUELLE**, nicht in der
+erzeugten HTML — die entsteht daraus. Wer ihn ändert, ändert
+`regeln-und-grundsaetze-in-ki-agentensystemen.md` und
+`rules-and-principles-in-ai-agent-systems.md` und baut neu. Eine Änderung
+direkt in der HTML wirft `smoke_paper_a.mjs` um, und zwar zu Recht.
 
 **In den Papers steht der Versions-DOI**, in Galerie und README beide — mit
 der Rolle dabei, damit niemand den falschen abschreibt.
