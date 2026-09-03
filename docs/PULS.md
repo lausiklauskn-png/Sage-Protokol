@@ -31,6 +31,64 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-03 (Bau) · ✅ DER DOI IST DA — und die PDFs, die ihn tragen
+
+**Das Ziel ist erreicht.** Zwei Sitzungen in Folge waren dafür losgegangen.
+
+```
+10.5281/zenodo.22277738
+```
+
+**Veröffentlicht am 2026-09-03**, Vorabdruck, Version 2.0, offen zugänglich,
+CC BY 4.0. Beide Sprachfassungen unter **einer** Nummer, weil sie **ein** Werk
+sind: ein Zenodo-Eintrag mit zwei Dateien. Zwei getrennte DOIs hätten aus einer
+Arbeit zwei gemacht, und wer die eine zitiert, hätte die andere nicht erfasst.
+
+### Der Weg, der es gelöst hat: RESERVIEREN statt warten
+
+Die Sitzung vom 2026-09-02 stand vor einem Henne-Ei-Problem und hat es nicht
+benannt: das Papier soll seinen DOI tragen, aber den gibt es erst nach dem
+Veröffentlichen. Zenodo löst das selbst, und der Satz steht auf der Seite:
+
+> *„Reservieren Sie eine DOI, indem Sie auf die Schaltfläche klicken (damit sie
+> vor dem Hochladen in die Dateien eingefügt werden kann)."*
+
+Gefunden hat ihn Klaus, auf einem Bildschirmfoto, das er aus einem anderen
+Grund geschickt hatte. **Die Reihenfolge war danach:** reservieren → in die
+Papers eintragen → PDFs neu bauen → hochladen → veröffentlichen. Deshalb steht
+der DOI jetzt auf dem Titelblatt des Dokuments, das er bezeichnet.
+
+### Eingetragen an vier Stellen
+
+| Wo | Was |
+|---|---|
+| beide Papers | `<p class="paper-doi">` unter der Herkunftszeile |
+| `docs/papers/README.md` | eigener Abschnitt **mit der Stellen-Liste**, damit die nächste Fassung keine vergisst |
+| `index.html` Station 4 und 5 | im Erzähl-Text der Geschichts-Galerie |
+| `index.html` Station 8 | im Absatz zur zweiten Fassung |
+
+### Der Wächter hat dabei zugeschlagen, und er hatte recht
+
+Ich hatte `<a href="https://doi.org/10.5281/…">10.5281/zenodo.22277738</a>`
+geschrieben. `smoke_papers_verweise` wurde rot: *„jede Adresse steht auch als
+lesbarer Text da, nicht nur im Verweis."*
+
+Der Punkt ist feiner, als er aussieht: auf Papier stand damit eine **Kennung
+ohne den Weg dorthin**. Wer sie abtippen will, braucht `doi.org/` davor. Der
+Linktext ist jetzt die volle Adresse.
+
+> Das ist derselbe Wächter, der am selben Vormittag die fehlenden Kopf-Adressen
+> gemeldet hatte. Die Zusicherung stammt aus Klaus' eigenem Befund und hat
+> **zweimal an einem Tag** gegriffen.
+
+### Was Klaus noch prüfen muss
+
+`doi.org` und `zenodo.org` sind aus der Sitzungs-Umgebung **gesperrt** (403 vom
+Egress-Proxy). Die Auflösung des DOI ist deshalb **nicht von hier gemessen**.
+Klaus prüft sie in seinem Browser; bis dahin gilt sie als unbelegt.
+
+---
+
 ## Stand 2026-09-03 (Bau) · 📄 Die PDFs für Zenodo, und zwei Sitzungen am selben Auftrag
 
 **Rolle:** Bausitzung nach dem Brief „nach der Papers-Veröffentlichung". Ziel war

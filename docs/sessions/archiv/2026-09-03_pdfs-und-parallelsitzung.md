@@ -5,6 +5,37 @@
 
 ---
 
+## ✅ DAS ZIEL IST ERREICHT
+
+```
+10.5281/zenodo.22277738
+```
+
+Veröffentlicht am 2026-09-03, Vorabdruck, Version 2.0, offen, CC BY 4.0.
+Beide Sprachfassungen unter einer Nummer.
+
+⚠ **Dieser Abschnitt ist nachgetragen.** Die Zeilen darunter entstanden am
+Nachmittag, als der DOI noch offen war — sie stehen unverändert, weil sie den
+Verlauf zeigen. Was sie über den DOI sagen, ist überholt; alles andere gilt.
+
+**Was den Ausschlag gab, war ein Satz auf Zenodos eigener Seite**, den Klaus
+auf einem Bildschirmfoto mitgeschickt hatte, das er aus einem anderen Grund
+aufgenommen hatte:
+
+> *„Reservieren Sie eine DOI … damit sie vor dem Hochladen in die Dateien
+> eingefügt werden kann."*
+
+Damit löste sich ein Henne-Ei-Problem auf, das die Sitzung vom Vortag nicht
+benannt hatte: das Papier soll seinen DOI tragen, aber den gibt es erst nach
+dem Veröffentlichen. Die Reihenfolge heißt: reservieren → eintragen → PDFs neu
+bauen → hochladen → veröffentlichen.
+
+**Nicht gemessen:** ob `doi.org/10.5281/zenodo.22277738` auflöst. `doi.org` und
+`zenodo.org` sind aus dieser Umgebung gesperrt (403 vom Egress-Proxy). Klaus
+prüft es im Browser.
+
+---
+
 ## Was das Ziel war und was daraus wurde
 
 **Ziel: der Zenodo-DOI.** Er steht am Ende immer noch offen — zum zweiten Mal in
