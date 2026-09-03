@@ -111,7 +111,7 @@ Download-Ordner.
 | Description | die Zusammenfassung aus dem Papier (Abschnitt „Zusammenfassung", 322 Wörter) |
 | License | **Creative Commons Attribution 4.0 International (CC BY 4.0)** |
 | Keywords | die sieben unten, zum Abschreiben |
-| Language | Deutsch (die englische Fassung liegt als zweite Datei bei) |
+| Languages | **beide**: `German` und `English` |
 
 ### Der Titel: einer im Hauptfeld, einer als Übersetzung
 
@@ -179,6 +179,35 @@ field observation
 > daraufhin geschrieben, es dürfe keine Ersatzliste geben. Gemeint war „an der
 > falschen Stelle". Die Liste steht deshalb wieder da, nur an dem Ort, an den
 > sie gehört.
+
+### Beide Sprachen ins Feld, nicht nur eine
+
+Zenodos Feld *Languages* nimmt **mehrere** Einträge. Der Eintrag trägt beide
+Fassungen, also gehören auch beide hinein: `German` und `English`. Steht nur
+eine da, findet eine Sprachsuche nach der anderen den Eintrag nicht, obwohl die
+Datei darin liegt.
+
+Dasselbe gilt für die Beschreibung: sie steht zweisprachig im Eintrag, englisch
+zuerst. Klaus am 2026-09-03: *„absichtlich auf Englisch, weil wahrscheinlich die
+meisten das Englisch lesen werden."*
+
+### ⚠ Der Dateiname, den der Browser übersetzt
+
+Beim Hochladen zeigte Zenodo die englische Datei als
+*„Regeln und Prinzipien in KI-Agentensystemen.pdf"* an, obwohl sie
+`rules-and-principles-in-ai-agent-systems.pdf` heißt.
+
+**Die Datei war richtig.** Chrome hatte die Seite übersetzt und dabei den
+Dateinamen als Text mitgenommen; das Wort „Prinzipien" kommt in keinem der
+Dateinamen vor, es ist die Übersetzung von *principles*. Der deutsche Name blieb
+stehen, weil er schon deutsch war.
+
+Bewiesen an der Prüfsumme, nicht am Augenschein: Zenodo zeigte
+`md5:acd2aaeb2b7ccccfdce37ed449e9f92d`, und genau die hat die englische Datei.
+Auch die Größe passte, nur rechnet Zenodo mit 1000 Bytes je KB und `ls` mit 1024.
+
+**Zum Nachsehen:** in der Adressleiste auf das Übersetzen-Symbol tippen und
+„Original anzeigen" wählen.
 
 3. **Publish** drücken.
 
