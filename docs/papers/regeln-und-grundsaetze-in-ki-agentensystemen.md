@@ -1818,7 +1818,7 @@ Maß").
 
 ## Zum Verfasser
 
-Kein Informatiker, kein Wissenschaftler. Handwerksbetrieb, seit März 2026
+Kein Informatiker, kein Wissenschaftler. Seit März 2026
 nebenher an einem Netz aus offen lizenzierten Web-Anwendungen und einem Protokoll
 für bedeutungsbasierte Suche zwischen unabhängigen Web-Anwendungen, **ohne
 zentralen Index und ohne eigene Infrastruktur beim Nutzer**, der Verkehr läuft

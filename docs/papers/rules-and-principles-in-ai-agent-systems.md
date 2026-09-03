@@ -1760,7 +1760,7 @@ law ("when a measure becomes a target, it ceases to be a good measure").
 
 ## About the author
 
-Not a computer scientist, not an academic. A trade business, since March 2026
+Not a computer scientist, not an academic. Since March 2026
 working on the side on a network of openly licensed web applications and a
 protocol for meaning-based search between independent web applications, **without
 a central index and without infrastructure of its own at the user's end**; the
