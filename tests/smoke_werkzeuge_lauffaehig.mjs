@@ -53,6 +53,7 @@ const NUR_SYNTAX = {
   'ausgabe-bauen.mjs': 'legt den Ausgabe-Ordner neu an',
   'abteilung-html.mjs': 'startet einen Browser',
   'html-zu-pdf.mjs': 'startet einen Browser',
+  'paper-md-zu-html.mjs': 'schreibt beim Laden die HTML und steigt ohne Argument mit exit(2) aus',
   'paper-zu-pdf.mjs': 'startet einen Browser, holt Schriften und steigt ohne Argument mit exit(2) aus',
   'paper-umbruch-pruefen.mjs': 'startet einen Browser und steigt ohne Argument mit exit(2) aus',
   'paper-pdf-pruefen.mjs': 'ruft pdftotext auf und steigt ohne Argument mit exit(2) aus',
