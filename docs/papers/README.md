@@ -9,9 +9,25 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
 
-## Der DOI (Zenodo, 2026-09-03)
+## Die DOIs (Zenodo, 2026-09-03)
 
-**[`10.5281/zenodo.22277738`](https://doi.org/10.5281/zenodo.22277738)** — die zitierfähige Adresse beider Papers.
+**Es sind zwei, und sie haben verschiedene Aufgaben.** Zenodo legt den zweiten
+automatisch an; wer das nicht weiß, verwendet den falschen.
+
+| DOI | Was er bezeichnet | Wofür |
+|---|---|---|
+| [`10.5281/zenodo.22277738`](https://doi.org/10.5281/zenodo.22277738) | **genau diese Fassung**, Version 2.0 vom 03.09.2026 | steht **in den Papers selbst** — ein Dokument bezeichnet sich, nicht seine Nachfolger |
+| [`10.5281/zenodo.22277737`](https://doi.org/10.5281/zenodo.22277737) | **das Werk**, alle Fassungen | überall, wo dauerhaft auf „das SBKIM-Papier" gezeigt wird: führt **immer zur neuesten** |
+
+⚠ **Die Zuordnung ist nicht Geschmackssache.** Im gedruckten Papier muss der
+Versions-DOI stehen: wer dieses PDF in der Hand hält, hält Version 2.0, und der
+DOI darauf muss zu genau ihr führen. Zeigte er auf die neueste, führte ein
+Zitat aus dem Jahr 2026 irgendwann auf einen Text, den der Zitierende nie
+gesehen hat.
+
+Umgekehrt gehört in eine Verlinkung, die stehen bleiben soll — README,
+Geschichts-Galerie, Marktplatz-Eintrag — der **Concept-DOI**. Sonst zeigt sie
+nach der nächsten Fassung auf eine veraltete.
 
 Beide Sprachfassungen liegen unter **einem** DOI, weil sie **ein** Werk sind:
 derselbe Text, zwei Sprachen, in einem Zenodo-Eintrag mit zwei Dateien. Zwei
@@ -27,6 +43,9 @@ nächste Fassung keine davon vergisst:
 | diese Datei | dieser Abschnitt |
 | `index.html`, Station 4 und 5 | im Erzähl-Text der Galerie |
 | `index.html`, Station 8 | im Absatz zur zweiten Fassung |
+
+**In den Papers steht der Versions-DOI**, in Galerie und README beide — mit
+der Rolle dabei, damit niemand den falschen abschreibt.
 
 ⚠ **Ein DOI ist unveränderlich.** Was unter dieser Nummer liegt, bleibt dort.
 Die Angaben daneben (Titel, Beschreibung, Schlüsselwörter) lassen sich bei
