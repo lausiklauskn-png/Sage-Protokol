@@ -61,6 +61,7 @@ const SPRACHE = wert('--sprache', 'de');
  */
 const EIGENE_SEITE = {
   'PAPER_A_regeln-und-grundsaetze.md': ['8 · Einordnung', '9 · Verfügbarkeit'],
+  'PAPER_A_rules-and-principles.md': ['8 · Placing the work', '9 · Availability'],
 };
 
 const EIGENE_SEITE_HIER = EIGENE_SEITE[QUELLE.split('/').pop()] || [];

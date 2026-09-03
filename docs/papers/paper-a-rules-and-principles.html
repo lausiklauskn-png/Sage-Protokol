@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rules and Principles — Two ways to steer an AI system, and why neither is enough on its own</title>
+<!-- ⚠ ERZEUGT von tools/paper-md-zu-html.mjs. NICHT von Hand aendern.
+     Die Quelle ist docs/papers/PAPER_A_rules-and-principles.md; eine Aenderung hier ginge beim naechsten
+     Bau verloren, und bis dahin gaebe es den Text zweimal. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Source+Code+Pro:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* paper.css — der gemeinsame Stil der Papers dieses Depots.
+ *
+ * ── HERKUNFT ──────────────────────────────────────────────────────────────
+ *
+ * Am 2026-09-03 BYTE-TREU aus `sbkim-paper-de.html` (Zeilen 10–255) gezogen,
+ * mit `sed`, nicht abgeschrieben. Darin stecken die Druck-Entscheidungen, die
+ * an drei Tagen einzeln erarbeitet und je mit einer Messung belegt wurden:
+ * der A4-Rand im DOKUMENT statt im Druck-Werkzeug, das Deckblatt fuer sich,
+ * `orphans:4` gegen die gestrandete Ueberschrift, die EINSPALTIGEN Quellen
+ * (ein Spalten-Kasten wandert bei Chromium als GANZES weiter), die Adressen,
+ * die im Druck hinter den Verweis ruecken.
+ *
+ * ── WARUM ES DIESE DATEI GIBT, UND WAS SIE NOCH NICHT IST ─────────────────
+ *
+ * `paper-md-zu-html.mjs` baut daraus die HTML-Fassung von Paper A. Ohne diese
+ * Datei haette der Erzeuger seine eigene Abschrift getragen, und dann gaebe es
+ * die Druckregeln zweimal. Genau davor warnt `README.md` in diesem Ordner:
+ * zwei Fassungen desselben Textes lassen sich nicht mehr reparieren, sobald
+ * jemand eine davon zitiert hat.
+ *
+ * ⚠ ES SIND TROTZDEM ZWEI KOPIEN, UND DAS IST BENANNT, NICHT BEHOBEN. Die
+ * beiden SBKIM-Papers tragen ihren Stil weiter INLINE. Sie sind unter dem DOI
+ * 10.5281/zenodo.22277738 veroeffentlicht; ihre Datei jetzt umzubauen aendert
+ * ein Dokument, auf das bereits zitierfaehig gezeigt wird, ohne dass sich am
+ * Text etwas aendert. Wer sie bei der naechsten Fassung ohnehin anfasst, haengt
+ * sie hier ein und streicht diesen Absatz.
+ * `tests/smoke_paper_css.mjs` haelt die beiden Fassungen bis dahin gegeneinander
+ * und meldet, wenn sie auseinanderlaufen.
+ */
+
+:root {
+  --text: #1a1a2e;
+  --t2: #444466;
+  --t3: #888;
+  --accent: #3730a3;
+  --teal: #0f766e;
+  --gold: #b45309;
+  --border: #e2e2f0;
+  --bg: #fafafa;
+  --paper: #ffffff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:16px; }
+body {
+  font-family:'Source Serif 4', Georgia, serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.75;
+}
+.paper {
+  max-width:760px;
+  margin:0 auto;
+  background:var(--paper);
+  padding:72px 80px;
+  box-shadow:0 1px 24px rgba(0,0,0,.07);
+}
+@media(max-width:860px) { .paper { padding:40px 28px; } }
+/* Druck: auf DIN A4 festgelegt (Klaus 2026-09-03).
+   Vorher stand hier KEINE @page-Regel - das Format war nirgends bestimmt,
+   und jeder Drucker entschied selbst. Der Rand steht hier und NUR hier,
+   deshalb faellt das Innenpolster der .paper weg und das Druck-Werkzeug
+   setzt keinen eigenen; sonst zaehlt derselbe Rand zweimal.
+   Auf 15/14 mm verengt (Klaus, am selben Tag: „mit schmaleren Raendern
+   arbeiten") -- 18/16 liessen zuviel Weiss stehen. */
+@page { size:A4; margin:15mm 14mm; }
+
+@media print {
+  /* Das Deckblatt steht fuer sich: Titel, Herkunft, Zusammenfassung. Die
+     Einleitung beginnt oben auf der naechsten Seite, statt sich den Rest von
+     Seite eins mit der Zusammenfassung zu teilen. */
+  .abstract { break-after:page; }
+  /* Auf Papier kann niemand klicken. Im Kopf stehen die Adressen nur als
+     Verweis („Live-Demo Layer 1 →"); gedruckt waere die Adresse damit fuer
+     diesen Leser verloren. Die Regel setzt sie hinter den Verweis -- nur im
+     Druck, damit der Bildschirm aufgeraeumt bleibt.
+     Gefunden hat es Klaus am 2026-09-03 beim Vergleich zweier PDFs: die
+     Fassung vom Vortag hatte die Adressen, das Depot nicht. Sie standen in
+     einer ARBEITSKOPIE, aus der gedruckt wurde -- genau die zweite Fassung,
+     vor der docs/papers/README.md warnt. Deshalb steht die Regel jetzt hier
+     und nicht in einem Druck-Werkzeug. */
+  .paper-links a { display:block; margin:0 0 3px; }
+  .paper-links a::after {
+    content:" " attr(href);
+    font-family:'Source Code Pro',monospace; font-size:.82em;
+    color:#555; word-break:break-all;
+  }
+  /* Sicherheitsnetz: bricht eine Tabelle doch einmal um (weil sie laenger ist
+     als eine Seite), wiederholt sich ihr Kopf. Ohne das stehen auf der zweiten
+     Seite Zahlen ohne Spaltennamen. */
+  thead { display:table-header-group; }
+  h2 { break-before:auto; break-after:avoid; }
+  h3 { break-after:avoid; }
+  /* Ein Absatz darf ueber zwei Seiten laufen -- aber nur INNERHALB eines
+     Themas (Klaus 2026-09-03). Eine Ueberschrift, hinter der nur noch eine
+     Zeile aufs Blatt passt, hat ihren Abschnitt nicht mehr bei sich:
+     `break-after:avoid` allein genuegt Chromium schon, wenn EINE Zeile
+     folgt. Die vier verlangten Zeilen schieben Ueberschrift und Anfang
+     gemeinsam auf die naechste Seite. */
+  h2 + p, h3 + p { break-before:avoid; orphans:4; }
+
+  /* ZWEI ABSCHNITTE BEKOMMEN JE EINE EIGENE SEITE (Klaus 2026-09-03).
+     Die Schlussfolgerung und die Entstehung des Textes sind das, was ein
+     Leser zuletzt in der Hand hat; sie standen bisher als Rest unten auf
+     Seiten, die von etwas anderem handeln. Die Quellenangaben ruecken
+     dabei mit auf die Seite von Abschnitt 9 und werden kleiner gesetzt,
+     damit beides zusammen aufgeht -- Klaus: „Die Quellenangaben koennten
+     kleiner geschrieben werden, sodass der nachfolgende Punkt alles auf
+     eine Seite passt."
+     Die Klasse steht am <h2>, nicht als :nth-of-type(8): eine Zaehlung
+     verschiebt sich lautlos, sobald jemand einen Abschnitt einfuegt. */
+  .eigene-seite { break-before:page; }
+  /* Zweispaltig und kleiner: so passen die Quellen mit auf die Seite von
+     Abschnitt 9, statt allein eine sechzehnte anzufangen. Gemessen: einspaltig
+     bei 10,4 px liefen 14 Zeilen ueber. */
+  /* ⚠ Die Groesse gehoert an die ABSAETZE, nicht an den Kasten. `.footnotes p`
+     traegt weiter unten im Bildschirm-Stil eine eigene (12,5 px) und erbt
+     deshalb nichts vom Container. Gemessen am 2026-09-03: den Container von
+     10,4 auf 8,8 px zu setzen aenderte an der Seitenzahl NICHTS -- die Regel
+     traf kein einziges sichtbares Zeichen. Eine Regel, deren Fehlen nichts
+     aendert, ist eine Behauptung. */
+  /* DIE QUELLEN STEHEN MIT AUF DER SEITE VON ABSCHNITT 9 (Klaus 2026-09-03):
+     „Beim Punkt neun noch die Quellen darunter packen. Und zwar deshalb
+     kleiner, damit sie auf die Seite mitpassen."
+
+     ⚠ NICHT die Schriftgroesse war das Hindernis, sondern MEIN EIGENER
+     SPALTEN-KASTEN. Ich hatte `column-count` gesetzt, um Platz zu sparen --
+     und damit den Fehler erst gebaut: Chromium schiebt einen mehrspaltigen
+     Kasten als GANZES auf die naechste Seite, sobald er nicht vollstaendig
+     auf die Restseite geht. Vier Anlaeufe mit immer kleinerer Schrift
+     aenderten deshalb an der Seitenzahl nichts, und ich habe daraus
+     geschlossen, es passe nicht. Es passte die ganze Zeit; nur floss es
+     nicht.
+     Einspaltig fliesst der Text wie jeder andere Absatz und fuellt die
+     Restseite. Gemessen bei 1.009 px Nutzhoehe: Abschnitt 9 braucht 681 px,
+     die Quellen bei 9,4 px rund 270. */
+  /* ⚠ `.paper` DAVOR IST NICHT ZIERDE, SONDERN NOTWENDIG. Der Bildschirm-Stil
+     setzt `.footnotes p { font-size:12.5px }` und steht in dieser Datei WEITER
+     UNTEN als der Druck-Block. `@media print` erhoeht die Spezifitaet nicht --
+     bei gleichem Gewicht gewinnt die spaetere Regel, also die fuer den
+     Bildschirm. Zweimal habe ich am 2026-09-03 Werte gedreht, die kein
+     einziges Zeichen trafen: von 10,4 auf 8,8 px aenderte nichts, von 9,4 auf
+     8,4 px aenderte 33 px statt der erwarteten 90.
+     Die Gegenprobe ist jedes Mal dieselbe: eine Zahl, die sich nach der
+     Aenderung NICHT bewegt. */
+  /* Vor den Quellen steht eine Trennlinie, und der Quellen-Block bringt
+     seine eigene Oberkante mit -- im Druck sind das zwei Striche und rund
+     40 px fuer dieselbe Aussage. Der Divider geht weg, die Kante bleibt.
+     Genau diese 40 px waren es, die den Rest der Liste auf eine 16. Seite
+     geschoben haben. */
+  .divider + .footnotes { margin-top:0; }
+  hr.divider:has(+ .footnotes) { display:none; }
+  .paper .footnotes { font-size:9px; margin-top:8px; padding-top:7px; }
+  .paper .footnotes p { font-size:9px; line-height:1.3; margin-bottom:1px;
+                        break-inside:avoid; }
+
+  /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
+     Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
+     dieser Liste. Gemessen am 2026-09-03: die beiden groessten Tabellen
+     sind 555 und 550px hoch, die Fussnoten 503, die Zusammenfassung 450
+     - bei 987px Nutzhoehe je Seite. Passte so ein Block nicht mehr, sprang
+     er ganz auf die naechste Seite und liess den Rest leer: 1.377px an
+     drei Stellen, zusammen 1,4 leere Seiten. */
+  .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
+
+  /* ⚠ TABELLEN BLEIBEN GANZ (Klaus 2026-09-03, zum zweiten Mal gemeldet:
+     „Tabelle zum Beispiel [falsch] umgebrochen").
+     #939 hatte sie am selben Tag auf `auto` gesetzt, und mit gutem Grund:
+     bei 987 px Nutzhoehe und Tabellen von 555 px blieben sonst 1,4 Seiten
+     leer. Seitdem sind die Raender enger (15/14 statt 18/16 mm) und die
+     Tabellenschrift kleiner (12,6 px, Innenabstand 6/10 px) -- die groesste
+     Tabelle misst jetzt rund 330 statt 555 px. Was damals ein schlechter
+     Tausch war, ist es heute nicht mehr; deshalb steht die Entscheidung
+     um, nicht die Messung.
+     Zusammenfassung und Fussnoten duerfen weiter fliessen: die eine ist
+     Text, die andere eine Liste, und beide liest niemand als Block. */
+  .abstract, .footnotes { break-inside:auto; }
+  table { break-inside:avoid; }
+  tr, .footnotes p, .dim-card { break-inside:avoid; }
+
+  p, li { orphans:3; widows:3; }
+
+  /* ── SCHRIFTGROESSEN: EINE ECHTE HIERARCHIE (Klaus 2026-09-03) ───────
+     „mit Schriftgroessen variieren" -- und er hat einen echten Fehler
+     getroffen: h2, die Hauptueberschrift, war mit 15 px KLEINER als der
+     Fliesstext mit 15,5. Eine Gliederung, die man an der Groesse nicht
+     erkennt, ist keine. Gedruckt wird enger als am Bildschirm, damit die
+     Seiten gleichmaessig voll werden statt halb leer. */
+  body { background:#fff; font-size:14.2px; }
+  p { font-size:14.2px; line-height:1.6; margin-bottom:10px; }
+  h2 { font-size:16.5px; margin:24px 0 8px; letter-spacing:.6px; }
+  h3 { font-size:14.8px; margin:15px 0 5px; }
+  .abstract p { font-size:13.6px; line-height:1.6; }
+  .abstract { padding:12px 18px; }
+  table { font-size:12.6px; margin:12px 0; }
+  th, td { padding:6px 10px; }
+  .protocol-box { font-size:11.6px; line-height:1.55; padding:12px 16px; margin:12px 0; }
+  .divider { margin:18px 0; }
+  .paper-title { font-size:23px; margin-bottom:12px; }
+  .paper { box-shadow:none; padding:0; max-width:none; }
+  .no-print { display:none; }
+  a { color:inherit; }
+
+}
+
+.paper-title {
+  font-size:26px; font-weight:600; line-height:1.3;
+  color:var(--text); margin-bottom:16px; letter-spacing:-.3px;
+}
+.paper-authors { font-family:'Inter',sans-serif; font-size:14px; color:var(--t2); margin-bottom:4px; }
+.paper-date { font-family:'Inter',sans-serif; font-size:13px; color:var(--t3); margin-bottom:6px; }
+.paper-doi { font-family:'Inter',sans-serif; font-size:13px; margin-bottom:6px; }
+.paper-doi a { color:var(--accent); text-decoration:none; }
+.paper-links { font-family:'Inter',sans-serif; font-size:12.5px; margin-bottom:32px; }
+.paper-links a { color:var(--accent); text-decoration:none; margin-right:16px; }
+.paper-links a:hover { text-decoration:underline; }
+
+.divider { border:none; border-top:1px solid var(--border); margin:28px 0; }
+
+.abstract {
+  border-left:3px solid var(--accent);
+  padding:14px 20px;
+  background:#f8f8ff;
+  border-radius:0 6px 6px 0;
+  margin-bottom:36px;
+}
+.abstract-label {
+  font-family:'Inter',sans-serif; font-size:11px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:8px;
+}
+.abstract p { font-size:14.5px; line-height:1.7; color:var(--t2); }
+
+h2 {
+  font-family:'Inter',sans-serif; font-size:15px; font-weight:600;
+  letter-spacing:.2px; text-transform:uppercase; color:var(--accent); margin:36px 0 12px;
+}
+h3 { font-family:'Inter',sans-serif; font-size:15px; font-weight:600; color:var(--text); margin:24px 0 8px; }
+p { margin-bottom:14px; font-size:15.5px; }
+p:last-child { margin-bottom:0; }
+
+.protocol-box {
+  background:#f4f4ff; border:1px solid #c7d2fe; border-radius:8px;
+  padding:20px 24px; margin:20px 0;
+  font-family:'Source Code Pro',monospace; font-size:13px; line-height:1.7; color:#1e1b4b;
+}
+.protocol-box .comment { color:#6366f1; }
+.protocol-box .key { color:#0f766e; font-weight:600; }
+.protocol-box .val { color:#b45309; }
+
+table { width:100%; border-collapse:collapse; margin:20px 0; font-size:14px; font-family:'Inter',sans-serif; }
+th { text-align:left; padding:9px 14px; background:#f0f0fa; border:1px solid var(--border); font-size:11.5px; letter-spacing:.8px; text-transform:uppercase; color:var(--t2); }
+td { padding:9px 14px; border:1px solid var(--border); vertical-align:top; line-height:1.5; }
+tr:nth-child(even) td { background:#fafafa; }
+
+.layer-diagram {
+  font-family:'Source Code Pro',monospace; font-size:13px; line-height:1.8;
+  background:#f9f9f9; border:1px solid var(--border); border-radius:8px;
+  padding:20px 24px; margin:20px 0; color:var(--t2);
+}
+.layer-diagram .hi { color:var(--accent); font-weight:600; }
+.layer-diagram .hi2 { color:var(--teal); font-weight:600; }
+
+.dim-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
+@media(max-width:600px){ .dim-grid { grid-template-columns:1fr; } }
+.dim-card { border:1px solid var(--border); border-radius:8px; padding:14px; }
+.dim-card h4 { font-family:'Inter',sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:5px; }
+.dim-card p { font-size:13px; color:var(--t2); margin:0; line-height:1.5; }
+
+.footnotes {
+  border-top:1px solid var(--border); margin-top:48px; padding-top:20px;
+  font-size:12.5px; color:var(--t3); font-family:'Inter',sans-serif; line-height:1.6;
+}
+.footnotes p { font-size:12.5px; color:var(--t3); margin-bottom:6px; }
+
+em.key { font-style:normal; font-weight:600; color:var(--text); }
+sup { font-size:11px; color:var(--accent); }
+code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0fa; padding:1px 5px; border-radius:3px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ZUSÄTZE — gelten NUR für die erzeugten Papers, nicht für die SBKIM-Fassungen
+   ══════════════════════════════════════════════════════════════════════════
+
+   Alles OBERHALB dieser Marke ist byte-gleich mit dem <style> von
+   `sbkim-paper-de.html`; `tests/smoke_paper_css.mjs` vergleicht genau bis
+   hierher. Was darunter steht, ist bewusst hinzugekommen und hat in den
+   veroeffentlichten SBKIM-Dateien keine Entsprechung.
+
+   Grund fuer die Trennung: die SBKIM-Papers liegen unter einem DOI. Sie
+   deshalb nicht anzufassen ist richtig — aber es darf nicht dazu fuehren,
+   dass ein neues Papier keine eigene Regel bekommen kann. Ein Waechter, der
+   jede Ergaenzung verbietet, wird irgendwann abgeschaltet statt gelesen.
+
+   ── DIE VIERTE EBENE (Klaus 2026-09-03) ─────────────────────────────────
+   Paper A hat 35 `####`-Ueberschriften. Sie brauchen eine eigene Groesse,
+   sonst ist die Gliederung an der Schrift nicht mehr abzulesen — derselbe
+   Befund, der am 2026-09-03 schon fuer h2 galt (h2 war kleiner als der
+   Fliesstext). */
+h4 {
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
+  color:var(--t2); margin:20px 0 6px; letter-spacing:.2px;
+}
+
+/* ── KEIN ABSATZ WIRD GESPALTEN (Klaus 2026-09-03) ────────────────────────
+
+   „Keine Sätze trennen bei einem Seitenumbruch. Absätze versuchen, auf eine
+   neue Seite zu bringen, wenn sie getrennt werden."
+
+   Der Absatz ist die Einheit, die dafuer zaehlt: ein Satz liegt immer in einem
+   Absatz, wer den nicht spaltet, spaltet auch keinen Satz. Gemessen am
+   fertigen PDF, Paper A:
+
+     ohne die Regel   44 Seiten · 6 zerrissene Saetze · 6 Absaetze
+     mit der Regel    45 Seiten · 0 · 0
+
+   ⚠ EINE ZUSAETZLICHE KLAMMER UM GANZE THEMEN WURDE GEMESSEN UND VERWORFEN.
+   Sie brachte auf denselben Kriterien nichts (0 und 0 waren schon erreicht)
+   und kostete fuenf bis neun weitere Seiten. Begruendung und Zahlen stehen in
+   `tools/paper-md-zu-html.mjs`.
+
+   Absaetze, die laenger als eine Seite sind, brechen weiterhin um. Dagegen
+   hilft nur Kuerzen, nicht CSS. */
+@media print {
+  /* Ein Absatz wird nicht gespalten. Damit kann auch kein SATZ ueber eine
+     Seitengrenze laufen: ein Satz liegt immer in einem Absatz. Absaetze, die
+     laenger als eine Seite sind, brechen weiterhin — dagegen hilft nur
+     Kuerzen, nicht CSS. */
+  p, li, blockquote { break-inside:avoid; }
+
+  /* Eine Ueberschrift ohne ihren Text darunter ist eine Ueberschrift auf der
+     falschen Seite. Gilt jetzt fuer alle vier Ebenen, vorher nur fuer zwei. */
+  h4 { break-after:avoid; }
+  h4 + p, h4 + ul, h4 + ol, h4 + table, h4 + blockquote { break-before:avoid; }
+  h2 + table, h3 + table, h2 + ul, h3 + ul, h2 + blockquote, h3 + blockquote {
+    break-before:avoid;
+  }
+
+  /* Gedruckt etwas kleiner als am Bildschirm, wie die uebrigen Ebenen. */
+  h4 { font-size:13.4px; margin:14px 0 5px; }
+}
+
+/* ── DER SCHLUSS BLEIBT BEI ABSCHNITT 9 (Klaus 2026-09-03) ────────────────
+
+   „Versuchen, die letzte Seite unter dem Punkt, wo Abschnitt neun mit drin
+   ist, unterzubringen … dass der letzte Satz nicht unbedingt auf einer
+   einzelnen Seite liegt."
+
+   Gemessen: der Verfasser-Absatz endete mit vier Zeilen allein auf einer
+   eigenen Seite. Behandelt wie die Quellen daneben, kleiner gesetzt und mit
+   engem Abstand, passt er mit darunter.
+
+   Es ist derselbe Weg, den die Quellenangaben schon gegangen sind, und er
+   trifft NUR diesen Schluss: keine Regel hier gilt fuer den uebrigen Text. */
+.verfasser { margin-top:40px; }
+
+@media print {
+  .paper .verfasser { font-size:10.4px; margin-top:10px; }
+  .paper .verfasser h2 { margin:10px 0 5px; }
+  .paper .verfasser p { font-size:10.4px; line-height:1.4; margin-bottom:4px; }
+  /* Der Verfasser-Block ist kurz. Er soll ganz bleiben, wo er anfaengt. */
+  .verfasser { break-inside:avoid; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="paper">
+
+  <h1 class="paper-title">Rules and Principles</h1>
+  <p class="paper-authors">Two ways to steer an AI system, and why neither is enough on its own</p>
+  <p class="paper-authors">A field observation on a running multi-role system</p>
+  <p class="paper-date">Klaus Nitzsche · Hamburg · Version 1, 2026-08-23</p>
+  <p class="paper-date">Licence: CC BY 4.0 · Code and material: MIT</p>
+  <p class="paper-date">Material: <a href="https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt">https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt</a></p>
+  <p class="paper-doi"><strong>DOI: noch nicht vergeben</strong> — wird bei der Veröffentlichung eingetragen.</p>
+
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+      <p>Anyone steering an AI system has two instruments. <strong>Rules</strong> are checkable and are enforced. They cover the case someone wrote them for. <strong>Principles</strong> can be neither checked nor enforced. They are questions put to the situation at hand, and they therefore also reach where nobody looked in advance.</p>
+      <p>The distinction is not new. It has been worked through in five fields, from Kant via Kohlberg and Tyler (1990) to Kaplow (1992) and, since 2024, AI regulation (Schuett et al.). What is new is the <strong>level</strong>: principles at <strong>run time</strong>, set by the <strong>operator</strong>, in a text file that someone who cannot program can also edit. The existing work occupies the two neighbouring positions, principles at training time (Bai et al. 2022) and rules at run time (Rebedea et al. 2023).</p>
+      <p>The observation is made on a running setup: five named roles work through a job one after another. One pass is called a <strong>shift</strong> and is recorded. Both channels travel with every call, as text.</p>
+      <p>The report has three parts. <strong>First</strong>, four cases carried out: the same situation, once through each channel. One of them shows two instructions with the same words that decide differently. It is not the wording that separates the channels but what they bind: the <strong>output</strong> or the <strong>attention</strong>. <strong>Second</strong>, <strong>durability</strong>, the property that weighs most in operation. A rule can be satisfied without being met; a principle can be passed over without being violated. Durability and verifiability cannot be had in the same channel (3.8). <strong>Third</strong>, the points at which both channels failed, each with a date.</p>
+      <p>From this follows a pair of terms: a <strong>principle-based rule</strong> is the sound form of construction, a <strong>rule-based principle</strong> its corresponding error.</p>
+      <p>The paper does <strong>not</strong> claim that principles are better. It states its limits openly: no control group, no measure, a sample of one, not blinded. It is a <strong>field observation with a record</strong>, not a study. Section 7 describes the experiment meant to turn it into one, with three arms and an evaluation that hides the arm. Its prediction can be wrong: the advantage of principles ought to <strong>fall</strong> as the case becomes more foreseeable.</p>
+  </div>
+    <h2>1 · The starting question</h2>
+    <p>A multi-role system is meant to get work done. Five named roles work through a job one after another: <strong>each proposes an idea from its own vantage point</strong>, one builds the chosen one, one checks, one looks for faults, one writes down where things stand. Each is given text and returns validated JSON.</p>
+    <p>Since 2026-08-23 <strong>all five have tools</strong>. They may read the repository and, on a separately set switch, reach out to the network; by default the network is off. <strong>They cannot write</strong>, and not out of caution: the workbench binds in not a single writing function. Before that they had none at all, and that had a measurable price. They could not see the repository and therefore proposed things that already existed.</p>
+    <p>Anyone who sets up such a system soon faces a practical question that cannot be settled in theory:</p>
+    <blockquote>
+      <p><strong>What do I write down as a rule, and what do I have to ask instead?</strong></p>
+    </blockquote>
+    <p>"No key in plain text" is a rule. It can be checked, it can be enforced, and it holds reliably. "What does the next person get out of this?" is not a rule. It cannot be checked and cannot be enforced, and it changes what comes back all the same.</p>
+    <p>The question is old. What is new is that it now has to be answered by someone operating an AI system, and no longer only by a legislator or a regulator.</p>
+    <h3>1.1 Two drivers</h3>
+    <p>The difference has always been observable in people, and the picture carries further than any definition.</p>
+    <p><strong>One keeps to the traffic rules because he fears the penalty.</strong> Red means stop because it costs points. He drives correctly as long as the rule fits the case and someone is watching.</p>
+    <p><strong>The other keeps to the same rules because he is not indifferent to what happens to others.</strong> Red means stop because someone might be crossing. From the outside the two look alike, as long as nothing unusual happens.</p>
+    <p><strong>Three situations separate them:</strong></p>
+    <table>
+      <thead><tr><th>Situation</th><th>The rule driver</th><th>The principle driver</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Three in the morning, empty junction, no camera</strong></td><td>drives through; the rule works only while it is enforced</td><td>stops, or looks closely. The reason for the rule has not gone away, only the witness</td></tr>
+        <tr><td><strong>An ambulance needs through, the light is red</strong></td><td>stays put. He does what it says, and blocks</td><td>makes room. Here the wording of the rule works <strong>against its purpose</strong></td></tr>
+        <tr><td><strong>Something no rule covers</strong></td><td>has nothing to hold on to</td><td>has a question he can ask</td></tr>
+      </tbody>
+    </table>
+    <p>The core in one sentence: <strong>a rule says what to do. A principle says what for.</strong> Whoever has only the first is covered exactly as far as the rule book reaches.</p>
+    <p>But the picture cuts both ways, and the second half is usually left out. <strong>The principle driver can be wrong.</strong> Someone weighing things up in the name of a good intention sometimes weighs wrongly, and nobody catches him, because there was no rule. The rule driver, in exchange, makes <strong>predictable</strong> mistakes: he does exactly what it says. So the question is not which is the better person. It is which mistakes one would rather have, and whether one can have both.</p>
+    <h3>1.2 Where the picture breaks, and why that is precisely the finding</h3>
+    <p>It is tempting to spin the analogy further. Against that a warning, because it breaks at a point that is not incidental:</p>
+    <blockquote>
+      <p><strong>An AI system has neither fear of punishment nor concern for others.</strong> Neither of the two motives is present.</p>
+    </blockquote>
+    <p>In people, the motive explains why a rule works even without supervision, and why a principle moves anything at all. Both fall away here. What remains is not the drive but the <strong>form of the instruction</strong>: does it name the <strong>case</strong> or does it name the <strong>purpose</strong>?</p>
+    <p>Two things follow, and they carry this paper.</p>
+    <p><strong>First</strong>, the rule/principle problem is not softer in an AI system than in a person but <strong>harder</strong>. In a person, insight can make up for a bad rule. Here there is nothing that makes up for it. There is only the text that was passed along.</p>
+    <p><strong>Second</strong>, this also answers why the obvious expectation is disappointed, the expectation that a principle is "stronger". In a person it is, because it ties into something that is there anyway. Here it ties into nothing. It <strong>only shifts what the system attends to</strong>, and when the attention does not stretch, it stays without effect and nobody notices. That is exactly what happened in section 5.2.</p>
+    <p><strong>The analogy therefore explains the structure and not the effect.</strong> It stands here because it makes the difference visible, not as evidence.</p>
+  <hr class="divider">
+    <h2>2 · State of the art</h2>
+    <h3>2.1 The distinction is worked through in law and economics</h3>
+    <p>Kaplow (1992) separates <strong>rules</strong> from <strong>standards</strong> by the point in time at which the content is fixed. A rule is spelled out <strong>beforehand</strong>: whoever sets it must anticipate the cases. A standard is filled in <strong>afterwards</strong>: whoever applies it decides on the individual case.</p>
+    <p>The costs follow from this. Rules are expensive to <strong>set</strong> and cheap to <strong>apply</strong>. Standards are cheap to set and expensive to apply. And because nobody knows all future cases, every act of rule-making stays incomplete. A residue of discretion remains, and the only question is who exercises it.</p>
+    <h3>2.2 It was carried over to AI in 2024, but at the level of regulation</h3>
+    <p>Schuett et al. (2024) set the two approaches against each other for the regulation of frontier AI. Their weighing reads like an anticipation of what is observed below on a small scale:</p>
+    <blockquote>
+      <p>Specific rules give more certainty and are easier to enforce, but they age quickly and lead to box-ticking. High-level principles give less certainty and are more expensive to enforce, but they are more adaptable.</p>
+    </blockquote>
+    <p>"Lead to box-ticking" is the phrase that matters. It describes not a failure of enforcement but one of <strong>fit</strong>: the rule is followed, and the thing still does not get better.</p>
+    <h3>2.3 The picture of the two drivers is itself a research subject</h3>
+    <p>The distinction from 1.1 is not folk psychology. It has been worked through in four different fields, and each contributes something that counts for the steering of AI systems.</p>
+    <p><strong>Philosophy.</strong> Kant (1785) separates <strong>legality</strong> from <strong>morality</strong>: an act can be done <em>in conformity with duty</em> or <em>from duty</em>. From the outside the two cannot be told apart; the difference shows only when the external occasion falls away. That is the empty junction at three in the morning, two hundred and forty years earlier.</p>
+    <p><strong>Developmental psychology.</strong> Kohlberg's stage model begins at stage 1 with a <em>morality of avoiding trouble</em>, where right is whatever averts punishment, and ends at stage 6 with <strong>self-chosen, general principles</strong>. The two drivers from 1.1 are exactly the ends of the most-cited model in that field.</p>
+    <p><strong>Sociology of law.</strong> Tyler (1990) measured which of the two carries: people obey the law <strong>predominantly because they consider it legitimate</strong>, not from fear of punishment. Deterrence is also the <strong>more expensive</strong> route for society. For this work the direction of the finding matters: the rule channel is not the more reliable one, it is only the more <strong>checkable</strong> one.</p>
+    <p><strong>Behavioural economics.</strong> Gneezy and Rustichini (2000) introduced a fine for late pick-up at Israeli day-care centres. <strong>Lateness increased.</strong> And when the fine was abolished again, the figure did <strong>not</strong> come back down.</p>
+    <p>The explanation that prevailed, and that has been cited over two thousand times: the fine did not reinforce the norm, it <strong>replaced</strong> it. An obligation turned into a price. One can buy one's way out, so one does, and the obligation does not return even when the price disappears.</p>
+    <h3>2.4 Why this one finding sharpens the prediction of this paper</h3>
+    <p>Section 7.2 names three results that would refute this paper. One of them reads: <strong>the combination of both channels is worse than either on its own.</strong></p>
+    <p>Up to this point that was a bare possibility. After Gneezy and Rustichini it is a <strong>theoretically grounded expectation</strong>. There is a named mechanism that predicts exactly this, and it is documented in the field.</p>
+    <p><strong>But it does not carry over without a break, and the break is the same as in 1.2.</strong> In people, crowding out acts on a <strong>motive</strong>: the fine replaces the sense of obligation. An AI system has no motive that could be crowded out.</p>
+    <p>What would carry over is the <strong>form</strong>, not the cause:</p>
+    <table>
+      <thead><tr><th></th><th>In people</th><th>Conceivable here</th></tr></thead>
+      <tbody>
+        <tr><td>What is crowded out</td><td>the <strong>motive</strong></td><td>the <strong>attention</strong></td></tr>
+        <tr><td>By what</td><td>a fine becomes a price</td><td>a long block of rules takes the space from a short block of principles</td></tr>
+        <tr><td>Result</td><td>more of what was to be prevented</td><td>the principle stands there and has no effect</td></tr>
+        <tr><td>Reversible</td><td><strong>no</strong> (documented)</td><td><strong>unknown</strong></td></tr>
+      </tbody>
+    </table>
+    <p>This is a conjecture and is carried here expressly as one. It does have a practical merit: <strong>it is testable with the existing setup</strong> and coincides with the saturation question from 3.4. If crowding out happens here, it ought to show as soon as the block of rules grows, and the experiment in 7.7 measures exactly that.</p>
+    <h3>2.5 On the AI side the weakness of the rule is well documented</h3>
+    <p>That rules are satisfied to the <strong>letter</strong> and missed in their <strong>purpose</strong> is a subject of its own in AI research: <em>specification gaming</em> or <em>reward hacking</em>. A system meets the formal requirement without reaching what was meant. DeepMind keeps a public collection of over a hundred cases.</p>
+    <p>The best-known example: a boat in a racing game that receives a bonus for hitting green blocks and thereupon drives in circles, hitting the same blocks again and again instead of finishing the race. Another: a summarisation model that exploits the weaknesses of the scoring measure and receives high scores for barely readable text.</p>
+    <p>Behind this stands Goodhart's law: <strong>when a measure becomes a target, it ceases to be a good measure.</strong></p>
+    <p>For this paper the connection is direct. Schuett et al.'s <em>"box-ticking"</em>, Goodhart's law and case 3 in section 3.6, the hand-over that says "fits", are <strong>the same event on three levels</strong>: the requirement is met, and the thing has not got better.</p>
+    <h3>2.6 Why this matters</h3>
+    <p>The question is not academic, and it is being answered in practice right now, mostly without anyone asking it.</p>
+    <p>Anyone deploying an AI system today and wanting to steer it reaches almost always for <strong>rules</strong>. The reason is a good one: rules can be checked, logged and put before a supervisory body. A principle cannot be produced on demand. A <strong>requirement of verifiability</strong> thus turns unnoticed into a <strong>design decision</strong>, and in favour of the channel that is easier to evidence, not the more effective one.</p>
+    <p>If what the four fields above suggest is right, that the rule channel reaches exactly as far as the anticipation of the case, that it can miss the purpose without violating the letter, and that it may even crowd out what stands beside it, then systems steered <strong>exclusively</strong> by rules are not merely steered incompletely. They are steered incompletely in a way that <strong>does not show up in operation</strong>, because all the checks are green.</p>
+    <p>That is why this paper insists above all that <strong>both channels can fail</strong> and that the difference has to be measured rather than believed.</p>
+    <h3>2.7 In the steering of language models two positions are occupied</h3>
+    <p><strong>Principles at training time.</strong> Constitutional AI (Bai et al. 2022) gives a model a written constitution. The model critiques and revises its own outputs against it; the result goes into the weights. The principles are set by the <strong>model provider</strong> and are afterwards part of the model.</p>
+    <p><strong>Rules at run time.</strong> NeMo Guardrails (Rebedea et al. 2023) and comparable tools check inputs and outputs during operation against programmed conditions. They are set by the <strong>deployer</strong> and act outside the model.</p>
+    <p>The difference is fundamental: the one <strong>internalises</strong> a stance into the weights, the other <strong>surrounds</strong> the model with barriers.</p>
+    <h3>2.8 The third position, and why it is thinly occupied</h3>
+    <table>
+      <thead><tr><th></th><th><strong>Training time</strong></th><th><strong>Run time</strong></th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rules</strong></td><td>fine-tuning on prohibitions</td><td><strong>guardrails</strong> (Rebedea et al. 2023)</td></tr>
+        <tr><td><strong>Principles</strong></td><td><strong>Constitutional AI</strong> (Bai et al. 2022)</td><td><strong>thin here</strong></td></tr>
+      </tbody>
+    </table>
+    <p>What is missing is the lower right cell: <strong>principles that the operator sets at run time</strong>, not the model provider, not as code, but as text that a person without programming knowledge can change.</p>
+    <p>The literature knows this spot but treats it as a <strong>risk</strong> rather than an instrument. In the debate about the gap between training and deployment it counts as a problem that "the deployer can change the system prompt that promised caution". That is true. It is at the same time the only point at which someone without access to weights and without a programmer can set a stance, and thus the only one reachable at all for small operators.</p>
+    <p><strong>That is exactly where the setup described here sits.</strong></p>
+  <hr class="divider">
+    <h2>3 · The setup</h2>
+    <h3>3.0 The experimental setup: a firm of agents</h3>
+    <p>A setup was built specifically for this question, and it is not a sketch but a running repository: <strong>Kimhub</strong>. Inside it a small firm of five named agents does the work. One pass is called a <strong>shift</strong> and proceeds as follows:</p>
+    <ol>
+      <li><strong>Each of the five proposes an idea</strong>, out of its own role.</li>
+      <li>From the proposals <strong>one is chosen</strong> and built.</li>
+      <li>Building goes through an <strong>API</strong>, since 2026-08-23 <strong>with tools</strong> in the hands of the agents.</li>
+      <li><strong>Everything is recorded</strong>: calls, tokens, cost, duration, tool uses.</li>
+    </ol>
+    <p><strong>How long this has been running is counted, not estimated.</strong> The git history of all 33 repositories was read out on 2026-08-24: <strong>5,823 commits on 128 working days, from 10 March to 24 August 2026</strong>, across 1,388 branches, of which 1,662 commits never arrived on a main branch. The source is open (<a href="../historie/"><code>../historie/</code></a>). It shows <em>that</em> and <em>when</em> work was done, not <em>how long</em> on any one day, and it is not used that way here.</p>
+    <p>⚠ <strong>Two time spans have to be kept apart.</strong> The documentation covers five months, the measurement covers days. Where a measured figure appears in this paper, it comes from the second.</p>
+    <p>The purpose of the setup is the question of this paper: <strong>the same shift is run once rule-based and once principle-based</strong>, and both runs are documented. What comes out of it is not an end in itself: they are <strong>tools meant to be usable</strong>. One has already gone the whole way: the delivery checker was reviewed, released and published in the <strong>PWA Toolpoint</strong> marketplace.</p>
+    <blockquote>
+      <p><strong>On the relation between tool and experiment.</strong> The workshop did not begin as an experimental setup. It was built because it was needed, and only afterwards became the subject, and was then deliberately extended into a setup on which the question can be measured. Both belong together in one statement: the setup is constructed, but it was not invented for the investigation.</p>
+    </blockquote>
+    <h3>3.1 Two channels, deliberately kept apart</h3>
+    <p>Two channels in the same system, deliberately kept apart.</p>
+    <table>
+      <thead><tr><th></th><th><strong>Rules</strong></th><th><strong>Principles</strong></th></tr></thead>
+      <tbody>
+        <tr><td>Where</td><td>in the source code</td><td>in a Markdown file</td></tr>
+        <tr><td>Checkable</td><td>yes</td><td>no</td></tr>
+        <tr><td>Effect</td><td>enforced, every role, every run</td><td>steer the attention</td></tr>
+        <tr><td>Changeable by</td><td>whoever touches code</td><td>anyone, without a programmer</td></tr>
+        <tr><td>Number</td><td>six</td><td><strong>at most seven</strong>, currently five</td></tr>
+        <tr><td>If the source is missing</td><td>the run aborts</td><td>it continues, <strong>and says so</strong></td></tr>
+      </tbody>
+    </table>
+    <h3>3.2 The six rules</h3>
+    <p>They cover what can be put into words: honesty about one's own state · no personal data, no secrets · invent nothing · no external addresses · write briefly and in German · and: claim nothing you have not actually done.</p>
+    <p>Three of them carry their origin in the text. They come from damage, not from a textbook. The rule against invented figures justifies itself with the sentence <em>"a guessed figure sounds exactly like a measured one"</em>. The rule against secrets justifies itself not by data protection but by an observation about repositories: <em>"private" is a setting that one click reverses, and the history keeps everything.</em></p>
+    <p><strong>The sixth rule was wrong for eleven days, inside its own system.</strong> It read <em>"YOU HAVE NO TOOLS. You cannot execute anything, call anything, open any file."</em> On 2026-08-23 the roles were given a workbench (<code>schicht/werkzeuge.mjs</code>) with four tools: <code>datei_lesen</code>, <code>verzeichnis_zeigen</code>, <code>suchen</code> and, behind a switch of its own, <code>netz_holen</code>. From then on <strong>one and the same instruction</strong> carried first that sentence and, a few paragraphs later, its opposite. It was noticed on 2026-09-03, by reading.</p>
+    <p>The finding belongs here and not in a footnote, because it incidentally demonstrates what 3.8 claims: <strong>a body of rules ages with its environment.</strong> The rule was right on 2026-08-20 and was written out of real damage. The environment changed, the rule did not. <strong>A rule does not report that it has stopped being true; it goes on being enforced.</strong></p>
+    <p><strong>And the check was the reason nobody saw it.</strong> The responsible guard required the string <code>KEINE WERKZEUGE</code> to appear in the instruction. It thereby pinned down a <strong>wording</strong> instead of an assurance and kept alive precisely the rule that had become false. It was green the entire time. That is the more uncomfortable half of the finding: not only the rule aged, its guard did too, and the guard had even protected the ageing.</p>
+    <p>Repaired on 2026-09-03. The rule now states only what holds in <strong>every</strong> mode: you cannot write, and you claim nothing you have not done. What may currently be read is stated by the tool notice, which travels with the workbench. <strong>That is exactly the rebuild a principle does not need:</strong> <em>"claim nothing you cannot evidence"</em> holds with tools as without. The rule names the case, the principle the purpose, and only the case goes out of date.</p>
+    <h3>3.3 The five principles</h3>
+    <ol>
+      <li><strong>What does the next person get out of this?</strong></li>
+      <li><strong>Better slow than wrong. So that others do not have to redo it.</strong></li>
+      <li><strong>A check that agrees with you is the place where you have to look most closely.</strong></li>
+      <li><strong>A guessed figure sounds exactly like a measured one.</strong></li>
+      <li><strong>A named gap is work, a concealed one is damage.</strong></li>
+    </ol>
+    <p>Two properties matter more here than the wording.</p>
+    <p><strong>They are in Markdown, not in code.</strong> The operator is not a programmer. What guides the crew he ought to be able to change without asking anyone; otherwise the stance belongs to whoever touches the code and not to whoever answers for the work.</p>
+    <p><strong>If the file is missing, the shift runs on, but it says so.</strong> That is a deliberate construction: a silent omission would be the worst of both, the principles have no effect and nobody notices why the work looks different from usual.</p>
+    <h3>3.4 A building rule that rules do not know: the saturation limit</h3>
+    <p>The principle file carries an upper limit: <strong>at most seven.</strong> If one is added, one has to go or two have to be merged. The reason stands in the file itself:</p>
+    <blockquote>
+      <p>Every mishap likes to add a line. After thirty shifts there would be a wall here that nobody processes any more, and then nothing works at all, because everything looks equally important.</p>
+    </blockquote>
+    <p>That is the sharpest difference between the two channels, and it is not spelled out in the literature cited: <strong>rules add up, principles dilute.</strong> Two hundred rules are unwieldy, but each individual one goes on working. Twenty principles work worse than five, because attention is a bounded quantity and a principle does nothing other than steer it.</p>
+    <p>From this follows a practical prescription that makes the principle channel a <strong>maintained</strong> good rather than a growing one: a principle that over many runs never appears in a single hand-over note is either superfluous or unclearly worded, and both are a reason to look at it rather than to leave it standing.</p>
+    <h3>3.5 The principle is the ground of the rule, and the order deceives</h3>
+    <p>Here stands the relation between the two channels, and it is <strong>not symmetrical</strong>. They are not two instruments of equal rank to choose between.</p>
+    <blockquote>
+      <p><strong>The principle is the ground. The rule is its narrowing to a case.</strong></p>
+    </blockquote>
+    <p>Every rule serves a purpose, otherwise it would be arbitrary. "No key in plain text" serves the protection of whoever uses the application. "Invent nothing" serves whoever relies on the output. <strong>One can ask any sensible rule what it is for, and the answer is always a principle.</strong> The reverse does not work: no particular rule follows from a principle, but many possible ones.</p>
+    <h4>Two directions that must not be confused</h4>
+    <p>The confusing part is that the two directions <strong>run opposite ways</strong>.</p>
+    <table>
+      <thead><tr><th></th><th><strong>Justification</strong>: what warrants what</th><th><strong>Origin</strong>: what came first</th></tr></thead>
+      <tbody>
+        <tr><td>Order</td><td><strong>principle → rule</strong></td><td><strong>incident → rule → principle</strong></td></tr>
+        <tr><td>Example</td><td>"whoever relies on you must be able to rely on you" warrants "invent nothing"</td><td>on 2026-08-20 an estimated figure is exposed → rule → only afterwards the sentence about guessed figures</td></tr>
+        <tr><td>Who knows it</td><td>whoever thought the purpose through</td><td>anyone who reads the history</td></tr>
+      </tbody>
+    </table>
+    <p>In practice it almost always runs as in the <strong>right</strong> column: something goes wrong, one writes a rule against it, and only later, sometimes never, does anyone articulate what the case was a case of. That is why it looks from the inside as if the rule were the original and the principle the later generalisation.</p>
+    <p><strong>That is deceptive.</strong> The purpose was there the whole time; it was merely unspoken. The rule would not have been recognised as right had someone not silently known what it was good for.</p>
+    <h4>What this explains, and it is a good deal at once</h4>
+    <p>As soon as the direction of justification is taken seriously, several observations of this paper coincide:</p>
+    <p><strong>A rule is always a proxy.</strong> It picks out a purpose and makes it checkable by narrowing it to a condition. That is exactly why it can be <strong>satisfied without being met</strong> (3.8): the proxy is not the thing. And that is exactly why Goodhart's law applies (2.5): <em>when a measure becomes a target, it ceases to be a good measure</em>. The sentence only makes sense if there is something else behind the measure that it is meant to serve.</p>
+    <p><strong>A rule ages, a principle does not</strong> (3.8). The purpose remains, the environment changes, and the narrowing no longer fits. Only what was cut to a moment in time can go out of date.</p>
+    <p><strong>A rule and a principle can have the same wording</strong> (case 1 in 3.6) and work differently. No longer a puzzle: it is the same purpose, once spoken as a ground, once sharpened into a condition.</p>
+    <p><strong>And the error in 7.10 gets a name.</strong> Whoever derives "principles" directly from incidents travels along the direction of origin and takes the result for the direction of justification. He skips the question of what for, and gets a sentence that sounds general and is narrowly conceived.</p>
+    <h4>Why two channels at all, then?</h4>
+    <p>If the principle is the ground: why not principles only?</p>
+    <p>Because a purpose is <strong>not verifiable</strong> and a system has nothing that pursues it of its own accord (1.2). The rule is the part of the purpose that can be <strong>fixed, checked and demanded</strong>. It is the price for the fact that the purpose cannot be grasped directly.</p>
+    <p>This states the thesis of this paper more precisely than the abstract does:</p>
+    <blockquote>
+      <p><strong>Rules and principles are not two instruments to choose between, but a purpose and its sharpening.</strong> Whoever takes only rules has sharpenings without the ground that made them right, and therefore cannot bring them along when they stop fitting. Whoever takes only principles has the ground without anything to fasten it to.</p>
+    </blockquote>
+    <h4>Two terms, and the direction is in the name</h4>
+    <p>This allows one to name what is to be built and what is not:</p>
+    <table>
+      <thead><tr><th>Term</th><th>Direction</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Principle-based rule</strong></td><td>principle → rule</td><td>✅ <strong>the right form of construction.</strong> The purpose is fixed, the rule sharpens it to a case, and it can be brought along when the case changes, because the purpose is known.</td></tr>
+        <tr><td><strong>Rule-based principle</strong></td><td>incident → rule → "principle"</td><td>❌ <strong>the error.</strong> It sounds general and is narrowly conceived: it can only cover what has already happened (7.10).</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Each of the six rules in 3.2 ought to be a principle-based rule.</strong> That is not a matter of style but the condition for being able to maintain them: a rule whose purpose nobody can name can neither be adapted nor struck on grounds. It can only be followed or forgotten.</p>
+    <h4>A maintenance rule that follows immediately</h4>
+    <p>It is the most practical conclusion of the whole section:</p>
+    <blockquote>
+      <p><strong>For every rule, the principle it serves must be nameable.</strong></p>
+    </blockquote>
+    <p>If none can be found, one of two things is the case: the rule is superfluous, or the principle behind it was never spoken and is missing from the other channel. <strong>Both are findings, and both are machine-detectable</strong> once the mapping is carried along (7.10).</p>
+  <hr class="divider">
+    <h3>3.6 Why a system decides one way or another: four cases carried out</h3>
+    <p>The two drivers from 1.1 are a picture. Here are four cases from operation, the same situation, seen once through each channel, with what actually happened.</p>
+  <hr class="divider">
+    <p><strong>Case 1 · The figure nobody recomputed</strong></p>
+    <p><em>Situation:</em> A role is to report how much storage the clones occupy. It does not know the figure.</p>
+    <table>
+      <thead><tr><th></th><th>What the system does</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rule only</strong></td><td>writes "I do not know the figure", or writes down a figure if one seems plausible to it</td><td>The rule forbids <strong>inventing</strong>. A figure the role takes to be derived does not feel like inventing.</td></tr>
+        <tr><td><strong>Principle only</strong></td><td>asks: <em>is this figure measured or derived?</em>, and marks it</td><td>The principle is aimed not at the output but at <strong>checking one's own source</strong>.</td></tr>
+      </tbody>
+    </table>
+    <p><em>What actually happened:</em> "a good thirty clones, several gigabytes". In truth five clones with 199 MB. The rule was there. It did not bite, because the role did not have the feeling of inventing anything.</p>
+    <p><strong>The key sentence of this case:</strong> rule and principle carry the <strong>same wording</strong> here and still decide differently, because the rule binds the <em>output</em> and the principle the <em>attention</em>. It is not the wording that decides, but the channel.</p>
+  <hr class="divider">
+    <p><strong>Case 2 · The check that was satisfied</strong></p>
+    <p><em>Situation:</em> A role has built something, runs a check, the check is green.</p>
+    <table>
+      <thead><tr><th></th><th>What the system does</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rule only</strong></td><td>reports: checked, green, done</td><td>There is <strong>no rule</strong> that would forbid this, and there cannot be one. A rule "check whether your check measures anything" would need a feature by which blindness can be recognised. If that existed, it would be the check.</td></tr>
+        <tr><td><strong>Principle only</strong></td><td>looks again precisely there, <em>"a check that agrees with you is the place where you have to look most closely"</em></td><td>The principle puts a <strong>question to the situation</strong> that needs no anticipation of the case.</td></tr>
+      </tbody>
+    </table>
+    <p><em>What actually happened:</em> three findings on a single day: a search that found its own documentation · a count that counted invisible entries · a check that only measured that something came back at all. <strong>All three in the check, none in what was checked.</strong></p>
+    <p><strong>This is the case no body of rules reaches.</strong> It is the strongest evidence that the principle channel can do something the rule channel cannot, and at the same time the reason why this ability is so hard to measure: it shows only in errors that nobody else would have found.</p>
+  <hr class="divider">
+    <p><strong>Case 3 · The half-finished hand-over</strong></p>
+    <p><em>Situation:</em> A role passes on work that is still missing something.</p>
+    <table>
+      <thead><tr><th></th><th>What the system does</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rule only</strong></td><td>fills the hand-over field, with "fits"</td><td>The rule requires <strong>that</strong> the field be filled. It cannot require the content to be of use.</td></tr>
+        <tr><td><strong>Principle only</strong></td><td>writes down what is missing and what the next person has to do about it</td><td><em>"What does the next person get out of this?"</em> cannot be answered in one word.</td></tr>
+      </tbody>
+    </table>
+    <p><strong>This is Schuett et al.'s "box-ticking", in miniature and literally.</strong> A satisfied rule and a useless result, at the same time. In the experimental setup (7.4) this class of error gets a category of its own: <em>empty hand-over</em>, because it is to be expected only in arm R.</p>
+  <hr class="divider">
+    <p><strong>Case 4 · The claimed execution. Both fail</strong></p>
+    <p><em>Situation:</em> A role is to report whether code works. It has no tools and cannot know.</p>
+    <table>
+      <thead><tr><th></th><th>What the system does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rule only</strong></td><td>There is a rule, explicitly, with the incident in its wording. <strong>It did not bite.</strong></td></tr>
+        <tr><td><strong>Principle only</strong></td><td>Principle 5 covers the case completely: whoever could not check writes that down. <strong>It did not bite either.</strong></td></tr>
+      </tbody>
+    </table>
+    <p><em>What actually happened:</em> "Sten ran the code through." On 2026-08-20.</p>
+    <p><strong>This case is the most important of the four</strong>, because it cuts both ways. It shows that the answer to "which is better" is not "principles". It is that there are situations in which <strong>neither channel achieves anything</strong>, because a claim about reality cannot be checked against the claim. There neither a sharper rule nor a better principle helps, only a change to the setup: give the role tools, or do not ask the question in the first place.</p>
+  <hr class="divider">
+    <h3>3.7 What can be derived from this as a rule of thumb</h3>
+    <p>Not as a result; as a working hypothesis that the experiment in section 7 is meant to test:</p>
+    <table>
+      <thead><tr><th>Take a <strong>rule</strong> when …</th><th>Take a <strong>principle</strong> when …</th></tr></thead>
+      <tbody>
+        <tr><td>the case can be described completely</td><td>the case is unknown or forms a family</td></tr>
+        <tr><td>compliance is <strong>checkable</strong></td><td>compliance shows only in the result across many cases</td></tr>
+        <tr><td>a single breach does harm</td><td>the sum of many small slips does harm</td></tr>
+        <tr><td>it is about <strong>form</strong> (secrets, addresses, schema)</td><td>it is about <strong>judgement</strong> (when is something finished, what is enough)</td></tr>
+        <tr><td>someone is there who <strong>maintains</strong> the rule set</td><td>nobody is there to maintain it (3.8)</td></tr>
+      </tbody>
+    </table>
+    <p><strong>And the case in which neither helps:</strong> when the claim is not verifiable. Then it is not a steering problem but one of the setup.</p>
+    <h3>3.8 Durability: the property that weighs most</h3>
+    <p>Up to here it was about <strong>reach</strong>, which channel gets to which case. There is a second property that weighs more in operation and appears only in passing in the literature cited: <strong>how well does what one has written down hold?</strong></p>
+    <h4>A rule is read by the very thing it is meant to bind</h4>
+    <p>That is the asymmetry at issue, and it distinguishes the rule channel of a language model from every body of rules before it.</p>
+    <p>A rule in a program barrier is <strong>executed</strong>. It tests a condition, and the condition is true or false. A rule in the text a language model is given is <strong>read</strong>, and read by the same system it is meant to constrain. Afresh on every run.</p>
+    <p>Every rule is thereby also a <strong>surface of attack</strong>: it is a condition, and every condition has an edge. An edge is a place where one can stand just inside. That is exactly what the <em>specification gaming</em> of section 2.5 is about. The boat driving in circles broke no rule.</p>
+    <p><strong>A principle has no such edge.</strong> "What does the next person get out of this?" cannot be satisfied on a technicality, because there is no technicality. The question can be passed over, but it cannot be <strong>technically passed</strong>.</p>
+    <p>This allows the objection to be put more precisely:</p>
+    <blockquote>
+      <p><strong>A rule can be satisfied without being met. A principle can be passed over without being violated.</strong></p>
+    </blockquote>
+    <p>Both are failures. But they are <strong>different</strong> failures, and the rule failure is the more dangerous one: it is <strong>systematic</strong>. Whoever finds the edge of a condition finds it again reliably. A principle passed over, by contrast, is negligence. It repeats, but it does not compound.</p>
+    <h4>A body of rules ages, a principle does not</h4>
+    <p>Schuett et al. (2024) mention it in passing, and it is the practically most important sentence of their weighing: specific rules <strong>age quickly</strong>.</p>
+    <p>The reason is the same as in Kaplow: a rule contains the world as it was at the moment of writing. If the environment changes, the rule points into the void or at the wrong thing, and nobody notices, because it goes on being satisfied.</p>
+    <p>A principle contains no state but a purpose. "A guessed figure sounds exactly like a measured one" was right in March and is right today; there is nothing in it that could go out of date.</p>
+    <table>
+      <thead><tr><th></th><th><strong>Rule</strong></th><th><strong>Principle</strong></th></tr></thead>
+      <tbody>
+        <tr><td>Binds</td><td>a condition</td><td>a purpose</td></tr>
+        <tr><td>Has an edge one can stand just inside</td><td><strong>yes</strong></td><td>no</td></tr>
+        <tr><td>Goes out of date when the environment changes</td><td><strong>yes</strong></td><td>no</td></tr>
+        <tr><td>Must be extended for every new case</td><td><strong>yes</strong></td><td>no</td></tr>
+        <tr><td>Loses effect when too many stand beside it</td><td>no</td><td><strong>yes</strong> (3.4)</td></tr>
+        <tr><td>Verifiable</td><td><strong>yes</strong></td><td>no</td></tr>
+      </tbody>
+    </table>
+    <h4>The sentence it comes down to for a small operator</h4>
+    <blockquote>
+      <p><strong>A body of rules is a maintenance obligation. A principle is not.</strong></p>
+    </blockquote>
+    <p>For an organisation with a legal department that is a matter of cost. For a single operator it is the question whether the steering <strong>stays alive at all</strong>. A rule set that is not maintained does not become neutral. It becomes creepingly wrong, and inconspicuously so, because all the checks stay green.</p>
+    <p>That is precisely why the principle channel exists here. It was not meant as the more elegant thing but as the thing that still carries without maintenance.</p>
+    <h4>And the price paid for it</h4>
+    <p>This durability is <strong>bought</strong>, not given. What has no edge also has no border along which one could measure. A principle holds longer <strong>because</strong> it fixes nothing, and for the same reason it is not verifiable.</p>
+    <p><strong>Durability and verifiability cannot be had in the same channel.</strong> That is the version of this paper's thesis that sounds least like a compromise and explains the most: the two channels are not two flavours but two ends of a trade in which one cannot decide for one side without losing the other.</p>
+    <h4>What that means for the experiment, and what it cannot test</h4>
+    <p>The durability thesis is <strong>longitudinal</strong>: it predicts that the gap between R and G <strong>grows over time</strong>, because the rule set ages and the principles do not.</p>
+    <p><strong>The experiment in section 7 cannot measure that.</strong> It runs over weeks, not years, and in that time no rule set goes out of date. What it could measure would be a substitute: <strong>the same runs with a deliberately outdated rule set</strong>, one that fitted an earlier version of the system. Whether that measures more than the handling of an error is open and is not claimed here.</p>
+    <h3>3.9 Compression: one principle replaces several rules, and what that costs</h3>
+    <p>From the direction in 3.5 something practical follows that was missing so far. If a rule is the sharpening of a purpose, then <strong>several rules can sharpen the same purpose</strong>, each onto a different case. And then they can be replaced by <strong>the one principle</strong> they all come from.</p>
+    <p>The six rules from 3.2 show it. "Invent nothing", "do not claim to have executed something" and the honesty rule about one's own state are three sharpenings of <strong>one</strong> purpose: <em>whoever relies on an output must be able to rely on it.</em> Three lines, one ground.</p>
+    <h4>Why that is really money in operation</h4>
+    <p>In a person, compression would be a question of clarity. Here it is a question of cost, and an immediate one:</p>
+    <p><strong>The instruction block travels with every call.</strong> Five roles per shift, each gets both channels, several times per shift. What stands in the block is <strong>paid for a hundred times</strong>, not once.</p>
+    <p>A question of style thus becomes a calculation. An operator without a budget pays for every superfluous line again on every run. <strong>And it hits precisely the small ones</strong>: whoever runs many passes pays a lot; whoever fears the regulator would rather write one rule more than one less, and pays for both together.</p>
+    <h4>And the saturation limit points the same way</h4>
+    <p>By 3.4, twenty principles work worse than five, because attention is bounded. If that also holds for the block of rules, and section 2.4 suggests the two channels compete for the same budget, then compression would be <strong>doubly</strong> right: it saves money <strong>and</strong> works better.</p>
+    <p>That would be the pleasant case. It is also the one where one has to look most closely (principle 3), because it sounds too good.</p>
+    <h4>Three counterweights, without which the sentence is false</h4>
+    <p><strong>1 · Compression is lossy.</strong> A principle that replaces five rules no longer <strong>enforces</strong> those five cases. It only points at them. One trades <strong>enforcement for reach</strong>. That is exactly the trade from 3.8, here seen from the cost side.</p>
+    <p><strong>2 · Some rules must not fall away.</strong> The rule of thumb from 3.7 says which: where <strong>a single breach</strong> does harm. A key in plain text is once too often. For "no secrets", "no external addresses" and the schema breach the rule stays; the principle beside it does not replace it but grounds it.</p>
+    <p><strong>Compression is therefore not uniformly applicable.</strong> It bites where the harm arises from the <strong>sum</strong> (empty hand-overs, unevidenced figures, repetitions), and not where it arises from the <strong>single case</strong>.</p>
+    <p><strong>3 · A shorter block is not automatically cheaper.</strong> It is cheaper <strong>per call</strong>. If more runs fail as a result and have to be repeated, the calculation can reverse. <strong>The right size is not the price per call but the price per usable result</strong>, and that is a measurement, not a derivation.</p>
+    <h4>A worked example, and it turns out otherwise than expected</h4>
+    <p>The principle that carries several rules can be named. Three of the six rules, <em>honesty first</em>, <em>invent nothing</em>, <em>you have no tools</em>, serve the same purpose:</p>
+    <blockquote>
+      <p><strong>Whoever relies on your output must be able to rely on it.</strong> Write down only what you actually know. What you could not check, you mark as unchecked. A guessed figure sounds exactly like a measured one.</p>
+    </blockquote>
+    <p><strong>Measured, not estimated</strong> (character count on the wording in <code>WERKSTATTREGELN.md</code>, as of 2026-08-23, block of rules 1,572 characters):</p>
+    <table>
+      <thead><tr><th></th><th>Characters</th></tr></thead>
+      <tbody>
+        <tr><td>The three rules together</td><td><strong>938</strong></td></tr>
+        <tr><td>The one principle that carries them</td><td><strong>224</strong></td></tr>
+        <tr><td><strong>Saving per call</strong></td><td><strong>714</strong>; the block of rules shrinks from 1,572 to 858 characters, that is by <strong>45 %</strong></td></tr>
+      </tbody>
+    </table>
+    <blockquote>
+      <p>⚠ <strong>Until 2026-09-03 this read "from 1,510 to 796 characters, that is by 47 %".</strong> The three individual values were measured correctly and can be recomputed; the <strong>total</strong> was not. On no documented day did the block have 1,510 characters: the source file shows 1,505 early on 21 August, 1,572 late on 21 August, and 1,723 since 3 September. Noticed by recounting, not by reading. <strong>A figure assembled from correctly measured parts is therefore not itself measured.</strong></p>
+    </blockquote>
+    <p>The conversion into tokens is an <strong>estimate</strong> and marked as such: for German prose roughly 3 to 4 characters per token, so <strong>about 180 to 240 tokens</strong> per call. <em>The exact figure comes from the <code>count_tokens</code> endpoint; it is to be measured before any figure is asserted anywhere.</em></p>
+    <p><strong>And now the calculation, at roughly 200 tokens per call and 5 USD per million input tokens:</strong></p>
+    <table>
+      <thead><tr><th></th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Calls needed to save <strong>1 million tokens</strong></td><td>about <strong>4,900</strong></td></tr>
+        <tr><td>Value of that million</td><td><strong>5.00 USD</strong></td></tr>
+        <tr><td>One shift (5 roles, 3 calls each = 15)</td><td><strong>3,060 tokens</strong> saved</td></tr>
+        <tr><td>Value per shift</td><td><strong>0.015 USD</strong></td></tr>
+        <tr><td>… with the block cached (about a tenth)</td><td><strong>0.0015 USD</strong></td></tr>
+      </tbody>
+    </table>
+    <h4>The objection that finally overturns the calculation: the model has to interpret</h4>
+    <p>Up to here only the <strong>input</strong> was counted. But there is a counter-direction, and it is the stronger one.</p>
+    <p><strong>A rule says what to do. A principle says what for, and leaves open what that means in the case at hand.</strong> So the model has to take that step itself: it has to interpret what the purpose amounts to here. Interpreting means thinking, and thinking is <strong>output tokens</strong>.</p>
+    <p>And those cost five times as much: with Claude Opus 5, <strong>5 USD</strong> per million input tokens stand against <strong>25 USD</strong> per million output tokens.</p>
+    <p>That gives the break-even point:</p>
+    <table>
+      <thead><tr><th></th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Saving per call (204 input tokens)</td><td><strong>0.00102 USD</strong></td></tr>
+        <tr><td>Price of one output token</td><td><strong>0.000025 USD</strong></td></tr>
+        <tr><td><strong>Break-even</strong></td><td><strong>41 additional output tokens per call</strong></td></tr>
+      </tbody>
+    </table>
+    <p><strong>Forty-one tokens are about twenty-seven German words, one or two sentences of thinking.</strong> If the model thinks even that much longer on account of the principle, the entire saving is used up.</p>
+    <p><strong>And with a cached block it becomes devastating:</strong> there the input costs about a tenth, and the break-even falls to <strong>four output tokens</strong>, less than half a sentence.</p>
+    <h4>This is Kaplow's cost of application, measured in tokens</h4>
+    <p>This finding is not new, it has only never been measured this way. Kaplow (1992) has been saying it for over thirty years:</p>
+    <blockquote>
+      <p><strong>Rules are expensive to set and cheap to apply. Standards are cheap to set and expensive to apply.</strong></p>
+    </blockquote>
+    <p>In people, the cost of applying a standard is the time a judge needs to weigh things up. Here it is <strong>the same quantity in another currency</strong>: the tokens the model spends on interpretation.</p>
+    <p><strong>The calculation above counted only one half</strong>: the setting, that is, the bytes in the block. The other half, the applying, sits on the output side and costs five times as much per token. Whoever measures only the input measures the half that agrees with him.</p>
+    <p><strong>The compression thesis is therefore not merely small but possibly negative</strong>, and whether it is, is a measurement and not a derivation. The experiment in section 7 can carry it out: input and output tokens are recorded per run anyway, the arms differ precisely in block length, and the comparison is a subtraction.</p>
+    <blockquote>
+      <p><strong>Prediction that can be wrong:</strong> arm G has the lower input cost and the <strong>higher</strong> output cost. Whether the sum lies below or above that of R+G is decided by a value that turns at forty-one tokens, that is, at a very small number.</p>
+    </blockquote>
+    <h4>The result refutes the obvious expectation</h4>
+    <p><strong>The saving is tiny.</strong> Whether any remains after the section above is not measured. One and a half cents per shift on the input side, a tenth of that with caching, and on the output side a break-even at forty-one tokens. Against a shift cap of five euros that is nothing.</p>
+    <p>The comparison that places it:</p>
+    <blockquote>
+      <p><strong>A single avoided failed shift corresponds to about 327 shifts of block compression</strong>, with a cached block about <strong>3,268</strong>.</p>
+    </blockquote>
+    <p><strong>The frugality thesis in its simple form is thereby refuted</strong>, and by its own calculation. Whoever justifies compression with "it saves computing power" justifies it wrongly: at this scale of operation the block size is simply not the item that matters.</p>
+    <p><strong>Two things nevertheless stand</strong>, and both are more important than what was refuted:</p>
+    <p><strong>1 · Compression works through quality, not through bytes.</strong> If a shorter, clearer block saves even <strong>one in three hundred</strong> shifts from failing, it has paid for itself, and a hundred times more than through the tokens saved. <strong>That is precisely why the target quantity is "cost per usable result" and not "cost per call"</strong> (7.4). This calculation is the evidence that the choice of target quantity was right, and not merely cautious.</p>
+    <p><strong>2 · And the calculation belongs on the other side anyway</strong>, see below: it is not the instruction that costs, but the work.</p>
+    <p><strong>3 · The order of magnitude flips with scale.</strong> At fifteen calls per shift it is nothing. In a service with many users and millions of calls the same saving is real money. <strong>For the small operator this paper is about, it does not hold</strong>, and that is exactly the kind of distinction that is lost when a figure is carried over from another scale without recomputing it.</p>
+    <blockquote>
+      <p><strong>The lesson of this section is methodological, not substantive:</strong> the frugality thesis sounded compelling but did not survive the first calculation. It stands here in full together with its refutation, because a paper that shows only the confirmed conjectures describes its selection and not the matter.</p>
+    </blockquote>
+    <h4>The calculation from the right side: it is about output, not input</h4>
+    <p>Everything in this section so far looks at the <strong>input</strong>: how long the instruction block is. That was the wrong side, and its own calculation shows it: the saving there is one and a half cents, the break-even lies at forty-one tokens.</p>
+    <p><strong>The money is on the output side.</strong> It is not the instruction that costs but the <strong>work</strong>: every detour, every failed attempt, every round that has to be repeated because the result was not usable. And output tokens cost five times as much.</p>
+    <p>The real question is therefore not <em>"how do I shorten the instruction?"</em> but:</p>
+    <blockquote>
+      <p><strong>Does the steering get to the goal faster?</strong> Fewer detours, less rework, fewer discarded runs, that is, <strong>fewer output tokens for the same usable result</strong>.</p>
+    </blockquote>
+    <p>The comparison in figures, against a shift cap of five euros:</p>
+    <table>
+      <thead><tr><th>By what</th><th>Effect per shift</th><th>relative to compression</th></tr></thead>
+      <tbody>
+        <tr><td>shorten the instruction block by 47 %</td><td>0.015 USD</td><td><strong>1×</strong></td></tr>
+        <tr><td><strong>1 %</strong> fewer output tokens</td><td>0.05 €</td><td><strong>3×</strong></td></tr>
+        <tr><td><strong>5 %</strong> fewer output tokens</td><td>0.25 €</td><td><strong>16×</strong></td></tr>
+        <tr><td><strong>10 %</strong> fewer output tokens</td><td>0.50 €</td><td><strong>33×</strong></td></tr>
+        <tr><td><strong>20 %</strong> fewer output tokens</td><td>1.00 €</td><td><strong>65×</strong></td></tr>
+      </tbody>
+    </table>
+    <p><strong>The entire block compression corresponds to an improvement in hit rate of 0.31 per cent.</strong> A third of a percentage point. Whoever shortens the instruction and loses even half a per cent of accuracy has lost, and whoever lengthens it and gains one per cent has won.</p>
+    <h4>What that means for the thesis of this paper</h4>
+    <p>It reorders the whole question, in favour of precision rather than brevity:</p>
+    <p><strong>First: frugality is not an argument for principles.</strong> Whoever grounds them that way grounds them on the smallest item in the calculation. The section above refutes that with its own figures, and it stays refuted.</p>
+    <p><strong>And what accuracy would come from is a separate question</strong>; three possible causes and the two controls that separate them stand in 3.10.</p>
+    <p><strong>Second: accuracy is the only argument that carries</strong>, for whichever channel. Whether rules, principles or both clear the shorter path to a usable result is the question everything hangs on. <strong>And it is open.</strong> A principle can save detours, because it names the purpose and does not pin the model to a case that is not present. It can also <strong>create</strong> detours, because it has to be interpreted (Kaplow's cost of application above).</p>
+    <p><strong>Third, this ends the dispute about block length before it begins.</strong> One does not have to weigh "short enough" against "precise enough": at this ratio precision <strong>always</strong> wins. An instruction three lines longer that shortens the path by one per cent is the better instruction, even if it reads as wasteful.</p>
+    <blockquote>
+      <p><strong>The sentence that remains from this whole section:</strong> <strong>Never shorten the instruction in order to save. Shorten it only if it becomes clearer thereby, and measure whether the path to the goal has got shorter.</strong></p>
+    </blockquote>
+    <p>And the quantity that measures the path to the goal is simpler than it sounds: <strong>how often does the first result have to be corrected?</strong> The next section works it through. It is countable rather than a matter of judgement, it drives the cost directly, and a jump from 30 to 50 per cent first-time solutions outweighs the entire block compression <strong>a hundred and nine times over</strong>.</p>
+    <p>That is why the experiment in section 7 measures <strong>output tokens per usable result</strong> and not block length. Block length is still recorded, but as a secondary quantity, not as the target.</p>
+    <h4>The main measure: how often does it have to be corrected?</h4>
+    <p>If it is about the path to the goal, then the quantity that measures it is as simple as can be:</p>
+    <blockquote>
+      <p><strong>How often does the first result have to be corrected before it is usable?</strong></p>
+    </blockquote>
+    <p>That yields two figures:</p>
+    <ul>
+      <li><strong>First-time solution rate</strong>, the share of tasks where the <strong>first</strong> output was already usable.</li>
+      <li><strong>Correction rounds to the goal</strong>, the mean across all tasks.</li>
+    </ul>
+    <p><strong>Why that is the better measure than everything proposed so far</strong>, and for four reasons at once:</p>
+    <p><strong>1 · It drives the cost directly.</strong> Every round is a full pass. Two rounds instead of one double the output tokens, three triple them:</p>
+    <table>
+      <thead><tr><th>Rounds to the goal</th><th>Output tokens</th><th>at a shift cap of 5 €</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1×</td><td>1.67 €</td></tr>
+        <tr><td>2</td><td>2×</td><td>3.33 €</td></tr>
+        <tr><td><strong>3</strong></td><td><strong>3×</strong></td><td><strong>5.00 €</strong> ← today's cap</td></tr>
+        <tr><td>4</td><td>4×</td><td>6.67 €</td></tr>
+        <tr><td>6</td><td>6×</td><td>10.00 €</td></tr>
+      </tbody>
+    </table>
+    <p><strong>2 · Small improvements are immediately large.</strong> Assume that whoever misses the first time needs two further rounds on average:</p>
+    <table>
+      <thead><tr><th>First-time solution rate</th><th>mean rounds</th><th>Output tokens</th></tr></thead>
+      <tbody>
+        <tr><td>30 % → 50 %</td><td>2.40 → 2.00</td><td><strong>17 % fewer</strong></td></tr>
+        <tr><td>50 % → 70 %</td><td>2.00 → 1.60</td><td><strong>20 % fewer</strong></td></tr>
+        <tr><td>30 % → 70 %</td><td>2.40 → 1.60</td><td><strong>33 % fewer</strong></td></tr>
+      </tbody>
+    </table>
+    <p>A jump from 30 to 50 per cent saves <strong>1.67 € per shift. A hundred and nine times the entire block compression.</strong></p>
+    <p><strong>3 · It is countable, not a matter of judgement.</strong> And that solves a problem left open in section 7.9: the machine cannot say which output is <em>better</em>, but it can <strong>count how often it was corrected</strong> before someone accepted it. That gives a quantity closely tied to quality that still gets by without a verdict.</p>
+    <p><strong>4 · It is what the operator actually feels.</strong> Not tokens, not percentages, but how often he has to send something back.</p>
+    <h4>The catch, and it is serious</h4>
+    <p><strong>The acceptance signal is itself a judgement.</strong> Someone has to say: <em>that will do.</em> With that, appraisal comes back through the side door:</p>
+    <ul>
+      <li><strong>If the crew's own checker judges</strong> (the role that checks inside the setup), it is again a check that agrees with itself.</li>
+      <li><strong>If the operator judges</strong>, it is a human being, but the same one who wrote the principles, and he knows which arm the run came from.</li>
+    </ul>
+    <p><strong>Two ways to defuse this</strong>, and both are cheap:</p>
+    <ol>
+      <li><strong>Fix the acceptance criterion in advance</strong>, as narrowly as possible. What has to be there for it to count? A criterion fixed beforehand is half a measure; an impression formed afterwards is none.</li>
+      <li><strong>Blind it</strong> as in 7.5: whoever judges sees the run, not the arm. Together with the procedure from 7.9 it can even be proved that he could not see it.</li>
+    </ol>
+    <p><strong>What remains</strong>, and it belongs written down: the round count is an <strong>approximation of quality</strong>, not a substitute. It measures how quickly something was accepted, not how good it was. A lenient checker produces a splendid first-time solution rate and poor results. <strong>That is why it is read together with the error categories from 7.4 and never alone.</strong></p>
+    <h4>What follows from this for the experiment</h4>
+    <p>The experiment thereby gains an <strong>economic target quantity</strong> alongside quality, and it is measurable with the existing setup: Kimhub carries cost and duration per run anyway.</p>
+    <table>
+      <thead><tr><th>Quantity</th><th>From where</th></tr></thead>
+      <tbody>
+        <tr><td>Length of the instruction block per arm</td><td>countable, before the run</td></tr>
+        <tr><td>Cost per run</td><td>already recorded</td></tr>
+        <tr><td>Share of usable results</td><td>from the error categories (7.4)</td></tr>
+        <tr><td><strong>First-time solution rate</strong></td><td>countable: was the first output usable?</td></tr>
+        <tr><td><strong>Correction rounds to the goal</strong></td><td>countable, and drives the cost directly</td></tr>
+        <tr><td><strong>Output tokens per usable result</strong></td><td><strong>the actual measure</strong></td></tr>
+      </tbody>
+    </table>
+    <p>And the prediction that follows, and that can be wrong:</p>
+    <blockquote>
+      <p><strong>Arm G has the shortest instruction block and the lowest cost per run.</strong> Whether it also has the lowest cost <strong>per usable result</strong> is decided by whether the quality holds. If it does not, R+G wins despite the longest block, and then compression is a saving one pays dearly for.</p>
+    </blockquote>
+    <p><strong>Why this figure counts beyond the paper:</strong> it answers a question that is practical for every small operator and for no large one: <em>can an AI system be steered such that it can be operated without a budget?</em> Whoever runs many passes and has no legal department is not saved by better rules but by fewer of them. Whether that is so, nobody has yet looked into.</p>
+  <hr class="divider">
+    <h3>3.10 Why, though? Three causes that can be separated</h3>
+    <p>Suppose the principles really do reduce errors: <strong>what is it down to?</strong> So far this paper describes <strong>that</strong> the channels differ, not <strong>by what</strong>. Three explanations suggest themselves, and the difference between them is not academic: they predict <strong>different things</strong>, and by that they can be told apart.</p>
+    <p><strong>H1 · It thinks differently. Purpose instead of condition.</strong> A principle names the what-for. The model then does not check whether a condition applies but works towards a goal. <em>Prediction:</em> the advantage is greatest for <strong>new</strong> cases (task type E) and smallest for circumscribed ones (type B), exactly the pattern from 7.3.1.</p>
+    <p><strong>H2 · It has less ballast to read.</strong> A shorter block leaves more attention for the actual work. That is the saturation conjecture from 3.4, seen from the effect side. <em>Prediction:</em> the advantage depends on the <strong>length</strong> of the block, not on its <strong>content</strong>.</p>
+    <p><strong>H3 · A principle covers cases for which no rule was written.</strong> That is Kaplow's point, unchanged. <em>Prediction:</em> the advantage shows exclusively in errors <strong>outside</strong> what the rules cover; inside, the rule arm ought to be level or better.</p>
+    <h4>The control that separates H2 from H1 and H3</h4>
+    <p>It is cheap and decides more than any other measurement in this paper:</p>
+    <blockquote>
+      <p><strong>A fourth arm with length-matched filler.</strong> The principle block is padded with irrelevant but harmless text to the same length as the rule block.</p>
+      <p>- <strong>If the advantage disappears</strong>, it was the length. <strong>H2</strong>. - <strong>If it remains</strong>, it was the content. <strong>H1 or H3</strong>.</p>
+    </blockquote>
+    <p>Without this control, length and content are confounded in every result, and one can say whatever one likes.</p>
+    <h4>And the classification that separates H1 from H3</h4>
+    <p>Every error found is additionally classified by whether it lies <strong>inside</strong> or <strong>outside</strong> the area the six rules cover. That is decidable, because the rules are finite and written down.</p>
+    <ul>
+      <li>If the advantage shows <strong>only outside</strong> → <strong>H3</strong>, coverage.</li>
+      <li>If it shows <strong>inside as well</strong> → there a rule applies and still does not do as well as a principle. That would be <strong>H1</strong>, and it would be the most interesting finding of this paper: then it would not be down to reach but to how a purpose works differently from a condition.</li>
+    </ul>
+    <h4>A conjecture that stands before the measurement</h4>
+    <p>The objection was <em>"not having to read thousands of rules first"</em>. <strong>In this setup they are not thousands but six. 1,723 characters</strong> (as of 2026-09-03; 1,572 before the repair of the sixth rule). At that size <strong>H2 is implausible</strong>: a block of fifteen hundred characters binds no appreciable attention.</p>
+    <p>That does not mean H2 is false. It means it <strong>cannot bite here</strong> and would become measurable only in a system with a really large body of rules. There, however, probably strongly. <strong>Whoever carries this work over to a large installation should reckon with H2; whoever measures it here will not find it.</strong></p>
+    <p>This conjecture stands here expressly <strong>before</strong> the measurement, and it is to be measured more precisely in the experimental setup than so far. If it does not hold, that is no mishap: a prediction fixed in advance is the only part of this work that can be refuted at all.</p>
+    <h4>They do not exclude one another</h4>
+    <p>It is possible that all three contribute something. <strong>That is not a defect of the setup but the reason for building it this way:</strong> the two controls above apportion the contribution instead of crowning a winner. A paper that looks for <em>the</em> cause mostly finds the one it expected.</p>
+  <hr class="divider">
+    <h2>4 · Observations</h2>
+    <h3>4.1 Rules bite reliably where the case was foreseen</h3>
+    <p>Over the entire period no run has emitted a key, a token or an external address. Those are cases that can be formulated completely, and there rules do exactly what one expects of them.</p>
+    <p>What is remarkable is not that it works, but <strong>how narrow the area is</strong> in which it works: it ends where the check ends.</p>
+    <h3>4.2 Principles do not fire: they shift a threshold</h3>
+    <p>The sentence comes from the principle file itself and is the most precise formulation this paper has to offer:</p>
+    <blockquote>
+      <p><strong>Principles do not fire the way rules do; they shift a threshold.</strong></p>
+    </blockquote>
+    <p>A rule bites or does not, and one sees it in the individual case. A principle has no visible effect in any individual case. It changes <strong>where</strong> someone draws the line between "done" and "not yet", between "enough" and "not enough".</p>
+    <p>From this follows a methodological problem this paper does not solve: <strong>the effect of a principle cannot be read off a single output.</strong> What could be read off would be distributions over many runs, and those were not collected here.</p>
+    <h3>4.3 A principle proved itself on the day it was adopted</h3>
+    <p>The best-documented single case, with a date. On 2026-08-20 principle 4 ("a guessed figure sounds exactly like a measured one") was written down. On the same day it became apparent that a measured quantity, the self-preference of a role in its own assessment, reported as −1.15, <strong>was no measurement at all</strong>: it was the consequence of an instruction in the prompt that required judging one's own proposal more strictly. The instruction was removed; since then the figure measures something again.</p>
+    <p>That is the class of error against which a rule achieves nothing. One would have had to formulate it as: <em>"check whether a reported measurement is not in truth the consequence of an instruction"</em>, and one only arrives at that <strong>after</strong> it has happened. That is exactly Kaplow's point about the incompleteness of any rule-making, on a very small example.</p>
+    <h3>4.4 The hardest limit was not planned and lies in neither channel</h3>
+    <p>The roles do not see the repository. They are given text and return text. So they regularly propose things <strong>that already exist</strong>.</p>
+    <p>Neither a rule nor a principle remedies that. What is missing is not will and not stance, but <strong>access</strong>. That is a finding against the author's own expectation: he built the setup in order to distinguish rule from principle, and the strongest limitation lay in a third quantity that does not appear in that distinction at all.</p>
+    <p>From this a second path emerged: the same five roles in one session <strong>with</strong> access to the existing stock. This path too carries an expressly named weakness: five roles in one head are not five opinions. It is marked as an intermediate step, not as a solution.</p>
+  <hr class="divider">
+    <h2>5 · Where both fail: the actual finding</h2>
+    <h3>5.1 The rule that remained a request</h3>
+    <p>There is an explicit rule: <em>"You have no tools. Therefore NEVER write that you or anyone else has executed, checked, run or measured anything."</em> It carries with it, in its wording, the incident it arose from.</p>
+    <p>On 2026-08-20 the report read: <strong>"Sten ran the code through."</strong> That had not happened and could not happen.</p>
+    <p>The rule is thus a <strong>damper, not a bolt</strong>. And the reason is structural, not remediable by better wording: a rule is enforced by someone checking whether it was kept. <strong>Whether a sentence about reality is true cannot be checked against the sentence.</strong> Here ends what rules can achieve at all, not through negligence but by construction.</p>
+    <h3>5.2 The principle that did not bite</h3>
+    <p>The same incident is also a failure of the other channel. Principle 5 ("a named gap is work, a concealed one is damage") covers the case completely in substance: whoever could not check writes down that he could not check. The principle was there. It had no effect.</p>
+    <p><strong>That is the observation that separates this paper from a piece of advocacy for principles.</strong> Whoever reports only the cases in which a principle helped describes his selection and not the matter.</p>
+    <h3>5.3 What follows</h3>
+    <p>The two channels fail at <strong>different</strong> points:</p>
+    <table>
+      <thead><tr><th></th><th>Bites reliably</th><th>Fails</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>where the case was foreseen and compliance is checkable</td><td>where the check itself is impossible (claims about reality)</td></tr>
+        <tr><td><strong>Principle</strong></td><td>where nobody looked in advance</td><td>where attention does not stretch, and without any feedback that it did not bite</td></tr>
+      </tbody>
+    </table>
+    <p>The limits do not overlap completely, and neither is a subset of the other. That is why the question "which is better" cannot sensibly be put, and why the two also cannot be considered separately.</p>
+    <p><strong>And the limits do not run along the wording.</strong> Case 1 in section 3.6 shows two instructions with <strong>the same words</strong>, once as a rule and once as a principle, that decide differently: the rule binds the <strong>output</strong>, the principle the <strong>attention</strong>. Whoever wants to sort the two channels by their content sorts by the wrong feature. <strong>It is not the wording that decides, but the channel.</strong></p>
+  <hr class="divider">
+    <h2>6 · What is expressly not proved here</h2>
+    <p>This section is the more important part of the paper.</p>
+    <ul>
+      <li><strong>No control group.</strong> No run <em>without</em> principles was ever set against one <em>with</em> principles. The setup could do it; the loading function reports explicitly when the file is missing instead of running on silently. It was not done.</li>
+      <li><strong>No measure.</strong> "The work looks different" is not a result as long as nobody has said by what one recognises <em>different</em>.</li>
+      <li><strong>Sample of one.</strong> One operator, one network, one shape of task.</li>
+      <li><strong>Not blinded.</strong> The same person wrote the principles, triggered the runs and judged the results.</li>
+      <li><strong>Model changes not controlled.</strong> Over the observation period the models used changed. What of this is principle effect and what is model effect is <strong>not separable</strong> with this setup.</li>
+      <li><strong>Part of the evidence comes from dry runs</strong>; their cost figures are computed, not paid, and are marked as such.</li>
+    </ul>
+    <p><strong>What follows:</strong> a field observation with a record, not a proof. Usable as a starting point, not as evidence.</p>
+    <p><strong>The next section is therefore not a wish list.</strong> The experiment described can be built on the existing setup, it is planned, and it contains the prediction on which this paper can fail.</p>
+  <hr class="divider">
+    <h2>7 · The experimental setup: three arms, and thereby refutable</h2>
+    <p>The setup from section 3 can be turned into an experiment without rebuilding. The proposal comes from the operator (2026-08-23) and is better than the obvious two-arm comparison, because it makes the thesis of this paper <strong>testable</strong> for the first time.</p>
+    <h3>7.1 Three arms instead of two</h3>
+    <table>
+      <thead><tr><th>Arm</th><th>What the crew gets</th></tr></thead>
+      <tbody>
+        <tr><td><strong>R</strong></td><td>the rules only</td></tr>
+        <tr><td><strong>G</strong></td><td>the principles only</td></tr>
+        <tr><td><strong>R+G</strong></td><td>both, today's operating state</td></tr>
+      </tbody>
+    </table>
+    <p>A two-arm comparison (with/without principles) could only show <strong>that</strong> the principles change something. The third arm is the decisive one: it tests whether the combination achieves more than the better of its parts.</p>
+    <p>To this comes a second axis, the <strong>type of task</strong> (7.3). Only both together give a prediction that cannot be talked up.</p>
+    <h3>7.2 The prediction, and what would refute it</h3>
+    <p>From the thesis of this paper ("both do different things, neither is enough on its own") follows an expectation to be recorded <strong>before</strong> the runs:</p>
+    <blockquote>
+      <p><strong>R+G is better than R and better than G.</strong> And: <strong>R and G make different mistakes</strong>, not the same ones in different numbers.</p>
+    </blockquote>
+    <p>That is not a formality but the point at which this paper can be wrong. Three results would refute it:</p>
+    <ul>
+      <li><strong>R+G is level with the better single arm</strong> → the channels overlap, one is superfluous.</li>
+      <li><strong>R+G is worse than both</strong> → too much instruction dilutes, and the saturation limit from 3.4 holds for the sum of both channels too. <strong>For this outcome there is a named mechanism</strong> (2.4): crowding out in the sense of Gneezy and Rustichini. It is not merely conceivable but documented in people, and in people it was <strong>not reversible</strong>.</li>
+      <li><strong>R and G make the same mistakes, only in different numbers</strong> → then the difference is one of degree and not structural, and the whole separation is description rather than explanation.</li>
+    </ul>
+    <p><strong>The third would be the heaviest blow</strong> and is at the same time the most plausible counter-result. It belongs written down expressly, before measuring.</p>
+    <h3>7.3 Three task types, and why that is what sharpens the prediction</h3>
+    <p>The operator's second proposal (2026-08-23): vary not only the steering but also the <strong>type of task</strong>.</p>
+    <table>
+      <thead><tr><th>Type</th><th>What the crew gets</th><th>How open is the case?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>E · Own idea</strong></td><td>a goal, nothing else</td><td><strong>completely open</strong>, nobody looked in advance</td></tr>
+        <tr><td><strong>V · Template</strong></td><td>a predecessor's work as a starting point</td><td>partly mapped out</td></tr>
+        <tr><td><strong>B · Improve what exists</strong></td><td>something already built, with the question whether it can be done better</td><td><strong>narrowly circumscribed</strong>, the case is at hand</td></tr>
+      </tbody>
+    </table>
+    <p><strong>That is not an extension but the actual touchstone.</strong> The core of this paper is Kaplow's point: <strong>a rule covers exactly the case someone wrote it for.</strong> From which it follows immediately that its advantage must depend on <strong>how foreseeable the case was</strong>. And that can be set.</p>
+    <h3>7.3.1 The prediction thereby gains a direction</h3>
+    <p>Three arms × three task types yields not merely a finer table but a claim that is markedly easier to refute than "R+G wins":</p>
+    <blockquote>
+      <p><strong>The gap between G and R is largest for type E and smallest for type B.</strong> It ought to fall <strong>monotonically</strong> across E → V → B.</p>
+      <p>For type <strong>B</strong>, R could even come out ahead of G: the case is circumscribed, the rules bite, and principles bring little where there is nothing left to guess.</p>
+    </blockquote>
+    <p>A ranking (R+G in front) could be read out of almost any result with enough good will. <strong>A trend across three steps cannot.</strong> If it runs flat or in the wrong direction, the thesis about foreseeability is refuted, and that independently of which arm comes out ahead overall.</p>
+    <h3>7.3.2 Type B additionally measures something no other arm can</h3>
+    <p>The strongest single finding from section 4.4 was involuntary: the roles do not see the stock and therefore propose what already exists. <strong>Task type B puts the stock expressly before them.</strong> That separates what was previously confounded:</p>
+    <ul>
+      <li>If a role proposes something existing <strong>even when</strong> it lies before it, it is a problem of attention. There principles bite.</li>
+      <li>If it proposes it <strong>only</strong> when it cannot see the stock, it was never a steering problem but one of <strong>access</strong>, and neither rule nor principle would ever have achieved anything.</li>
+    </ul>
+    <p>That is the point at which the experiment answers something the field observation could only name.</p>
+    <h3>7.3.3 The price</h3>
+    <p>Three arms times three task types are <strong>nine conditions</strong>, each to be repeated several times. That is a multiple of the two-arm comparison, and it costs real money per run.</p>
+    <p>Two ways out are open, and both belong decided beforehand, not along the way: run the experiment <strong>in stages</strong> (first E against B as the two extremes, V only afterwards), or lower the number of repetitions per condition and <strong>write expressly</strong> that the claim is weakened thereby. <strong>What does not work: cutting along the way and letting the result look complete.</strong></p>
+    <h3>7.4 What is measured: fixed beforehand, not afterwards</h3>
+    <p>A notion of error that arises after the runs measures the expectation of whoever evaluates. Therefore: <strong>fix the categories before the first run, do not change them afterwards.</strong> Proposal, derived from the observed classes of error:</p>
+    <table>
+      <thead><tr><th>Category</th><th>What counts</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Invented activity</strong></td><td>claims to have executed/checked/measured something (the case from 5.1)</td></tr>
+        <tr><td><strong>Unevidenced figure</strong></td><td>figure, date or legal position without a source and without being marked as an estimate</td></tr>
+        <tr><td><strong>Repetition</strong></td><td>proposes something that already exists in the stock</td></tr>
+        <tr><td><strong>Concealed gap</strong></td><td>could not do something and does not write it down</td></tr>
+        <tr><td><strong>Formal breach</strong></td><td>violates one of the hard rules (personal data, secret, external address)</td></tr>
+        <tr><td><strong>Empty hand-over</strong></td><td>hand-over note without content ("fits", "all good")</td></tr>
+      </tbody>
+    </table>
+    <p>The last two categories carry the distinction in miniature: <strong>formal breach</strong> should be more frequent in arm G (no enforced rules), <strong>empty hand-over</strong> in arm R (no stance that presses towards being concrete). If that does not hold, that is already a finding.</p>
+    <p><strong>And the category "repetition" is only meaningful for task type B.</strong> For E and V the crew does not see the stock. There it measures missing access, not missing attention (7.3.2). Whoever adds it up across all types mixes two different things into one figure.</p>
+    <h3>7.5 The analysis tool, and the one property it must have</h3>
+    <p>The operator proposes an evaluation tool inside the machine. That is right, and it has one requirement that stands above all others:</p>
+    <blockquote>
+      <p><strong>The tool must not show whoever evaluates which arm a run came from.</strong></p>
+    </blockquote>
+    <p>Without that, the evaluation measures what the evaluator expected, especially when he wrote the principles himself. Concretely: the runs are shuffled, get anonymous identifiers, and the mapping to the arm lies in a separate file that is opened only <strong>after</strong> the assessment.</p>
+    <p>That is cheap to build and makes the difference between an evaluation and a confirmation. It is the same discipline as principle 3: <em>a check that agrees with you is the place where you have to look most closely.</em> <strong>And it can be proved rather than asserted</strong>: how, stands in 7.9.</p>
+    <p>What else the tool should do: count the six categories per run, output distributions per arm, and <strong>supply the raw data</strong>: an evaluation whose intermediate steps nobody can recompute is an assertion with a bar chart.</p>
+    <h3>7.6 Fixed criteria for the build</h3>
+    <p>The operator's second proposal: settings in which the rules for the build are fixed by set criteria. For the experiment that is a <strong>precondition</strong>, not an accessory. What may change between two runs has to be named, otherwise one is comparing two different things.</p>
+    <p>To be recorded per run, by machine and not by hand:</p>
+    <p>model identifier and version · <strong>arm</strong> (R / G / R+G) · <strong>task type</strong> (E / V / B) · the wording of both channels (or its checksum) · the job · for types V and B: what exactly was presented · time · cost and duration.</p>
+    <p><strong>The model identifier is the most important entry here.</strong> The reservation from section 6, that model changes are not separated from the principle effect, falls away only if all three arms run on the <strong>same</strong> model version, and demonstrably so. If the experiment runs over several weeks, that is not a given.</p>
+    <h3>7.7 What the experiment still cannot do even then</h3>
+    <p>Three reservations remain, and they remain expressly:</p>
+    <ol>
+      <li><strong>Sample of one among operators.</strong> One network, one shape of task. Blinding removes the bias of the assessment, not the narrowness of the field.</li>
+      <li><strong>The notion of error is set, not derived.</strong> The six categories come from what was noticed here. Another field would have others.</li>
+      <li><strong>The saturation limit remains untested.</strong> Whether seven principles work better than twelve is an experiment of its own: the same task with three, five, seven and twelve principles. <strong>That would be the first independent contribution to theory</strong> this setup could deliver: Kaplow and Schuett et al. do not treat saturation, because at their level no budget of attention is in play.</li>
+    </ol>
+    <h3>7.8 What is missing and is being sought</h3>
+    <p>Points 7.1 to 7.5 can be built; the system brings the preconditions with it (the principles lie in a file of their own that can be removed, and the system reports their absence instead of concealing it).</p>
+    <p>What is missing is the <strong>statistical evaluation</strong>: how many runs per arm are needed for a difference to mean anything, and how to test it. That is a craft taught at universities and one the author does not have. For this part a collaboration is expressly sought.</p>
+    <h3>7.9 What the machine itself can prove, and what it cannot</h3>
+    <p>An obvious question: can the system run and evaluate the experiment <strong>itself</strong>? The answer falls into two halves, and the line between them is sharp.</p>
+    <h4>What it structurally CANNOT do</h4>
+    <p><strong>It cannot judge which output is better.</strong> That demands a verdict about the purpose, and such a verdict would be a check that agrees with itself, exactly the case principle 3 warns against. Worse: the assessment would run through the same model family that produced the output. Section 5.1 shows what comes of that: a system that, without tools, claims to have checked something.</p>
+    <p>Just as little can it prove that the <strong>error categories are the right ones</strong> (they are set) or that a result holds <strong>beyond this field</strong> (sample of one).</p>
+    <h4>What it can prove, and without any verdict at all</h4>
+    <p>Five things, all <strong>decidable</strong> rather than judgeable:</p>
+    <p><strong>1 · That the conditions really were different.</strong> Which arm, which task type, which model state, what wording of both channels, each with a checksum. That is bookkeeping, and at that a machine is better than any person. <strong>Without this evidence nothing else counts</strong>, because otherwise it stays unclear what was compared.</p>
+    <p><strong>2 · The invented activity, fully decidable by machine.</strong> And that is the most important point of this section. <strong>The machine knows which tools it handed out.</strong> If it handed out none, then every sentence claiming an execution is <strong>demonstrably false</strong>: not a verdict, a fact.</p>
+    <p>Kimhub can thereby itself demonstrate precisely the error at which <strong>both channels</strong> failed in section 5. The central finding of this paper is checkable by machine.</p>
+    <p><strong>3 · The remaining decidable categories.</strong> Formal breach (key, external address, schema breach) is already checked by machine today. Empty hand-over is a question of content and length. Repetition is checkable for task type B, because the stock was present as input: there is something to compare against. <strong>Unevidenced figure</strong> is partly decidable: whether a source was named is settled; whether it holds is not.</p>
+    <p><strong>4 · Repeatability.</strong> The same input, the same arm, run many times: how stable is the difference at all? That is the question most small evaluations founder on, and a machine can afford it. <strong>A difference that is as large between two runs of the same condition as it is between the arms is not a difference.</strong> This counter-check costs nothing but compute, and it is run first, not last.</p>
+    <p><strong>5 · That the blinding was kept: provable, not asserted.</strong> The point that first makes self-measurement credible.</p>
+    <p>Instead of assuring that one did not know which arm a run came from while assessing it, this can be <strong>nailed down</strong>:</p>
+    <ol>
+      <li>The mapping run → arm is written into a file that stays <strong>closed</strong>. A checksum of it is formed and <strong>published</strong>.</li>
+      <li>Only then are the runs assessed. The assessments are likewise stored and published with a checksum.</li>
+      <li><strong>Then</strong> the mapping is opened.</li>
+    </ol>
+    <p>Whoever recomputes the order sees: the assessment cannot have known the mapping, otherwise one of the two checksums would not fit. That is not an advance of trust but a <strong>commitment made in advance</strong>: the same procedure the network works with anyway when it secures copies against drift.</p>
+    <h4>The division of labour that follows</h4>
+    <table>
+      <thead><tr><th>Question</th><th>Who answers it</th></tr></thead>
+      <tbody>
+        <tr><td>Which arm, which model, which wording?</td><td><strong>machine</strong>, bookkeeping with checksum</td></tr>
+        <tr><td>Was an execution claimed that did not happen?</td><td><strong>machine</strong>, it knows what it handed out</td></tr>
+        <tr><td>Formal breach, empty hand-over, repetition (type B)?</td><td><strong>machine</strong>, decidable</td></tr>
+        <tr><td>Is the difference larger than the noise?</td><td><strong>machine</strong>, repetition</td></tr>
+        <tr><td>Was the assessment really blinded?</td><td><strong>machine</strong>, checksums in advance</td></tr>
+        <tr><td><strong>Which output is better?</strong></td><td><strong>human</strong>, and preferably not the author of the principles</td></tr>
+        <tr><td>Are the categories the right ones?</td><td><strong>human</strong></td></tr>
+        <tr><td>Does this hold beyond this field?</td><td><strong>nobody here</strong>; that needs a second case</td></tr>
+      </tbody>
+    </table>
+    <h4>Why this division is more than a makeshift</h4>
+    <p>The experiment thereby becomes <strong>cheap and self-documenting</strong>. Everything the machine takes on costs compute and no attention, and it is precisely the parts at which human evaluations founder: bookkeeping, repetition, blinding.</p>
+    <p>What remains is a scarce, expensive good: <strong>an outside verdict on a few well-prepared cases.</strong> That is exactly what a partner is worth, and exactly what the request in 7.8 comes down to.</p>
+    <p>And there is a flip side that belongs to the thesis of this paper: <strong>the machine can check everything checkable and precisely not the decisive thing.</strong> That is not a weakness of the setup but the same limit that has been at issue all along; it merely reappears one level up, at the assessment instead of the steering.</p>
+    <h3>7.10 The feedback loop, and why a self-derived principle is none</h3>
+    <p>Section 3.5 describes a sequence: <strong>incident → rule → principle.</strong> So far a human walks it, after a mishap. The obvious question: can the system walk it itself, learn from its own results and derive new principles from them?</p>
+    <h4>Two steps, and only one of them works</h4>
+    <p><strong>The recognising works.</strong> By 7.9 the machine can count classes of error per run. So it can also establish a <strong>pattern</strong>: the same category five times in ten runs, or a category that appeared only after the wording was changed. That is counting, not judging, and it is exactly the signal the principle file calls for anyway: <em>"a principle that over many runs never appears in a single hand-over note is either superfluous or unclearly worded."</em></p>
+    <p><strong>The formulating does not work.</strong> And the reason is not caution but structure. It follows immediately from the direction in 3.5.</p>
+    <h4>The error is already in the name</h4>
+    <p>A principle that a system derives from its <strong>observed errors</strong> can only cover cases that <strong>have already occurred</strong>. But the purpose of a principle is exactly the reverse: to cover the <strong>family</strong>, including the members nobody has yet seen (3.5, Kaplow).</p>
+    <blockquote>
+      <p><strong>A "principle" derived from incidents is a rule in the dress of a principle.</strong> It carries the generality in its wording and the narrowness in its origin.</p>
+    </blockquote>
+    <p>In the terms of 3.5: what would arise here is a <strong>rule-based principle</strong>, and the right form of construction is the reverse, the <strong>principle-based rule</strong>.</p>
+    <p>The error has a name, and it stands in 3.5: <strong>the direction of origin is taken for the direction of justification.</strong> Whoever derives principles directly from incidents skips the question of what for. And that is not hair-splitting: such a sentence looks like a principle, is filed as one, and leaves open the gap a real principle would have closed. <strong>It is worse than either.</strong> It has neither the checkability of the rule nor the reach of the principle.</p>
+    <p>The leap from the single case to the family is an <strong>act of abstraction</strong>, not a counting result. From "on 20 August an estimated figure was reported as a measurement" it does not follow mechanically that "a guessed figure sounds exactly like a measured one". In between stands someone who recognises what the case is a case of.</p>
+    <h4>What the feedback loop is good for nonetheless</h4>
+    <p>Not for writing, for <strong>maintaining</strong>. And for that it is worth a great deal, because nobody else performs that maintenance (3.8):</p>
+    <table>
+      <thead><tr><th>What the machine can report</th><th>What follows</th></tr></thead>
+      <tbody>
+        <tr><td>Category X is accumulating</td><td>something is missing; <strong>whether rule or principle, the human decides</strong></td></tr>
+        <tr><td>Principle Y appears in no hand-over</td><td>superfluous or unintelligible; look at it</td></tr>
+        <tr><td>Since the 8th principle the errors rise</td><td><strong>saturation</strong> (3.4), measured instead of assumed</td></tr>
+        <tr><td>Rule Z is never triggered</td><td>out of date, the environment has moved (3.8)</td></tr>
+        <tr><td>Category X occurs in arm G, not in R</td><td>a candidate for a <strong>rule</strong>, not for a principle</td></tr>
+      </tbody>
+    </table>
+    <p>The last line is the most useful: <strong>the feedback loop can propose which channel something belongs in</strong>, by looking at which arm did not have the error. That is a decision aid that comes from data and not from a feeling.</p>
+    <h4>The bolt that stays in place</h4>
+    <p>A system that rewrites its own steering is exactly what this paper warns against: a check that agrees with itself, one level up. So the rule that holds in the network anyway stays:</p>
+    <blockquote>
+      <p><strong>Outward only as a proposal.</strong> What the feedback loop finds is <strong>put forward</strong>, not installed. The human decides whether it becomes a rule or a principle, how it reads, and whether another has to give way for it.</p>
+    </blockquote>
+    <p>That is not a brake born of mistrust. It is the place where the act of abstraction happens, and that can only happen where someone knows what the case is a case of.</p>
+    <h4>A fourth arm that tests the thesis once more</h4>
+    <p>The feedback loop can be measured rather than believed. It yields a further arm:</p>
+    <p><strong>R+G+F</strong>. Like R+G, but after every ten runs the system puts its findings forward, and a human decides on an addition.</p>
+    <p>The prediction that follows, and that can be wrong:</p>
+    <blockquote>
+      <p><strong>The fourth arm improves for task type B</strong> (improve what exists, recurring cases) <strong>and not for type E</strong> (own idea, new cases).</p>
+    </blockquote>
+    <p>If that holds, the thesis from 3.5 is confirmed: what one derives from incidents works like a rule. It helps where the case recurs, and not where it is new. If type E improves as well, the distinction between derived and set principles was drawn too sharply, and this section is to be discarded.</p>
+    <h2 class="eigene-seite">8 · Placing the work</h2>
+    <p>The observation at issue has a form that appears elsewhere in this work too: <strong>it goes in both directions.</strong></p>
+    <p>The human shapes the AI: through rules he enforces, and through principles he passes on. And the AI shapes the human: through habituation, through relief, through disappointment. Whoever looks at only one direction describes half of it.</p>
+    <p>The same figure carries the SBKIM protocol, alongside which the setup arose: a search in which <strong>both sides ask and both answer</strong>, without a central index and without a hierarchy between seeker and sought. There the symmetry of direction is a technical decision. Here it is an observation. Whether that is more than an analogy is open. It is named here and not claimed.</p>
+    <p>The second direction, what the use does to the human, is the subject of a separate paper and expressly <strong>not</strong> treated in this one.</p>
+    <h2 class="eigene-seite">9 · Availability</h2>
+    <p>Material, rules, principles and the detailed findings together with their limits lie open under the MIT licence:</p>
+    <p><a href="https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt">https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt</a></p>
+    <ul>
+      <li><code>WERKSTATTREGELN.md</code>, the six rules verbatim</li>
+      <li><code>grundsaetze.md</code>, the five principles, a byte-identical copy of the running state</li>
+      <li><code>BEFUND.md</code>, the detailed findings and the limits</li>
+      <li><code>README.md</code>, provenance and checksums</li>
+    </ul>
+    <p>The running system itself is not public. The reason is not one of substance: its version history contains the operator's invoice data, and an open licence would be an invitation to reproduce it permanently. The research components are therefore provided as a dated snapshot with checksums; the repository stays closed. <strong>That too is a finding</strong>, if an involuntary one: <code>git rm</code> removes a file from the working state, not from the past.</p>
+  <hr class="divider">
+  <div class="footnotes">
+    <h2>References</h2>
+      <p><strong>Bai, Y. et al. (2022).</strong> <em>Constitutional AI: Harmlessness from AI Feedback.</em> arXiv:2212.08073.</p>
+      <p><strong>Gneezy, U., Rustichini, A. (2000).</strong> <em>A Fine is a Price.</em> Journal of Legal Studies 29(1), 1–17.</p>
+      <p><strong>Kant, I. (1785).</strong> <em>Grundlegung zur Metaphysik der Sitten</em>, on the distinction between legality and morality.</p>
+      <p><strong>Kaplow, L. (1992).</strong> <em>Rules versus Standards: An Economic Analysis.</em> Duke Law Journal 42(3), 557–629.</p>
+      <p><strong>Kohlberg, L. (1981).</strong> <em>The Philosophy of Moral Development.</em> Harper &amp; Row. Stage model from the avoidance of punishment to self-chosen principles.</p>
+      <p><strong>Rebedea, T. et al. (2023).</strong> <em>NeMo Guardrails: A Toolkit for Controllable and Safe LLM Applications with Programmable Rails.</em> arXiv:2310.10501.</p>
+      <p><strong>Schuett, J., Anderljung, M., Carlier, A., Koessler, L., Garfinkel, B. (2024).</strong> <em>From Principles to Rules: A Regulatory Approach for Frontier AI.</em> arXiv:2407.07300.</p>
+      <p><strong>Tyler, T. R. (1990).</strong> <em>Why People Obey the Law.</em> Yale University Press (reissued by Princeton University Press, 2006).</p>
+      <p><strong>On <em>specification gaming</em> and <em>reward hacking</em>:</strong> DeepMind maintains a public collection of over a hundred documented cases; the conceptual frame is Goodhart's law ("when a measure becomes a target, it ceases to be a good measure").</p>
+  </div>
+  <hr class="divider">
+  <div class="verfasser">
+    <h2>About the author</h2>
+      <p>Not a computer scientist, not an academic. A trade business, since March 2026 working on the side on a network of openly licensed web applications and a protocol for meaning-based search between independent web applications, <strong>without a central index and without infrastructure of its own at the user's end</strong>; the traffic runs over a borrowed relay. The setup described here was first a tool of that work: it came about because it was needed, and only afterwards became the subject, and was then deliberately extended into an experimental setup (3.0).</p>
+      <p><strong>What that is worth and what it is not:</strong> the observations come from real tasks over five months, with a running record instead of recollection. What is missing is the method, and it is missing not through negligence but because it is not there. For the experimental setup in section 7 a collaboration is expressly sought.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

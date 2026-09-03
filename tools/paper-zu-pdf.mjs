@@ -79,6 +79,11 @@ const ERWARTUNG = {
     wasFehlt: 'Der Titel loest das Kuerzel SBKIM nicht auf',
     abschnitteMin: 9,
   },
+  'paper-a-rules-and-principles.html': {
+    titel: /^Rules and Principles$/,
+    wasFehlt: 'Der Titel ist nicht \u201eRules and Principles\u201c',
+    abschnitteMin: 11,
+  },
   'paper-a-regeln-und-grundsaetze.html': {
     titel: /^Regeln und Grunds\u00e4tze$/,
     wasFehlt: 'Der Titel ist nicht „Regeln und Grunds\u00e4tze"',
