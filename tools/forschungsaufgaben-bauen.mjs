@@ -82,7 +82,7 @@ const STRAENGE = [
       + 'nicht wie gut im Vergleich zu einer zentralen Vektor-Suche.' },
   { nr: 2, name: 'Grundsatzbasiertes gegenüber regelbasiertem Lenken',
     frage: 'Was lässt sich erzwingen, was muss man fragen, und wo versagt beides?',
-    belege: ['docs/papers/PAPER_A_regeln-und-grundsaetze.md', 'docs/werkstatt'],
+    belege: ['docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md', 'docs/werkstatt'],
     stand: 'Material und Paper A liegen vor',
     fehlt: 'Der Versuchsaufbau ist entworfen (drei Arme mal drei Aufgabenarten), '
       + 'aber nicht gefahren. Fallzahl bisher eins, keine Kontrollgruppe, kein Maß.' },
@@ -122,7 +122,7 @@ const AUFGABEN = [
     haengtAn: null },
   { nr: 2, titel: 'Paper A · Regeln und Grundsätze', strang: '2',
     sichtbar: true,
-    belege: ['docs/papers/PAPER_A_regeln-und-grundsaetze.md'],
+    belege: ['docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md'],
     wozu: 'Der schreibbarste der drei Texte, das Material liegt fertig vor.',
     fehlt: 'Der Werkzeug-Widerspruch: vier Stellen sagen im Präsens, die Rollen '
       + 'hätten keine Werkzeuge. Kimhubs Verfassung sagt seit dem 2026-08-23 das '

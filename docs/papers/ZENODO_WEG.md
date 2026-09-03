@@ -64,11 +64,11 @@ Hier hört Klaus' Arbeit für den Moment auf.
 ## Schritt 2 · Die Sitzung: den DOI eintragen und die Dateien bauen
 
 ```bash
-node tools/paper-md-zu-html.mjs docs/papers/PAPER_A_regeln-und-grundsaetze.md \
-     --ziel docs/papers/paper-a-regeln-und-grundsaetze.html \
+node tools/paper-md-zu-html.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md \
+     --ziel docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html \
      --doi 10.5281/zenodo.NNNNNNNN
 
-node tools/paper-zu-pdf.mjs docs/papers/paper-a-regeln-und-grundsaetze.html \
+node tools/paper-zu-pdf.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html \
      --ziel /tmp/paper-a.pdf
 node tools/paper-pdf-pruefen.mjs /tmp/paper-a.pdf
 node tests/smoke_paper_a.mjs
@@ -121,7 +121,7 @@ Beim SBKIM-Papier waren es **vier** Stellen. Für Paper A:
 
 | Wo | Was |
 |---|---|
-| `paper-a-regeln-und-grundsaetze.html` | die `paper-doi`-Zeile (kommt aus `--doi`) |
+| `regeln-und-grundsaetze-in-ki-agentensystemen.html` | die `paper-doi`-Zeile (kommt aus `--doi`) |
 | `docs/papers/README.md` | der Abschnitt zu den DOIs |
 | `index.html` | die Geschichts-Galerie, wenn Paper A dort eine Station bekommt |
 | `docs/PULS.md` | im Eintrag zur Veröffentlichung |

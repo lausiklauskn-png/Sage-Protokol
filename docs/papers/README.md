@@ -8,14 +8,14 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 |---|---|---|
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
-| `paper-a-regeln-und-grundsaetze.html` | Station 9 · Regeln und Grundsätze, Paper A (DE) | `STATIONS_DATA[8]` (status `live`) |
-| `paper-a-rules-and-principles.html` | Station 10 · Rules and Principles, Paper A (EN) | `STATIONS_DATA[9]` (status `live`) |
+| `regeln-und-grundsaetze-in-ki-agentensystemen.html` | Station 9 · Regeln und Grundsätze, Paper A (DE) | `STATIONS_DATA[8]` (status `live`) |
+| `rules-and-principles-in-ai-agent-systems.html` | Station 10 · Rules and Principles, Paper A (EN) | `STATIONS_DATA[9]` (status `live`) |
 
 ## Paper A ist ERZEUGT, nicht von Hand gesetzt (2026-09-03)
 
 Die beiden SBKIM-Papers sind HTML-Dateien, die selbst die Quelle sind. **Paper A
 ist es nicht.** Seine Quelle ist das Markdown
-[`PAPER_A_regeln-und-grundsaetze.md`](PAPER_A_regeln-und-grundsaetze.md); die
+[`regeln-und-grundsaetze-in-ki-agentensystemen.md`](regeln-und-grundsaetze-in-ki-agentensystemen.md); die
 HTML entsteht daraus mit `tools/paper-md-zu-html.mjs`.
 
 Der Grund steht weiter unten in dieser Datei, im Abschnitt über die einzige
@@ -25,9 +25,9 @@ hätten genau diese Lage wiederhergestellt — nur mit Ansage.
 
 | | |
 |---|---|
-| **Quelle DE** | `PAPER_A_regeln-und-grundsaetze.md` — hier wird geändert |
-| **Quelle EN** | `PAPER_A_rules-and-principles.md` — die Übersetzung, folgt der deutschen |
-| **Erzeugnisse** | `paper-a-regeln-und-grundsaetze.html` · `paper-a-rules-and-principles.html` — **nie von Hand ändern** |
+| **Quelle DE** | `regeln-und-grundsaetze-in-ki-agentensystemen.md` — hier wird geändert |
+| **Quelle EN** | `rules-and-principles-in-ai-agent-systems.md` — die Übersetzung, folgt der deutschen |
+| **Erzeugnisse** | `regeln-und-grundsaetze-in-ki-agentensystemen.html` · `rules-and-principles-in-ai-agent-systems.html` — **nie von Hand ändern** |
 | **Stil** | `paper.css`, byte-treu aus `sbkim-paper-de.html` gezogen, plus ein abgegrenzter Zusatz-Block |
 | **Wächter** | `tests/smoke_paper_a.mjs` baut beide neu und vergleicht · `tests/smoke_paper_css.mjs` hält den Stil an der inline-Fassung · `tests/gegenprobe_paper_a.mjs` |
 

@@ -29,8 +29,8 @@ import { fileURLToPath } from 'node:url';
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const P = (r) => resolve(WURZEL, r);
 
-const MD = P('docs/papers/PAPER_A_regeln-und-grundsaetze.md');
-const HTML = P('docs/papers/paper-a-regeln-und-grundsaetze.html');
+const MD = P('docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md');
+const HTML = P('docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html');
 const CSS = P('docs/papers/paper.css');
 
 const sicher = new Map();

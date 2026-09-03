@@ -4,8 +4,8 @@
  *
  * ── DIE ZUSICHERUNG ───────────────────────────────────────────────────────
  *
- * `docs/papers/paper-a-regeln-und-grundsaetze.html` ist ein ERZEUGNIS aus
- * `docs/papers/PAPER_A_regeln-und-grundsaetze.md`. Diese Probe baut die HTML
+ * `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html` ist ein ERZEUGNIS aus
+ * `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md`. Diese Probe baut die HTML
  * neu und vergleicht sie mit der abgelegten. Weichen sie ab, ist eine der
  * beiden von Hand geaendert worden — und dann gibt es den Text zweimal.
  *
@@ -34,8 +34,8 @@ import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const MD = resolve(WURZEL, 'docs/papers/PAPER_A_regeln-und-grundsaetze.md');
-const HTML = resolve(WURZEL, 'docs/papers/paper-a-regeln-und-grundsaetze.html');
+const MD = resolve(WURZEL, 'docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md');
+const HTML = resolve(WURZEL, 'docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html');
 
 let gruen = 0;
 const rot = [];
@@ -79,8 +79,8 @@ const ohneQuellzeile = (s) => s.replace(/^ {5}Die Quelle ist .*$/m, '     Die Qu
 pruefe('Die abgelegte HTML ist der frische Bau aus dem Markdown',
   ohneQuellzeile(neu) === ohneQuellzeile(abgelegt),
   'neu gebaut ' + neu.length + ' Zeichen, abgelegt ' + abgelegt.length +
-  ' — mit `node tools/paper-md-zu-html.mjs docs/papers/PAPER_A_regeln-und-grundsaetze.md ' +
-  '--ziel docs/papers/paper-a-regeln-und-grundsaetze.html` neu bauen');
+  ' — mit `node tools/paper-md-zu-html.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md ' +
+  '--ziel docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html` neu bauen');
 
 /* ---- 2. Aussagen ueber das Dokument ------------------------------------- */
 
@@ -160,8 +160,8 @@ pruefe('Der Verfasser-Abschnitt steht in seinem eigenen Block',
    Es misst nicht, ob richtig uebersetzt wurde. Es misst, ob jemand nach der
    Uebersetzung nur EINE der beiden Fassungen geaendert hat. */
 
-const EN_MD = resolve(WURZEL, 'docs/papers/PAPER_A_rules-and-principles.md');
-const EN_HTML = resolve(WURZEL, 'docs/papers/paper-a-rules-and-principles.html');
+const EN_MD = resolve(WURZEL, 'docs/papers/rules-and-principles-in-ai-agent-systems.md');
+const EN_HTML = resolve(WURZEL, 'docs/papers/rules-and-principles-in-ai-agent-systems.html');
 
 pruefe('Die englische Fassung liegt vor', existsSync(EN_MD) && existsSync(EN_HTML));
 

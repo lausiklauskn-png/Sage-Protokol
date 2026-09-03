@@ -81,7 +81,7 @@ const { quellen: QUELLEN, geprueft, fehlend } = vollstaendigkeit(html, WURZEL);
 const ERWARTET = [
   'docs/papers/ENTSTEHUNG.md',
   'docs/ABGRENZUNG.md',
-  'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
+  'docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md',
   'docs/papers/PLAN_PAPERS.md',
   'docs/werkstatt/README.md',
   'docs/werkstatt/WERKSTATTREGELN.md',
@@ -177,7 +177,7 @@ const rohMarken = [
   ['Tabellen-Trennzeile', /\|\s*-{3,}\s*\|/],
   /* ⚠ HTML-KOMMENTAR IM FLIESSTEXT (2026-09-03).
      Eine Sitzung setzte `<!-- eigene-seite -->` als Druck-Marke in
-     `docs/papers/PAPER_A_regeln-und-grundsaetze.md`. Das Markdown hat mehrere
+     `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md`. Das Markdown hat mehrere
      Leser: hier erschien die Marke ZWEIMAL als sichtbarer Text mitten im
      Dokument — und die drei Muster darueber sahen sie nicht. Sie suchen
      Markdown-Zeichen; ein HTML-Kommentar ist keines.

@@ -79,12 +79,12 @@ const ERWARTUNG = {
     wasFehlt: 'Der Titel loest das Kuerzel SBKIM nicht auf',
     abschnitteMin: 9,
   },
-  'paper-a-rules-and-principles.html': {
+  'rules-and-principles-in-ai-agent-systems.html': {
     titel: /^Rules and Principles$/,
     wasFehlt: 'Der Titel ist nicht \u201eRules and Principles\u201c',
     abschnitteMin: 11,
   },
-  'paper-a-regeln-und-grundsaetze.html': {
+  'regeln-und-grundsaetze-in-ki-agentensystemen.html': {
     titel: /^Regeln und Grunds\u00e4tze$/,
     wasFehlt: 'Der Titel ist nicht „Regeln und Grunds\u00e4tze"',
     /* 1-9 plus Literatur plus Zum Verfasser. Eine Zahl, keine Untergrenze
