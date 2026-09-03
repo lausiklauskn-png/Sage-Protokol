@@ -30,9 +30,39 @@ benannt hatte: das Papier soll seinen DOI tragen, aber den gibt es erst nach
 dem Veröffentlichen. Die Reihenfolge heißt: reservieren → eintragen → PDFs neu
 bauen → hochladen → veröffentlichen.
 
-**Nicht gemessen:** ob `doi.org/10.5281/zenodo.22277738` auflöst. `doi.org` und
-`zenodo.org` sind aus dieser Umgebung gesperrt (403 vom Egress-Proxy). Klaus
-prüft es im Browser.
+### ✅ Von Klaus geprüft: der Link löst auf
+
+`doi.org/10.5281/zenodo.22277738` führt auf den Zenodo-Eintrag. **Diese Sitzung
+konnte es nicht selbst messen** — `doi.org` und `zenodo.org` sind aus der
+Umgebung gesperrt (403 vom Egress-Proxy). Die Gegenprobe kam von Klaus, und
+ohne sie stünde hier eine Behauptung.
+
+### Und es sind ZWEI DOIs
+
+```
+10.5281/zenodo.22277738   diese Fassung, Version 2.0
+10.5281/zenodo.22277737   das Werk, fuehrt immer zur neuesten Fassung
+```
+
+Zenodo legt den zweiten (**Concept-DOI**) automatisch an; er stand auf der
+veröffentlichten Seite, die Klaus geschickt hatte. **Die Zuordnung ist nicht
+Geschmackssache:** ins gedruckte Papier gehört der Versions-DOI — wer dieses PDF
+in der Hand hält, hält Version 2.0. In eine Verlinkung, die stehen bleiben soll,
+gehört der Concept-DOI, sonst zeigt sie nach der nächsten Fassung ins Veraltete.
+
+### Was Klaus am Ende entschieden hat
+
+| | |
+|---|---|
+| **Netz-Identität** | bleibt bei `BgjXhSAp…`. *„Die alte ist wahrscheinlich gelöscht. Und wenn nicht, können wir das immer noch machen. Es stört überhaupt nicht."* Der Punkt ist damit **entschieden, nicht offen** |
+| **Lizenz** | CC BY 4.0 für den Aufsatz, Spezifikation bleibt gemeinfrei |
+| **Alte Zenodo-Entwürfe** | gelöscht |
+
+⚠ **Zur Identität gehört eine Berichtigung meinerseits.** Ich hatte in der
+Übersicht behauptet, der Löschen-Knopf für Entwürfe stehe in der Zenodo-Liste.
+Klaus hat widersprochen — *„Siehst Du den Screenshot? Da gibt es keinen Löschen
+Knopf oder täusch ich mich da?"* — und er hatte recht: dort steht nur „Sicht".
+**Ich hatte über eine Seite gesprochen, die ich nicht sehen kann.**
 
 ---
 

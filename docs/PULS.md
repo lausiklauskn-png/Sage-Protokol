@@ -81,11 +81,42 @@ Linktext ist jetzt die volle Adresse.
 > gemeldet hatte. Die Zusicherung stammt aus Klaus' eigenem Befund und hat
 > **zweimal an einem Tag** gegriffen.
 
-### Was Klaus noch prüfen muss
+### ✅ Von Klaus geprüft, nicht von hier
 
-`doi.org` und `zenodo.org` sind aus der Sitzungs-Umgebung **gesperrt** (403 vom
-Egress-Proxy). Die Auflösung des DOI ist deshalb **nicht von hier gemessen**.
-Klaus prüft sie in seinem Browser; bis dahin gilt sie als unbelegt.
+`doi.org/10.5281/zenodo.22277738` führt auf den Eintrag. **Diese Sitzung konnte
+es nicht messen** — `doi.org` und `zenodo.org` sind aus der Umgebung gesperrt
+(403 vom Egress-Proxy). Die Gegenprobe kam von Klaus.
+
+### Es sind ZWEI DOIs, und sie haben verschiedene Aufgaben
+
+| DOI | bezeichnet | gehört |
+|---|---|---|
+| `…22277738` | **diese Fassung**, Version 2.0 | **ins Papier selbst** |
+| `…22277737` | **das Werk**, alle Fassungen | in jede dauerhafte Verlinkung |
+
+Zenodo legt den zweiten (**Concept-DOI**) automatisch an. Wer das nicht weiß,
+verwendet den falschen. Im gedruckten Papier muss der Versions-DOI stehen — wer
+das PDF in der Hand hält, hält Version 2.0; zeigte der DOI auf „die neueste",
+führte ein Zitat aus 2026 irgendwann auf einen Text, den der Zitierende nie
+gesehen hat.
+
+### 🔴 Die Netz-Identität ist ENTSCHIEDEN, nicht mehr offen
+
+**Sage bleibt bei `BgjXhSAp…`** (Klaus 2026-09-03):
+
+> *„Die alte ist wahrscheinlich gelöscht. Und wenn nicht, können wir das immer
+> noch machen. Es stört überhaupt nicht."*
+
+Damit fällt ein Punkt weg, der seit dem 2026-09-02 als offen geführt wurde. Der
+Weg zurück ist beschrieben, falls er je gebraucht wird: Siegel → „🔑 Eigene
+Identität & Spore" → **Baustein 5, Identitäts-Wechsler**. Steht die alte Kennung
+noch als Fach, genügt ein Klick, und es wird nichts gelöscht.
+
+⚠ **Und eine Berichtigung.** Ich hatte behauptet, der Löschen-Knopf für
+Zenodo-Entwürfe stehe in der Übersichtsliste. Klaus hat widersprochen und hatte
+recht — dort steht nur „Sicht". **Ich hatte über eine Seite gesprochen, die ich
+nicht sehen kann.** Dieselbe Sorte Fehler wie „die Spore im Depot ist die Spore
+im Netz": eine Auskunft über etwas, das man nicht vor sich hat.
 
 ---
 
