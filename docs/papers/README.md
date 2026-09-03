@@ -9,6 +9,57 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
 
+## Die DOIs (Zenodo, 2026-09-03)
+
+**Es sind zwei, und sie haben verschiedene Aufgaben.** Zenodo legt den zweiten
+automatisch an; wer das nicht weiß, verwendet den falschen.
+
+| DOI | Was er bezeichnet | Wofür |
+|---|---|---|
+| [`10.5281/zenodo.22277738`](https://doi.org/10.5281/zenodo.22277738) | **genau diese Fassung**, Version 2.0 vom 03.09.2026 | steht **in den Papers selbst** — ein Dokument bezeichnet sich, nicht seine Nachfolger |
+| [`10.5281/zenodo.22277737`](https://doi.org/10.5281/zenodo.22277737) | **das Werk**, alle Fassungen | überall, wo dauerhaft auf „das SBKIM-Papier" gezeigt wird: führt **immer zur neuesten** |
+
+⚠ **Die Zuordnung ist nicht Geschmackssache.** Im gedruckten Papier muss der
+Versions-DOI stehen: wer dieses PDF in der Hand hält, hält Version 2.0, und der
+DOI darauf muss zu genau ihr führen. Zeigte er auf die neueste, führte ein
+Zitat aus dem Jahr 2026 irgendwann auf einen Text, den der Zitierende nie
+gesehen hat.
+
+Umgekehrt gehört in eine Verlinkung, die stehen bleiben soll — README,
+Geschichts-Galerie, Marktplatz-Eintrag — der **Concept-DOI**. Sonst zeigt sie
+nach der nächsten Fassung auf eine veraltete.
+
+Beide Sprachfassungen liegen unter **einem** DOI, weil sie **ein** Werk sind:
+derselbe Text, zwei Sprachen, in einem Zenodo-Eintrag mit zwei Dateien. Zwei
+getrennte DOIs hätten aus einer Arbeit zwei gemacht, und wer eine davon
+zitiert, hätte die andere nicht mit erfasst.
+
+Eingetragen ist er an **vier** Stellen, und die Liste steht hier, damit die
+nächste Fassung keine davon vergisst:
+
+| Wo | Was |
+|---|---|
+| beide Papers, Zeile unter der Herkunft | `<p class="paper-doi">` |
+| diese Datei | dieser Abschnitt |
+| `index.html`, Station 4 und 5 | im Erzähl-Text der Galerie |
+| `index.html`, Station 8 | im Absatz zur zweiten Fassung |
+
+**In den Papers steht der Versions-DOI**, in Galerie und README beide — mit
+der Rolle dabei, damit niemand den falschen abschreibt.
+
+⚠ **Ein DOI ist unveränderlich.** Was unter dieser Nummer liegt, bleibt dort.
+Die Angaben daneben (Titel, Beschreibung, Schlüsselwörter) lassen sich bei
+Zenodo nachträglich ändern, die **Dateien nicht**. Wer eine neue Fassung
+veröffentlicht, legt bei Zenodo eine neue Version an — sie bekommt einen
+eigenen DOI und bleibt über den Concept-DOI mit dieser verbunden.
+
+**Lizenz: CC BY 4.0** für den Aufsatz. Die darin beschriebene
+Protokoll-Spezifikation ist gemeinfrei, wie im Text an zwei Stellen steht —
+das ist kein Widerspruch, sondern die übliche Trennung zwischen dem Text und
+dem darin beschriebenen Verfahren.
+
+---
+
 ## 🚨 Dieser Ordner ist die EINZIGE Quelle der beiden Papers
 
 **Seit 2026-09-02.** Vorher gab es jedes Paper zweimal: hier und unter
@@ -33,16 +84,27 @@ nicht mehr reparieren, sobald jemand einen davon zitiert hat.** Deshalb:
 > bevor die Dateien zu Zeigern wurden. **Vor dem Zusammenlegen vergleichen.**
 > Sonst wirft das Zusammenlegen etwas weg.
 
-## Die veröffentlichte Fassung ist die ERSTE (Klaus 2026-09-02)
+## Die Fassung vom September ist die ZWEITE (berichtigt 2026-09-03)
 
-**Das Paper vom Mai 2026 ist nie veröffentlicht worden.** Es lag als Entwurf in
-diesem Depot. Was jetzt hinausgeht, ist die Erstveröffentlichung.
+**Die Fassung vom Mai 2026 war öffentlich.** Sie lag seit dem **18. Mai 2026**
+in diesem Depot und stand in der Geschichts-Galerie auf der Startseite als
+**Station 4** mit `status: 'live'` und klickbarem Verweis — also nicht nur
+erreichbar, sondern aktiv angeboten. Über GitHub Pages konnte sie jeder lesen.
 
-⚠ **Daraus folgt eine Regel für den Text selbst.** In den Papers stehen **keine
-Berichtigungs-Vermerke** mehr. Ein Kasten „Berichtigt am 2. September" sagt einem
-Leser, es habe eine frühere öffentliche Aussage gegeben, die falsch war. Es gab
-keine. Der Leser zöge einen Rückschluss auf etwas, das nie stattgefunden hat, und
-lernte nichts über das, was vorgeschlagen wird.
+> ⚠ **Bis zum 2026-09-03 stand hier das Gegenteil:** „Das Paper vom Mai 2026 ist
+> nie veröffentlicht worden. Es lag als Entwurf in diesem Depot." Klaus hat
+> widersprochen, und die Quelltext-Verwaltung gibt ihm recht:
+> `git log --diff-filter=A -- docs/papers/sbkim-paper-en.html` nennt den
+> 18.05.2026, und `git show 9011aad:index.html` zeigt den Eintrag mit `href`.
+> **Eine Datei, die auf einer öffentlichen Seite verlinkt ist, ist
+> veröffentlicht** — ob jemand sie gelesen hat, ist eine andere Frage.
+
+⚠ **Trotzdem stehen in den Papers keine Berichtigungs-Vermerke** (Klaus
+2026-09-03). Die Begründung ist eine andere als vorher, denn die alte trägt
+nicht mehr. Ein Kasten „Berichtigt am 2. September" wendet sich an jemanden, der
+die frühere Fassung **gelesen** hat. Die Fassung vom Mai wurde nirgends
+angekündigt, hatte keinen DOI und keine Leserschaft. Wo die Geschichte
+vollständig steht, sagt der Abschnitt weiter unten.
 
 > Klaus: *„Gestalte es bitte so, dass es gedanklich nachvollziehbar ist und keiner
 > irgendwelche falschen Rückschlüsse zieht. Die Irreführungen sind, die auch nichts
@@ -75,8 +137,20 @@ die Methoden-Grenzen der Literatursuche und § 9 zur Entstehung des Textes.
 **Der Satz, auf den alles hinausläuft:** die Bausteine sind bekannt; der Betrieb
 ist der Beitrag.
 
-**Die Papers tragen als Datum „September 2026 · Erstveröffentlichung".** Kein
-Mai-Datum und keine Fassungsnummer, die eine frühere Ausgabe suggeriert.
+**Die Papers tragen als Datum „September 2026 · Zweite Fassung · Erstfassung
+Mai 2026 im offenen Depot · Zweitveröffentlichung über Zenodo".** Die frühere
+Ausgabe wird damit genannt, statt verschwiegen zu werden — ein Leser, der sie
+im Depot findet, soll nicht rätseln, in welchem Verhältnis sie zu der Fassung
+steht, die er in der Hand hält. Dieselbe Auskunft steht ausformuliert in
+**Abschnitt 9** beider Papers, mit dem Datum des ersten Erscheinens.
+
+> ⚠ **Zwei Sitzungen haben am 2026-09-03 parallel an dieser Zeile gearbeitet.**
+> PR #939 kam zuerst auf `main` und schrieb „Erstveröffentlichung im offenen
+> Depot auf GitHub · Zweitveröffentlichung über Zenodo". Klaus hat die erste
+> Hälfte beanstandet — sie liest sich, als sei die Erstveröffentlichung im
+> September gewesen, während die erste Fassung seit Mai dort lag. Die jetzige
+> Zeile trägt beide Befunde: das Mai-Datum aus dieser Sitzung, die
+> Zenodo-Einordnung aus #939.
 
 > **Kommende Papers:** drei weitere sind geplant, regelbasiertes und
 > grundsatzbasiertes Lenken · wie KI auf den Menschen wirkt · KI-Kompetenz im

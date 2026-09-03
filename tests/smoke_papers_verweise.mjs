@@ -176,11 +176,31 @@ for (const rel of PAPIERE) {
     wahl: m[1].split(",").map(x => x.trim()),
     rumpf: m[2],
   }));
-  const zuGross = [".abstract", "table", ".footnotes"];
+  /* ⚠ „table" IST AUS DIESER LISTE HERAUS (Klaus 2026-09-03, nachmittags).
+
+     Die Zusicherung bleibt dieselbe und ist richtig: ein Block, der groesser
+     als eine halbe Seite ist und nicht brechen darf, reisst beim naechsten
+     Umbruch eine halbe Seite auf. Nur trifft sie auf die Tabellen nicht mehr
+     zu. Als dieser Waechter entstand, waren sie 555 und 550px hoch bei 987px
+     Nutzhoehe. Seitdem sind die Raender enger (15/14 statt 18/16 mm) und die
+     Tabellenschrift kleiner: gemessen am 2026-09-03 sind alle fuenf Tabellen
+     491, 427, 404, 368 und 183px hoch, bei 1.009px Nutzhoehe -- die groesste
+     unter der halben Seite.
+
+     Was den Ausschlag gab, war nicht die Rechnung, sondern Klaus: er hat die
+     zerrissene Tabelle DREIMAL gemeldet. Ein halb leeres Seitenende faellt
+     auf; eine Tabelle, die mitten in den Zahlen abbricht, macht sie
+     unlesbar. Die Entscheidung steht um, die Messung von #939 bleibt richtig.
+
+     ⚠ UND DIE GRENZE DIESES WAECHTERS: er liest NAMEN im Quelltext, keine
+     Groessen. Waechst eine Tabelle wieder ueber die halbe Seite, merkt er es
+     nicht. Dafuer gibt es tools/paper-pdf-pruefen.mjs, das am fertigen PDF
+     misst -- der eine prueft die Absicht, der andere das Ergebnis. */
+  const zuGross = [".abstract", ".footnotes"];
   const festgenagelt = zuGross.filter(k =>
     regeln.some(r => /break-inside\s*:\s*avoid/.test(r.rumpf) && r.wahl.includes(k)));
   ok(festgenagelt.length === 0,
-     rel + ": die grossen Bloecke duerfen umbrechen (Tabelle, Fussnoten, Zusammenfassung)",
+     rel + ": Zusammenfassung und Fussnoten duerfen umbrechen",
      festgenagelt.length ? "steht auf avoid: " + festgenagelt.join(" · ") +
        "\n       Ein Block, der groesser als eine halbe Seite ist und nicht brechen darf,\n" +
        "       reisst beim naechsten Umbruch eine halbe Seite auf." : "");

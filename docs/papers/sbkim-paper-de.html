@@ -36,14 +36,101 @@ body {
 @media(max-width:860px) { .paper { padding:40px 28px; } }
 /* Druck: auf DIN A4 festgelegt (Klaus 2026-09-03).
    Vorher stand hier KEINE @page-Regel - das Format war nirgends bestimmt,
-   und jeder Drucker entschied selbst. Der Rand steht jetzt hier, deshalb
-   faellt das Innenpolster der .paper weg; sonst zaehlt beides doppelt. */
-@page { size:A4; margin:18mm 16mm; }
+   und jeder Drucker entschied selbst. Der Rand steht hier und NUR hier,
+   deshalb faellt das Innenpolster der .paper weg und das Druck-Werkzeug
+   setzt keinen eigenen; sonst zaehlt derselbe Rand zweimal.
+   Auf 15/14 mm verengt (Klaus, am selben Tag: „mit schmaleren Raendern
+   arbeiten") -- 18/16 liessen zuviel Weiss stehen. */
+@page { size:A4; margin:15mm 14mm; }
 
 @media print {
+  /* Das Deckblatt steht fuer sich: Titel, Herkunft, Zusammenfassung. Die
+     Einleitung beginnt oben auf der naechsten Seite, statt sich den Rest von
+     Seite eins mit der Zusammenfassung zu teilen. */
+  .abstract { break-after:page; }
+  /* Auf Papier kann niemand klicken. Im Kopf stehen die Adressen nur als
+     Verweis („Live-Demo Layer 1 →"); gedruckt waere die Adresse damit fuer
+     diesen Leser verloren. Die Regel setzt sie hinter den Verweis -- nur im
+     Druck, damit der Bildschirm aufgeraeumt bleibt.
+     Gefunden hat es Klaus am 2026-09-03 beim Vergleich zweier PDFs: die
+     Fassung vom Vortag hatte die Adressen, das Depot nicht. Sie standen in
+     einer ARBEITSKOPIE, aus der gedruckt wurde -- genau die zweite Fassung,
+     vor der docs/papers/README.md warnt. Deshalb steht die Regel jetzt hier
+     und nicht in einem Druck-Werkzeug. */
+  .paper-links a { display:block; margin:0 0 3px; }
+  .paper-links a::after {
+    content:" " attr(href);
+    font-family:'Source Code Pro',monospace; font-size:.82em;
+    color:#555; word-break:break-all;
+  }
+  /* Sicherheitsnetz: bricht eine Tabelle doch einmal um (weil sie laenger ist
+     als eine Seite), wiederholt sich ihr Kopf. Ohne das stehen auf der zweiten
+     Seite Zahlen ohne Spaltennamen. */
+  thead { display:table-header-group; }
   h2 { break-before:auto; break-after:avoid; }
   h3 { break-after:avoid; }
-  h2 + p, h3 + p { break-before:avoid; }
+  /* Ein Absatz darf ueber zwei Seiten laufen -- aber nur INNERHALB eines
+     Themas (Klaus 2026-09-03). Eine Ueberschrift, hinter der nur noch eine
+     Zeile aufs Blatt passt, hat ihren Abschnitt nicht mehr bei sich:
+     `break-after:avoid` allein genuegt Chromium schon, wenn EINE Zeile
+     folgt. Die vier verlangten Zeilen schieben Ueberschrift und Anfang
+     gemeinsam auf die naechste Seite. */
+  h2 + p, h3 + p { break-before:avoid; orphans:4; }
+
+  /* ZWEI ABSCHNITTE BEKOMMEN JE EINE EIGENE SEITE (Klaus 2026-09-03).
+     Die Schlussfolgerung und die Entstehung des Textes sind das, was ein
+     Leser zuletzt in der Hand hat; sie standen bisher als Rest unten auf
+     Seiten, die von etwas anderem handeln. Die Quellenangaben ruecken
+     dabei mit auf die Seite von Abschnitt 9 und werden kleiner gesetzt,
+     damit beides zusammen aufgeht -- Klaus: „Die Quellenangaben koennten
+     kleiner geschrieben werden, sodass der nachfolgende Punkt alles auf
+     eine Seite passt."
+     Die Klasse steht am <h2>, nicht als :nth-of-type(8): eine Zaehlung
+     verschiebt sich lautlos, sobald jemand einen Abschnitt einfuegt. */
+  .eigene-seite { break-before:page; }
+  /* Zweispaltig und kleiner: so passen die Quellen mit auf die Seite von
+     Abschnitt 9, statt allein eine sechzehnte anzufangen. Gemessen: einspaltig
+     bei 10,4 px liefen 14 Zeilen ueber. */
+  /* ⚠ Die Groesse gehoert an die ABSAETZE, nicht an den Kasten. `.footnotes p`
+     traegt weiter unten im Bildschirm-Stil eine eigene (12,5 px) und erbt
+     deshalb nichts vom Container. Gemessen am 2026-09-03: den Container von
+     10,4 auf 8,8 px zu setzen aenderte an der Seitenzahl NICHTS -- die Regel
+     traf kein einziges sichtbares Zeichen. Eine Regel, deren Fehlen nichts
+     aendert, ist eine Behauptung. */
+  /* DIE QUELLEN STEHEN MIT AUF DER SEITE VON ABSCHNITT 9 (Klaus 2026-09-03):
+     „Beim Punkt neun noch die Quellen darunter packen. Und zwar deshalb
+     kleiner, damit sie auf die Seite mitpassen."
+
+     ⚠ NICHT die Schriftgroesse war das Hindernis, sondern MEIN EIGENER
+     SPALTEN-KASTEN. Ich hatte `column-count` gesetzt, um Platz zu sparen --
+     und damit den Fehler erst gebaut: Chromium schiebt einen mehrspaltigen
+     Kasten als GANZES auf die naechste Seite, sobald er nicht vollstaendig
+     auf die Restseite geht. Vier Anlaeufe mit immer kleinerer Schrift
+     aenderten deshalb an der Seitenzahl nichts, und ich habe daraus
+     geschlossen, es passe nicht. Es passte die ganze Zeit; nur floss es
+     nicht.
+     Einspaltig fliesst der Text wie jeder andere Absatz und fuellt die
+     Restseite. Gemessen bei 1.009 px Nutzhoehe: Abschnitt 9 braucht 681 px,
+     die Quellen bei 9,4 px rund 270. */
+  /* ⚠ `.paper` DAVOR IST NICHT ZIERDE, SONDERN NOTWENDIG. Der Bildschirm-Stil
+     setzt `.footnotes p { font-size:12.5px }` und steht in dieser Datei WEITER
+     UNTEN als der Druck-Block. `@media print` erhoeht die Spezifitaet nicht --
+     bei gleichem Gewicht gewinnt die spaetere Regel, also die fuer den
+     Bildschirm. Zweimal habe ich am 2026-09-03 Werte gedreht, die kein
+     einziges Zeichen trafen: von 10,4 auf 8,8 px aenderte nichts, von 9,4 auf
+     8,4 px aenderte 33 px statt der erwarteten 90.
+     Die Gegenprobe ist jedes Mal dieselbe: eine Zahl, die sich nach der
+     Aenderung NICHT bewegt. */
+  /* Vor den Quellen steht eine Trennlinie, und der Quellen-Block bringt
+     seine eigene Oberkante mit -- im Druck sind das zwei Striche und rund
+     40 px fuer dieselbe Aussage. Der Divider geht weg, die Kante bleibt.
+     Genau diese 40 px waren es, die den Rest der Liste auf eine 16. Seite
+     geschoben haben. */
+  .divider + .footnotes { margin-top:0; }
+  hr.divider:has(+ .footnotes) { display:none; }
+  .paper .footnotes { font-size:9px; margin-top:8px; padding-top:7px; }
+  .paper .footnotes p { font-size:9px; line-height:1.3; margin-bottom:1px;
+                        break-inside:avoid; }
 
   /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
      Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
@@ -54,28 +141,44 @@ body {
      drei Stellen, zusammen 1,4 leere Seiten. */
   .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
 
-  /* WAS UMBRECHEN DARF - aber nie mitten in einer Zeile oder Fussnote. */
-  .abstract, table, tbody, .footnotes { break-inside:auto; }
+  /* ⚠ TABELLEN BLEIBEN GANZ (Klaus 2026-09-03, zum zweiten Mal gemeldet:
+     „Tabelle zum Beispiel [falsch] umgebrochen").
+     #939 hatte sie am selben Tag auf `auto` gesetzt, und mit gutem Grund:
+     bei 987 px Nutzhoehe und Tabellen von 555 px blieben sonst 1,4 Seiten
+     leer. Seitdem sind die Raender enger (15/14 statt 18/16 mm) und die
+     Tabellenschrift kleiner (12,6 px, Innenabstand 6/10 px) -- die groesste
+     Tabelle misst jetzt rund 330 statt 555 px. Was damals ein schlechter
+     Tausch war, ist es heute nicht mehr; deshalb steht die Entscheidung
+     um, nicht die Messung.
+     Zusammenfassung und Fussnoten duerfen weiter fliessen: die eine ist
+     Text, die andere eine Liste, und beide liest niemand als Block. */
+  .abstract, .footnotes { break-inside:auto; }
+  table { break-inside:avoid; }
   tr, .footnotes p, .dim-card { break-inside:avoid; }
-  thead { display:table-header-group; }   /* Kopfzeile wiederholt sich */
 
-  p { orphans:3; widows:3; }
+  p, li { orphans:3; widows:3; }
 
-  body { background:#fff; }
-  .paper { box-shadow:none; padding:0; }
+  /* ── SCHRIFTGROESSEN: EINE ECHTE HIERARCHIE (Klaus 2026-09-03) ───────
+     „mit Schriftgroessen variieren" -- und er hat einen echten Fehler
+     getroffen: h2, die Hauptueberschrift, war mit 15 px KLEINER als der
+     Fliesstext mit 15,5. Eine Gliederung, die man an der Groesse nicht
+     erkennt, ist keine. Gedruckt wird enger als am Bildschirm, damit die
+     Seiten gleichmaessig voll werden statt halb leer. */
+  body { background:#fff; font-size:14.2px; }
+  p { font-size:14.2px; line-height:1.6; margin-bottom:10px; }
+  h2 { font-size:16.5px; margin:24px 0 8px; letter-spacing:.6px; }
+  h3 { font-size:14.8px; margin:15px 0 5px; }
+  .abstract p { font-size:13.6px; line-height:1.6; }
+  .abstract { padding:12px 18px; }
+  table { font-size:12.6px; margin:12px 0; }
+  th, td { padding:6px 10px; }
+  .protocol-box { font-size:11.6px; line-height:1.55; padding:12px 16px; margin:12px 0; }
+  .divider { margin:18px 0; }
+  .paper-title { font-size:23px; margin-bottom:12px; }
+  .paper { box-shadow:none; padding:0; max-width:none; }
   .no-print { display:none; }
   a { color:inherit; }
 
-  /* AUF PAPIER FUEHRT EIN VERWEIS ZU NICHTS. Die Kopfzeilen-Verweise
-     standen als blosse Beschriftung da ("Live-Demo Layer 1"), ohne dass
-     irgendwo die Adresse zu lesen war. Im Druck steht sie jetzt dabei,
-     eine je Zeile. Im Bildschirm-Stil bleibt es ein Verweis. */
-  .paper-links a { display:block; margin:0 0 3px; }
-  .paper-links a::after {
-    content:" " attr(href);
-    font-family:'Source Code Pro',monospace; font-size:10.5px; color:#555;
-    word-break:break-all;
-  }
 }
 
 .paper-title {
@@ -84,6 +187,8 @@ body {
 }
 .paper-authors { font-family:'Inter',sans-serif; font-size:14px; color:var(--t2); margin-bottom:4px; }
 .paper-date { font-family:'Inter',sans-serif; font-size:13px; color:var(--t3); margin-bottom:6px; }
+.paper-doi { font-family:'Inter',sans-serif; font-size:13px; margin-bottom:6px; }
+.paper-doi a { color:var(--accent); text-decoration:none; }
 .paper-links { font-family:'Inter',sans-serif; font-size:12.5px; margin-bottom:32px; }
 .paper-links a { color:var(--accent); text-decoration:none; margin-right:16px; }
 .paper-links a:hover { text-decoration:underline; }
@@ -159,8 +264,13 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     KI-Matching in Menschen- und Agentennetzwerken
   </h1>
   <p class="paper-authors">Unabhängige Forschung · Offener Protokoll-Vorschlag</p>
-  <p class="paper-date">September 2026 · Erstveröffentlichung im offenen Depot auf GitHub ·
-    Zweitveröffentlichung über Zenodo</p>
+  <p class="paper-date">September 2026 · Zweite Fassung · Erstfassung Mai 2026 im offenen
+    Depot · Zweitveröffentlichung über Zenodo</p>
+  <!-- Der DOI steht in einer EIGENEN Zeile unter der Herkunft, nicht in ihr:
+       er ist die zitierfaehige Adresse dieses Dokuments und wird abgeschrieben,
+       nicht ueberflogen. Als Verweis UND als lesbarer Text -- auf Papier kann
+       niemand klicken (Klaus' Befund vom 2026-09-03 frueh). -->
+  <p class="paper-doi">DOI: <a href="https://doi.org/10.5281/zenodo.22277738">doi.org/10.5281/zenodo.22277738</a></p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Referenz-Implementierung →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live-Demo Layer 1 →</a>
@@ -825,7 +935,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <code>robots.txt</code> oder OpenAPI-Schemata. Dies ist noch nicht standardisiert.
   </p>
 
-  <h2>8. Schlussfolgerung</h2>
+  <h2 class="eigene-seite">8. Schlussfolgerung</h2>
 
   <p>
     SBKIM ist ein minimales, offenes Protokoll zur semantischen bidirektionalen
@@ -864,7 +974,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     gemeinfrei (Public Domain) freigegeben.
   </p>
 
-  <h2>9. Zur Entstehung dieses Textes</h2>
+  <h2 class="eigene-seite">9. Zur Entstehung dieses Textes</h2>
 
   <p>
     Dieser Text ist mit Hilfe eines Sprachmodells entstanden.
@@ -905,7 +1015,9 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <strong>Wo dieser Text zuerst stand.</strong> Das Depot war während der
     gesamten Entstehung öffentlich zugänglich; die Fassungen dieses Textes sind
     dort mit Datum und Änderungsverlauf nachzulesen. Die
-    <em class="key">Erstveröffentlichung</em> ist damit das offene Depot selbst.
+    <em class="key">Erstveröffentlichung</em> ist damit das offene Depot selbst:
+    die erste Fassung dieses Textes liegt dort seit dem <strong>18. Mai 2026</strong>
+    und war von der Startseite aus verlinkt.
     Die Fassung bei Zenodo ist eine <em class="key">Zweitveröffentlichung</em> —
     sie gibt dem Text eine zitierfähige Adresse und eine feste Fassung, sie ist
     nicht sein erstes Erscheinen.
@@ -933,6 +1045,22 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
 
 </div>
 
+<!-- DER DRUCK-KNOPF (Klaus 2026-09-03).
+
+     „Wenn auf PDF Drucken gegangen wird, sollte dieselbe PDF entstehen."
+     Gemessen: sie entsteht. Der Seitenumbruch haengt allein an der
+     @page-Regel dieses Dokuments. Drei Druckwege geprueft (Werkzeug mit
+     Rand 0, Browser-Standard, ohne Hintergrundfarben) -- alle drei liefern
+     dieselben 15 Seiten, Abschnitt 8 auf Seite 14, Abschnitt 9 mit den
+     Quellen auf Seite 15, Zeile fuer Zeile gleich.
+
+     ⚠ Was der Druckdialog trotzdem aendert, gehoert nicht dem Dokument:
+     Kopf- und Fusszeile des Browsers, Hintergrundfarben, Randvorgabe. Hier
+     stand dazu eine Weile ein Hinweiskasten („Damit es aussieht wie hier:
+     Raender auf Standard, Hintergrundgrafiken an, Kopf- und Fusszeilen
+     aus"). Klaus wollte ihn wieder heraus -- ein Papier traegt keine
+     Bedienungsanleitung fuer den Browser des Lesers. Die drei Einstellungen
+     bleiben trotzdem wahr; sie stehen jetzt hier statt auf dem Schirm. -->
 <button class="no-print" onclick="window.print()"
   style="position:fixed;bottom:24px;right:24px;background:#3730a3;color:#fff;border:none;
          padding:10px 20px;border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;
