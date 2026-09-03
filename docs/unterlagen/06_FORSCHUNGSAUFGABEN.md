@@ -64,7 +64,7 @@ die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
 |---|---|---|---|---|---|
 | **1** | Blatt „Stand der Technik und Abgrenzung" | alle drei | **Ergebnis liegt vor** | `docs/ABGRENZUNG.md`, 95 Zeilen | 2026-08-26 |
 | **2** | Paper A · Regeln und Grundsätze | 2 | **Ergebnis liegt vor** | `docs/papers/PAPER_A_regeln-und-grundsaetze.md`, 1.843 Zeilen | 2026-08-23 |
-| **3** | Die zwei vorhandenen Papers auf Zenodo | alle drei | nicht als Datei sichtbar | `docs/papers/sbkim-paper-de.html` · `docs/papers/sbkim-paper-en.html`, 1.130 Zeilen | 2026-05-18 |
+| **3** | Die zwei vorhandenen Papers auf Zenodo | alle drei | **Ergebnis liegt vor** | veröffentlicht am 2026-09-03 als [10.5281/zenodo.22277738](https://doi.org/10.5281/zenodo.22277738), Concept-DOI [10.5281/zenodo.22277737](https://doi.org/10.5281/zenodo.22277737); Quelle `docs/papers/sbkim-paper-de.html` · `docs/papers/sbkim-paper-en.html` | 2026-05-18 |
 | **4** | Englische Projektseite, eine Seite | alle drei | **Ergebnis fehlt** | noch keiner | ohne |
 | **5** | Paper C · KI-Kompetenz im täglichen Gebrauch | 3 | **Ergebnis fehlt** | noch keiner | ohne |
 | **6** | Paper B · Wie KI auf den Menschen wirkt | 3 | **Ergebnis fehlt** | noch keiner | ohne |

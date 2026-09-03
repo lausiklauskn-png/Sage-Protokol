@@ -127,7 +127,11 @@ Richtung. Agent Cards nennen, was einer **kann**, und schweigen darüber, was er
 
 **Was daraus folgt, steht in den Papers und nicht hier:** der Neuheits-Anspruch
 ist zurückgenommen, die Vorarbeiten sind benannt, und der Beitrag heißt jetzt
-Feldbericht. Siehe `papers/sbkim-paper-de.html` § 2.1 und § 8.
+Feldbericht. Siehe `papers/sbkim-paper-de.html` § 2.1 und § 8. Seit dem
+2026-09-03 ist das Papier zitierfähig veröffentlicht:
+[10.5281/zenodo.22277738](https://doi.org/10.5281/zenodo.22277738) bezeichnet
+diese Fassung, [10.5281/zenodo.22277737](https://doi.org/10.5281/zenodo.22277737)
+das Werk über alle Fassungen hinweg.
 
 **Und die Grenzen dieser Suche, damit sie nicht mehr wiegt, als sie kann:**
 drei Suchen, keine systematische Übersicht. Geprüft wurde an Titeln und

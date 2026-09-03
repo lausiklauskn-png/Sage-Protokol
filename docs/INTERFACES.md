@@ -1179,7 +1179,8 @@ Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweite
 
 Spec-Sitzung M04-Erweiterung (Brief 03 der V1-Sammelspec-Kaskade,
 2026-05-19) führt die drei orthogonalen Schichten aus dem
-ursprünglichen SBKIM-Paper (`docs/papers/sbkim-paper-en.html` § 3.3
+ursprünglichen SBKIM-Paper (veröffentlicht als 10.5281/zenodo.22277738,
+`docs/papers/sbkim-paper-en.html` § 3.3
 „The Three Dimensions" / `docs/papers/sbkim-paper-de.html` § 3.3) in
 die Mycel-Form ein. Die Schichten sind **orthogonal** — ein hoher
 Score in einer Dimension impliziert keinen hohen Score in einer
@@ -5950,7 +5951,7 @@ Container-Logik liegt in Vision-Anker 5 (Identitäts-Container,
 PULS § Vision-Anker, eigene Spec-Sitzung).
 
 Bezugs-Dokumente: PULS § Vision-Anker 9 § Match-Pipeline § Stufe B;
-`docs/papers/sbkim-paper-en.html` § 3.4 „Protocol Properties" („Stateless"
+`docs/papers/sbkim-paper-en.html` (veröffentlicht als 10.5281/zenodo.22277738) § 3.4 „Protocol Properties" („Stateless"
 + „Evaluator agnosticism"); § 6.2 Plattform-Matrix Spalte „Stufe B".
 
 ### 7.1 Hybrid-Match-Richter-Ergänzung (Bau 04.D, 2026-06-20)

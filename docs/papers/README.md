@@ -60,6 +60,45 @@ dem darin beschriebenen Verfahren.
 
 ---
 
+## Der Prioritätsnachweis — die alten Fassungen sind Beleg, nicht Ballast
+
+**Klaus 2026-09-03:** *„die alten Fassungen, Vorgängerversionen der Papers sind
+der Nachweis, dass ich schon früher die Idee für SBKIM hatte."*
+
+Er hat recht, und der Nachweis ist stärker, als er selbst gesagt hat. Die
+Quelltext-Verwaltung setzt Zeitstempel, die niemand nachträglich vergeben kann:
+
+| Datum | Was | Dauerhafter Verweis |
+|---|---|---|
+| **10.05.2026** | SBKIM zum ersten Mal genannt: *„Skelett anlegen: Memory- und Spezifikationsschicht für SBKIM-Hub"* | [`d7352fb`](https://github.com/lausiklauskn-png/Sage-Protokol/commit/d7352fb27a6bc30c30d92ed08c411fa3b348aa70) |
+| **18.05.2026** | erste Fassung des deutschen Papiers | [Datei ansehen](https://github.com/lausiklauskn-png/Sage-Protokol/blob/631d10fb966c0fcf8235fdb80145e29b69c18412/docs/papers/sbkim-paper-de.html) |
+| **18.05.2026** | erste Fassung des englischen Papiers | [Datei ansehen](https://github.com/lausiklauskn-png/Sage-Protokol/blob/76b0e835489aee4d6824ff00e4d31e2fb8699466/docs/papers/sbkim-paper-en.html) |
+| **03.09.2026** | DOI, zweite Fassung | [10.5281/zenodo.22277738](https://doi.org/10.5281/zenodo.22277738) |
+
+**Das sind knapp vier Monate zwischen der ersten Niederschrift und der
+Veröffentlichung**, jeder Schritt dazwischen protokolliert.
+
+⚠ **Diese Verweise sind Permalinks auf einen Commit, nicht auf einen Zweig.**
+Sie zeigen die Datei so, wie sie an dem Tag aussah, und ändern sich nie mit.
+Ein Verweis auf `main` zeigte dagegen immer die neueste Fassung — als Beleg
+für ein Datum wäre er wertlos.
+
+### Was daraus folgt
+
+**Die alten Fassungen werden nicht gelöscht und nicht überschrieben.** Sie
+liegen in der Historie und sind über die Verweise oben erreichbar. Wer den Text
+von damals lesen will, kann es; wer das Datum prüfen will, sieht es am Commit.
+
+Das ist auch die Antwort auf die Frage, warum die Papers keine
+Berichtigungs-Vermerke tragen: **die Geschichte steht nicht im Text, sie steht
+in der Historie** — und dort vollständig, statt als Kasten mitten im Papier.
+
+Es ist zugleich der Schutz, den die Verfassung meint mit
+*„Schutz ist Copyright + Git-Historie"*: kein Wasserzeichen, keine Obfuskation,
+sondern eine lückenlose, öffentliche, datierte Spur.
+
+---
+
 ## 🚨 Dieser Ordner ist die EINZIGE Quelle der beiden Papers
 
 **Seit 2026-09-02.** Vorher gab es jedes Paper zweimal: hier und unter
