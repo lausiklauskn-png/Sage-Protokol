@@ -38,6 +38,15 @@ body {
 @media(max-width:860px) {
   .paper { padding:40px 28px; }
 }
+/* Druck: auf DIN A4 festgelegt (Klaus 2026-09-03).
+   Vorher stand hier KEINE @page-Regel - das Format war nirgends bestimmt,
+   und jeder Drucker entschied selbst. Der Rand steht hier und NUR hier,
+   deshalb faellt das Innenpolster der .paper weg und das Druck-Werkzeug
+   setzt keinen eigenen; sonst zaehlt derselbe Rand zweimal.
+   Auf 15/14 mm verengt (Klaus, am selben Tag: „mit schmaleren Raendern
+   arbeiten") -- 18/16 liessen zuviel Weiss stehen. */
+@page { size:A4; margin:15mm 14mm; }
+
 @media print {
   /* Das Deckblatt steht fuer sich: Titel, Herkunft, Zusammenfassung. Die
      Einleitung beginnt oben auf der naechsten Seite, statt sich den Rest von
@@ -71,20 +80,21 @@ body {
      folgt. Die vier verlangten Zeilen schieben Ueberschrift und Anfang
      gemeinsam auf die naechste Seite. */
   h2 + p, h3 + p { break-before:avoid; orphans:4; }
-  .protocol-box, .dim-grid, .dim-card, .abstract,
-  .layer-diagram, table, .footnotes { break-inside:avoid; }
-  tr { break-inside:avoid; }
-  /* Keine Zeile bleibt allein am Seitenrand zurueck. */
-  p, li { orphans:3; widows:3; }
 
-  /* ── DER RAND STEHT HIER, NICHT IM DRUCK-WERKZEUG ────────────────────
-     Vorher setzte tools/paper-zu-pdf.mjs 18 mm und .paper zusaetzlich
-     40 px Innenabstand -- zwei Raender uebereinander, an zwei Stellen
-     entschieden. Jetzt sagt das Dokument, wie breit sein Rand ist, und
-     das Werkzeug druckt ohne eigenen. Zwei Fassungen derselben
-     Entscheidung laufen sonst auseinander. */
-  @page { size:A4; margin:15mm 14mm; }
-  .paper { box-shadow:none; padding:0; max-width:none; }
+  /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
+     Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
+     dieser Liste. Gemessen am 2026-09-03: die beiden groessten Tabellen
+     sind 555 und 550px hoch, die Fussnoten 503, die Zusammenfassung 450
+     - bei 987px Nutzhoehe je Seite. Passte so ein Block nicht mehr, sprang
+     er ganz auf die naechste Seite und liess den Rest leer: 1.377px an
+     drei Stellen, zusammen 1,4 leere Seiten. */
+  .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
+
+  /* WAS UMBRECHEN DARF - aber nie mitten in einer Zeile oder Fussnote. */
+  .abstract, table, tbody, .footnotes { break-inside:auto; }
+  tr, .footnotes p, .dim-card { break-inside:avoid; }
+
+  p, li { orphans:3; widows:3; }
 
   /* ── SCHRIFTGROESSEN: EINE ECHTE HIERARCHIE (Klaus 2026-09-03) ───────
      „mit Schriftgroessen variieren" -- und er hat einen echten Fehler
@@ -97,15 +107,17 @@ body {
   h2 { font-size:16.5px; margin:24px 0 8px; letter-spacing:.6px; }
   h3 { font-size:14.8px; margin:15px 0 5px; }
   .abstract p { font-size:13.6px; line-height:1.6; }
-  .abstract { margin-bottom:0; padding:12px 18px; }
+  .abstract { padding:12px 18px; }
   table { font-size:12.6px; margin:12px 0; }
   th, td { padding:6px 10px; }
   .protocol-box { font-size:11.6px; line-height:1.55; padding:12px 16px; margin:12px 0; }
   .footnotes { font-size:12px; }
   .divider { margin:18px 0; }
   .paper-title { font-size:23px; margin-bottom:12px; }
+  .paper { box-shadow:none; padding:0; max-width:none; }
   .no-print { display:none; }
   a { color:inherit; }
+
 }
 
 /* HEADER */
@@ -320,7 +332,8 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     AI Matching in Human and Agent Networks
   </h1>
   <p class="paper-authors">Independent Research · Open Protocol Proposal</p>
-  <p class="paper-date">September 2026 · Second version · First version May 2026 in the open repository</p>
+  <p class="paper-date">September 2026 · Second version · first version May 2026 in the open
+    repository · second publication via Zenodo</p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Reference Implementation →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live Demo Layer 1 →</a>
@@ -1035,6 +1048,18 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     <strong>Where the evidence sits.</strong> The protocol repository from section 6
     holds the session records, the lessons drawn from mistakes, and the worksheets
     on days worked. The history is public and dated.
+  </p>
+
+  <p>
+    <strong>Where this text first appeared.</strong> The repository was publicly
+    accessible throughout the writing; every version of this text can be read
+    there with its date and change history. The
+    <em class="key">first publication</em> is therefore the open repository
+    itself: the first version of this text has been there since
+    <strong>18 May 2026</strong> and was linked from the front page.
+    The version on Zenodo is a <em class="key">secondary
+    publication</em> — it gives the text a citable address and a fixed version;
+    it is not its first appearance.
   </p>
 
   <hr class="divider">

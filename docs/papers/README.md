@@ -87,10 +87,19 @@ die Methoden-Grenzen der Literatursuche und § 9 zur Entstehung des Textes.
 ist der Beitrag.
 
 **Die Papers tragen als Datum „September 2026 · Zweite Fassung · Erstfassung
-Mai 2026 im offenen Depot".** Die frühere Ausgabe wird damit genannt, statt
-verschwiegen zu werden — ein Leser, der sie im Depot findet, soll nicht
-rätseln, in welchem Verhältnis sie zu der Fassung steht, die er in der Hand
-hält.
+Mai 2026 im offenen Depot · Zweitveröffentlichung über Zenodo".** Die frühere
+Ausgabe wird damit genannt, statt verschwiegen zu werden — ein Leser, der sie
+im Depot findet, soll nicht rätseln, in welchem Verhältnis sie zu der Fassung
+steht, die er in der Hand hält. Dieselbe Auskunft steht ausformuliert in
+**Abschnitt 9** beider Papers, mit dem Datum des ersten Erscheinens.
+
+> ⚠ **Zwei Sitzungen haben am 2026-09-03 parallel an dieser Zeile gearbeitet.**
+> PR #939 kam zuerst auf `main` und schrieb „Erstveröffentlichung im offenen
+> Depot auf GitHub · Zweitveröffentlichung über Zenodo". Klaus hat die erste
+> Hälfte beanstandet — sie liest sich, als sei die Erstveröffentlichung im
+> September gewesen, während die erste Fassung seit Mai dort lag. Die jetzige
+> Zeile trägt beide Befunde: das Mai-Datum aus dieser Sitzung, die
+> Zenodo-Einordnung aus #939.
 
 > **Kommende Papers:** drei weitere sind geplant, regelbasiertes und
 > grundsatzbasiertes Lenken · wie KI auf den Menschen wirkt · KI-Kompetenz im

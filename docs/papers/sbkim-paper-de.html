@@ -34,6 +34,15 @@ body {
   box-shadow:0 1px 24px rgba(0,0,0,.07);
 }
 @media(max-width:860px) { .paper { padding:40px 28px; } }
+/* Druck: auf DIN A4 festgelegt (Klaus 2026-09-03).
+   Vorher stand hier KEINE @page-Regel - das Format war nirgends bestimmt,
+   und jeder Drucker entschied selbst. Der Rand steht hier und NUR hier,
+   deshalb faellt das Innenpolster der .paper weg und das Druck-Werkzeug
+   setzt keinen eigenen; sonst zaehlt derselbe Rand zweimal.
+   Auf 15/14 mm verengt (Klaus, am selben Tag: „mit schmaleren Raendern
+   arbeiten") -- 18/16 liessen zuviel Weiss stehen. */
+@page { size:A4; margin:15mm 14mm; }
+
 @media print {
   /* Das Deckblatt steht fuer sich: Titel, Herkunft, Zusammenfassung. Die
      Einleitung beginnt oben auf der naechsten Seite, statt sich den Rest von
@@ -67,20 +76,21 @@ body {
      folgt. Die vier verlangten Zeilen schieben Ueberschrift und Anfang
      gemeinsam auf die naechste Seite. */
   h2 + p, h3 + p { break-before:avoid; orphans:4; }
-  .protocol-box, .dim-grid, .dim-card, .abstract,
-  .layer-diagram, table, .footnotes { break-inside:avoid; }
-  tr { break-inside:avoid; }
-  /* Keine Zeile bleibt allein am Seitenrand zurueck. */
-  p, li { orphans:3; widows:3; }
 
-  /* ── DER RAND STEHT HIER, NICHT IM DRUCK-WERKZEUG ────────────────────
-     Vorher setzte tools/paper-zu-pdf.mjs 18 mm und .paper zusaetzlich
-     40 px Innenabstand -- zwei Raender uebereinander, an zwei Stellen
-     entschieden. Jetzt sagt das Dokument, wie breit sein Rand ist, und
-     das Werkzeug druckt ohne eigenen. Zwei Fassungen derselben
-     Entscheidung laufen sonst auseinander. */
-  @page { size:A4; margin:15mm 14mm; }
-  .paper { box-shadow:none; padding:0; max-width:none; }
+  /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
+     Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
+     dieser Liste. Gemessen am 2026-09-03: die beiden groessten Tabellen
+     sind 555 und 550px hoch, die Fussnoten 503, die Zusammenfassung 450
+     - bei 987px Nutzhoehe je Seite. Passte so ein Block nicht mehr, sprang
+     er ganz auf die naechste Seite und liess den Rest leer: 1.377px an
+     drei Stellen, zusammen 1,4 leere Seiten. */
+  .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
+
+  /* WAS UMBRECHEN DARF - aber nie mitten in einer Zeile oder Fussnote. */
+  .abstract, table, tbody, .footnotes { break-inside:auto; }
+  tr, .footnotes p, .dim-card { break-inside:avoid; }
+
+  p, li { orphans:3; widows:3; }
 
   /* ── SCHRIFTGROESSEN: EINE ECHTE HIERARCHIE (Klaus 2026-09-03) ───────
      „mit Schriftgroessen variieren" -- und er hat einen echten Fehler
@@ -93,15 +103,17 @@ body {
   h2 { font-size:16.5px; margin:24px 0 8px; letter-spacing:.6px; }
   h3 { font-size:14.8px; margin:15px 0 5px; }
   .abstract p { font-size:13.6px; line-height:1.6; }
-  .abstract { margin-bottom:0; padding:12px 18px; }
+  .abstract { padding:12px 18px; }
   table { font-size:12.6px; margin:12px 0; }
   th, td { padding:6px 10px; }
   .protocol-box { font-size:11.6px; line-height:1.55; padding:12px 16px; margin:12px 0; }
   .footnotes { font-size:12px; }
   .divider { margin:18px 0; }
   .paper-title { font-size:23px; margin-bottom:12px; }
+  .paper { box-shadow:none; padding:0; max-width:none; }
   .no-print { display:none; }
   a { color:inherit; }
+
 }
 
 .paper-title {
@@ -185,7 +197,8 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     KI-Matching in Menschen- und Agentennetzwerken
   </h1>
   <p class="paper-authors">Unabhängige Forschung · Offener Protokoll-Vorschlag</p>
-  <p class="paper-date">September 2026 · Zweite Fassung · Erstfassung Mai 2026 im offenen Depot</p>
+  <p class="paper-date">September 2026 · Zweite Fassung · Erstfassung Mai 2026 im offenen
+    Depot · Zweitveröffentlichung über Zenodo</p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Referenz-Implementierung →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live-Demo Layer 1 →</a>
@@ -924,6 +937,18 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <strong>Wo die Belege liegen.</strong> Das Protokoll-Depot aus Abschnitt 6
     trägt die Sitzungsprotokolle, die Lehren aus Fehlern und die Prüfblätter zu
     den Arbeitstagen. Die Historie ist öffentlich und mit Datum versehen.
+  </p>
+
+  <p>
+    <strong>Wo dieser Text zuerst stand.</strong> Das Depot war während der
+    gesamten Entstehung öffentlich zugänglich; die Fassungen dieses Textes sind
+    dort mit Datum und Änderungsverlauf nachzulesen. Die
+    <em class="key">Erstveröffentlichung</em> ist damit das offene Depot selbst:
+    die erste Fassung dieses Textes liegt dort seit dem <strong>18. Mai 2026</strong>
+    und war von der Startseite aus verlinkt.
+    Die Fassung bei Zenodo ist eine <em class="key">Zweitveröffentlichung</em> —
+    sie gibt dem Text eine zitierfähige Adresse und eine feste Fassung, sie ist
+    nicht sein erstes Erscheinen.
   </p>
 
   <hr class="divider">

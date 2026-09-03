@@ -147,6 +147,47 @@ for (const rel of PAPIERE) {
      glatt(titelTag) === glatt(h1)
        ? ""
        : "Kopf:        " + glatt(titelTag) + "\n       Überschrift: " + glatt(h1));
+  /* DAS PAPIERFORMAT IST FESTGELEGT (Befund 2026-09-03, Klaus am Tablet).
+
+     Vorher stand im Druck-Stil KEINE @page-Regel: das Format war nirgends
+     bestimmt, und jeder Drucker entschied selbst. Dazu standen vier zu grosse
+     Bloecke auf "break-inside:avoid" - zwei Tabellen mit 555 und 550px, die
+     Fussnoten mit 503, die Zusammenfassung mit 450, bei 987px Nutzhoehe je
+     Seite. Passte einer nicht mehr, sprang er ganz auf die naechste Seite:
+     gemessen 1.377px an drei Stellen, zusammen 1,4 leere Seiten. Klaus sah
+     eine davon auf Seite 1 und schrieb "mehrfach".
+
+     Bewacht werden drei Zusicherungen, nicht der Wortlaut der Regeln. */
+  ok(/@page\s*\{[^}]*size\s*:\s*A4/i.test(roh),
+     rel + ": das Papierformat ist auf A4 festgelegt (@page size:A4)");
+
+  const druck = (roh.match(/@media\s+print\s*\{([\s\S]*?)\n\}/) || [, ""])[1];
+  /* Die Auswahl wird ZERLEGT, nicht durchsucht. Die erste Fassung suchte
+     ".footnotes" als Zeichenkette und fand es in ".footnotes p" - dem ABSATZ
+     in den Fussnoten, der zu Recht zusammenbleibt. Ein blinder Wolf: er
+     meldete einen Fehler, den es nicht gab. */
+  /* Kommentare ZUERST weg. Ohne das klebt der Kommentar vor einer Regel am
+     ERSTEN Auswahl-Eintrag: aus "table" wird "/* ... *\/ table", und die
+     Pruefung sieht ihn nicht. Genau so ist eine Gegenprobe durchgerutscht -
+     der vierte Fall, und er war der einzige, bei dem der zu grosse Block
+     vorne in der Liste stand. */
+  const ohneKommentar = druck.replace(/\/\*[\s\S]*?\*\//g, " ");
+  const regeln = [...ohneKommentar.matchAll(/([^{}]+)\{([^}]*)\}/g)].map(m => ({
+    wahl: m[1].split(",").map(x => x.trim()),
+    rumpf: m[2],
+  }));
+  const zuGross = [".abstract", "table", ".footnotes"];
+  const festgenagelt = zuGross.filter(k =>
+    regeln.some(r => /break-inside\s*:\s*avoid/.test(r.rumpf) && r.wahl.includes(k)));
+  ok(festgenagelt.length === 0,
+     rel + ": die grossen Bloecke duerfen umbrechen (Tabelle, Fussnoten, Zusammenfassung)",
+     festgenagelt.length ? "steht auf avoid: " + festgenagelt.join(" · ") +
+       "\n       Ein Block, der groesser als eine halbe Seite ist und nicht brechen darf,\n" +
+       "       reisst beim naechsten Umbruch eine halbe Seite auf." : "");
+
+  ok(/\.paper-links\s+a::after[\s\S]{0,120}attr\(href\)/.test(druck),
+     rel + ": im Druck steht die Adresse bei jedem Kopf-Verweis dabei",
+     "Auf Papier kann niemand klicken - eine Beschriftung ohne Adresse fuehrt zu nichts.");
 }
 
 console.log(`\nPapier-Verweise: ${pass} bestanden, ${fail} fehlgeschlagen.`);
