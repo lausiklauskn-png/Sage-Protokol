@@ -633,7 +633,8 @@ Main-Channel abonniert hat (Receiver-PWA-Tab geschlossen), kommt keine
 Reply → Sender-Timeout nach 4 s → `HandshakeTimeoutError` (Log-Zeile
 „timeout-channel"). Kein Wake-Lock, kein Auto-Start, kein Browser-
 Notification-Pfad — konsistent zur SW-Pfad-Linie „503, wenn keine Page
-aktiv" und zum Empfangsmodus-Prinzip aus dem SBKIM-Paper.
+aktiv" und zum Empfangsmodus-Prinzip aus dem SBKIM-Paper
+(veröffentlicht als 10.5281/zenodo.22277738).
 
 ### Auto-Fallback-Logik (transport: "auto")
 

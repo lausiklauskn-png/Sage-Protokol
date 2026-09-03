@@ -213,7 +213,7 @@ sichtbar gemacht. Wer den Wert ändern möchte, ändert ihn in §0 — Modul
 
 Spec-Sitzung M04-Erweiterung (Brief 03 der V1-Sammelspec-Kaskade,
 2026-05-19) führt die drei orthogonalen Schichten aus dem ursprünglichen
-SBKIM-Paper (`docs/papers/sbkim-paper-en.html` § 3.3 „The Three
+SBKIM-Paper (veröffentlicht als 10.5281/zenodo.22277738, `docs/papers/sbkim-paper-en.html` § 3.3 „The Three
 Dimensions" / `docs/papers/sbkim-paper-de.html` § 3.3) in die
 Mycel-Form ein. Diese Schicht steht **orthogonal zur Stamm/Gast-
 Klassifikation** (siehe Sub-Block unten — Stamm/Gast bleibt UI-Ebene

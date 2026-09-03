@@ -1177,7 +1177,7 @@ vergessen werden.
 | 65.000–116.500 €, Break-even ab Monat 8 bei 400 Apps | `semantic-match-demo/Kosten_Nutzen_Analyse_PWA_Plattform.pdf` |
 | Engine 20.000–37.500 €, „einmal gebaut, beliebig integrierbar" | `Kostenanalyse_EVL_Engine_PWA.pdf` |
 | „Ohne Partner: Kaltstart 3–6 Monate, 10.000–20.000 € Marketing" | ebenda, § 5 |
-| Bidirektionalität als Alleinstellungsmerkmal | `USP_Bidirektionales_Matching.pdf`, `SBKIM_Paper_DE.html` § 3.1 |
+| Bidirektionalität als Alleinstellungsmerkmal | `USP_Bidirektionales_Matching.pdf`, `docs/papers/sbkim-paper-de.html` § 3.1 — veröffentlicht als [10.5281/zenodo.22277738](https://doi.org/10.5281/zenodo.22277738) |
 | 14 Marktplatz-Einträge | `family-project/assets/config/listings-vec.json` |
 | Selbstbedienungs-Zählungen (Backup/Import/Export/Anlegen) | Alis-Moderaum, Tomys-Hub, BookLedgerPro, gezählt 2026-08-09 |
 | Tomys zweiter Werkzeugkasten | `Tomys-Hub/` — `bookledger`, `workfloh`, `tomy-data`, `tomy-ui`, `tomy-tresor.js`, eigene `tests` |

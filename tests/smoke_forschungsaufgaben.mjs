@@ -87,11 +87,24 @@ gut(/[Ee]in Beleg sagt, dass eine Datei da ist/.test(kopf),
 gut(/nicht als Datei sichtbar/.test(blatt),
   'und kennt den Fall, dessen Ergebnis im Depot gar nicht stehen kann');
 
-/* Der Zenodo-Fall ist genau dieser. Wer ihn als „liegt vor" führte, meldete
-   eine Veröffentlichung, die nie stattgefunden hat. */
+/* ⚠ DIESER WAECHTER IST AM 2026-09-03 UMGEDREHT WORDEN, und der alte Wortlaut
+   bleibt darueber stehen, weil er zeigt, warum er richtig war:
+
+     „Wer ihn als ‚liegt vor' fuehrte, meldete eine Veroeffentlichung,
+      die nie stattgefunden hat."
+
+   Sie hat inzwischen stattgefunden. Am 2026-09-03 sind beide Papers bei
+   Zenodo erschienen, und Klaus hat im Browser geprueft, dass der Verweis
+   auflöst. Der Waechter verlangt jetzt das Gegenteil: die Zeile MUSS einen
+   DOI nennen. Ohne diese Umkehr haette die Probe eine Behauptung
+   festgehalten, die einen Tag alt und falsch ist -- und genau das ist der
+   Fall, in dem ein gruener Haken schadet.
+
+   Bewacht wird weiterhin die ZUSICHERUNG, nicht die Wortwahl: dass die Zeile
+   sagt, WO das Ergebnis liegt, statt es zu behaupten. */
 const zenodo = zeilen.find((z) => /Zenodo/.test(z)) || '';
-gut(/nicht als Datei sichtbar/.test(zenodo),
-  'die Zenodo-Aufgabe meldet kein Ergebnis im Depot',
+gut(/10\.5281\/zenodo\.\d+/.test(zenodo),
+  'die Zenodo-Aufgabe nennt den DOI, unter dem das Ergebnis liegt',
   'Zeile: ' + zenodo.slice(0, 110));
 
 /* ═══ C · Die drei Stränge und die Abhängigkeiten ════════════════════════ */

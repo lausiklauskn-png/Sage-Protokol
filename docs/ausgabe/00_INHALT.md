@@ -1,6 +1,6 @@
 # Unterlagen, nach Vorgehen nummeriert
 
-**Erzeugt am 2026-09-02** von `tools/ausgabe-bauen.mjs`.
+**Erzeugt am 2026-09-03** von `tools/ausgabe-bauen.mjs`.
 
 Die Nummer ist die Reihenfolge, in der man die Blätter in die Hand nimmt.
 Ein Dateibrowser sortiert nach Namen und stellt sie damit von selbst richtig.
@@ -10,7 +10,7 @@ Die **chronologische** Ordnung der Unterlagen steht in Blatt 50.
 |---|---|---|
 | `70_Forschungsaufgaben.html` | was ansteht, in welcher Reihenfolge | 51 KB |
 | `70_Forschungsaufgaben.pdf` | was ansteht, in welcher Reihenfolge | 142 KB |
-| `95_Antragsmappe-einreichbar.html` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 201 KB |
+| `95_Antragsmappe-einreichbar.html` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 204 KB |
 | `95_Antragsmappe-einreichbar.pdf` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 582 KB |
 
 
