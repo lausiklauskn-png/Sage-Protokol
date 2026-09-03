@@ -137,9 +137,10 @@ if (fehler.length) {
 }
 console.log('  ✓ Titel, Schrift, Umfang und ' + befund.abschnitte.length + ' Abschnitte geprüft');
 
-await seite.pdf({
-  path: ZIEL, format: 'A4', printBackground: true,
-  margin: { top: '18mm', bottom: '18mm', left: '18mm', right: '18mm' },
-});
+/* KEIN Rand hier. Den setzt das Dokument selbst per `@page` in seinem
+   Druck-Stylesheet. Stuende er auch hier, gaebe es zwei Stellen fuer
+   dieselbe Entscheidung, und die eine wuesste nichts von der anderen. */
+await seite.pdf({ path: ZIEL, format: 'A4', printBackground: true,
+                  margin: { top: 0, bottom: 0, left: 0, right: 0 } });
 await browser.close();
 console.log('✓ ' + ZIEL);

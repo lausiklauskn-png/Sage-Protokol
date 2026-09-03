@@ -25,7 +25,7 @@
  * der Beweis. Wer „grün" meldet, hat das PDF angesehen.
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -38,13 +38,22 @@ if (argumente.length !== 1) {
 const QUELLE = resolve(WURZEL, argumente[0]);
 if (!existsSync(QUELLE)) { console.error('FEHLT: ' + argumente[0]); process.exit(2); }
 
-/* A4 abzüglich der Ränder, die tools/paper-zu-pdf.mjs setzt (18 mm ringsum).
-   Steht an EINER Stelle je Werkzeug; laufen sie auseinander, misst der Prüfer
-   eine Seite, die so nie gedruckt wird. */
+/* Der Rand wird aus dem Dokument GELESEN, nicht hier noch einmal
+   festgelegt. Er steht in dessen `@page`-Regel, und dort steht er allein --
+   auch das Druck-Werkzeug hat keinen eigenen. Eine zweite Zahl hier hiesse,
+   der Prüfer misst irgendwann eine Seite, die so nie gedruckt wird. */
 const MM = 96 / 25.4;
-const RAND_MM = 18;
-const SEITE_H = (297 - 2 * RAND_MM) * MM;
-const SEITE_B = (210 - 2 * RAND_MM) * MM;
+const quelltext = readFileSync(QUELLE, 'utf8');
+const seitenRegel = quelltext.match(/@page\s*\{[^}]*margin\s*:\s*([^;}]+)/i);
+if (!seitenRegel) {
+  console.error('✗ Keine @page-Regel mit margin in ' + argumente[0] + ' — der Rand ist unbekannt.');
+  process.exit(2);
+}
+const zahlen = seitenRegel[1].trim().split(/\s+/).map((w) => parseFloat(w));
+const [oR, seitlichR] = zahlen.length === 1 ? [zahlen[0], zahlen[0]] : zahlen;
+const SEITE_H = (297 - 2 * oR) * MM;
+const SEITE_B = (210 - 2 * seitlichR) * MM;
+console.log('Rand aus dem Dokument: ' + oR + ' mm oben/unten, ' + seitlichR + ' mm seitlich');
 
 const { chromium } = await import('playwright-core');
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
@@ -78,7 +87,7 @@ const befund = await seite.evaluate((H) => {
   return { bloecke: raus, abschnitte: h2, gesamt: Math.ceil(document.body.scrollHeight / H) };
 }, SEITE_H);
 
-console.log('Druck-Layout: rund ' + befund.gesamt + ' Seiten (A4, ' + RAND_MM + ' mm Rand)\n');
+console.log('Druck-Layout: rund ' + befund.gesamt + ' Seiten\n');
 
 const zerrissen = befund.bloecke.filter(b => b.seiteOben !== b.seiteUnten);
 if (zerrissen.length === 0) {

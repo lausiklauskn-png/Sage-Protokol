@@ -33,16 +33,27 @@ nicht mehr reparieren, sobald jemand einen davon zitiert hat.** Deshalb:
 > bevor die Dateien zu Zeigern wurden. **Vor dem Zusammenlegen vergleichen.**
 > Sonst wirft das Zusammenlegen etwas weg.
 
-## Die veröffentlichte Fassung ist die ERSTE (Klaus 2026-09-02)
+## Die Fassung vom September ist die ZWEITE (berichtigt 2026-09-03)
 
-**Das Paper vom Mai 2026 ist nie veröffentlicht worden.** Es lag als Entwurf in
-diesem Depot. Was jetzt hinausgeht, ist die Erstveröffentlichung.
+**Die Fassung vom Mai 2026 war öffentlich.** Sie lag seit dem **18. Mai 2026**
+in diesem Depot und stand in der Geschichts-Galerie auf der Startseite als
+**Station 4** mit `status: 'live'` und klickbarem Verweis — also nicht nur
+erreichbar, sondern aktiv angeboten. Über GitHub Pages konnte sie jeder lesen.
 
-⚠ **Daraus folgt eine Regel für den Text selbst.** In den Papers stehen **keine
-Berichtigungs-Vermerke** mehr. Ein Kasten „Berichtigt am 2. September" sagt einem
-Leser, es habe eine frühere öffentliche Aussage gegeben, die falsch war. Es gab
-keine. Der Leser zöge einen Rückschluss auf etwas, das nie stattgefunden hat, und
-lernte nichts über das, was vorgeschlagen wird.
+> ⚠ **Bis zum 2026-09-03 stand hier das Gegenteil:** „Das Paper vom Mai 2026 ist
+> nie veröffentlicht worden. Es lag als Entwurf in diesem Depot." Klaus hat
+> widersprochen, und die Quelltext-Verwaltung gibt ihm recht:
+> `git log --diff-filter=A -- docs/papers/sbkim-paper-en.html` nennt den
+> 18.05.2026, und `git show 9011aad:index.html` zeigt den Eintrag mit `href`.
+> **Eine Datei, die auf einer öffentlichen Seite verlinkt ist, ist
+> veröffentlicht** — ob jemand sie gelesen hat, ist eine andere Frage.
+
+⚠ **Trotzdem stehen in den Papers keine Berichtigungs-Vermerke** (Klaus
+2026-09-03). Die Begründung ist eine andere als vorher, denn die alte trägt
+nicht mehr. Ein Kasten „Berichtigt am 2. September" wendet sich an jemanden, der
+die frühere Fassung **gelesen** hat. Die Fassung vom Mai wurde nirgends
+angekündigt, hatte keinen DOI und keine Leserschaft. Wo die Geschichte
+vollständig steht, sagt der Abschnitt weiter unten.
 
 > Klaus: *„Gestalte es bitte so, dass es gedanklich nachvollziehbar ist und keiner
 > irgendwelche falschen Rückschlüsse zieht. Die Irreführungen sind, die auch nichts
@@ -75,8 +86,11 @@ die Methoden-Grenzen der Literatursuche und § 9 zur Entstehung des Textes.
 **Der Satz, auf den alles hinausläuft:** die Bausteine sind bekannt; der Betrieb
 ist der Beitrag.
 
-**Die Papers tragen als Datum „September 2026 · Erstveröffentlichung".** Kein
-Mai-Datum und keine Fassungsnummer, die eine frühere Ausgabe suggeriert.
+**Die Papers tragen als Datum „September 2026 · Zweite Fassung · Erstfassung
+Mai 2026 im offenen Depot".** Die frühere Ausgabe wird damit genannt, statt
+verschwiegen zu werden — ein Leser, der sie im Depot findet, soll nicht
+rätseln, in welchem Verhältnis sie zu der Fassung steht, die er in der Hand
+hält.
 
 > **Kommende Papers:** drei weitere sind geplant, regelbasiertes und
 > grundsatzbasiertes Lenken · wie KI auf den Menschen wirkt · KI-Kompetenz im
