@@ -434,9 +434,8 @@ dem man knapp innen stehen kann. Ein Grundsatz hat diesen Rand nicht. Zugleich
 altert ein Regelwerk mit der Umgebung und muss gepflegt werden, ein Grundsatz
 nicht. Kurz: <strong>eine Regel kann erfüllt werden, ohne getroffen zu sein; ein
 Grundsatz kann übergangen werden, ohne verletzt zu sein</strong>, und <strong>Haltbarkeit und
-Nachweisbarkeit lassen sich nicht im selben Kanal haben</strong> (3.7).</p>
-<p>Beobachtet wird an einem <strong>laufenden Aufbau</strong>, und der gehört benannt, bevor
-Zahlen fallen. Das Depot <em>Sage-Protokol</em> läuft seit dem 10. März 2026 und ist
+Nachweisbarkeit lassen sich nicht im selben Kanal haben</strong> (3.8).</p>
+<p>Beobachtet wird an einem <strong>laufenden Aufbau</strong>. Das Depot <em>Sage-Protokol</em> läuft seit dem 10. März 2026 und ist
 seither durchgehend protokolliert; daraus ist die Frage überhaupt entstanden. Auf
 dieser Grundlage entstand die <strong>Werkstatt</strong>: fünf Rollen mit Namen arbeiten
 nacheinander an einem Auftrag, ein Durchgang heißt <strong>Schicht</strong>, er hat einen
@@ -448,17 +447,14 @@ gemessene Zahl steht, stammt sie aus dem zweiten.</p>
 <p><strong>Der erste ist seit dem 2026-08-24 kein ungefährer mehr.</strong> Die Git-Historie
 aller 33 Depots wurde ausgelesen und ausgezählt: <strong>5.823 Commits an 128
 Arbeitstagen, vom 10.03. bis zum 24.08.2026</strong>, über 1.388 Zweige, davon 1.662
-Commits, die nie auf einem Hauptzweig ankamen. Damit ist „fünf Monate&quot; nicht
-länger eine Erinnerung, sondern eine Zahl mit Quelle
-(<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/historie"><code>../historie/</code></a>). <strong>An der Trennung ändert das nichts, und das
-ist der Punkt:</strong> die Historie belegt, <em>dass</em> und <em>wann</em> gearbeitet wurde, nicht
-<em>wie lange</em> an einem Tag. Sie ist ein Nachweis über die Dokumentation, keine
-nachträgliche Messung, und wird hier auch nicht als solche verwendet.</p>
+Commits, die nie auf einem Hauptzweig ankamen. Die Quelle liegt offen
+(<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/historie"><code>../historie/</code></a>). Sie belegt, <em>dass</em> und <em>wann</em> gearbeitet
+wurde, nicht <em>wie lange</em> an einem Tag, und wird hier auch nicht so verwendet.</p>
 <p>Aus derselben Richtung folgt ein praktischer Nebenbefund: <strong>mehrere Regeln, die
 denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
 sie stammen.</strong> Die naheliegende Sparsamkeits-These ist dabei durch die eigene
 Rechnung widerlegt. Es ist nicht die Anweisung, die kostet, sondern die <strong>Arbeit</strong>
-(3.8).</p>
+(3.9).</p>
 <p>Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
 Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
 unerwünschte Verhalten <strong>vermehrte</strong>, die Regel ersetzte die Norm, statt sie zu
@@ -481,7 +477,7 @@ Kanäle, sondern was sie binden: die <strong>Ausgabe</strong> oder die <strong>A
 die Regel seine <strong>Zuspitzung auf einen Fall</strong>. Man kann jede vernünftige Regel
 nach ihrem Wozu fragen, und die Antwort ist ein Grundsatz. Daraus erklärt sich,
 warum eine Regel erfüllt sein kann, ohne getroffen zu sein, und warum sie altert:
-sie ist ein <strong>Stellvertreter</strong>, und der Stellvertreter ist nicht die Sache (3.4).
+sie ist ein <strong>Stellvertreter</strong>, und der Stellvertreter ist nicht die Sache (3.5).
 Daraus folgt ein Begriffspaar, das die Richtung im Namen trägt: eine
 <strong>grundsatzbasierte Regel</strong> ist die tragfähige Bauform, ein <strong>regelbasierter
 Grundsatz</strong> ist der Fehler, der dabei entsteht, wenn man die Entstehungsrichtung
@@ -516,16 +512,18 @@ Bestehendem.</p>
 groß bei der offenen Aufgabe, klein oder umgekehrt bei der umrissenen. Ein
 flacher oder gegenläufiger Verlauf widerlegt die These, unabhängig davon, welcher
 Arm insgesamt vorn liegt.</p>
-<p><strong>Schlagwörter:</strong> Lenkung von KI-Systemen · Regeln und Standards · grundsatzbasierte
-Regel · Mehr-Agenten-Systeme · Ausführungszeit-Alignment · Betreiber-Steuerung ·
-Feldbeobachtung</p>
 <hr>
 <h2>1 · Die Ausgangsfrage</h2>
 <p>Ein Mehr-Rollen-System soll Arbeit erledigen. Fünf Rollen mit Namen bearbeiten
-nacheinander einen Auftrag: eine schlägt vor, eine baut, eine prüft, eine sucht
-Fehler, eine schreibt auf, wo es steht. Jede bekommt Text und gibt geprüftes JSON
-zurück. Keine hat Werkzeuge. Sie kann nichts ausführen, nichts öffnen, nichts
-messen.</p>
+nacheinander einen Auftrag: <strong>jede schlägt aus ihrer Sicht eine Idee vor</strong>, eine
+baut die gewählte, eine prüft, eine sucht Fehler, eine schreibt auf, wo es steht.
+Jede bekommt Text und gibt geprüftes JSON zurück.</p>
+<p>Seit dem 2026-08-23 haben <strong>alle fünf Werkzeuge</strong>. Sie dürfen das Depot lesen und
+auf einen getrennt gesetzten Schalter hin ins Netz greifen; standardmäßig ist das
+Netz aus. <strong>Schreiben können sie nicht</strong>, und zwar nicht aus Vorsicht, sondern
+weil die Werkbank keine einzige schreibende Funktion einbindet. Vorher hatten sie
+gar keine, und das hatte einen messbaren Preis: sie sahen das Depot nicht und
+schlugen deshalb Dinge vor, die es längst gab.</p>
 <p>Wer so ein System aufsetzt, steht schnell vor einer praktischen Frage, die sich
 theoretisch nicht auflösen lässt:</p>
 <blockquote><p><strong>Was schreibe ich als Regel hin, und was muss ich stattdessen fragen?</strong></p></blockquote>
@@ -577,8 +575,7 @@ nur, worauf das System achtet</strong>, und wenn die Aufmerksamkeit nicht reicht
 er wirkungslos, ohne dass es jemand merkt. Genau das ist in Abschnitt 5.2
 passiert.</p>
 <p><strong>Die Analogie erklärt also die Struktur und nicht die Wirkung.</strong> Sie steht hier,
-weil sie den Unterschied sichtbar macht, nicht als Beleg. Wer sie als Beleg
-nimmt, hat sie missverstanden, und dieses Papier hätte daran mitgewirkt.</p>
+weil sie den Unterschied sichtbar macht, nicht als Beleg.</p>
 <hr>
 <h2>2 · Stand der Technik</h2>
 <h3>2.1 Die Unterscheidung ist in der Rechtsökonomie durchgearbeitet</h3>
@@ -640,7 +637,7 @@ Pflichtgefühl. Ein KI-System hat keinen Beweggrund, den man verdrängen könnte
 <div class="tabelle"><table><thead><tr><th></th><th>Beim Menschen</th><th>Hier denkbar</th></tr></thead><tbody><tr><td>Was verdrängt wird</td><td>der <strong>Beweggrund</strong></td><td>die <strong>Aufmerksamkeit</strong></td></tr><tr><td>Wodurch</td><td>eine Strafe wird zum Preis</td><td>ein langer Regelblock nimmt einem kurzen Grundsatzblock den Platz</td></tr><tr><td>Ergebnis</td><td>mehr von dem, was verhindert werden sollte</td><td>der Grundsatz steht da und wirkt nicht</td></tr><tr><td>Umkehrbar</td><td><strong>nein</strong> (belegt)</td><td><strong>unbekannt</strong></td></tr></tbody></table></div>
 <p>Das ist eine Vermutung und wird hier ausdrücklich als solche geführt. Sie hat
 aber einen praktischen Vorzug: <strong>sie ist mit dem vorhandenen Aufbau prüfbar</strong> und
-fällt mit der Sättigungsfrage aus 3.3 zusammen. Wenn Verdrängung hier
+fällt mit der Sättigungsfrage aus 3.4 zusammen. Wenn Verdrängung hier
 stattfindet, müsste sie sich zeigen, sobald der Regelblock wächst, und der
 Versuch in 7.7 misst genau das.</p>
 <h3>2.5 Auf der KI-Seite ist die Schwäche der Regel gut belegt</h3>
@@ -656,7 +653,7 @@ Punktzahlen für kaum lesbare Texte erhält.</p>
 <p>Dahinter steht Goodharts Gesetz: <strong>wird ein Maß zum Ziel, taugt es nicht mehr als
 Maß.</strong></p>
 <p>Für dieses Papier ist der Zusammenhang direkt. Schuett et al.s <em>„Abhaken von
-Kästchen&quot;</em>, Goodharts Gesetz und der Fall 3 in Abschnitt 3.5: die Weitergabe, in
+Kästchen&quot;</em>, Goodharts Gesetz und der Fall 3 in Abschnitt 3.6: die Weitergabe, in
 der „passt&quot; steht, sind <strong>derselbe Vorgang auf drei Ebenen</strong>: die Vorgabe ist
 erfüllt, und die Sache ist nicht besser geworden.</p>
 <h3>2.6 Warum das wichtig ist</h3>
@@ -702,9 +699,27 @@ damit die einzige, die für kleine Betreiber überhaupt erreichbar ist.</p>
 <p><strong>Genau dort sitzt der hier beschriebene Aufbau.</strong></p>
 <hr>
 <h2>3 · Der Aufbau</h2>
+<h3>3.0 Der Versuchsaufbau: eine Firma aus Agenten</h3>
+<p>Für diese Frage wurde eigens ein Aufbau gebaut, und er ist keine Skizze, sondern
+ein laufendes Depot: <strong>Kimhub</strong>. Darin arbeitet eine kleine Firma aus fünf
+Agenten mit Namen. Ein Durchgang heißt <strong>Schicht</strong> und läuft so ab:</p>
+<ol><li><strong>Jeder der fünf schlägt eine Idee vor</strong>, aus seiner Rolle heraus.</li><li>Aus den Vorschlägen wird <strong>einer ausgewählt</strong> und gebaut.</li><li>Gebaut wird über eine <strong>API-Schnittstelle</strong>, seit dem 2026-08-23 <strong>mit
+ Werkzeugen</strong> in der Hand der Agenten.</li><li><strong>Alles wird mitgeschrieben</strong>: Aufrufe, Token, Kosten, Dauer, Werkzeug-Griffe.</li></ol>
+<p>Der Zweck des Aufbaus ist die Frage dieses Papiers: <strong>dieselbe Schicht wird
+einmal regelbasiert und einmal grundsatzbasiert gefahren</strong>, und beide Läufe
+werden dokumentiert. Was dabei entsteht, ist kein Selbstzweck: es sind
+<strong>Werkzeuge, die verwendbar sein sollen</strong>. Eines hat den Weg bereits ganz
+gemacht: der Auslieferungsprüfer wurde geprüft, freigegeben und im Marktplatz
+<strong>PWA Toolpoint</strong> veröffentlicht.</p>
+<blockquote><p><strong>Zum Verhältnis von Werkzeug und Versuch.</strong> Die Werkstatt ist nicht als
+Versuchsaufbau entstanden. Sie wurde gebaut, weil sie gebraucht wurde, und
+erst danach zum Gegenstand, und dann gezielt zu einem Aufbau ausgebaut, an
+dem sich die Frage messen lässt. Beides gehört zusammengesagt: der Aufbau ist
+konstruiert, aber er ist nicht für die Untersuchung erfunden worden.</p></blockquote>
+<h3>3.1 Zwei Kanäle, absichtlich getrennt geführt</h3>
 <p>Zwei Kanäle im selben System, absichtlich getrennt geführt.</p>
 <div class="tabelle"><table><thead><tr><th></th><th><strong>Regeln</strong></th><th><strong>Grundsätze</strong></th></tr></thead><tbody><tr><td>Wo</td><td>im Quelltext</td><td>in einer Markdown-Datei</td></tr><tr><td>Prüfbar</td><td>ja</td><td>nein</td></tr><tr><td>Wirkung</td><td>erzwungen, jede Rolle, jeder Lauf</td><td>lenken die Aufmerksamkeit</td></tr><tr><td>Änderbar von</td><td>wer Code anfasst</td><td>jedem, ohne Programmierer</td></tr><tr><td>Anzahl</td><td>sechs</td><td><strong>höchstens sieben</strong>, derzeit fünf</td></tr><tr><td>Fehlt die Quelle</td><td>bricht der Lauf</td><td>läuft weiter, <strong>und sagt es</strong></td></tr></tbody></table></div>
-<h3>3.1 Die sechs Regeln</h3>
+<h3>3.2 Die sechs Regeln</h3>
 <p>Sie decken ab, was sich formulieren lässt: Ehrlichkeit über den eigenen Stand ·
 kein Personenbezug, kein Geheimnis · nichts erfinden · keine fremden Adressen ·
 kurz und auf Deutsch schreiben · und: keine Werkzeuge, also auch nicht behaupten,
@@ -715,7 +730,22 @@ dem Satz <em>„eine geratene Zahl klingt genau wie eine gemessene&quot;</em>. D
 Geheimnisse begründet sich nicht mit Datenschutz, sondern mit einer Beobachtung
 über Depots: <em>„privat&quot; ist eine Einstellung, die ein Klick umdreht, und die
 Historie behält alles.</em></p>
-<h3>3.2 Die fünf Grundsätze</h3>
+<p><strong>Und die sechste Regel ist inzwischen falsch, in ihrem eigenen System.</strong>
+Gemessen am Stand von Kimhubs Hauptzweig am 2026-09-03: die Werkbank
+(<code>schicht/werkzeuge.mjs</code>) reicht den Rollen <strong>vier</strong> Werkzeuge:
+<code>datei_lesen</code>, <code>verzeichnis_zeigen</code>, <code>suchen</code> und, hinter einem eigenen
+Schalter, <code>netz_holen</code>. Sie wird in <code>schicht/lauf.mjs</code> gebaut und an jede Rolle
+gegeben. Im selben Prompt steht weiterhin der Satz <strong>„DU HAST KEINE
+WERKZEUGE.&quot;</strong></p>
+<p>Der Befund gehört hierher und nicht in eine Fußnote, denn er belegt beiläufig,
+was 3.8 behauptet: <strong>ein Regelwerk altert mit seiner Umgebung.</strong> Die Regel war
+am 2026-08-20 richtig und aus einem echten Schaden geschrieben. Die Umgebung hat
+sich am 2026-08-23 geändert, die Regel nicht. Niemand hat es bemerkt, weil eine
+Regel nicht meldet, dass sie nicht mehr stimmt. Sie wird weiter erzwungen.</p>
+<p>Ein Grundsatz hätte das überstanden: <em>„Behaupte nichts, was du nicht belegen
+kannst&quot;</em> gilt mit Werkzeugen wie ohne. Die Regel nennt den Fall, der Grundsatz
+den Zweck, und nur der Fall veraltet.</p>
+<h3>3.3 Die fünf Grundsätze</h3>
 <ol><li><strong>Was hat der Nächste davon?</strong></li><li><strong>Lieber langsam als falsch. Damit andere nicht nacharbeiten müssen.</strong></li><li><strong>Eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten
  hinsehen musst.</strong></li><li><strong>Eine geratene Zahl klingt genau wie eine gemessene.</strong></li><li><strong>Eine benannte Lücke ist Arbeit, eine verschwiegene ist Schaden.</strong></li></ol>
 <p>Zwei Eigenschaften sind hier wichtiger als der Wortlaut.</p>
@@ -727,7 +757,7 @@ verantwortet.</p>
 bewusste Konstruktion: ein stilles Weglassen wäre das Schlimmste von beidem, die
 Grundsätze wirken nicht, und niemand merkt, warum die Arbeit anders aussieht als
 sonst.</p>
-<h3>3.3 Eine Bauvorschrift, die Regeln nicht kennen: die Sättigungsgrenze</h3>
+<h3>3.4 Eine Bauvorschrift, die Regeln nicht kennen: die Sättigungsgrenze</h3>
 <p>Die Grundsatz-Datei trägt eine Obergrenze: <strong>höchstens sieben.</strong> Kommt einer
 dazu, muss einer gehen oder zwei müssen zusammengefasst werden. Die Begründung
 steht in der Datei selbst:</p>
@@ -744,7 +774,7 @@ begrenzte Größe ist und ein Grundsatz nichts anderes tut, als sie zu lenken.</
 Läufe in keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig
 oder unverständlich formuliert: beides ein Grund, ihn anzusehen, nicht ihn
 stehen zu lassen.</p>
-<h3>3.4 Der Grundsatz ist die Grundlage der Regel, und die Reihenfolge täuscht</h3>
+<h3>3.5 Der Grundsatz ist die Grundlage der Regel, und die Reihenfolge täuscht</h3>
 <p>Hier steht die Beziehung zwischen den beiden Kanälen, und sie ist <strong>nicht
 symmetrisch</strong>. Es sind nicht zwei gleichrangige Werkzeuge, aus denen man wählt.</p>
 <blockquote><p><strong>Der Grundsatz ist die Grundlage. Die Regel ist seine Zuspitzung auf einen
@@ -758,9 +788,9 @@ mögliche.</p>
 <h4>Zwei Richtungen, die man nicht verwechseln darf</h4>
 <p>Das Verwirrende ist, dass die beiden Richtungen <strong>gegenläufig</strong> sind.</p>
 <div class="tabelle"><table><thead><tr><th></th><th><strong>Begründung</strong>, was rechtfertigt was</th><th><strong>Entstehung</strong>, was kam zuerst</th></tr></thead><tbody><tr><td>Reihenfolge</td><td><strong>Grundsatz → Regel</strong></td><td><strong>Vorfall → Regel → Grundsatz</strong></td></tr><tr><td>Beispiel</td><td>„Wer sich verlässt, darf sich verlassen können&quot; rechtfertigt „nichts erfinden&quot;</td><td>2026-08-20 fliegt eine geschätzte Zahl auf → Regel → erst danach der Satz über geratene Zahlen</td></tr><tr><td>Wer sie kennt</td><td>wer den Zweck durchdacht hat</td><td>jeder, der die Historie liest</td></tr></tbody></table></div>
-<p>In der Praxis geht man die <strong>untere</strong> Zeile. Etwas geht schief, man schreibt eine
-Regel dagegen, und erst später, manchmal nie: spricht jemand aus, wovon der Fall
-ein Fall war. Deshalb sieht es von innen so aus, als sei die Regel das Ursprüngliche
+<p>In der Praxis läuft es fast immer wie in der <strong>rechten</strong> Spalte: etwas geht
+schief, man schreibt eine Regel dagegen, und erst später, manchmal nie, spricht
+jemand aus, wovon der Fall ein Fall war. Deshalb sieht es von innen so aus, als sei die Regel das Ursprüngliche
 und der Grundsatz die nachträgliche Verallgemeinerung.</p>
 <p><strong>Das täuscht.</strong> Der Zweck war die ganze Zeit da; er war nur unausgesprochen. Die
 Regel wäre gar nicht als richtig erkannt worden, wenn nicht jemand still gewusst
@@ -770,14 +800,14 @@ hätte, wozu sie gut ist.</p>
 dieses Papiers zusammen:</p>
 <p><strong>Eine Regel ist immer ein Stellvertreter.</strong> Sie greift einen Zweck heraus und
 macht ihn prüfbar, indem sie ihn auf eine Bedingung verengt. Genau deshalb kann
-sie <strong>erfüllt sein, ohne getroffen zu sein</strong> (3.7), der Stellvertreter ist nicht
+sie <strong>erfüllt sein, ohne getroffen zu sein</strong> (3.8), der Stellvertreter ist nicht
 die Sache. Und genau deshalb greift Goodharts Gesetz (2.5): <em>wird ein Maß zum
 Ziel, taugt es nicht mehr als Maß</em>. Der Satz ergibt nur Sinn, wenn hinter dem Maß
 etwas anderes steht, dem es dienen soll.</p>
-<p><strong>Eine Regel altert, ein Grundsatz nicht</strong> (3.7). Der Zweck bleibt, die Umgebung
+<p><strong>Eine Regel altert, ein Grundsatz nicht</strong> (3.8). Der Zweck bleibt, die Umgebung
 ändert sich, und die Verengung passt nicht mehr. Altern kann nur, was zeitgebunden
 zugeschnitten wurde.</p>
-<p><strong>Regel und Grundsatz können denselben Wortlaut haben</strong> (Fall 1 in 3.5) und
+<p><strong>Regel und Grundsatz können denselben Wortlaut haben</strong> (Fall 1 in 3.6) und
 verschieden wirken. Kein Rätsel mehr: es ist derselbe Zweck, einmal als Grund
 ausgesprochen, einmal als Bedingung zugespitzt.</p>
 <p><strong>Und der Fehler aus 7.10 bekommt einen Namen.</strong> Wer aus Vorfällen unmittelbar
@@ -800,7 +830,7 @@ man ihn festmachen könnte.</p></blockquote>
 <h4>Zwei Begriffe, und die Richtung steckt im Namen</h4>
 <p>Damit lässt sich benennen, was gebaut werden soll und was nicht:</p>
 <div class="tabelle"><table><thead><tr><th>Begriff</th><th>Richtung</th><th>Urteil</th></tr></thead><tbody><tr><td><strong>Grundsatzbasierte Regel</strong></td><td>Grundsatz → Regel</td><td>✅ <strong>die richtige Bauform.</strong> Der Zweck steht fest, die Regel spitzt ihn auf einen Fall zu, und lässt sich nachziehen, wenn der Fall sich ändert, weil der Zweck bekannt ist.</td></tr><tr><td><strong>Regelbasierter Grundsatz</strong></td><td>Vorfall → Regel → „Grundsatz&quot;</td><td>❌ <strong>der Fehler.</strong> Klingt allgemein, ist eng gedacht: er kann nur abdecken, was schon eingetreten ist (7.10).</td></tr></tbody></table></div>
-<p><strong>Jede der sechs Regeln in 3.1 sollte eine grundsatzbasierte Regel sein.</strong> Das ist
+<p><strong>Jede der sechs Regeln in 3.2 sollte eine grundsatzbasierte Regel sein.</strong> Das ist
 keine Stilfrage, sondern die Bedingung dafür, dass sie gepflegt werden kann: eine
 Regel, deren Zweck niemand benennen kann, lässt sich weder anpassen noch
 begründet streichen. Man kann sie nur befolgen oder vergessen.</p>
@@ -812,7 +842,7 @@ der Grundsatz dahinter wurde nie ausgesprochen und fehlt im anderen Kanal. <stro
 ist ein Befund, und beides ist maschinell auffindbar</strong>, sobald die Zuordnung
 mitgeführt wird (7.10).</p>
 <hr>
-<h3>3.5 Warum ein System so oder anders entscheidet: vier durchgeführte Fälle</h3>
+<h3>3.6 Warum ein System so oder anders entscheidet: vier durchgeführte Fälle</h3>
 <p>Die beiden Autofahrer aus 1.1 sind ein Bild. Hier sind vier Fälle aus dem
 Betrieb, dieselbe Lage, einmal durch jeden Kanal betrachtet, mit dem, was
 tatsächlich geschah.</p>
@@ -862,13 +892,13 @@ prüfen lässt. Dort hilft weder eine schärfere Regel noch ein besserer Grundsa
 sondern nur eine Änderung am Aufbau: der Rolle Werkzeuge geben, oder die Frage
 gar nicht erst stellen.</p>
 <hr>
-<h3>3.6 Was sich daraus als Faustregel ableiten lässt</h3>
+<h3>3.7 Was sich daraus als Faustregel ableiten lässt</h3>
 <p>Nicht als Ergebnis, als Arbeitshypothese, die der Versuch in Abschnitt 7 prüfen
 soll:</p>
-<div class="tabelle"><table><thead><tr><th>Nimm eine <strong>Regel</strong>, wenn …</th><th>Nimm einen <strong>Grundsatz</strong>, wenn …</th></tr></thead><tbody><tr><td>der Fall sich vollständig beschreiben lässt</td><td>der Fall unbekannt ist oder eine Familie bildet</td></tr><tr><td>die Einhaltung <strong>prüfbar</strong> ist</td><td>die Einhaltung nur am Ergebnis über viele Fälle sichtbar wird</td></tr><tr><td>ein einzelner Verstoß schadet</td><td>die Summe vieler kleiner Nachlässigkeiten schadet</td></tr><tr><td>es um <strong>Form</strong> geht (Geheimnisse, Adressen, Schema)</td><td>es um <strong>Zuschnitt</strong> geht (wann ist etwas fertig, was ist genug)</td></tr><tr><td>jemand da ist, der das Regelwerk <strong>pflegt</strong></td><td>niemand da ist, der es pflegt (3.7)</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Nimm eine <strong>Regel</strong>, wenn …</th><th>Nimm einen <strong>Grundsatz</strong>, wenn …</th></tr></thead><tbody><tr><td>der Fall sich vollständig beschreiben lässt</td><td>der Fall unbekannt ist oder eine Familie bildet</td></tr><tr><td>die Einhaltung <strong>prüfbar</strong> ist</td><td>die Einhaltung nur am Ergebnis über viele Fälle sichtbar wird</td></tr><tr><td>ein einzelner Verstoß schadet</td><td>die Summe vieler kleiner Nachlässigkeiten schadet</td></tr><tr><td>es um <strong>Form</strong> geht (Geheimnisse, Adressen, Schema)</td><td>es um <strong>Zuschnitt</strong> geht (wann ist etwas fertig, was ist genug)</td></tr><tr><td>jemand da ist, der das Regelwerk <strong>pflegt</strong></td><td>niemand da ist, der es pflegt (3.8)</td></tr></tbody></table></div>
 <p><strong>Und der Fall, in dem beides nichts hilft:</strong> wenn die Aussage nicht überprüfbar
 ist. Dann ist es kein Lenkungsproblem, sondern eines des Aufbaus.</p>
-<h3>3.7 Haltbarkeit: die Eigenschaft, die am schwersten wiegt</h3>
+<h3>3.8 Haltbarkeit: die Eigenschaft, die am schwersten wiegt</h3>
 <p>Bis hierher ging es um <strong>Reichweite</strong>, welcher Kanal welchen Fall erreicht. Es
 gibt eine zweite Eigenschaft, die im Betrieb schwerer wiegt und in der zitierten
 Literatur nur am Rand vorkommt: <strong>wie gut hält das, was man hingeschrieben hat?</strong></p>
@@ -902,7 +932,7 @@ Leere oder auf das Falsche, und niemand merkt es, weil sie weiter erfüllt wird.
 <p>Ein Grundsatz enthält keinen Zustand, sondern einen Zweck. „Eine geratene Zahl
 klingt genau wie eine gemessene&quot; war im März richtig und ist es heute; es gibt
 nichts daran, das veralten könnte.</p>
-<div class="tabelle"><table><thead><tr><th></th><th><strong>Regel</strong></th><th><strong>Grundsatz</strong></th></tr></thead><tbody><tr><td>Bindet</td><td>eine Bedingung</td><td>einen Zweck</td></tr><tr><td>Hat einen Rand, an dem man knapp innen stehen kann</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Veraltet, wenn sich die Umgebung ändert</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Muss bei jedem neuen Fall ergänzt werden</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Verliert an Wirkung, wenn zu viele danebenstehen</td><td>nein</td><td><strong>ja</strong> (3.3)</td></tr><tr><td>Nachprüfbar</td><td><strong>ja</strong></td><td>nein</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Regel</strong></th><th><strong>Grundsatz</strong></th></tr></thead><tbody><tr><td>Bindet</td><td>eine Bedingung</td><td>einen Zweck</td></tr><tr><td>Hat einen Rand, an dem man knapp innen stehen kann</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Veraltet, wenn sich die Umgebung ändert</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Muss bei jedem neuen Fall ergänzt werden</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Verliert an Wirkung, wenn zu viele danebenstehen</td><td>nein</td><td><strong>ja</strong> (3.4)</td></tr><tr><td>Nachprüfbar</td><td><strong>ja</strong></td><td>nein</td></tr></tbody></table></div>
 <h4>Der Satz, auf den es für einen kleinen Betreiber hinausläuft</h4>
 <blockquote><p><strong>Ein Regelwerk ist eine Pflegeverpflichtung. Ein Grundsatz ist keine.</strong></p></blockquote>
 <p>Für eine Organisation mit einer Rechtsabteilung ist das eine Kostenfrage. Für
@@ -929,12 +959,12 @@ die Grundsätze nicht.</p>
 wäre ein Ersatz: <strong>dieselben Läufe mit einem absichtlich veralteten Regelsatz</strong>,
 einem, der auf eine frühere Fassung des Systems passte. Ob das mehr misst als
 den Umgang mit einem Fehler, ist offen und wird hier nicht behauptet.</p>
-<h3>3.8 Verdichtung: ein Grundsatz ersetzt mehrere Regeln, und was das kostet</h3>
-<p>Aus der Richtung in 3.4 folgt etwas Praktisches, das bisher fehlte. Wenn eine
+<h3>3.9 Verdichtung: ein Grundsatz ersetzt mehrere Regeln, und was das kostet</h3>
+<p>Aus der Richtung in 3.5 folgt etwas Praktisches, das bisher fehlte. Wenn eine
 Regel die Zuspitzung eines Zwecks ist, dann können <strong>mehrere Regeln denselben
 Zweck zuspitzen</strong>. Jede auf einen anderen Fall. Und dann lassen sie sich durch
 <strong>den einen Grundsatz</strong> ersetzen, aus dem sie alle stammen.</p>
-<p>An den sechs Regeln aus 3.1 ist das ablesbar. „Nichts erfinden&quot;, „nicht behaupten,
+<p>An den sechs Regeln aus 3.2 ist das ablesbar. „Nichts erfinden&quot;, „nicht behaupten,
 etwas ausgeführt zu haben&quot; und die Ehrlichkeitsregel über den eigenen Stand sind
 drei Zuspitzungen <strong>eines</strong> Zwecks: <em>wer sich auf eine Ausgabe verlässt, muss sich
 verlassen können.</em> Drei Zeilen, ein Grund.</p>
@@ -949,7 +979,7 @@ jede überflüssige Zeile bei jedem Lauf noch einmal. <strong>Und es trifft gena
 Kleinen</strong>: wer viele Läufe fährt, zahlt viel; wer die Aufsicht fürchtet, schreibt
 lieber eine Regel mehr als eine weniger, und bezahlt beides zusammen.</p>
 <h4>Und die Sättigungsgrenze zeigt in dieselbe Richtung</h4>
-<p>Nach 3.3 wirken zwanzig Grundsätze schlechter als fünf, weil Aufmerksamkeit
+<p>Nach 3.4 wirken zwanzig Grundsätze schlechter als fünf, weil Aufmerksamkeit
 begrenzt ist. Falls das auch für den Regelblock gilt, und Abschnitt 2.4 legt
 nahe, dass die beiden Kanäle um dasselbe Budget konkurrieren, dann wäre
 Verdichtung <strong>doppelt</strong> richtig: sie spart Geld <strong>und</strong> wirkt besser.</p>
@@ -959,8 +989,8 @@ muss (Grundsatz 3), weil er zu gut klingt.</p>
 <p><strong>1 · Die Verdichtung ist verlustbehaftet.</strong> Ein Grundsatz, der fünf Regeln
 ersetzt, <strong>erzwingt</strong> diese fünf Fälle nicht mehr. Er zeigt nur auf sie. Man
 tauscht <strong>Durchsetzung gegen Reichweite</strong>. Das ist genau das Tauschgeschäft aus
-3.7, hier von der Kostenseite betrachtet.</p>
-<p><strong>2 · Manche Regeln dürfen nicht wegfallen.</strong> Die Faustregel aus 3.6 sagt, welche:
+3.8, hier von der Kostenseite betrachtet.</p>
+<p><strong>2 · Manche Regeln dürfen nicht wegfallen.</strong> Die Faustregel aus 3.7 sagt, welche:
 wo <strong>ein einzelner Verstoß</strong> schadet. Ein Schlüssel im Klartext ist einmal zu
 viel. Für „kein Geheimnis&quot;, „keine fremden Adressen&quot; und den Schemabruch bleibt
 die Regel, der Grundsatz daneben ersetzt sie nicht, sondern begründet sie.</p>
@@ -1082,7 +1112,7 @@ verlängert und dabei ein Prozent gewinnt, hat gewonnen.</p>
 begründet sie mit dem kleinsten Posten der Rechnung. Der Abschnitt oben widerlegt
 das mit eigenen Zahlen, und es bleibt widerlegt.</p>
 <p><strong>Und wodurch die Treffsicherheit entstünde, ist eine eigene Frage</strong>, drei
-mögliche Ursachen und die zwei Kontrollen, die sie trennen, stehen in 3.9.</p>
+mögliche Ursachen und die zwei Kontrollen, die sie trennen, stehen in 3.10.</p>
 <p><strong>Zweitens: Treffsicherheit ist das einzige Argument, das trägt</strong>, für welchen
 Kanal auch immer. Ob Regeln, Grundsätze oder beides den kürzeren Weg zum
 brauchbaren Ergebnis bahnen, ist die Frage, an der alles hängt. <strong>Und sie ist
@@ -1163,7 +1193,7 @@ KI-System so lenken, dass es sich ohne Budget betreiben lässt?</em> Wer viele L
 fährt und keine Rechtsabteilung hat, wird nicht durch bessere Regeln gerettet,
 sondern durch weniger davon. Ob das stimmt, ist bisher niemand nachgegangen.</p>
 <hr>
-<h3>3.9 Warum eigentlich? Drei Ursachen, die sich trennen lassen</h3>
+<h3>3.10 Warum eigentlich? Drei Ursachen, die sich trennen lassen</h3>
 <p>Angenommen, die Grundsätze verringern die Fehler wirklich, <strong>woran liegt es
 dann?</strong> Bisher beschreibt dieses Papier, <strong>dass</strong> die Kanäle sich unterscheiden,
 nicht <strong>wodurch</strong>. Drei Erklärungen liegen nahe, und der Unterschied zwischen ihnen
@@ -1176,7 +1206,7 @@ größten bei <strong>neuen</strong> Fällen (Aufgabenart E) und am kleinsten be
 B), genau der Verlauf aus 7.3.1.</p>
 <p><strong>H2 · Es muss weniger Ballast lesen.</strong>
 Ein kürzerer Block lässt mehr Aufmerksamkeit für die eigentliche Arbeit. Das ist
-die Sättigungsvermutung aus 3.3, von der Wirkungsseite betrachtet. <em>Vorhersage:</em>
+die Sättigungsvermutung aus 3.4, von der Wirkungsseite betrachtet. <em>Vorhersage:</em>
 der Vorteil hängt an der <strong>Länge</strong> des Blocks, nicht an seinem <strong>Inhalt</strong>.</p>
 <p><strong>H3 · Ein Grundsatz deckt Fälle ab, für die keine Regel geschrieben wurde.</strong>
 Das ist Kaplows Punkt, unverändert. <em>Vorhersage:</em> der Vorteil zeigt sich
@@ -1206,8 +1236,10 @@ Aufmerksamkeit.</p>
 und erst in einem System mit einem wirklich großen Regelwerk messbar würde. Dort
 allerdings vermutlich stark. <strong>Wer diese Arbeit auf eine große Installation
 überträgt, sollte mit H2 rechnen; wer sie hier misst, wird sie nicht finden.</strong></p>
-<p>Diese Vermutung steht hier ausdrücklich <strong>vor</strong> der Messung, damit sie sich
-blamieren kann.</p>
+<p>Diese Vermutung steht hier ausdrücklich <strong>vor</strong> der Messung, und sie ist im
+Versuchsaufbau genauer zu messen als bisher. Trifft sie nicht zu, ist das kein
+Missgeschick: eine Vorhersage, die vorher feststeht, ist der einzige Teil dieser
+Arbeit, der sich überhaupt widerlegen lässt.</p>
 <h4>Sie schließen einander nicht aus</h4>
 <p>Der wahrscheinlichste Ausgang ist, dass alle drei etwas beitragen. <strong>Das ist kein
 Mangel des Aufbaus, sondern der Grund, ihn so zu bauen:</strong> die beiden Kontrollen
@@ -1285,7 +1317,7 @@ beschreibt seine Auswahl und nicht die Sache.</p>
 der anderen. Das ist der Grund, warum sich die Frage „was ist besser&quot; nicht
 sinnvoll stellen lässt, und warum sie sich auch nicht getrennt betrachten
 lassen.</p>
-<p><strong>Und die Grenzen verlaufen nicht am Wortlaut.</strong> Fall 1 in Abschnitt 3.5 zeigt
+<p><strong>Und die Grenzen verlaufen nicht am Wortlaut.</strong> Fall 1 in Abschnitt 3.6 zeigt
 zwei Anweisungen mit <strong>denselben Wörtern</strong>: einmal als Regel, einmal als
 Grundsatz, die verschieden entscheiden: die Regel bindet die <strong>Ausgabe</strong>, der
 Grundsatz die <strong>Aufmerksamkeit</strong>. Wer die beiden Kanäle nach ihrem Inhalt
@@ -1330,7 +1362,7 @@ unterschiedliche Fehler</strong>, nicht dieselben, nur unterschiedlich viele.</p
 kann. Drei Ergebnisse würden es widerlegen:</p>
 <ul><li><strong>R+G liegt gleichauf mit dem besseren Einzelarm</strong> → die Kanäle überlappen,
 einer ist überflüssig.</li><li><strong>R+G ist schlechter als beide</strong> → zu viel Anweisung verdünnt, und die
-Sättigungsgrenze aus 3.3 gilt auch für die Summe beider Kanäle.
+Sättigungsgrenze aus 3.4 gilt auch für die Summe beider Kanäle.
 <strong>Für diesen Ausgang gibt es einen benannten Mechanismus</strong> (2.4): Verdrängung
 im Sinne von Gneezy und Rustichini. Er ist nicht bloß denkbar, sondern beim
 Menschen belegt, und beim Menschen war er <strong>nicht umkehrbar</strong>.</li><li><strong>R und G machen dieselben Fehler, nur verschieden viele</strong> → dann ist der
@@ -1506,7 +1538,7 @@ Schwäche des Aufbaus, sondern dieselbe Grenze, um die es die ganze Zeit geht.
 sie taucht hier nur eine Ebene höher wieder auf, bei der Bewertung statt bei der
 Lenkung.</p>
 <h3>7.10 Die Rückkopplung, und warum ein selbst abgeleiteter Grundsatz keiner ist</h3>
-<p>Abschnitt 3.4 beschreibt eine Stufenfolge: <strong>Vorfall → Regel → Grundsatz.</strong> Bisher
+<p>Abschnitt 3.5 beschreibt eine Stufenfolge: <strong>Vorfall → Regel → Grundsatz.</strong> Bisher
 geht ein Mensch sie ab, nach einem Missgeschick. Naheliegende Frage: kann das
 System sie selbst gehen, aus den eigenen Ergebnissen lernen und daraus neue
 Grundsätze ableiten?</p>
@@ -1519,19 +1551,19 @@ Grundsatz-Datei ohnehin verlangt, <em>„ein Grundsatz, der über viele Läufe i
 keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig oder
 unverständlich formuliert.&quot;</em></p>
 <p><strong>Das Formulieren geht nicht.</strong> Und der Grund ist nicht Vorsicht, sondern
-Struktur. Er folgt unmittelbar aus der Richtung in 3.4.</p>
+Struktur. Er folgt unmittelbar aus der Richtung in 3.5.</p>
 <h4>Der Denkfehler steckt schon im Namen</h4>
 <p>Ein Grundsatz, den ein System aus seinen <strong>beobachteten Fehlern</strong> ableitet, kann
 nur Fälle abdecken, die <strong>schon eingetreten sind</strong>. Der Zweck eines Grundsatzes
 ist aber genau der umgekehrte: die <strong>Familie</strong> abzudecken, auch die Glieder, die
-noch niemand gesehen hat (3.4, Kaplow).</p>
+noch niemand gesehen hat (3.5, Kaplow).</p>
 <blockquote><p><strong>Ein aus Vorfällen abgeleiteter „Grundsatz&quot; ist eine Regel im Gewand eines
 Grundsatzes.</strong> Er trägt die Allgemeinheit im Wortlaut und die Enge in der
 Herkunft.</p></blockquote>
-<p>Mit den Begriffen aus 3.4: Was hier entstünde, wäre ein <strong>regelbasierter
+<p>Mit den Begriffen aus 3.5: Was hier entstünde, wäre ein <strong>regelbasierter
 Grundsatz</strong>, und die richtige Bauform ist die umgekehrte, die
 <strong>grundsatzbasierte Regel</strong>.</p>
-<p>Der Fehler hat einen Namen, und er steht in 3.4: <strong>die Entstehungsrichtung wird
+<p>Der Fehler hat einen Namen, und er steht in 3.5: <strong>die Entstehungsrichtung wird
 für die Begründungsrichtung gehalten.</strong> Wer aus Vorfällen unmittelbar Grundsätze
 ableitet, überspringt die Frage nach dem Wozu. Und das ist keine Wortklauberei: ein
 solcher Satz sieht aus wie ein Grundsatz, wird wie einer eingeordnet, und lässt
@@ -1544,8 +1576,8 @@ ausgegeben&quot; folgt nicht mechanisch „eine geratene Zahl klingt genau wie e
 gemessene&quot;. Dazwischen liegt jemand, der erkennt, wovon der Fall ein Fall ist.</p>
 <h4>Was die Rückkopplung trotzdem taugt</h4>
 <p>Nicht zum Schreiben, zum <strong>Pflegen</strong>. Und dafür ist sie viel wert, weil genau
-diese Pflege sonst niemand leistet (3.7):</p>
-<div class="tabelle"><table><thead><tr><th>Was die Maschine melden kann</th><th>Was daraus folgt</th></tr></thead><tbody><tr><td>Kategorie X häuft sich</td><td>irgendetwas fehlt, <strong>ob Regel oder Grundsatz, entscheidet der Mensch</strong></td></tr><tr><td>Grundsatz Y taucht in keiner Weitergabe auf</td><td>überflüssig oder unverständlich, ansehen</td></tr><tr><td>Seit dem 8. Grundsatz steigen die Fehler</td><td><strong>Sättigung</strong> (3.3), gemessen statt vermutet</td></tr><tr><td>Regel Z wird nie ausgelöst</td><td>veraltet, die Umgebung hat sich bewegt (3.7)</td></tr><tr><td>Kategorie X tritt in Arm G auf, in R nicht</td><td>ein Kandidat für eine <strong>Regel</strong>, nicht für einen Grundsatz</td></tr></tbody></table></div>
+diese Pflege sonst niemand leistet (3.8):</p>
+<div class="tabelle"><table><thead><tr><th>Was die Maschine melden kann</th><th>Was daraus folgt</th></tr></thead><tbody><tr><td>Kategorie X häuft sich</td><td>irgendetwas fehlt, <strong>ob Regel oder Grundsatz, entscheidet der Mensch</strong></td></tr><tr><td>Grundsatz Y taucht in keiner Weitergabe auf</td><td>überflüssig oder unverständlich, ansehen</td></tr><tr><td>Seit dem 8. Grundsatz steigen die Fehler</td><td><strong>Sättigung</strong> (3.4), gemessen statt vermutet</td></tr><tr><td>Regel Z wird nie ausgelöst</td><td>veraltet, die Umgebung hat sich bewegt (3.8)</td></tr><tr><td>Kategorie X tritt in Arm G auf, in R nicht</td><td>ein Kandidat für eine <strong>Regel</strong>, nicht für einen Grundsatz</td></tr></tbody></table></div>
 <p>Die letzte Zeile ist die nützlichste: <strong>die Rückkopplung kann vorschlagen, in
 welchen Kanal etwas gehört</strong>, indem sie nachsieht, welcher Arm den Fehler nicht
 hatte. Das ist eine Entscheidungshilfe, die aus Daten kommt und nicht aus einem
@@ -1567,7 +1599,7 @@ vor, und ein Mensch entscheidet über eine Ergänzung.</p>
 <p>Die Vorhersage, die daraus folgt und die falsch sein kann:</p>
 <blockquote><p><strong>Der vierte Arm verbessert sich bei Aufgabenart B</strong> (Bestehendes verbessern,
 wiederkehrende Fälle) <strong>und nicht bei Art E</strong> (eigene Idee, neue Fälle).</p></blockquote>
-<p>Trifft das zu, ist die These aus 3.4 bestätigt: was man aus Vorfällen ableitet,
+<p>Trifft das zu, ist die These aus 3.5 bestätigt: was man aus Vorfällen ableitet,
 wirkt wie eine Regel. Es hilft dort, wo der Fall wiederkehrt, und nicht dort, wo
 er neu ist. Verbessert sich auch Art E, war die Unterscheidung zwischen
 abgeleiteten und gesetzten Grundsätzen zu scharf gezogen, und dieser Abschnitt
@@ -1629,9 +1661,10 @@ Maß&quot;).</p>
 nebenher an einem Netz aus offen lizenzierten Web-Anwendungen und einem Protokoll
 für bedeutungsbasierte Suche zwischen unabhängigen Web-Anwendungen, <strong>ohne
 zentralen Index und ohne eigene Infrastruktur beim Nutzer</strong>, der Verkehr läuft
-über ein geliehenes Relais. Der hier beschriebene Aufbau ist ein
-Werkzeug dieser Arbeit, kein Versuchsaufbau: er ist entstanden, weil er
-gebraucht wurde, und erst danach zum Gegenstand geworden.</p>
+über ein geliehenes Relais. Der hier beschriebene Aufbau ist zuerst ein
+Werkzeug dieser Arbeit gewesen: er ist entstanden, weil er gebraucht wurde, und
+erst danach zum Gegenstand geworden, und dann gezielt zu einem Versuchsaufbau
+ausgebaut (3.0).</p>
 <p><strong>Was das wert ist und was nicht:</strong> die Beobachtungen stammen aus echten Aufgaben
 über fünf Monate, mit mitlaufendem Protokoll statt Erinnerung. Was fehlt, ist die
 Methode, und sie fehlt nicht aus Nachlässigkeit, sondern weil sie nicht
