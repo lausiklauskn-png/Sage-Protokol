@@ -2,12 +2,44 @@
 
 Dieser Ordner trägt die **dokumentengestützten Stationen** der
 Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
-`docs/PULS.md`). Heute stehen hier **zwei** Dateien:
+`docs/PULS.md`).
 
 | Datei | Station | Eintrag in `index.html` |
 |---|---|---|
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
+| `paper-a-regeln-und-grundsaetze.html` | **noch keine** — Paper A ist gebaut, aber noch nicht veröffentlicht | — |
+
+## Paper A ist ERZEUGT, nicht von Hand gesetzt (2026-09-03)
+
+Die beiden SBKIM-Papers sind HTML-Dateien, die selbst die Quelle sind. **Paper A
+ist es nicht.** Seine Quelle ist das Markdown
+[`PAPER_A_regeln-und-grundsaetze.md`](PAPER_A_regeln-und-grundsaetze.md); die
+HTML entsteht daraus mit `tools/paper-md-zu-html.mjs`.
+
+Der Grund steht weiter unten in dieser Datei, im Abschnitt über die einzige
+Quelle: bis zum 2026-09-02 gab es jedes SBKIM-Paper **zweimal**, mit
+verschiedenen Titeln. Ein Markdown und eine von Hand gesetzte HTML daneben
+hätten genau diese Lage wiederhergestellt — nur mit Ansage.
+
+| | |
+|---|---|
+| **Quelle** | `PAPER_A_regeln-und-grundsaetze.md` — hier wird geändert |
+| **Erzeugnis** | `paper-a-regeln-und-grundsaetze.html` — **nie von Hand ändern** |
+| **Stil** | `paper.css`, byte-treu aus `sbkim-paper-de.html` gezogen |
+| **Wächter** | `tests/smoke_paper_a.mjs` baut neu und vergleicht · `tests/smoke_paper_css.mjs` hält den Stil an der inline-Fassung · `tests/gegenprobe_paper_a.mjs` (12 Fälle, 12 gefangen) |
+
+**Das PDF liegt NICHT im Depot** — wie bei den SBKIM-Papers auch. Es wird mit
+`tools/paper-zu-pdf.mjs` gebaut, wenn es gebraucht wird. Der Weg zur
+Veröffentlichung: **[`ZENODO_WEG.md`](ZENODO_WEG.md)**.
+
+⚠ **Der Seitenumbruch für die Schlussabschnitte steht im ERZEUGER**, nicht im
+Markdown. Der erste Anlauf setzte eine Marke `<!-- eigene-seite -->` in den
+Text — und sie erschien als **sichtbarer Text** in
+`docs/antragsmappe-einreichbar.html`, die dasselbe Markdown liest. Ein
+Seitenumbruch ist eine Aussage des Drucks, nicht des Textes. Der Wächter dort
+sah es nicht und ist seitdem um ein Muster reicher (`smoke_antragsmappe.mjs`,
+„HTML-Kommentar").
 
 ## Die DOIs (Zenodo, 2026-09-03)
 
