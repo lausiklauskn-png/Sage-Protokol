@@ -220,6 +220,27 @@ Aufgaben — die Zuordnung steht ausführlich in
 | **Versions-DOI** (der reservierte) | steht **im Papier selbst** |
 | **Concept-DOI** (legt Zenodo dazu an) | für dauerhafte Verweise: führt immer zur neuesten Fassung |
 
+### ⚠ Den Concept-DOI SIEHT man nicht, man merkt ihn nur
+
+**Gemessen von Klaus am 2026-09-03**, weil diese Frage eine ganze Runde
+gekostet hat: auf der Eintragsseite steht **nur die Versionsnummer**. Beim
+SBKIM-Papier zeigt die Seite ausschließlich `…22277738`, ausgewiesen als
+Version 2.0. Die `…22277737` taucht dort nirgends auf.
+
+**Sie ist trotzdem da.** Wer `doi.org/10.5281/zenodo.22277737` öffnet, landet
+automatisch auf der 738. Das ist keine Panne, sondern genau die Aufgabe des
+Concept-DOI: er hat keine eigene Seite, er ist eine **Weiterleitung** auf die
+jeweils neueste Fassung.
+
+Daraus folgt für die Suche danach: **nicht auf der Seite suchen, sondern
+ausprobieren.** Wer nur hinsieht, kommt zu dem Schluss, es gebe ihn nicht — und
+schriebe dann alle dauerhaften Verweise auf eine Fassungsnummer um, die beim
+nächsten Aufguss veraltet.
+
+Zu finden ist er im Kasten **Versions** beziehungsweise über *Cite all
+versions*. Findet man ihn dort nicht, ist der Weg über die Adresse der
+verlässlichere.
+
 **Beide Nummern in den Chat kopieren.**
 
 ---
