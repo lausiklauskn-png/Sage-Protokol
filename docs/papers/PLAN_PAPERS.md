@@ -43,7 +43,7 @@ hingeschrieben.
 ## Paper A · Regelbasiertes und grundsatzbasiertes Lenken
 
 > **✅ Fassung 1 geschrieben am 2026-08-23:**
-> [`PAPER_A_regeln-und-grundsaetze.md`](PAPER_A_regeln-und-grundsaetze.md).
+> [`regeln-und-grundsaetze-in-ki-agentensystemen.md`](regeln-und-grundsaetze-in-ki-agentensystemen.md).
 > Was unten steht, ist das Gerüst, nach dem es gebaut wurde: es bleibt stehen,
 > damit die Folge-Papers dieselbe Disziplin bekommen.
 >

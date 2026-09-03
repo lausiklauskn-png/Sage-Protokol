@@ -88,7 +88,7 @@ const MAPPEN = [
          die Frage \u201egibt es das nicht schon\u201c beantwortet sein muss,
          bevor jemand die Untersuchung liest. */
       'docs/ABGRENZUNG.md',
-      'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
+      'docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md',
       'docs/papers/PLAN_PAPERS.md',
       'docs/werkstatt/README.md',
       'docs/werkstatt/WERKSTATTREGELN.md',

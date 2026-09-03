@@ -10,8 +10,8 @@ Die **chronologische** Ordnung der Unterlagen steht in Blatt 50.
 |---|---|---|
 | `70_Forschungsaufgaben.html` | was ansteht, in welcher Reihenfolge | 51 KB |
 | `70_Forschungsaufgaben.pdf` | was ansteht, in welcher Reihenfolge | 142 KB |
-| `95_Antragsmappe-einreichbar.html` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 204 KB |
-| `95_Antragsmappe-einreichbar.pdf` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 582 KB |
+| `95_Antragsmappe-einreichbar.html` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 205 KB |
+| `95_Antragsmappe-einreichbar.pdf` | Entstehung, Abgrenzung, Untersuchung, Werkstatt | 564 KB |
 
 
 ## Zum Lesen am Bildschirm

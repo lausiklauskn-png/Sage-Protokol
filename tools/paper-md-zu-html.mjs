@@ -1,7 +1,7 @@
 /* paper-md-zu-html.mjs — baut aus einem Paper-Markdown die HTML-Fassung.
  *
- * Aufruf:  node tools/paper-md-zu-html.mjs docs/papers/PAPER_A_regeln-und-grundsaetze.md
- *          … --ziel docs/papers/paper-a-regeln-und-grundsaetze.html
+ * Aufruf:  node tools/paper-md-zu-html.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md
+ *          … --ziel docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html
  *          … --doi 10.5281/zenodo.NNNNNN
  *
  * ── WARUM ERZEUGT UND NICHT VON HAND GESCHRIEBEN ──────────────────────────
@@ -60,7 +60,8 @@ const SPRACHE = wert('--sprache', 'de');
  * an einer Stelle.
  */
 const EIGENE_SEITE = {
-  'PAPER_A_regeln-und-grundsaetze.md': ['8 · Einordnung', '9 · Verfügbarkeit'],
+  'regeln-und-grundsaetze-in-ki-agentensystemen.md': ['8 · Einordnung', '9 · Verfügbarkeit'],
+  'rules-and-principles-in-ai-agent-systems.md': ['8 · Placing the work', '9 · Availability'],
 };
 
 const EIGENE_SEITE_HIER = EIGENE_SEITE[QUELLE.split('/').pop()] || [];

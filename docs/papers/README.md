@@ -8,13 +8,14 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 |---|---|---|
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag, SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag, SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
-| `paper-a-regeln-und-grundsaetze.html` | **noch keine** — Paper A ist gebaut, aber noch nicht veröffentlicht | — |
+| `regeln-und-grundsaetze-in-ki-agentensystemen.html` | Station 9 · Regeln und Grundsätze, Paper A (DE) | `STATIONS_DATA[8]` (status `live`) |
+| `rules-and-principles-in-ai-agent-systems.html` | Station 10 · Rules and Principles, Paper A (EN) | `STATIONS_DATA[9]` (status `live`) |
 
 ## Paper A ist ERZEUGT, nicht von Hand gesetzt (2026-09-03)
 
 Die beiden SBKIM-Papers sind HTML-Dateien, die selbst die Quelle sind. **Paper A
 ist es nicht.** Seine Quelle ist das Markdown
-[`PAPER_A_regeln-und-grundsaetze.md`](PAPER_A_regeln-und-grundsaetze.md); die
+[`regeln-und-grundsaetze-in-ki-agentensystemen.md`](regeln-und-grundsaetze-in-ki-agentensystemen.md); die
 HTML entsteht daraus mit `tools/paper-md-zu-html.mjs`.
 
 Der Grund steht weiter unten in dieser Datei, im Abschnitt über die einzige
@@ -24,10 +25,26 @@ hätten genau diese Lage wiederhergestellt — nur mit Ansage.
 
 | | |
 |---|---|
-| **Quelle** | `PAPER_A_regeln-und-grundsaetze.md` — hier wird geändert |
-| **Erzeugnis** | `paper-a-regeln-und-grundsaetze.html` — **nie von Hand ändern** |
-| **Stil** | `paper.css`, byte-treu aus `sbkim-paper-de.html` gezogen |
-| **Wächter** | `tests/smoke_paper_a.mjs` baut neu und vergleicht · `tests/smoke_paper_css.mjs` hält den Stil an der inline-Fassung · `tests/gegenprobe_paper_a.mjs` (12 Fälle, 12 gefangen) |
+| **Quelle DE** | `regeln-und-grundsaetze-in-ki-agentensystemen.md` — hier wird geändert |
+| **Quelle EN** | `rules-and-principles-in-ai-agent-systems.md` — die Übersetzung, folgt der deutschen |
+| **Erzeugnisse** | `regeln-und-grundsaetze-in-ki-agentensystemen.html` · `rules-and-principles-in-ai-agent-systems.html` — **nie von Hand ändern** |
+| **Stil** | `paper.css`, byte-treu aus `sbkim-paper-de.html` gezogen, plus ein abgegrenzter Zusatz-Block |
+| **Wächter** | `tests/smoke_paper_a.mjs` baut beide neu und vergleicht · `tests/smoke_paper_css.mjs` hält den Stil an der inline-Fassung · `tests/gegenprobe_paper_a.mjs` |
+
+### Die englische Fassung ist eine Übersetzung, keine zweite Fassung
+
+**Bei Widersprüchen gilt die deutsche.** Sie ist die Quelle; die englische folgt
+ihr. Das steht so auch im Papier selbst.
+
+Wort für Wort lässt sich eine Übersetzung nicht vergleichen. **Ihre Gliederung
+schon**, und genau die misst `smoke_paper_a.mjs`: gleich viele Hauptabschnitte,
+Unterabschnitte und vierte Ebenen. Weicht das ab, hat jemand nur **eine** der
+beiden Seiten geändert, und dort fängt das Auseinanderlaufen an, vor dem der
+Abschnitt weiter unten warnt. Der Wächter misst nicht, ob richtig übersetzt
+wurde. Er misst, ob beide Seiten noch dieselbe Form haben.
+
+Gemessen am 2026-09-03: **13 Hauptabschnitte, 41 Unterabschnitte, 35 vierte
+Ebenen** in beiden Fassungen.
 
 **Das PDF liegt NICHT im Depot** — wie bei den SBKIM-Papers auch. Es wird mit
 `tools/paper-zu-pdf.mjs` gebaut, wenn es gebraucht wird. Der Weg zur

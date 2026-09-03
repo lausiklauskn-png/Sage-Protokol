@@ -4,8 +4,8 @@
  *
  * ── DIE ZUSICHERUNG ───────────────────────────────────────────────────────
  *
- * `docs/papers/paper-a-regeln-und-grundsaetze.html` ist ein ERZEUGNIS aus
- * `docs/papers/PAPER_A_regeln-und-grundsaetze.md`. Diese Probe baut die HTML
+ * `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html` ist ein ERZEUGNIS aus
+ * `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md`. Diese Probe baut die HTML
  * neu und vergleicht sie mit der abgelegten. Weichen sie ab, ist eine der
  * beiden von Hand geaendert worden — und dann gibt es den Text zweimal.
  *
@@ -34,8 +34,8 @@ import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const MD = resolve(WURZEL, 'docs/papers/PAPER_A_regeln-und-grundsaetze.md');
-const HTML = resolve(WURZEL, 'docs/papers/paper-a-regeln-und-grundsaetze.html');
+const MD = resolve(WURZEL, 'docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md');
+const HTML = resolve(WURZEL, 'docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html');
 
 let gruen = 0;
 const rot = [];
@@ -79,8 +79,8 @@ const ohneQuellzeile = (s) => s.replace(/^ {5}Die Quelle ist .*$/m, '     Die Qu
 pruefe('Die abgelegte HTML ist der frische Bau aus dem Markdown',
   ohneQuellzeile(neu) === ohneQuellzeile(abgelegt),
   'neu gebaut ' + neu.length + ' Zeichen, abgelegt ' + abgelegt.length +
-  ' — mit `node tools/paper-md-zu-html.mjs docs/papers/PAPER_A_regeln-und-grundsaetze.md ' +
-  '--ziel docs/papers/paper-a-regeln-und-grundsaetze.html` neu bauen');
+  ' — mit `node tools/paper-md-zu-html.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md ' +
+  '--ziel docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html` neu bauen');
 
 /* ---- 2. Aussagen ueber das Dokument ------------------------------------- */
 
@@ -144,6 +144,72 @@ pruefe('Kein Trennstrich steht direkt vor einer erzwungenen Seite',
    nicht mit vier Zeilen allein auf einer eigenen Seite endet. */
 pruefe('Der Verfasser-Abschnitt steht in seinem eigenen Block',
   /<div class="verfasser">/.test(rumpf));
+
+/* ---- 3. Die englische Fassung ------------------------------------------- */
+
+/* ⚠ ZWEI FASSUNGEN DESSELBEN TEXTES SIND DER TEUERSTE BEFUND DIESES ORDNERS.
+   `docs/papers/README.md`: bis zum 2026-09-02 gab es jedes SBKIM-Paper zweimal,
+   mit verschiedenen Titeln. „Zwei Texte mit derselben Ueberschrift und
+   verschiedenem Inhalt lassen sich nicht mehr reparieren, sobald jemand einen
+   davon zitiert hat."
+
+   Eine Uebersetzung laesst sich nicht Wort fuer Wort vergleichen. Ihre
+   GLIEDERUNG schon: gleich viele Abschnitte, gleich viele Unterabschnitte,
+   gleich viele vierte Ebenen. Weicht das ab, hat eine Seite einen Abschnitt
+   bekommen oder verloren, und das ist genau der Anfang des Auseinanderlaufens.
+   Es misst nicht, ob richtig uebersetzt wurde. Es misst, ob jemand nach der
+   Uebersetzung nur EINE der beiden Fassungen geaendert hat. */
+
+const EN_MD = resolve(WURZEL, 'docs/papers/rules-and-principles-in-ai-agent-systems.md');
+const EN_HTML = resolve(WURZEL, 'docs/papers/rules-and-principles-in-ai-agent-systems.html');
+
+pruefe('Die englische Fassung liegt vor', existsSync(EN_MD) && existsSync(EN_HTML));
+
+if (existsSync(EN_MD) && existsSync(EN_HTML)) {
+  const de = readFileSync(MD, 'utf8');
+  const en = readFileSync(EN_MD, 'utf8');
+  const zaehle = (t, m) => (t.match(m) || []).length;
+
+  for (const [was, muster] of [
+    ['Hauptabschnitte', /^## /gm],
+    ['Unterabschnitte', /^### /gm],
+    ['vierte Ebenen', /^#### /gm],
+  ]) {
+    const a = zaehle(de, muster), b = zaehle(en, muster);
+    pruefe('Deutsch und Englisch haben gleich viele ' + was, a === b,
+      'deutsch ' + a + ', englisch ' + b);
+  }
+
+  const enNeu = join(tmpdir(), 'paper-a-en-probe-' + process.pid + '.html');
+  let frisch = '';
+  try {
+    execFileSync('node', [resolve(WURZEL, 'tools/paper-md-zu-html.mjs'), EN_MD,
+      '--ziel', enNeu, '--sprache', 'en'],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    frisch = readFileSync(enNeu, 'utf8');
+  } catch (e) {
+    console.log('  ✗ Der Erzeuger lief fuer die englische Fassung nicht durch');
+  } finally {
+    try { if (existsSync(enNeu)) unlinkSync(enNeu); } catch (_e) { /* egal */ }
+  }
+  const enAbgelegt = readFileSync(EN_HTML, 'utf8');
+  pruefe('Die englische HTML ist der frische Bau aus ihrem Markdown',
+    !!frisch && ohneQuellzeile(frisch) === ohneQuellzeile(enAbgelegt));
+
+  const enRumpf = enAbgelegt.slice(enAbgelegt.indexOf('<body>'));
+  pruefe('Englisch: keine rohen Rauten-Überschriften im Text',
+    !/^\s*#{1,6}\s/m.test(enRumpf));
+  pruefe('Englisch: die Seite ist als englisch ausgezeichnet',
+    /<html lang="en">/.test(enAbgelegt));
+  pruefe('Englisch: die Grenzen stehen im Dokument',
+    /No control group/.test(enRumpf) && /Sample of one/.test(enRumpf) &&
+    /Not blinded/.test(enRumpf));
+  pruefe('Englisch: der Rahmen ist Feldbeobachtung, nicht Nachweis',
+    /field observation with a record/.test(enRumpf));
+  pruefe('Englisch: alle acht Quellen stehen da',
+    ['Bai', 'Gneezy', 'Kant', 'Kaplow', 'Kohlberg', 'Rebedea', 'Schuett', 'Tyler']
+      .every((n) => enRumpf.includes(n)));
+}
 
 console.log('\n' + gruen + ' gruen, ' + rot.length + (rot.length ? ' ROT' : ' rot'));
 process.exit(rot.length ? 1 : 0);

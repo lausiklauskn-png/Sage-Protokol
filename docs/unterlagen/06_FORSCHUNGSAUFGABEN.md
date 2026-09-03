@@ -44,7 +44,7 @@ die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
 | | |
 |---|---|
 | Stand | Material und Paper A liegen vor |
-| Belege im Depot | `docs/papers/PAPER_A_regeln-und-grundsaetze.md` · `docs/werkstatt` (vorhanden, seit 2026-08-23) |
+| Belege im Depot | `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md` · `docs/werkstatt` (vorhanden, seit 2026-08-23) |
 | Was noch fehlt | Der Versuchsaufbau ist entworfen (drei Arme mal drei Aufgabenarten), aber nicht gefahren. Fallzahl bisher eins, keine Kontrollgruppe, kein Maß. |
 
 ### Strang 3 · Was die Nutzung mit Menschen macht
@@ -63,7 +63,7 @@ die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
 | Nr. | Aufgabe | Strang | Ergebnis im Depot | Beleg | seit |
 |---|---|---|---|---|---|
 | **1** | Blatt „Stand der Technik und Abgrenzung" | alle drei | **Ergebnis liegt vor** | `docs/ABGRENZUNG.md`, 95 Zeilen | 2026-08-26 |
-| **2** | Paper A · Regeln und Grundsätze | 2 | **Ergebnis liegt vor** | `docs/papers/PAPER_A_regeln-und-grundsaetze.md`, 1.843 Zeilen | 2026-08-23 |
+| **2** | Paper A · Regeln und Grundsätze | 2 | **Ergebnis liegt vor** | `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md`, 1.843 Zeilen | 2026-08-23 |
 | **3** | Die zwei vorhandenen Papers auf Zenodo | alle drei | **Ergebnis liegt vor** | veröffentlicht am 2026-09-03 als [10.5281/zenodo.22277738](https://doi.org/10.5281/zenodo.22277738), Concept-DOI [10.5281/zenodo.22277737](https://doi.org/10.5281/zenodo.22277737); Quelle `docs/papers/sbkim-paper-de.html` · `docs/papers/sbkim-paper-en.html` | 2026-05-18 |
 | **4** | Englische Projektseite, eine Seite | alle drei | **Ergebnis fehlt** | noch keiner | ohne |
 | **5** | Paper C · KI-Kompetenz im täglichen Gebrauch | 3 | **Ergebnis fehlt** | noch keiner | ohne |
@@ -91,7 +91,7 @@ das nicht schon".
 | | |
 |---|---|
 | Ergebnis im Depot | **Ergebnis liegt vor**, erster Stand 2026-08-23 |
-| Beleg | `docs/papers/PAPER_A_regeln-und-grundsaetze.md` |
+| Beleg | `docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.md` |
 | Was noch fehlt | Der Werkzeug-Widerspruch: vier Stellen sagen im Präsens, die Rollen hätten keine Werkzeuge. Kimhubs Verfassung sagt seit dem 2026-08-23 das Gegenteil. Gehört VOR die Zenodo-Nummer, weil eine Zenodo-Fassung stehen bleibt. |
 | Hängt ab von | nichts, kann sofort beginnen |
 
