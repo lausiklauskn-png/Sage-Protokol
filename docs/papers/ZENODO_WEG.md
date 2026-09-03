@@ -106,11 +106,36 @@ Download-Ordner.
 |---|---|
 | Resource type | **Preprint** |
 | Title | Regeln und Grundsätze: Zwei Arten, ein KI-System zu lenken, und warum keine allein genügt |
+| Additional title | *Translated title*, Sprache Englisch — siehe unten |
 | Authors | Klaus Nitzsche |
 | Description | die Zusammenfassung aus dem Papier (Abschnitt „Zusammenfassung", 322 Wörter) |
 | License | **Creative Commons Attribution 4.0 International (CC BY 4.0)** |
 | Keywords | die sieben unten, zum Abschreiben |
 | Language | Deutsch (die englische Fassung liegt als zweite Datei bei) |
+
+### Der Titel: einer im Hauptfeld, einer als Übersetzung
+
+Zenodo hat **ein** Titelfeld und darunter **Additional titles**. Weil der
+Eintrag beide Sprachfassungen trägt, gehört die englische dort hinein, mit der
+Art *Translated title* und der Sprache Englisch. Sonst findet ein
+englischsprachiger Leser den Eintrag über den Titel nicht.
+
+**Hauptfeld** (Sprache des Eintrags ist Deutsch):
+
+```
+Regeln und Grundsätze: Zwei Arten, ein KI-System zu lenken, und warum keine allein genügt
+```
+
+**Additional title**, Art *Translated title*, Sprache Englisch:
+
+```
+Rules and Principles: Two ways to steer an AI system, and why neither is enough on its own
+```
+
+⚠ **Die dritte Zeile des Papiers gehört NICHT in den Titel.** „Eine
+Feldbeobachtung an einem laufenden Mehr-Rollen-System" sagt, welche **Art** von
+Arbeit das ist, nicht wie sie heißt. Sie gehört an den Anfang der Beschreibung.
+Ein Titel, der die Gattung mitträgt, wird in jeder Trefferliste einmal zu lang.
 
 ### Die Schlagwörter stehen HIER und nicht im Papier
 
