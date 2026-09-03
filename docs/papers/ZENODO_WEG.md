@@ -109,20 +109,51 @@ Download-Ordner.
 | Authors | Klaus Nitzsche |
 | Description | die Zusammenfassung aus dem Papier (Abschnitt „Zusammenfassung", 322 Wörter) |
 | License | **Creative Commons Attribution 4.0 International (CC BY 4.0)** |
-| Keywords | **offen** — siehe unten |
+| Keywords | die sieben unten, zum Abschreiben |
 | Language | Deutsch (die englische Fassung liegt als zweite Datei bei) |
 
-> ⚠ **DIE SCHLAGWÖRTER SIND OFFEN, UND DAS IST KEINE LÜCKE, SONDERN EIN BEFUND.**
->
-> Hier stand „die Schlagwörter aus dem Papier". Das ging ins Leere: die Zeile
-> wurde am 2026-09-03 aus dem Papier genommen. **Und zwar nicht, weil sie
-> überflüssig war, sondern weil sie nicht stimmte** (Klaus, am selben Tag).
->
-> Deshalb steht hier auch keine Ersatzliste. Die alten Wörter noch einmal
-> anzubieten hieße, genau das zurückzuholen, was als falsch verworfen wurde,
-> nur an einer anderen Stelle. Neue müssen gewählt werden, bevor der Eintrag
-> veröffentlicht wird; ein Zenodo-Eintrag ohne Schlagwörter ist zulässig, ein
-> Eintrag mit falschen ist schlechter als keiner.
+### Die Schlagwörter stehen HIER und nicht im Papier
+
+**Klaus 2026-09-03:** *„aus dem Paper habe ich sie streichen lassen, da waren
+sie nicht richtig"* — und dazu: *„ich habe ein Konto bei Zenodo, dort sollen die
+Schlagwörter rein."*
+
+Die Wörter selbst sind also in Ordnung, **nur ihr Platz war falsch**. Ein
+Schlagwort ist kein Bestandteil des Textes, sondern eine Angabe des Eintrags:
+es dient dem Finden, nicht dem Lesen. Im PDF steht es niemandem zur Verfügung,
+der sucht; im Zenodo-Formular schon.
+
+Zum Abschreiben, wie sie bis zum 2026-09-03 im Papier standen:
+
+```
+Lenkung von KI-Systemen
+Regeln und Standards
+grundsatzbasierte Regel
+Mehr-Agenten-Systeme
+Ausführungszeit-Alignment
+Betreiber-Steuerung
+Feldbeobachtung
+```
+
+Weil der Eintrag **beide Sprachfassungen** trägt, lohnen die englischen
+Entsprechungen daneben — gesucht wird international, und ein deutsches
+Schlagwort findet kein englischsprachiger Leser:
+
+```
+AI system steering
+rules versus standards
+principle-based rule
+multi-agent systems
+run-time alignment
+operator control
+field observation
+```
+
+> ⚠ **Und was hier vorher stand, war ein Missverständnis meinerseits.** Ich
+> hatte „da waren sie nicht richtig" als „inhaltlich falsch" gelesen und
+> daraufhin geschrieben, es dürfe keine Ersatzliste geben. Gemeint war „an der
+> falschen Stelle". Die Liste steht deshalb wieder da, nur an dem Ort, an den
+> sie gehört.
 
 3. **Publish** drücken.
 
