@@ -34,19 +34,48 @@ body {
   box-shadow:0 1px 24px rgba(0,0,0,.07);
 }
 @media(max-width:860px) { .paper { padding:40px 28px; } }
+/* Druck: auf DIN A4 festgelegt (Klaus 2026-09-03).
+   Vorher stand hier KEINE @page-Regel - das Format war nirgends bestimmt,
+   und jeder Drucker entschied selbst. Der Rand steht jetzt hier, deshalb
+   faellt das Innenpolster der .paper weg; sonst zaehlt beides doppelt. */
+@page { size:A4; margin:18mm 16mm; }
+
 @media print {
   h2 { break-before:auto; break-after:avoid; }
   h3 { break-after:avoid; }
   h2 + p, h3 + p { break-before:avoid; }
-  .protocol-box, .dim-grid, .dim-card, .abstract,
-  .layer-diagram, table, .footnotes { break-inside:avoid; }
-  tr { break-inside:avoid; }
+
+  /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
+     Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
+     dieser Liste. Gemessen am 2026-09-03: die beiden groessten Tabellen
+     sind 555 und 550px hoch, die Fussnoten 503, die Zusammenfassung 450
+     - bei 987px Nutzhoehe je Seite. Passte so ein Block nicht mehr, sprang
+     er ganz auf die naechste Seite und liess den Rest leer: 1.377px an
+     drei Stellen, zusammen 1,4 leere Seiten. */
+  .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
+
+  /* WAS UMBRECHEN DARF - aber nie mitten in einer Zeile oder Fussnote. */
+  .abstract, table, tbody, .footnotes { break-inside:auto; }
+  tr, .footnotes p, .dim-card { break-inside:avoid; }
+  thead { display:table-header-group; }   /* Kopfzeile wiederholt sich */
+
   p { orphans:3; widows:3; }
 
   body { background:#fff; }
-  .paper { box-shadow:none; padding:40px; }
+  .paper { box-shadow:none; padding:0; }
   .no-print { display:none; }
   a { color:inherit; }
+
+  /* AUF PAPIER FUEHRT EIN VERWEIS ZU NICHTS. Die Kopfzeilen-Verweise
+     standen als blosse Beschriftung da ("Live-Demo Layer 1"), ohne dass
+     irgendwo die Adresse zu lesen war. Im Druck steht sie jetzt dabei,
+     eine je Zeile. Im Bildschirm-Stil bleibt es ein Verweis. */
+  .paper-links a { display:block; margin:0 0 3px; }
+  .paper-links a::after {
+    content:" " attr(href);
+    font-family:'Source Code Pro',monospace; font-size:10.5px; color:#555;
+    word-break:break-all;
+  }
 }
 
 .paper-title {
@@ -130,7 +159,8 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     KI-Matching in Menschen- und Agentennetzwerken
   </h1>
   <p class="paper-authors">Unabhängige Forschung · Offener Protokoll-Vorschlag</p>
-  <p class="paper-date">September 2026 · Erstveröffentlichung</p>
+  <p class="paper-date">September 2026 · Erstveröffentlichung im offenen Depot auf GitHub ·
+    Zweitveröffentlichung über Zenodo</p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol">Referenz-Implementierung →</a>
     <a href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/demo.html">Live-Demo Layer 1 →</a>
@@ -869,6 +899,16 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <strong>Wo die Belege liegen.</strong> Das Protokoll-Depot aus Abschnitt 6
     trägt die Sitzungsprotokolle, die Lehren aus Fehlern und die Prüfblätter zu
     den Arbeitstagen. Die Historie ist öffentlich und mit Datum versehen.
+  </p>
+
+  <p>
+    <strong>Wo dieser Text zuerst stand.</strong> Das Depot war während der
+    gesamten Entstehung öffentlich zugänglich; die Fassungen dieses Textes sind
+    dort mit Datum und Änderungsverlauf nachzulesen. Die
+    <em class="key">Erstveröffentlichung</em> ist damit das offene Depot selbst.
+    Die Fassung bei Zenodo ist eine <em class="key">Zweitveröffentlichung</em> —
+    sie gibt dem Text eine zitierfähige Adresse und eine feste Fassung, sie ist
+    nicht sein erstes Erscheinen.
   </p>
 
   <hr class="divider">
