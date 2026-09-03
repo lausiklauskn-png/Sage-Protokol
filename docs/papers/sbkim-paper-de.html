@@ -35,6 +35,14 @@ body {
 }
 @media(max-width:860px) { .paper { padding:40px 28px; } }
 @media print {
+  /* Das Deckblatt steht fuer sich: Titel, Herkunft, Zusammenfassung. Die
+     Einleitung beginnt oben auf der naechsten Seite, statt sich den Rest von
+     Seite eins mit der Zusammenfassung zu teilen. */
+  .abstract { break-after:page; }
+  /* Sicherheitsnetz: bricht eine Tabelle doch einmal um (weil sie laenger ist
+     als eine Seite), wiederholt sich ihr Kopf. Ohne das stehen auf der zweiten
+     Seite Zahlen ohne Spaltennamen. */
+  thead { display:table-header-group; }
   h2 { break-before:auto; break-after:avoid; }
   h3 { break-after:avoid; }
   h2 + p, h3 + p { break-before:avoid; }
