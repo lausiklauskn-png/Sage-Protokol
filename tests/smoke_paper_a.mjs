@@ -98,6 +98,20 @@ pruefe('Keine rohe Fett-Auszeichnung mehr im Text', !/\*\*/.test(rumpf),
   'irgendwo blieb `**` stehen — meist fett MIT kursiv darin');
 pruefe('Keine rohen Tabellen-Striche mehr im Text', !/^\s*\|.*\|\s*$/m.test(rumpf));
 
+/* ⚠ VIER RAUTEN. Der Erzeuger kannte bis zum 2026-09-03 nur `##` und `###`;
+   die 35 `####`-Zeilen fielen durch in den Absatz-Zweig und standen woertlich
+   als „#### Zwei Richtungen, die man nicht verwechseln darf" im PDF. Gefunden
+   hat es Klaus beim Lesen, keine Probe. Gemessen wird beides: keine rohe Raute
+   im Text UND die vierte Ebene ist wirklich gesetzt. Nur das erste zu pruefen
+   waere auch dann gruen, wenn die Zeilen ganz verschwaenden. */
+const rauten = (rumpf.match(/^\s*#{1,6}\s/gm) || []).length;
+pruefe('Keine rohen Rauten-Überschriften mehr im Text', rauten === 0,
+  'gefunden: ' + rauten);
+
+const h4 = (rumpf.match(/<h4>/g) || []).length;
+pruefe('Die vierte Überschriften-Ebene ist gesetzt', h4 === 35,
+  'gezaehlt: ' + h4 + ' (erwartet 35)');
+
 pruefe('Die Grenzen stehen im Dokument',
   /Keine Kontrollgruppe/.test(rumpf) && /Fallzahl eins/.test(rumpf) &&
   /Nicht verblindet/.test(rumpf));

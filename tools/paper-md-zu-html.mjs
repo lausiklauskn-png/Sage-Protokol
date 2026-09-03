@@ -139,6 +139,25 @@ let inAbschnitt = null;          // 'abstract' | 'footnotes' | null
 const schliesseAbschnitt = () => { if (inAbschnitt) { aus.push('  </div>'); inAbschnitt = null; } };
 const einzug = () => (inAbschnitt ? '      ' : '    ');
 
+/* ── DIE THEMA-KLAMMER IST GEMESSEN UND VERWORFEN (2026-09-03) ─────────────
+ *
+ * Der erste Anlauf fasste jeden Unterabschnitt in ein <section class="thema">
+ * und hielt es im Druck mit `break-inside:avoid` zusammen. Klaus' Wunsch war
+ * richtig; der Weg war es nicht. Gemessen am fertigen PDF:
+ *
+ *   nur die Absatz-Regel        45 Seiten · 0 zerrissene Saetze · 0 Absaetze
+ *   + Klammer um alle Themen    54 Seiten · 0 · 0
+ *   + Klammer nur um kleine     50 Seiten · 0 · 0
+ *
+ * Die Klammer kostet fuenf bis neun Seiten und bringt auf den genannten
+ * Kriterien NICHTS: der Absatz ist die Einheit, die zaehlt, nicht der
+ * Abschnitt. Ein Satz liegt immer in einem Absatz — wer den nicht spaltet,
+ * spaltet auch keinen Satz.
+ *
+ * Sie steht hier als verworfene Moeglichkeit, nicht als Luecke. Wer sie
+ * wiederhaben will, weiss jetzt, was sie kostet.
+ */
+
 while (i < rumpf.length) {
   const t = rumpf[i].trim();
 
@@ -146,7 +165,16 @@ while (i < rumpf.length) {
 
   if (t === '---') { schliesseAbschnitt(); aus.push('  <hr class="divider">'); i++; continue; }
 
-  /* Ueberschriften */
+  /* Ueberschriften.
+     ⚠ VIER RAUTEN GAB ES BIS ZUM 2026-09-03 NICHT. Der Erzeuger kannte nur
+     `##` und `###`; die 35 `####`-Zeilen des Papiers fielen durch bis in den
+     Absatz-Zweig und standen woertlich als „#### Zwei Richtungen, die man
+     nicht verwechseln darf" im PDF. Gefunden hat es Klaus beim Lesen, keine
+     Probe. `smoke_paper_a.mjs` misst es jetzt. */
+  if (/^####\s+/.test(t)) {
+    aus.push(einzug() + '<h4>' + inline(t.replace(/^####\s+/, '')) + '</h4>');
+    i++; continue;
+  }
   if (/^###\s+/.test(t)) {
     aus.push(einzug() + '<h3>' + inline(t.replace(/^###\s+/, '')) + '</h3>');
     i++; continue;

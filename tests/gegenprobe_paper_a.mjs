@@ -130,6 +130,22 @@ try {
     '.replace(/\\*\\*([^*]+)\\*\\*/g,',
     'smoke_paper_a.mjs', 'Keine rohe Fett-Auszeichnung');
 
+  /* --- Die vierte Ueberschriften-Ebene -------------------------------------- */
+
+  /* Der echte Fehler vom 2026-09-03: der Erzeuger kannte `####` nicht. */
+  fall('Der Erzeuger kennt die vierte Ebene nicht mehr',
+    P('tools/paper-md-zu-html.mjs'),
+    "  if (/^####\\s+/.test(t)) {", "  if (/^@@@@nie@@@@/.test(t)) {",
+    'smoke_paper_a.mjs', 'Keine rohen Rauten-Überschriften mehr im Text');
+
+  /* Und die Gegenrichtung: die Zeilen verschwinden ganz. Ein Waechter nur auf
+     „keine rohe Raute" waere dann gruen, obwohl 35 Ueberschriften fehlen. */
+  fall('Die vierten Ueberschriften verschwinden spurlos',
+    P('tools/paper-md-zu-html.mjs'),
+    "    aus.push(einzug() + '<h4>' + inline(t.replace(/^####\\s+/, '')) + '</h4>');",
+    "    /* nichts */",
+    'smoke_paper_a.mjs', 'Die vierte Überschriften-Ebene ist gesetzt');
+
   /* --- Der Stil-Waechter --------------------------------------------------- */
 
   fall('paper.css laeuft von der inline-Fassung weg',

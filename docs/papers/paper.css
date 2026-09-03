@@ -274,3 +274,65 @@ tr:nth-child(even) td { background:#fafafa; }
 em.key { font-style:normal; font-weight:600; color:var(--text); }
 sup { font-size:11px; color:var(--accent); }
 code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0fa; padding:1px 5px; border-radius:3px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ZUSÄTZE — gelten NUR für die erzeugten Papers, nicht für die SBKIM-Fassungen
+   ══════════════════════════════════════════════════════════════════════════
+
+   Alles OBERHALB dieser Marke ist byte-gleich mit dem <style> von
+   `sbkim-paper-de.html`; `tests/smoke_paper_css.mjs` vergleicht genau bis
+   hierher. Was darunter steht, ist bewusst hinzugekommen und hat in den
+   veroeffentlichten SBKIM-Dateien keine Entsprechung.
+
+   Grund fuer die Trennung: die SBKIM-Papers liegen unter einem DOI. Sie
+   deshalb nicht anzufassen ist richtig — aber es darf nicht dazu fuehren,
+   dass ein neues Papier keine eigene Regel bekommen kann. Ein Waechter, der
+   jede Ergaenzung verbietet, wird irgendwann abgeschaltet statt gelesen.
+
+   ── DIE VIERTE EBENE (Klaus 2026-09-03) ─────────────────────────────────
+   Paper A hat 35 `####`-Ueberschriften. Sie brauchen eine eigene Groesse,
+   sonst ist die Gliederung an der Schrift nicht mehr abzulesen — derselbe
+   Befund, der am 2026-09-03 schon fuer h2 galt (h2 war kleiner als der
+   Fliesstext). */
+h4 {
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
+  color:var(--t2); margin:20px 0 6px; letter-spacing:.2px;
+}
+
+/* ── KEIN ABSATZ WIRD GESPALTEN (Klaus 2026-09-03) ────────────────────────
+
+   „Keine Sätze trennen bei einem Seitenumbruch. Absätze versuchen, auf eine
+   neue Seite zu bringen, wenn sie getrennt werden."
+
+   Der Absatz ist die Einheit, die dafuer zaehlt: ein Satz liegt immer in einem
+   Absatz, wer den nicht spaltet, spaltet auch keinen Satz. Gemessen am
+   fertigen PDF, Paper A:
+
+     ohne die Regel   44 Seiten · 6 zerrissene Saetze · 6 Absaetze
+     mit der Regel    45 Seiten · 0 · 0
+
+   ⚠ EINE ZUSAETZLICHE KLAMMER UM GANZE THEMEN WURDE GEMESSEN UND VERWORFEN.
+   Sie brachte auf denselben Kriterien nichts (0 und 0 waren schon erreicht)
+   und kostete fuenf bis neun weitere Seiten. Begruendung und Zahlen stehen in
+   `tools/paper-md-zu-html.mjs`.
+
+   Absaetze, die laenger als eine Seite sind, brechen weiterhin um. Dagegen
+   hilft nur Kuerzen, nicht CSS. */
+@media print {
+  /* Ein Absatz wird nicht gespalten. Damit kann auch kein SATZ ueber eine
+     Seitengrenze laufen: ein Satz liegt immer in einem Absatz. Absaetze, die
+     laenger als eine Seite sind, brechen weiterhin — dagegen hilft nur
+     Kuerzen, nicht CSS. */
+  p, li, blockquote { break-inside:avoid; }
+
+  /* Eine Ueberschrift ohne ihren Text darunter ist eine Ueberschrift auf der
+     falschen Seite. Gilt jetzt fuer alle vier Ebenen, vorher nur fuer zwei. */
+  h4 { break-after:avoid; }
+  h4 + p, h4 + ul, h4 + ol, h4 + table, h4 + blockquote { break-before:avoid; }
+  h2 + table, h3 + table, h2 + ul, h3 + ul, h2 + blockquote, h3 + blockquote {
+    break-before:avoid;
+  }
+
+  /* Gedruckt etwas kleiner als am Bildschirm, wie die uebrigen Ebenen. */
+  h4 { font-size:13.4px; margin:14px 0 5px; }
+}

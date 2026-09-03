@@ -13,126 +13,41 @@ Material: <https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werk
 ## Zusammenfassung
 
 Wer ein KI-System lenken will, hat zwei Werkzeuge. **Regeln** sind prüfbar und
-werden erzwungen; sie decken genau den Fall ab, für den jemand sie geschrieben
-hat. **Grundsätze** lassen sich weder prüfen noch erzwingen; sie sind Fragen an
-die konkrete Lage und greifen deshalb auch dort, wo niemand vorher hingesehen hat.
+werden erzwungen. Sie decken den Fall ab, für den jemand sie geschrieben hat.
+**Grundsätze** lassen sich weder prüfen noch erzwingen. Sie sind Fragen an die
+konkrete Lage und greifen auch dort, wo niemand vorher hingesehen hat.
 
-Der Unterschied ist bei Menschen alltäglich: wer an der roten Ampel hält, weil
-er die Strafe fürchtet, verhält sich anders als jemand, der hält, weil dort
-jemand über die Straße gehen könnte. Sichtbar wird es erst nachts um drei an der
-leeren Kreuzung, oder wenn ein Rettungswagen durch muss. **Bei einem KI-System
-fällt allerdings beides weg, Strafangst wie Sorge um den Nächsten.** Was bleibt,
-ist die Form der Anweisung: nennt sie den Fall oder den Zweck? Das Papier führt
-das Bild ein und zeigt, wo es bricht (1.1 und 1.2).
+Die Unterscheidung ist nicht neu. Sie ist in fünf Feldern durchgearbeitet, von
+Kant über Kohlberg und Tyler (1990) bis Kaplow (1992) und, seit 2024, die
+KI-Regulierung (Schuett et al.). Neu ist die **Ebene**: Grundsätze zur
+**Ausführungszeit**, gesetzt vom **Betreiber**, in einer Textdatei, die auch
+jemand ändern kann, der nicht programmieren kann. Die vorhandene Arbeit besetzt
+die beiden Nachbarplätze, Grundsätze zur Trainingszeit (Bai et al. 2022) und
+Regeln zur Ausführungszeit (Rebedea et al. 2023).
 
-Die Unterscheidung selbst ist nicht neu. Sie ist in **fünf** Feldern
-durchgearbeitet: Philosophie (Kant 1785, Legalität und Moralität),
-Entwicklungspsychologie (Kohlberg), Rechtssoziologie (Tyler 1990: Legitimität
-trägt weiter als Abschreckung), Rechtsökonomie (Kaplow 1992, *rules versus
-standards*) und seit 2024 die KI-Regulierung (Schuett et al. 2024). Auf der
-KI-Seite ist die Schwäche des Regel-Kanals als *specification gaming* gut belegt.
-Neu ist die **Ebene**, auf der hier beobachtet wird.
+Beobachtet wird an einem laufenden Aufbau: fünf Rollen mit Namen bearbeiten
+nacheinander einen Auftrag. Ein Durchgang heißt **Schicht** und wird
+mitgeschrieben. Beide Kanäle gehen bei jedem Aufruf als Text mit.
 
-Eine zweite Eigenschaft wiegt im Betrieb schwerer als die Reichweite und kommt in
-der Literatur nur am Rand vor: **Haltbarkeit**. Eine Regel im Text wird von
-demselben System **gelesen**, das sie binden soll, und ist damit zugleich eine
-Angriffsfläche. Sie ist eine Bedingung, und jede Bedingung hat einen Rand, an
-dem man knapp innen stehen kann. Ein Grundsatz hat diesen Rand nicht. Zugleich
-altert ein Regelwerk mit der Umgebung und muss gepflegt werden, ein Grundsatz
-nicht. Kurz: **eine Regel kann erfüllt werden, ohne getroffen zu sein; ein
-Grundsatz kann übergangen werden, ohne verletzt zu sein**, und **Haltbarkeit und
-Nachweisbarkeit lassen sich nicht im selben Kanal haben** (3.8).
+Der Bericht hat drei Teile. **Erstens** vier durchgeführte Fälle: dieselbe Lage,
+einmal durch jeden Kanal. Einer zeigt zwei Anweisungen mit denselben Wörtern,
+die verschieden entscheiden. Nicht der Wortlaut trennt die Kanäle, sondern was
+sie binden: die **Ausgabe** oder die **Aufmerksamkeit**. **Zweitens**
+**Haltbarkeit**, die Eigenschaft, die im Betrieb am schwersten wiegt. Eine Regel
+kann erfüllt werden, ohne getroffen zu sein; ein Grundsatz übergangen, ohne
+verletzt zu sein. Haltbarkeit und Nachweisbarkeit lassen sich nicht im selben
+Kanal haben (3.8). **Drittens** die Stellen, an denen beide Kanäle versagt
+haben, jeweils mit Datum.
 
-Beobachtet wird an einem **laufenden Aufbau**. Das Depot *Sage-Protokol* läuft seit dem 10. März 2026 und ist
-seither durchgehend protokolliert; daraus ist die Frage überhaupt entstanden. Auf
-dieser Grundlage entstand die **Werkstatt**: fünf Rollen mit Namen arbeiten
-nacheinander an einem Auftrag, ein Durchgang heißt **Schicht**, er hat einen
-Kosten-Deckel von fünf Euro und wird mitgeschrieben: Aufrufe, Token, Kosten,
-Dauer. Beide Kanäle, Regeln wie Grundsätze, gehen bei jedem Aufruf als Text mit
-(Abschnitt 3). **Zwei Zeiträume gehören dabei auseinandergehalten:** die
-Dokumentation reicht über fünf Monate, die Messung über Tage. Wo im Papier eine
-gemessene Zahl steht, stammt sie aus dem zweiten.
+Daraus folgt ein Begriffspaar: eine **grundsatzbasierte Regel** ist die
+tragfähige Bauform, ein **regelbasierter Grundsatz** der Fehler dazu.
 
-**Der erste ist seit dem 2026-08-24 kein ungefährer mehr.** Die Git-Historie
-aller 33 Depots wurde ausgelesen und ausgezählt: **5.823 Commits an 128
-Arbeitstagen, vom 10.03. bis zum 24.08.2026**, über 1.388 Zweige, davon 1.662
-Commits, die nie auf einem Hauptzweig ankamen. Die Quelle liegt offen
-([`../historie/`](../historie/)). Sie belegt, *dass* und *wann* gearbeitet
-wurde, nicht *wie lange* an einem Tag, und wird hier auch nicht so verwendet.
-
-Aus derselben Richtung folgt ein praktischer Nebenbefund: **mehrere Regeln, die
-denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
-sie stammen.** Die naheliegende Sparsamkeits-These ist dabei durch die eigene
-Rechnung widerlegt. Es ist nicht die Anweisung, die kostet, sondern die **Arbeit**
-(3.9).
-
-Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
-Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
-unerwünschte Verhalten **vermehrte**, die Regel ersetzte die Norm, statt sie zu
-stützen, und der Schaden blieb nach Abschaffung der Strafe bestehen. Ob es hier
-eine Entsprechung gibt, ist offen; sie würde nicht am Beweggrund ansetzen (den
-ein KI-System nicht hat), sondern an der **Aufmerksamkeit**, und wäre mit dem
-beschriebenen Aufbau prüfbar.
-
-Die vorhandene Arbeit zur Lenkung von Sprachmodellen besetzt zwei Positionen:
-Grundsätze zur **Trainingszeit**, gesetzt vom Modellanbieter (Constitutional AI,
-Bai et al. 2022), und Regeln zur **Ausführungszeit**, gesetzt vom Einsetzenden
-(NeMo Guardrails, Rebedea et al. 2023). Eine dritte Position ist dünn besetzt:
-**Grundsätze zur Ausführungszeit, gesetzt vom Betreiber**, in einer gewöhnlichen
-Textdatei, die auch jemand ändern kann, der nicht programmieren kann.
-
-Der oben beschriebene Aufbau sitzt genau dort, und dieses Papier berichtet aus
-seinem Betrieb. Vier Fälle werden **durchgeführt** statt beschrieben: dieselbe
-Lage, einmal durch den Regel-Kanal und einmal durch den Grundsatz-Kanal betrachtet,
-mit dem, was tatsächlich geschah. Einer der vier zeigt zwei Anweisungen mit
-**denselben Wörtern**, die verschieden entscheiden, nicht der Wortlaut trennt die
-Kanäle, sondern was sie binden: die **Ausgabe** oder die **Aufmerksamkeit**. **Die beiden sind dabei nicht gleichrangig.** Der Grundsatz ist die Grundlage,
-die Regel seine **Zuspitzung auf einen Fall**. Man kann jede vernünftige Regel
-nach ihrem Wozu fragen, und die Antwort ist ein Grundsatz. Daraus erklärt sich,
-warum eine Regel erfüllt sein kann, ohne getroffen zu sein, und warum sie altert:
-sie ist ein **Stellvertreter**, und der Stellvertreter ist nicht die Sache (3.5).
-Daraus folgt ein Begriffspaar, das die Richtung im Namen trägt: eine
-**grundsatzbasierte Regel** ist die tragfähige Bauform, ein **regelbasierter
-Grundsatz** ist der Fehler, der dabei entsteht, wenn man die Entstehungsrichtung
-für die Begründungsrichtung hält.
-
-**Es behauptet nicht, dass Grundsätze besser wären.** Der
-Aufbau zeigt im Gegenteil, dass **beide Wege versagen**, an verschiedenen
-Stellen, aus verschiedenen Gründen, jeweils mit Datum belegt. Die tragende
-Beobachtung ist eine andere: sie leisten **Verschiedenes**, ihre Grenzen liegen
-woanders, und keins von beidem genügt allein.
-
-Das Papier legt seine Grenzen offen: keine Kontrollgruppe, kein Maß, Fallzahl
-eins, nicht verblindet. Es ist eine **Feldbeobachtung mit Protokoll**, keine
-Studie.
-
-Abschnitt 7.10 behandelt die Rückkopplung, ob ein System aus den eigenen
-Ergebnissen neue Grundsätze ableiten kann. Erkennen ja, formulieren nein: **ein
-aus beobachteten Vorfällen abgeleiteter Grundsatz ist eine Regel im Gewand eines
-Grundsatzes**, weil er nur abdecken kann, was schon eingetreten ist. Nützlich ist
-die Rückkopplung trotzdem, nicht zum Schreiben, sondern zum **Pflegen**.
-
-Abschnitt 7.9 beantwortet zudem, was das System **selbst** beweisen kann: die
-Buchführung über die Bedingungen, die entscheidbaren Fehlerarten, darunter die
-behauptete Ausführung, denn die Maschine weiß, welche Werkzeuge sie ausgegeben
-hat, die Wiederholbarkeit, und die **Einhaltung der Verblindung**, festgenagelt
-durch im Voraus veröffentlichte Prüfsummen statt durch Beteuerung. Was es
-strukturell **nicht** kann, ist beurteilen, welche Ausgabe besser ist.
-
-Abschnitt 7 beschreibt den Versuch, der daraus eine machen soll: **drei Arme**,
-nur Regeln, nur Grundsätze, beides, mit vorab festgelegten Fehlerkategorien und
-einem Auswertungswerkzeug, das dem Bewertenden **verbirgt, aus welchem Arm ein
-Lauf stammt**. Eine zweite Achse variiert die **Art der Aufgabe**, von der
-völlig offenen eigenen Idee bis zur eng umrissenen Verbesserung von
-Bestehendem.
-
-Daraus folgt eine Vorhersage, die falsch sein kann, und sie hat eine Richtung:
-**der Vorteil der Grundsätze müsste mit der Vorhersehbarkeit des Falls fallen**,
-groß bei der offenen Aufgabe, klein oder umgekehrt bei der umrissenen. Ein
-flacher oder gegenläufiger Verlauf widerlegt die These, unabhängig davon, welcher
-Arm insgesamt vorn liegt.
-
----
+Das Papier behauptet **nicht**, dass Grundsätze besser wären. Es legt seine
+Grenzen offen: keine Kontrollgruppe, kein Maß, Fallzahl eins, nicht verblindet.
+Es ist eine **Feldbeobachtung mit Protokoll**, keine Studie. Abschnitt 7
+beschreibt den Versuch, der daraus eine machen soll, mit drei Armen und einer
+Auswertung, die den Arm verbirgt. Dessen Vorhersage kann falsch sein: der
+Vorteil der Grundsätze müsste mit der Vorhersehbarkeit des Falls **fallen**.
 
 ## 1 · Die Ausgangsfrage
 
@@ -410,6 +325,17 @@ Agenten mit Namen. Ein Durchgang heißt **Schicht** und läuft so ab:
 3. Gebaut wird über eine **API-Schnittstelle**, seit dem 2026-08-23 **mit
    Werkzeugen** in der Hand der Agenten.
 4. **Alles wird mitgeschrieben**: Aufrufe, Token, Kosten, Dauer, Werkzeug-Griffe.
+
+**Wie lange das schon läuft, ist ausgezählt und nicht geschätzt.** Die
+Git-Historie aller 33 Depots wurde am 2026-08-24 ausgelesen: **5.823 Commits an
+128 Arbeitstagen, vom 10.03. bis zum 24.08.2026**, über 1.388 Zweige, davon
+1.662 Commits, die nie auf einem Hauptzweig ankamen. Die Quelle liegt offen
+([`../historie/`](../historie/)). Sie belegt, *dass* und *wann* gearbeitet
+wurde, nicht *wie lange* an einem Tag, und wird hier auch nicht so verwendet.
+
+⚠ **Zwei Zeiträume gehören auseinandergehalten.** Die Dokumentation reicht über
+fünf Monate, die Messung über Tage. Wo im Papier eine gemessene Zahl steht,
+stammt sie aus dem zweiten.
 
 Der Zweck des Aufbaus ist die Frage dieses Papiers: **dieselbe Schicht wird
 einmal regelbasiert und einmal grundsatzbasiert gefahren**, und beide Läufe

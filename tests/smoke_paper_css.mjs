@@ -62,7 +62,16 @@ const stilAus = (html) => {
 const cssRoh = readFileSync(CSS, 'utf8');
 /* Der eigene Kopf-Kommentar endet an seinem Abschluss-Zeichenpaar.
    (Das hier NICHT als Zeichen hinschreiben: es schliesst diesen Kommentar.) */
-const cssOhneKopf = cssRoh.slice(cssRoh.indexOf('*/') + 2).replace(/^\n+/, '\n');
+/* ── DER VERGLEICHSBEREICH ENDET AN DER ZUSATZ-MARKE ──────────────────────
+   Unterhalb von „ZUSÄTZE" stehen Regeln, die es in den SBKIM-Fassungen NICHT
+   gibt und nicht geben soll (h4, die Thema-Klammer). Verglichen wird deshalb
+   nur der geteilte Teil. Ohne diese Grenze haette jede noetige Ergaenzung den
+   Waechter rot gemacht — und ein Waechter, der das Richtige verbietet, wird
+   abgeschaltet statt gelesen. */
+const ZUSATZ_MARKE = 'ZUS\u00c4TZE \u2014 gelten NUR f\u00fcr die erzeugten Papers';
+const zusatzAb = cssRoh.indexOf(ZUSATZ_MARKE);
+const cssGeteilt = zusatzAb < 0 ? cssRoh : cssRoh.slice(0, cssRoh.lastIndexOf('/*', zusatzAb));
+const cssOhneKopf = cssGeteilt.slice(cssGeteilt.indexOf('*/') + 2).replace(/^\n+/, '\n');
 const deStil = stilAus(readFileSync(DE, 'utf8'));
 
 pruefe('paper.css ist byte-gleich mit dem <style> der DE-Fassung',
@@ -93,6 +102,18 @@ const REGELN = [
    gedeckt haben. */
 for (const [was, muster] of REGELN) {
   pruefe('paper.css: ' + was, muster.test(cssOhneKopf));
+}
+
+/* Die Zusaetze bekommen ihren eigenen Waechter — sonst waeren sie der einzige
+   Teil der Datei, den niemand misst. */
+pruefe('paper.css: die Zusatz-Marke steht da', zusatzAb > 0);
+const zusatz = zusatzAb > 0 ? cssRoh.slice(zusatzAb) : '';
+for (const [was, muster] of [
+  ['die vierte Überschriften-Ebene ist gesetzt', /^h4 \{/m],
+  ['ein Absatz wird nicht gespalten', /p, li, blockquote \{ break-inside:avoid; \}/],
+  ['eine h4 bleibt bei ihrem Text', /h4 \{ break-after:avoid; \}/],
+]) {
+  pruefe('Zusätze: ' + was, muster.test(zusatz));
 }
 
 const enStil = stilAus(readFileSync(EN, 'utf8'));
