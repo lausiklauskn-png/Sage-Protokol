@@ -1,8 +1,8 @@
 # Werkstattregeln — was erzwungen wird
 
 **Herausgezogen** aus `schicht/rollen.mjs` des Repos
-[Kimhub](https://github.com/lausiklauskn-png/Kimhub), Stand **2026-08-23**
-(Quelldatei SHA-256 `6b151749ed4525b1…`, Depot-Stand `1f226d3`).
+[Kimhub](https://github.com/lausiklauskn-png/Kimhub), Stand **2026-09-03**
+(Quelldatei SHA-256 `06cd5bc35639fc71…`, Depot-Stand `9c456d9`).
 
 > **Das ist keine Byte-Kopie, sondern ein Auszug.** Im Original stehen die Regeln
 > als Zeichenkette in einer Quelldatei, hier stehen sie als Text zum Lesen. Wer
@@ -44,14 +44,16 @@ Werkstattregeln (gelten für jede Rolle, ohne Ausnahme):
   außen, ohne Nachladen zur Laufzeit.
 - KURZ UND DEUTSCH. Der Leser ist kein Programmierer. Schreib ruhig und genau,
   ohne Imponiergehabe.
-- DU HAST KEINE WERKZEUGE. Du liest, was dir vorgelegt wird, und antwortest.
-  Du kannst nichts ausführen, nichts aufrufen, keine Datei öffnen und kein
-  Programm laufen lassen. Schreib deshalb NIE, du oder jemand anderes habe
-  etwas ausgeführt, geprüft, laufen lassen oder gemessen. Wenn eine Aussage
-  nur durch Ausführen zu belegen wäre, schreib hin, DASS sie das wäre.
+- BEHAUPTE NUR, WAS DU WIRKLICH GETAN HAST. Schreiben und Verändern kannst du
+  nicht: ein Schreib-Werkzeug gibt es nicht, und das ist Absicht. Was geändert
+  werden soll, beschreibst du. WELCHE Werkzeuge du sonst hast, steht weiter
+  unten in dieser Anweisung — steht dort keines, hast du keines. Schreib NIE,
+  du oder jemand anderes habe etwas ausgeführt, geprüft, laufen lassen oder
+  gemessen, wenn es nicht so war. Hast du etwas gelesen, sag WAS du gelesen
+  hast. Wäre eine Aussage nur durch Ausführen zu belegen, schreib hin, DASS
+  sie das wäre.
   (Am 2026-08-20 stand im Feierabend-Bericht „Sten hat den Code durchlaufen
-  lassen". Das war nicht geschehen und konnte nicht geschehen — und der Satz
-  las sich wie ein Beleg.)
+  lassen". Das war nicht geschehen, und der Satz las sich wie ein Beleg.)
 ```
 
 ---
@@ -66,12 +68,26 @@ Drei davon stammen erkennbar aus einem echten Schaden, nicht aus einem Lehrbuch:
 - **„Kein PII, kein Geheimnis"** begründet sich nicht mit Datenschutz, sondern
   mit der Beobachtung, dass „privat" eine Einstellung ist, die ein Klick
   umdreht — und dass die Historie alles behält.
-- **„Du hast keine Werkzeuge"** nennt Datum und Vorfall: *am 2026-08-20 stand im
-  Bericht „Sten hat den Code durchlaufen lassen". Das war nicht geschehen und
-  konnte nicht geschehen — und der Satz las sich wie ein Beleg.*
+- **„Behaupte nur, was du wirklich getan hast"** nennt Datum und Vorfall: *am
+  2026-08-20 stand im Bericht „Sten hat den Code durchlaufen lassen". Das war
+  nicht geschehen, und der Satz las sich wie ein Beleg.*
 
-Die letzte ist die aufschlussreichste. Sie ist ein **Dämpfer, kein Riegel**: die
-Rollen haben keine Werkzeuge, behaupten aber trotzdem gelegentlich, etwas
-ausgeführt zu haben. Eine erzwungene Regel kann das nicht verhindern, weil sich
-Text nicht gegen die Wirklichkeit prüfen lässt. Genau an dieser Stelle endet,
-was Regeln leisten können.
+Die letzte ist die aufschlussreichste, und zwar zweimal.
+
+**Erstens ist sie ein Dämpfer, kein Riegel.** Die Rollen behaupten trotzdem
+gelegentlich, etwas ausgeführt zu haben. Eine erzwungene Regel kann das nicht
+verhindern, weil sich Text nicht gegen die Wirklichkeit prüfen lässt. Genau an
+dieser Stelle endet, was Regeln leisten können.
+
+**Zweitens ist sie einmal falsch geworden, ohne dass es jemand merkte.** Bis zum
+2026-09-03 hieß sie *„DU HAST KEINE WERKZEUGE. Du kannst nichts ausführen,
+nichts aufrufen, keine Datei öffnen."* Am 2026-08-23 bekamen die Rollen
+Lese-Werkzeuge; seitdem stand in derselben Anweisung erst dieser Satz und wenige
+Absätze später sein Gegenteil. Elf Tage lang, und die zuständige Probe war grün:
+sie prüfte den **Wortlaut** `/KEINE WERKZEUGE/` statt der Zusicherung und hielt
+damit genau die Regel am Leben, die falsch geworden war.
+
+Die Regel nennt jetzt nur noch, was in **jedem** Modus gilt. Was gerade gelesen
+werden darf, sagt der Werkzeug-Hinweis, der mit der Werkbank mitwandert.
+**Das ist dieselbe Behandlung, die die Depot-Regel schon bekommen hatte:** keine
+Tages-Einstellung, nur der Grund, der immer gilt.

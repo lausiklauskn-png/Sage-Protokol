@@ -51,6 +51,52 @@ const QUELLE = resolve(WURZEL, argumente[0]);
 if (!existsSync(QUELLE)) { console.error('FEHLT: ' + argumente[0]); process.exit(2); }
 const ZIEL = resolve(wert('--ziel', QUELLE.replace(/\.html$/, '.pdf')));
 
+/* ---- 0. Was von DIESEM Papier erwartet wird ------------------------------ */
+
+/* ⚠ JE PAPIER EINE ERWARTUNG, UND EIN UNBEKANNTES PAPIER WIRD ABGEWIESEN.
+ *
+ * Bis zum 2026-09-03 stand die Titel-Pruefung fest verdrahtet im Code:
+ * `/SBKIM:\s*(Ein Protokoll|A Protocol)/`. Sie bewachte etwas Richtiges — der
+ * Titel darf nicht abgeschnitten sein — aber sie bewachte es nur fuer die zwei
+ * SBKIM-Papers. Paper A traegt kein Kuerzel; die Pruefung haette es abgelehnt.
+ *
+ * Der bequeme Weg waere gewesen, sie zu lockern. Dann bewachte sie nichts mehr,
+ * auch nicht bei SBKIM. Stattdessen sagt jedes Papier, was bei ihm oben stehen
+ * muss und wie viele Hauptabschnitte es hat.
+ *
+ * UND: ein Papier, das hier NICHT steht, wird nicht gedruckt. Ein Werkzeug, das
+ * Unbekanntes durchwinkt, waere fuer jedes kuenftige Papier blind — und der
+ * erste, der eines hinzufuegt, merkte nie, dass er ohne Wache druckt.
+ */
+const ERWARTUNG = {
+  'sbkim-paper-de.html': {
+    titel: /SBKIM:\s*Ein Protokoll/,
+    wasFehlt: 'Der Titel loest das Kuerzel SBKIM nicht auf',
+    abschnitteMin: 9,
+  },
+  'sbkim-paper-en.html': {
+    titel: /SBKIM:\s*A Protocol/,
+    wasFehlt: 'Der Titel loest das Kuerzel SBKIM nicht auf',
+    abschnitteMin: 9,
+  },
+  'paper-a-regeln-und-grundsaetze.html': {
+    titel: /^Regeln und Grunds\u00e4tze$/,
+    wasFehlt: 'Der Titel ist nicht „Regeln und Grunds\u00e4tze"',
+    /* 1-9 plus Literatur plus Zum Verfasser. Eine Zahl, keine Untergrenze
+       „mehrere": zugesichert sind elf, und gegen die wird gemessen. */
+    abschnitteMin: 11,
+  },
+};
+
+const DATEINAME = QUELLE.split('/').pop();
+const ERWARTET = ERWARTUNG[DATEINAME];
+if (!ERWARTET) {
+  console.error('\u2717 Fuer „' + DATEINAME + '" ist keine Erwartung hinterlegt.');
+  console.error('  Ohne sie druckte dieses Werkzeug ungeprueft. Trage das Papier in');
+  console.error('  ERWARTUNG in tools/paper-zu-pdf.mjs ein (Titel + Abschnittszahl).');
+  process.exit(2);
+}
+
 /* ---- 1. Schriften holen und einbetten ------------------------------------ */
 
 const FONT_CSS_URL = 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Source+Code+Pro:wght@400;600&family=Inter:wght@400;500;600&display=swap';
@@ -115,7 +161,7 @@ const befund = await seite.evaluate(() => {
   return {
     titel: t ? t.innerText.replace(/\s+/g, ' ').trim() : '',
     zeichen: text.length,
-    hatKuerzelAufgeloest: /SBKIM:\s*(Ein Protokoll|A Protocol)/.test(t ? t.innerText.replace(/\s+/g,' ') : ''),
+
     serifeGeladen: (() => {
       try { return document.fonts.check("16px 'Source Serif 4'"); } catch (_e) { return false; }
     })(),
@@ -124,10 +170,10 @@ const befund = await seite.evaluate(() => {
 });
 
 const fehler = [];
-if (!befund.hatKuerzelAufgeloest) fehler.push('Der Titel löst das Kürzel SBKIM nicht auf: „' + befund.titel + '"');
+if (!ERWARTET.titel.test(befund.titel)) fehler.push(ERWARTET.wasFehlt + ': „' + befund.titel + '"');
 if (befund.zeichen < 20000) fehler.push('Der Fließtext ist zu kurz (' + befund.zeichen + ' Zeichen) — die Seite ist wohl nicht fertig geladen.');
 if (!befund.serifeGeladen) fehler.push('Die Schrift „Source Serif 4" ist NICHT geladen — das PDF bekäme eine Ersatzschrift.');
-if (befund.abschnitte.length < 9) fehler.push('Nur ' + befund.abschnitte.length + ' Hauptabschnitte gefunden, erwartet sind mindestens 9.');
+if (befund.abschnitte.length < ERWARTET.abschnitteMin) fehler.push('Nur ' + befund.abschnitte.length + ' Hauptabschnitte gefunden, erwartet sind mindestens ' + ERWARTET.abschnitteMin + '.');
 
 if (fehler.length) {
   console.error('\n✗ Vor dem Druck gestoppt — es wurde KEIN PDF geschrieben:');

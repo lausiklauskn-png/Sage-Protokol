@@ -175,6 +175,19 @@ const rohMarken = [
   ['fett-Sternchen', /\*\*/],
   ['Verweis-Klammern', /\]\(/],
   ['Tabellen-Trennzeile', /\|\s*-{3,}\s*\|/],
+  /* ⚠ HTML-KOMMENTAR IM FLIESSTEXT (2026-09-03).
+     Eine Sitzung setzte `<!-- eigene-seite -->` als Druck-Marke in
+     `docs/papers/PAPER_A_regeln-und-grundsaetze.md`. Das Markdown hat mehrere
+     Leser: hier erschien die Marke ZWEIMAL als sichtbarer Text mitten im
+     Dokument — und die drei Muster darueber sahen sie nicht. Sie suchen
+     Markdown-Zeichen; ein HTML-Kommentar ist keines.
+     ⚠ GEMESSEN, NICHT ERSCHLOSSEN. Der erste Anlauf suchte `&lt;!--` — so
+     steht es schliesslich im Quelltext der Seite. Der Waechter blieb gruen,
+     obwohl die Marke dastand: FLIESS ist `entziffern(ohneTags(...))`, und
+     `entziffern` macht aus `&lt;` wieder `<`. Gesucht wird also im ENTZIFFERTEN
+     Text, und dort steht `<!--`. Eine Prüfung gegen den rohen Quelltext waere
+     hier fuer immer blind gewesen. */
+  ['HTML-Kommentar', /<!--/],
 ];
 for (const [name, muster] of rohMarken) {
   gut(!muster.test(FLIESS), 'keine rohe Auszeichnung sichtbar: ' + name);

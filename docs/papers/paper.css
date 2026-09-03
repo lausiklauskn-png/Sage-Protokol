@@ -1,0 +1,360 @@
+/* paper.css — der gemeinsame Stil der Papers dieses Depots.
+ *
+ * ── HERKUNFT ──────────────────────────────────────────────────────────────
+ *
+ * Am 2026-09-03 BYTE-TREU aus `sbkim-paper-de.html` (Zeilen 10–255) gezogen,
+ * mit `sed`, nicht abgeschrieben. Darin stecken die Druck-Entscheidungen, die
+ * an drei Tagen einzeln erarbeitet und je mit einer Messung belegt wurden:
+ * der A4-Rand im DOKUMENT statt im Druck-Werkzeug, das Deckblatt fuer sich,
+ * `orphans:4` gegen die gestrandete Ueberschrift, die EINSPALTIGEN Quellen
+ * (ein Spalten-Kasten wandert bei Chromium als GANZES weiter), die Adressen,
+ * die im Druck hinter den Verweis ruecken.
+ *
+ * ── WARUM ES DIESE DATEI GIBT, UND WAS SIE NOCH NICHT IST ─────────────────
+ *
+ * `paper-md-zu-html.mjs` baut daraus die HTML-Fassung von Paper A. Ohne diese
+ * Datei haette der Erzeuger seine eigene Abschrift getragen, und dann gaebe es
+ * die Druckregeln zweimal. Genau davor warnt `README.md` in diesem Ordner:
+ * zwei Fassungen desselben Textes lassen sich nicht mehr reparieren, sobald
+ * jemand eine davon zitiert hat.
+ *
+ * ⚠ ES SIND TROTZDEM ZWEI KOPIEN, UND DAS IST BENANNT, NICHT BEHOBEN. Die
+ * beiden SBKIM-Papers tragen ihren Stil weiter INLINE. Sie sind unter dem DOI
+ * 10.5281/zenodo.22277738 veroeffentlicht; ihre Datei jetzt umzubauen aendert
+ * ein Dokument, auf das bereits zitierfaehig gezeigt wird, ohne dass sich am
+ * Text etwas aendert. Wer sie bei der naechsten Fassung ohnehin anfasst, haengt
+ * sie hier ein und streicht diesen Absatz.
+ * `tests/smoke_paper_css.mjs` haelt die beiden Fassungen bis dahin gegeneinander
+ * und meldet, wenn sie auseinanderlaufen.
+ */
+
+:root {
+  --text: #1a1a2e;
+  --t2: #444466;
+  --t3: #888;
+  --accent: #3730a3;
+  --teal: #0f766e;
+  --gold: #b45309;
+  --border: #e2e2f0;
+  --bg: #fafafa;
+  --paper: #ffffff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:16px; }
+body {
+  font-family:'Source Serif 4', Georgia, serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.75;
+}
+.paper {
+  max-width:760px;
+  margin:0 auto;
+  background:var(--paper);
+  padding:72px 80px;
+  box-shadow:0 1px 24px rgba(0,0,0,.07);
+}
+@media(max-width:860px) { .paper { padding:40px 28px; } }
+/* Druck: auf DIN A4 festgelegt (Klaus 2026-09-03).
+   Vorher stand hier KEINE @page-Regel - das Format war nirgends bestimmt,
+   und jeder Drucker entschied selbst. Der Rand steht hier und NUR hier,
+   deshalb faellt das Innenpolster der .paper weg und das Druck-Werkzeug
+   setzt keinen eigenen; sonst zaehlt derselbe Rand zweimal.
+   Auf 15/14 mm verengt (Klaus, am selben Tag: „mit schmaleren Raendern
+   arbeiten") -- 18/16 liessen zuviel Weiss stehen. */
+@page { size:A4; margin:15mm 14mm; }
+
+@media print {
+  /* Das Deckblatt steht fuer sich: Titel, Herkunft, Zusammenfassung. Die
+     Einleitung beginnt oben auf der naechsten Seite, statt sich den Rest von
+     Seite eins mit der Zusammenfassung zu teilen. */
+  .abstract { break-after:page; }
+  /* Auf Papier kann niemand klicken. Im Kopf stehen die Adressen nur als
+     Verweis („Live-Demo Layer 1 →"); gedruckt waere die Adresse damit fuer
+     diesen Leser verloren. Die Regel setzt sie hinter den Verweis -- nur im
+     Druck, damit der Bildschirm aufgeraeumt bleibt.
+     Gefunden hat es Klaus am 2026-09-03 beim Vergleich zweier PDFs: die
+     Fassung vom Vortag hatte die Adressen, das Depot nicht. Sie standen in
+     einer ARBEITSKOPIE, aus der gedruckt wurde -- genau die zweite Fassung,
+     vor der docs/papers/README.md warnt. Deshalb steht die Regel jetzt hier
+     und nicht in einem Druck-Werkzeug. */
+  .paper-links a { display:block; margin:0 0 3px; }
+  .paper-links a::after {
+    content:" " attr(href);
+    font-family:'Source Code Pro',monospace; font-size:.82em;
+    color:#555; word-break:break-all;
+  }
+  /* Sicherheitsnetz: bricht eine Tabelle doch einmal um (weil sie laenger ist
+     als eine Seite), wiederholt sich ihr Kopf. Ohne das stehen auf der zweiten
+     Seite Zahlen ohne Spaltennamen. */
+  thead { display:table-header-group; }
+  h2 { break-before:auto; break-after:avoid; }
+  h3 { break-after:avoid; }
+  /* Ein Absatz darf ueber zwei Seiten laufen -- aber nur INNERHALB eines
+     Themas (Klaus 2026-09-03). Eine Ueberschrift, hinter der nur noch eine
+     Zeile aufs Blatt passt, hat ihren Abschnitt nicht mehr bei sich:
+     `break-after:avoid` allein genuegt Chromium schon, wenn EINE Zeile
+     folgt. Die vier verlangten Zeilen schieben Ueberschrift und Anfang
+     gemeinsam auf die naechste Seite. */
+  h2 + p, h3 + p { break-before:avoid; orphans:4; }
+
+  /* ZWEI ABSCHNITTE BEKOMMEN JE EINE EIGENE SEITE (Klaus 2026-09-03).
+     Die Schlussfolgerung und die Entstehung des Textes sind das, was ein
+     Leser zuletzt in der Hand hat; sie standen bisher als Rest unten auf
+     Seiten, die von etwas anderem handeln. Die Quellenangaben ruecken
+     dabei mit auf die Seite von Abschnitt 9 und werden kleiner gesetzt,
+     damit beides zusammen aufgeht -- Klaus: „Die Quellenangaben koennten
+     kleiner geschrieben werden, sodass der nachfolgende Punkt alles auf
+     eine Seite passt."
+     Die Klasse steht am <h2>, nicht als :nth-of-type(8): eine Zaehlung
+     verschiebt sich lautlos, sobald jemand einen Abschnitt einfuegt. */
+  .eigene-seite { break-before:page; }
+  /* Zweispaltig und kleiner: so passen die Quellen mit auf die Seite von
+     Abschnitt 9, statt allein eine sechzehnte anzufangen. Gemessen: einspaltig
+     bei 10,4 px liefen 14 Zeilen ueber. */
+  /* ⚠ Die Groesse gehoert an die ABSAETZE, nicht an den Kasten. `.footnotes p`
+     traegt weiter unten im Bildschirm-Stil eine eigene (12,5 px) und erbt
+     deshalb nichts vom Container. Gemessen am 2026-09-03: den Container von
+     10,4 auf 8,8 px zu setzen aenderte an der Seitenzahl NICHTS -- die Regel
+     traf kein einziges sichtbares Zeichen. Eine Regel, deren Fehlen nichts
+     aendert, ist eine Behauptung. */
+  /* DIE QUELLEN STEHEN MIT AUF DER SEITE VON ABSCHNITT 9 (Klaus 2026-09-03):
+     „Beim Punkt neun noch die Quellen darunter packen. Und zwar deshalb
+     kleiner, damit sie auf die Seite mitpassen."
+
+     ⚠ NICHT die Schriftgroesse war das Hindernis, sondern MEIN EIGENER
+     SPALTEN-KASTEN. Ich hatte `column-count` gesetzt, um Platz zu sparen --
+     und damit den Fehler erst gebaut: Chromium schiebt einen mehrspaltigen
+     Kasten als GANZES auf die naechste Seite, sobald er nicht vollstaendig
+     auf die Restseite geht. Vier Anlaeufe mit immer kleinerer Schrift
+     aenderten deshalb an der Seitenzahl nichts, und ich habe daraus
+     geschlossen, es passe nicht. Es passte die ganze Zeit; nur floss es
+     nicht.
+     Einspaltig fliesst der Text wie jeder andere Absatz und fuellt die
+     Restseite. Gemessen bei 1.009 px Nutzhoehe: Abschnitt 9 braucht 681 px,
+     die Quellen bei 9,4 px rund 270. */
+  /* ⚠ `.paper` DAVOR IST NICHT ZIERDE, SONDERN NOTWENDIG. Der Bildschirm-Stil
+     setzt `.footnotes p { font-size:12.5px }` und steht in dieser Datei WEITER
+     UNTEN als der Druck-Block. `@media print` erhoeht die Spezifitaet nicht --
+     bei gleichem Gewicht gewinnt die spaetere Regel, also die fuer den
+     Bildschirm. Zweimal habe ich am 2026-09-03 Werte gedreht, die kein
+     einziges Zeichen trafen: von 10,4 auf 8,8 px aenderte nichts, von 9,4 auf
+     8,4 px aenderte 33 px statt der erwarteten 90.
+     Die Gegenprobe ist jedes Mal dieselbe: eine Zahl, die sich nach der
+     Aenderung NICHT bewegt. */
+  /* Vor den Quellen steht eine Trennlinie, und der Quellen-Block bringt
+     seine eigene Oberkante mit -- im Druck sind das zwei Striche und rund
+     40 px fuer dieselbe Aussage. Der Divider geht weg, die Kante bleibt.
+     Genau diese 40 px waren es, die den Rest der Liste auf eine 16. Seite
+     geschoben haben. */
+  .divider + .footnotes { margin-top:0; }
+  hr.divider:has(+ .footnotes) { display:none; }
+  .paper .footnotes { font-size:9px; margin-top:8px; padding-top:7px; }
+  .paper .footnotes p { font-size:9px; line-height:1.3; margin-bottom:1px;
+                        break-inside:avoid; }
+
+  /* WAS ZUSAMMENBLEIBT: nur, was auch auf eine halbe Seite passt.
+     Vorher standen Tabellen, Fussnoten und die Zusammenfassung mit in
+     dieser Liste. Gemessen am 2026-09-03: die beiden groessten Tabellen
+     sind 555 und 550px hoch, die Fussnoten 503, die Zusammenfassung 450
+     - bei 987px Nutzhoehe je Seite. Passte so ein Block nicht mehr, sprang
+     er ganz auf die naechste Seite und liess den Rest leer: 1.377px an
+     drei Stellen, zusammen 1,4 leere Seiten. */
+  .protocol-box, .dim-grid, .dim-card, .layer-diagram { break-inside:avoid; }
+
+  /* ⚠ TABELLEN BLEIBEN GANZ (Klaus 2026-09-03, zum zweiten Mal gemeldet:
+     „Tabelle zum Beispiel [falsch] umgebrochen").
+     #939 hatte sie am selben Tag auf `auto` gesetzt, und mit gutem Grund:
+     bei 987 px Nutzhoehe und Tabellen von 555 px blieben sonst 1,4 Seiten
+     leer. Seitdem sind die Raender enger (15/14 statt 18/16 mm) und die
+     Tabellenschrift kleiner (12,6 px, Innenabstand 6/10 px) -- die groesste
+     Tabelle misst jetzt rund 330 statt 555 px. Was damals ein schlechter
+     Tausch war, ist es heute nicht mehr; deshalb steht die Entscheidung
+     um, nicht die Messung.
+     Zusammenfassung und Fussnoten duerfen weiter fliessen: die eine ist
+     Text, die andere eine Liste, und beide liest niemand als Block. */
+  .abstract, .footnotes { break-inside:auto; }
+  table { break-inside:avoid; }
+  tr, .footnotes p, .dim-card { break-inside:avoid; }
+
+  p, li { orphans:3; widows:3; }
+
+  /* ── SCHRIFTGROESSEN: EINE ECHTE HIERARCHIE (Klaus 2026-09-03) ───────
+     „mit Schriftgroessen variieren" -- und er hat einen echten Fehler
+     getroffen: h2, die Hauptueberschrift, war mit 15 px KLEINER als der
+     Fliesstext mit 15,5. Eine Gliederung, die man an der Groesse nicht
+     erkennt, ist keine. Gedruckt wird enger als am Bildschirm, damit die
+     Seiten gleichmaessig voll werden statt halb leer. */
+  body { background:#fff; font-size:14.2px; }
+  p { font-size:14.2px; line-height:1.6; margin-bottom:10px; }
+  h2 { font-size:16.5px; margin:24px 0 8px; letter-spacing:.6px; }
+  h3 { font-size:14.8px; margin:15px 0 5px; }
+  .abstract p { font-size:13.6px; line-height:1.6; }
+  .abstract { padding:12px 18px; }
+  table { font-size:12.6px; margin:12px 0; }
+  th, td { padding:6px 10px; }
+  .protocol-box { font-size:11.6px; line-height:1.55; padding:12px 16px; margin:12px 0; }
+  .divider { margin:18px 0; }
+  .paper-title { font-size:23px; margin-bottom:12px; }
+  .paper { box-shadow:none; padding:0; max-width:none; }
+  .no-print { display:none; }
+  a { color:inherit; }
+
+}
+
+.paper-title {
+  font-size:26px; font-weight:600; line-height:1.3;
+  color:var(--text); margin-bottom:16px; letter-spacing:-.3px;
+}
+.paper-authors { font-family:'Inter',sans-serif; font-size:14px; color:var(--t2); margin-bottom:4px; }
+.paper-date { font-family:'Inter',sans-serif; font-size:13px; color:var(--t3); margin-bottom:6px; }
+.paper-doi { font-family:'Inter',sans-serif; font-size:13px; margin-bottom:6px; }
+.paper-doi a { color:var(--accent); text-decoration:none; }
+.paper-links { font-family:'Inter',sans-serif; font-size:12.5px; margin-bottom:32px; }
+.paper-links a { color:var(--accent); text-decoration:none; margin-right:16px; }
+.paper-links a:hover { text-decoration:underline; }
+
+.divider { border:none; border-top:1px solid var(--border); margin:28px 0; }
+
+.abstract {
+  border-left:3px solid var(--accent);
+  padding:14px 20px;
+  background:#f8f8ff;
+  border-radius:0 6px 6px 0;
+  margin-bottom:36px;
+}
+.abstract-label {
+  font-family:'Inter',sans-serif; font-size:11px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:8px;
+}
+.abstract p { font-size:14.5px; line-height:1.7; color:var(--t2); }
+
+h2 {
+  font-family:'Inter',sans-serif; font-size:15px; font-weight:600;
+  letter-spacing:.2px; text-transform:uppercase; color:var(--accent); margin:36px 0 12px;
+}
+h3 { font-family:'Inter',sans-serif; font-size:15px; font-weight:600; color:var(--text); margin:24px 0 8px; }
+p { margin-bottom:14px; font-size:15.5px; }
+p:last-child { margin-bottom:0; }
+
+.protocol-box {
+  background:#f4f4ff; border:1px solid #c7d2fe; border-radius:8px;
+  padding:20px 24px; margin:20px 0;
+  font-family:'Source Code Pro',monospace; font-size:13px; line-height:1.7; color:#1e1b4b;
+}
+.protocol-box .comment { color:#6366f1; }
+.protocol-box .key { color:#0f766e; font-weight:600; }
+.protocol-box .val { color:#b45309; }
+
+table { width:100%; border-collapse:collapse; margin:20px 0; font-size:14px; font-family:'Inter',sans-serif; }
+th { text-align:left; padding:9px 14px; background:#f0f0fa; border:1px solid var(--border); font-size:11.5px; letter-spacing:.8px; text-transform:uppercase; color:var(--t2); }
+td { padding:9px 14px; border:1px solid var(--border); vertical-align:top; line-height:1.5; }
+tr:nth-child(even) td { background:#fafafa; }
+
+.layer-diagram {
+  font-family:'Source Code Pro',monospace; font-size:13px; line-height:1.8;
+  background:#f9f9f9; border:1px solid var(--border); border-radius:8px;
+  padding:20px 24px; margin:20px 0; color:var(--t2);
+}
+.layer-diagram .hi { color:var(--accent); font-weight:600; }
+.layer-diagram .hi2 { color:var(--teal); font-weight:600; }
+
+.dim-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
+@media(max-width:600px){ .dim-grid { grid-template-columns:1fr; } }
+.dim-card { border:1px solid var(--border); border-radius:8px; padding:14px; }
+.dim-card h4 { font-family:'Inter',sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:5px; }
+.dim-card p { font-size:13px; color:var(--t2); margin:0; line-height:1.5; }
+
+.footnotes {
+  border-top:1px solid var(--border); margin-top:48px; padding-top:20px;
+  font-size:12.5px; color:var(--t3); font-family:'Inter',sans-serif; line-height:1.6;
+}
+.footnotes p { font-size:12.5px; color:var(--t3); margin-bottom:6px; }
+
+em.key { font-style:normal; font-weight:600; color:var(--text); }
+sup { font-size:11px; color:var(--accent); }
+code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0fa; padding:1px 5px; border-radius:3px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ZUSÄTZE — gelten NUR für die erzeugten Papers, nicht für die SBKIM-Fassungen
+   ══════════════════════════════════════════════════════════════════════════
+
+   Alles OBERHALB dieser Marke ist byte-gleich mit dem <style> von
+   `sbkim-paper-de.html`; `tests/smoke_paper_css.mjs` vergleicht genau bis
+   hierher. Was darunter steht, ist bewusst hinzugekommen und hat in den
+   veroeffentlichten SBKIM-Dateien keine Entsprechung.
+
+   Grund fuer die Trennung: die SBKIM-Papers liegen unter einem DOI. Sie
+   deshalb nicht anzufassen ist richtig — aber es darf nicht dazu fuehren,
+   dass ein neues Papier keine eigene Regel bekommen kann. Ein Waechter, der
+   jede Ergaenzung verbietet, wird irgendwann abgeschaltet statt gelesen.
+
+   ── DIE VIERTE EBENE (Klaus 2026-09-03) ─────────────────────────────────
+   Paper A hat 35 `####`-Ueberschriften. Sie brauchen eine eigene Groesse,
+   sonst ist die Gliederung an der Schrift nicht mehr abzulesen — derselbe
+   Befund, der am 2026-09-03 schon fuer h2 galt (h2 war kleiner als der
+   Fliesstext). */
+h4 {
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
+  color:var(--t2); margin:20px 0 6px; letter-spacing:.2px;
+}
+
+/* ── KEIN ABSATZ WIRD GESPALTEN (Klaus 2026-09-03) ────────────────────────
+
+   „Keine Sätze trennen bei einem Seitenumbruch. Absätze versuchen, auf eine
+   neue Seite zu bringen, wenn sie getrennt werden."
+
+   Der Absatz ist die Einheit, die dafuer zaehlt: ein Satz liegt immer in einem
+   Absatz, wer den nicht spaltet, spaltet auch keinen Satz. Gemessen am
+   fertigen PDF, Paper A:
+
+     ohne die Regel   44 Seiten · 6 zerrissene Saetze · 6 Absaetze
+     mit der Regel    45 Seiten · 0 · 0
+
+   ⚠ EINE ZUSAETZLICHE KLAMMER UM GANZE THEMEN WURDE GEMESSEN UND VERWORFEN.
+   Sie brachte auf denselben Kriterien nichts (0 und 0 waren schon erreicht)
+   und kostete fuenf bis neun weitere Seiten. Begruendung und Zahlen stehen in
+   `tools/paper-md-zu-html.mjs`.
+
+   Absaetze, die laenger als eine Seite sind, brechen weiterhin um. Dagegen
+   hilft nur Kuerzen, nicht CSS. */
+@media print {
+  /* Ein Absatz wird nicht gespalten. Damit kann auch kein SATZ ueber eine
+     Seitengrenze laufen: ein Satz liegt immer in einem Absatz. Absaetze, die
+     laenger als eine Seite sind, brechen weiterhin — dagegen hilft nur
+     Kuerzen, nicht CSS. */
+  p, li, blockquote { break-inside:avoid; }
+
+  /* Eine Ueberschrift ohne ihren Text darunter ist eine Ueberschrift auf der
+     falschen Seite. Gilt jetzt fuer alle vier Ebenen, vorher nur fuer zwei. */
+  h4 { break-after:avoid; }
+  h4 + p, h4 + ul, h4 + ol, h4 + table, h4 + blockquote { break-before:avoid; }
+  h2 + table, h3 + table, h2 + ul, h3 + ul, h2 + blockquote, h3 + blockquote {
+    break-before:avoid;
+  }
+
+  /* Gedruckt etwas kleiner als am Bildschirm, wie die uebrigen Ebenen. */
+  h4 { font-size:13.4px; margin:14px 0 5px; }
+}
+
+/* ── DER SCHLUSS BLEIBT BEI ABSCHNITT 9 (Klaus 2026-09-03) ────────────────
+
+   „Versuchen, die letzte Seite unter dem Punkt, wo Abschnitt neun mit drin
+   ist, unterzubringen … dass der letzte Satz nicht unbedingt auf einer
+   einzelnen Seite liegt."
+
+   Gemessen: der Verfasser-Absatz endete mit vier Zeilen allein auf einer
+   eigenen Seite. Behandelt wie die Quellen daneben, kleiner gesetzt und mit
+   engem Abstand, passt er mit darunter.
+
+   Es ist derselbe Weg, den die Quellenangaben schon gegangen sind, und er
+   trifft NUR diesen Schluss: keine Regel hier gilt fuer den uebrigen Text. */
+.verfasser { margin-top:40px; }
+
+@media print {
+  .paper .verfasser { font-size:10.4px; margin-top:10px; }
+  .paper .verfasser h2 { margin:10px 0 5px; }
+  .paper .verfasser p { font-size:10.4px; line-height:1.4; margin-bottom:4px; }
+  /* Der Verfasser-Block ist kurz. Er soll ganz bleiben, wo er anfaengt. */
+  .verfasser { break-inside:avoid; }
+}
