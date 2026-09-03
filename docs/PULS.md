@@ -31,6 +31,77 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-03 (Bau) · ✅ PAPER A IST VERÖFFENTLICHT
+
+**Das zweite Papier dieses Depots ist draußen.** „Regeln und Grundsätze — zwei
+Arten, ein KI-System zu lenken", beide Sprachfassungen in **einem** Zenodo-Eintrag.
+
+```
+Eintrag        zenodo.org/records/22286072
+Versions-DOI   10.5281/zenodo.22286072     (steht in beiden PDFs)
+Concept-DOI    10.5281/zenodo.22286071     (führt immer zur neuesten Fassung)
+```
+
+Vorabdruck, Version 1.0, offen zugänglich, CC BY 4.0. Verknüpft mit dem
+SBKIM-Papier (`References` auf `10.5281/zenodo.22277738`).
+
+### Der Concept-DOI ist um eins kleiner — zweimal gemessen, nicht zugesichert
+
+Bei Paper A wie beim SBKIM-Papier liegt die Werknummer eins unter der
+Fassungsnummer (22286071/22286072 und 22277737/22277738). **Zwei Fälle sind
+eine Beobachtung, keine Regel von Zenodo.** Abgelesen wurde sie deshalb am Satz
+„Alle Versionen zitieren?" im Kasten *Versionen*, nicht gerechnet.
+
+Er existiert **auch bei einer einzigen Version**. Das ist sein Zweck: Verweise,
+die heute gesetzt werden, sollen die nächste Fassung überstehen.
+
+### Wo die Nummern jetzt stehen
+
+| Stelle | Was |
+|---|---|
+| beide Markdown-Quellen | die `paper-doi`-Zeile, von dort in die HTML und ins PDF |
+| `docs/papers/README.md` | eigener Abschnitt „Paper A", beide Nummern mit Rolle |
+| `index.html`, Station 9 und 10 | im Erzähl-Text der Galerie |
+| `docs/papers/ZENODO_WEG.md` | die Messung vom 03.09. |
+
+### Gemessen nach der Änderung
+
+| Probe | |
+|---|---|
+| `smoke_paper_a.mjs` | 26 grün, 0 rot |
+| `smoke_paper_css.mjs` | 20 grün, 0 rot |
+| `smoke_antragsmappe.mjs` | grün |
+| `gegenprobe_paper_a.mjs` | 18 von 18 gefangen, 0 durchgerutscht, 0 tote Anker |
+| Galerie headless (Chromium) | 10 Prüfungen grün, kein JS-Fehler, zehn Stationen |
+
+⚠ Der erste Aufruf der Papier-Probe endete auf `… | tail -12; echo exit=$?` —
+der gemeldete Rückgabewert war der von `tail`. Wiederholt ohne Pipe. Die Falle
+steht seit Monaten in `CLAUDE.md` und ist trotzdem zugeschnappt.
+
+### Offen: zwei Angaben im Zenodo-Eintrag
+
+Beides ist ohne neue Version und ohne neue DOI änderbar (Zenodo sperrt die
+Dateien, die Angaben nicht):
+
+1. **Der Titel trägt beide Sprachen in einem Feld** — englischer und deutscher
+   Titel hintereinander. Der deutsche gehört als *Translated title* darunter.
+   So erscheint der Doppel-Titel in jeder Zitation.
+2. **Das Versions-Feld enthält `Version 1.0`**, Zenodo setzt das Wort selbst
+   davor. Angezeigt wird deshalb „Version Version 1.0".
+
+### Nicht geprüft
+
+Die englische Fassung ist von niemandem außer dieser Sitzung gegengelesen.
+zenodo.org und doi.org sind aus dieser Umgebung gesperrt — jede Aussage über
+die Eintragsseite stammt aus Klaus' Bildschirmfotos, nicht aus einem Abruf.
+
+### Nächster sinnvoller Schritt
+
+`docs/PULS.md` steht bei 2.927 von 3.000 Zeilen. **Die nächste Sitzung
+lagert ins Archiv aus — auslagern, nicht kürzen** (Schutz-Klausel oben).
+
+---
+
 ## Stand 2026-09-03 (Bau) · ✅ DER DOI IST DA — und die PDFs, die ihn tragen
 
 **Das Ziel ist erreicht.** Zwei Sitzungen in Folge waren dafür losgegangen.

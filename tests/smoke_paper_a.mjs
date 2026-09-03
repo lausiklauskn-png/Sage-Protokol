@@ -56,10 +56,29 @@ if (rot.length) {
 
 /* ---- 1. Neu bauen und vergleichen --------------------------------------- */
 
+/* ⚠ DER DOI KOMMT NICHT AUS DEM MARKDOWN, SONDERN VON AUSSEN.
+ *
+ * Er wird bei Zenodo reserviert und dem Erzeuger per `--doi` mitgegeben. Ein
+ * Neubau OHNE ihn erzeugt den Platzhalter und weicht damit zwangslaeufig ab.
+ * Bis zum 2026-09-03 tat diese Probe genau das: sie baute ohne DOI und
+ * verglich gegen die abgelegte Fassung. Solange keiner vergeben war, fiel es
+ * nicht auf; mit der ersten echten Nummer wurde sie rot, obwohl nichts kaputt
+ * war. Eine Probe, die beim Richtigen umfaellt, ist so schaedlich wie eine,
+ * die beim Falschen gruen bleibt.
+ *
+ * Gelesen wird er deshalb aus der abgelegten Datei und beim Neubau
+ * durchgereicht. Der Waechter misst weiter, was er messen soll: ob am TEXT
+ * von Hand gedreht wurde. Dass der DOI selbst stimmt, misst die Pruefung
+ * weiter unten. */
+const doiAus = (html) => (html.match(/doi\.org\/(10\.\d{4,}\/[^"<\s]+)/) || [])[1] || '';
+
+const abgelegtRoh = readFileSync(HTML, 'utf8');
+const deDoi = doiAus(abgelegtRoh);
 const probeZiel = join(tmpdir(), 'paper-a-probe-' + process.pid + '.html');
 let neu = '';
 try {
-  execFileSync('node', [resolve(WURZEL, 'tools/paper-md-zu-html.mjs'), MD, '--ziel', probeZiel],
+  execFileSync('node', [resolve(WURZEL, 'tools/paper-md-zu-html.mjs'), MD, '--ziel', probeZiel,
+    ...(deDoi ? ['--doi', deDoi] : [])],
     { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   neu = readFileSync(probeZiel, 'utf8');
 } catch (e) {
@@ -184,7 +203,8 @@ if (existsSync(EN_MD) && existsSync(EN_HTML)) {
   let frisch = '';
   try {
     execFileSync('node', [resolve(WURZEL, 'tools/paper-md-zu-html.mjs'), EN_MD,
-      '--ziel', enNeu, '--sprache', 'en'],
+      '--ziel', enNeu, '--sprache', 'en',
+      ...(doiAus(readFileSync(EN_HTML, 'utf8')) ? ['--doi', doiAus(readFileSync(EN_HTML, 'utf8'))] : [])],
       { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     frisch = readFileSync(enNeu, 'utf8');
   } catch (e) {
@@ -206,6 +226,17 @@ if (existsSync(EN_MD) && existsSync(EN_HTML)) {
     /Not blinded/.test(enRumpf));
   pruefe('Englisch: der Rahmen ist Feldbeobachtung, nicht Nachweis',
     /field observation with a record/.test(enRumpf));
+  /* ⚠ EIN WERK, EIN DOI. Beide Sprachfassungen liegen in EINEM Zenodo-Eintrag,
+     so wie beim SBKIM-Papier. Zwei verschiedene Nummern hiessen zwei Werke, und
+     wer die eine zitiert, haette die andere nicht mit erfasst. Ein Tippfehler
+     in einer der beiden faellt sonst niemandem auf: beide sehen fuer sich
+     richtig aus. */
+  const enDoi = doiAus(readFileSync(EN_HTML, 'utf8'));
+  pruefe('Beide Sprachfassungen tragen DENSELBEN DOI', deDoi === enDoi,
+    'deutsch „' + (deDoi || '—') + '", englisch „' + (enDoi || '—') + '"');
+  pruefe('Der DOI hat die Form einer echten Nummer, oder es ist keiner da',
+    !deDoi || /^10\.\d{4,}\/[\w.\-/]+$/.test(deDoi), 'gelesen: „' + deDoi + '"');
+
   pruefe('Englisch: alle acht Quellen stehen da',
     ['Bai', 'Gneezy', 'Kant', 'Kaplow', 'Kohlberg', 'Rebedea', 'Schuett', 'Tyler']
       .every((n) => enRumpf.includes(n)));

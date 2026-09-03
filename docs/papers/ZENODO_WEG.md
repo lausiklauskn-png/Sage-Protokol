@@ -68,9 +68,17 @@ node tools/paper-md-zu-html.mjs docs/papers/regeln-und-grundsaetze-in-ki-agenten
      --ziel docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html \
      --doi 10.5281/zenodo.NNNNNNNN
 
+node tools/paper-md-zu-html.mjs docs/papers/rules-and-principles-in-ai-agent-systems.md \
+     --ziel docs/papers/rules-and-principles-in-ai-agent-systems.html \
+     --sprache en --doi 10.5281/zenodo.NNNNNNNN
+
 node tools/paper-zu-pdf.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html \
-     --ziel /tmp/paper-a.pdf
-node tools/paper-pdf-pruefen.mjs /tmp/paper-a.pdf
+     --ziel /tmp/regeln-und-grundsaetze-in-ki-agentensystemen.pdf
+node tools/paper-zu-pdf.mjs docs/papers/rules-and-principles-in-ai-agent-systems.html \
+     --ziel /tmp/rules-and-principles-in-ai-agent-systems.pdf
+
+node tools/paper-pdf-pruefen.mjs /tmp/regeln-und-grundsaetze-in-ki-agentensystemen.pdf
+node tools/paper-pdf-pruefen.mjs /tmp/rules-and-principles-in-ai-agent-systems.pdf
 node tests/smoke_paper_a.mjs
 ```
 
@@ -87,18 +95,119 @@ Download-Ordner.
 
 ## Schritt 3 · Klaus: hochladen und veröffentlichen
 
-1. Die **PDF-Datei** in den Zenodo-Eintrag hochladen.
+1. **BEIDE PDF-Dateien** in denselben Zenodo-Eintrag hochladen, die deutsche
+   und die englische. Sie sind **ein** Werk in zwei Sprachen, so wie beim
+   SBKIM-Papier: ein Eintrag, zwei Dateien, ein DOI. Zwei getrennte Einträge
+   machten aus einer Arbeit zwei, und wer die eine zitiert, hätte die andere
+   nicht mit erfasst.
 2. Die Angaben ausfüllen:
 
 | Feld | Wert für Paper A |
 |---|---|
 | Resource type | **Preprint** |
 | Title | Regeln und Grundsätze: Zwei Arten, ein KI-System zu lenken, und warum keine allein genügt |
+| Additional title | *Translated title*, Sprache Englisch — siehe unten |
 | Authors | Klaus Nitzsche |
-| Description | die Zusammenfassung aus dem Papier |
+| Description | die Zusammenfassung aus dem Papier (Abschnitt „Zusammenfassung", 322 Wörter) |
 | License | **Creative Commons Attribution 4.0 International (CC BY 4.0)** |
-| Keywords | die Schlagwörter aus dem Papier |
-| Language | Deutsch |
+| Keywords | die sieben unten, zum Abschreiben |
+| Languages | **beide**: `German` und `English` |
+
+### Der Titel: einer im Hauptfeld, einer als Übersetzung
+
+Zenodo hat **ein** Titelfeld und darunter **Additional titles**. Weil der
+Eintrag beide Sprachfassungen trägt, gehört die englische dort hinein, mit der
+Art *Translated title* und der Sprache Englisch. Sonst findet ein
+englischsprachiger Leser den Eintrag über den Titel nicht.
+
+**Hauptfeld** (Sprache des Eintrags ist Deutsch):
+
+```
+Regeln und Grundsätze: Zwei Arten, ein KI-System zu lenken, und warum keine allein genügt
+```
+
+**Additional title**, Art *Translated title*, Sprache Englisch:
+
+```
+Rules and Principles: Two ways to steer an AI system, and why neither is enough on its own
+```
+
+⚠ **Die dritte Zeile des Papiers gehört NICHT in den Titel.** „Eine
+Feldbeobachtung an einem laufenden Mehr-Rollen-System" sagt, welche **Art** von
+Arbeit das ist, nicht wie sie heißt. Sie gehört an den Anfang der Beschreibung.
+Ein Titel, der die Gattung mitträgt, wird in jeder Trefferliste einmal zu lang.
+
+### Die Schlagwörter stehen HIER und nicht im Papier
+
+**Klaus 2026-09-03:** *„aus dem Paper habe ich sie streichen lassen, da waren
+sie nicht richtig"* — und dazu: *„ich habe ein Konto bei Zenodo, dort sollen die
+Schlagwörter rein."*
+
+Die Wörter selbst sind also in Ordnung, **nur ihr Platz war falsch**. Ein
+Schlagwort ist kein Bestandteil des Textes, sondern eine Angabe des Eintrags:
+es dient dem Finden, nicht dem Lesen. Im PDF steht es niemandem zur Verfügung,
+der sucht; im Zenodo-Formular schon.
+
+Zum Abschreiben, wie sie bis zum 2026-09-03 im Papier standen:
+
+```
+Lenkung von KI-Systemen
+Regeln und Standards
+grundsatzbasierte Regel
+Mehr-Agenten-Systeme
+Ausführungszeit-Alignment
+Betreiber-Steuerung
+Feldbeobachtung
+```
+
+Weil der Eintrag **beide Sprachfassungen** trägt, lohnen die englischen
+Entsprechungen daneben — gesucht wird international, und ein deutsches
+Schlagwort findet kein englischsprachiger Leser:
+
+```
+AI system steering
+rules versus standards
+principle-based rule
+multi-agent systems
+run-time alignment
+operator control
+field observation
+```
+
+> ⚠ **Und was hier vorher stand, war ein Missverständnis meinerseits.** Ich
+> hatte „da waren sie nicht richtig" als „inhaltlich falsch" gelesen und
+> daraufhin geschrieben, es dürfe keine Ersatzliste geben. Gemeint war „an der
+> falschen Stelle". Die Liste steht deshalb wieder da, nur an dem Ort, an den
+> sie gehört.
+
+### Beide Sprachen ins Feld, nicht nur eine
+
+Zenodos Feld *Languages* nimmt **mehrere** Einträge. Der Eintrag trägt beide
+Fassungen, also gehören auch beide hinein: `German` und `English`. Steht nur
+eine da, findet eine Sprachsuche nach der anderen den Eintrag nicht, obwohl die
+Datei darin liegt.
+
+Dasselbe gilt für die Beschreibung: sie steht zweisprachig im Eintrag, englisch
+zuerst. Klaus am 2026-09-03: *„absichtlich auf Englisch, weil wahrscheinlich die
+meisten das Englisch lesen werden."*
+
+### ⚠ Der Dateiname, den der Browser übersetzt
+
+Beim Hochladen zeigte Zenodo die englische Datei als
+*„Regeln und Prinzipien in KI-Agentensystemen.pdf"* an, obwohl sie
+`rules-and-principles-in-ai-agent-systems.pdf` heißt.
+
+**Die Datei war richtig.** Chrome hatte die Seite übersetzt und dabei den
+Dateinamen als Text mitgenommen; das Wort „Prinzipien" kommt in keinem der
+Dateinamen vor, es ist die Übersetzung von *principles*. Der deutsche Name blieb
+stehen, weil er schon deutsch war.
+
+Bewiesen an der Prüfsumme, nicht am Augenschein: Zenodo zeigte
+`md5:acd2aaeb2b7ccccfdce37ed449e9f92d`, und genau die hat die englische Datei.
+Auch die Größe passte, nur rechnet Zenodo mit 1000 Bytes je KB und `ls` mit 1024.
+
+**Zum Nachsehen:** in der Adressleiste auf das Übersetzen-Symbol tippen und
+„Original anzeigen" wählen.
 
 3. **Publish** drücken.
 
@@ -111,7 +220,46 @@ Aufgaben — die Zuordnung steht ausführlich in
 | **Versions-DOI** (der reservierte) | steht **im Papier selbst** |
 | **Concept-DOI** (legt Zenodo dazu an) | für dauerhafte Verweise: führt immer zur neuesten Fassung |
 
+### ⚠ Den Concept-DOI SIEHT man nicht, man merkt ihn nur
+
+**Gemessen von Klaus am 2026-09-03**, weil diese Frage eine ganze Runde
+gekostet hat: auf der Eintragsseite steht **nur die Versionsnummer**. Beim
+SBKIM-Papier zeigt die Seite ausschließlich `…22277738`, ausgewiesen als
+Version 2.0. Die `…22277737` taucht dort nirgends auf.
+
+**Sie ist trotzdem da.** Wer `doi.org/10.5281/zenodo.22277737` öffnet, landet
+automatisch auf der 738. Das ist keine Panne, sondern genau die Aufgabe des
+Concept-DOI: er hat keine eigene Seite, er ist eine **Weiterleitung** auf die
+jeweils neueste Fassung.
+
+Daraus folgt für die Suche danach: **nicht auf der Seite suchen, sondern
+ausprobieren.** Wer nur hinsieht, kommt zu dem Schluss, es gebe ihn nicht — und
+schriebe dann alle dauerhaften Verweise auf eine Fassungsnummer um, die beim
+nächsten Aufguss veraltet.
+
+Zu finden ist er im Kasten **Versions** beziehungsweise über *Cite all
+versions*. Findet man ihn dort nicht, ist der Weg über die Adresse der
+verlässlichere.
+
 **Beide Nummern in den Chat kopieren.**
+
+### ✅ Gemessen für Paper A (2026-09-03)
+
+| | |
+|---|---|
+| Eintrag | [zenodo.org/records/22286072](https://zenodo.org/records/22286072) |
+| Versions-DOI | `10.5281/zenodo.22286072` — Version 1.0 |
+| Concept-DOI | `10.5281/zenodo.22286071` |
+| Fundstelle | Kasten *Versionen*, Satz „Alle Versionen zitieren?" |
+
+**Der Concept-DOI ist um eins kleiner als der Versions-DOI** — bei Paper A wie
+beim SBKIM-Papier (22277737/22277738). Das sind **zwei Fälle**, und zwei Fälle
+sind eine Beobachtung, keine Zusicherung von Zenodo. Vor dem Eintragen wurde die
+Nummer deshalb am Satz im Versions-Kasten abgelesen und nicht gerechnet.
+
+⚠ **Bei einer einzigen Version gibt es den Concept-DOI trotzdem.** Er entsteht
+mit der ersten Veröffentlichung, nicht mit der zweiten — das ist sein Zweck:
+Verweise, die heute gesetzt werden, sollen die nächste Fassung überstehen.
 
 ---
 
@@ -123,8 +271,11 @@ Beim SBKIM-Papier waren es **vier** Stellen. Für Paper A:
 |---|---|
 | `regeln-und-grundsaetze-in-ki-agentensystemen.html` | die `paper-doi`-Zeile (kommt aus `--doi`) |
 | `docs/papers/README.md` | der Abschnitt zu den DOIs |
-| `index.html` | die Geschichts-Galerie, wenn Paper A dort eine Station bekommt |
+| `index.html` | die Geschichts-Galerie, Station 9 und 10 |
 | `docs/PULS.md` | im Eintrag zur Veröffentlichung |
+
+**Alle vier sind am 2026-09-03 nachgezogen.** Die Zeile für die nächste Fassung
+bleibt stehen, weil sie dann wieder gebraucht wird.
 
 Danach `node tests/smoke_paper_a.mjs` — die Probe verlangt, dass der DOI
 entweder echt ist **oder** ausdrücklich als fehlend vermerkt.

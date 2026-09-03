@@ -160,6 +160,24 @@ try {
     "    } else if (/^@@@nie@@@$/.test(text)) {",
     'smoke_paper_a.mjs', 'Der Verfasser-Abschnitt steht in seinem eigenen Block');
 
+  /* --- Der DOI --------------------------------------------------------------- */
+
+  /* Ein Tippfehler in EINER der beiden Fassungen. Beide sehen fuer sich richtig
+     aus; nur der Vergleich faengt es. */
+  fall('Die englische Fassung traegt einen anderen DOI',
+    P('docs/papers/rules-and-principles-in-ai-agent-systems.html'),
+    /doi\.org\/10\.\d{4,}\/zenodo\.(\d+)/g,
+    'doi.org/10.5281/zenodo.99999999',
+    'smoke_paper_a.mjs', 'Beide Sprachfassungen tragen DENSELBEN DOI');
+
+  /* Und die Gegenrichtung: der Waechter darf nicht am blossen Vorhandensein
+     haengen. Eine kaputte Nummer muss auffallen. */
+  fall('Der DOI ist keine gueltige Nummer mehr',
+    HTML,
+    (t) => t.replace(/doi\.org\/10\.\d{4,}\/zenodo\.\d+/g, 'doi.org/irgendwas'),
+    null,
+    'smoke_paper_a.mjs', 'Der DOI hat die Form einer echten Nummer');
+
   /* --- Der Stil-Waechter --------------------------------------------------- */
 
   fall('paper.css laeuft von der inline-Fassung weg',
