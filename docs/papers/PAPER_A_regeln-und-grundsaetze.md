@@ -184,8 +184,8 @@ früher.
 
 **Entwicklungspsychologie.** Kohlbergs Stufenmodell beginnt auf Stufe 1 mit einer
 *Moral des Ärgervermeidens*, richtig ist, was Strafe verhindert, und endet auf
-Stufe 6 bei **selbstgewählten, allgemeinen Grundsätzen**. Klaus' zwei Autofahrer
-sind exakt die beiden Enden des meistzitierten Modells dieses Feldes.
+Stufe 6 bei **selbstgewählten, allgemeinen Grundsätzen**. Die beiden Autofahrer
+aus 1.1 sind exakt die Enden des meistzitierten Modells dieses Feldes.
 
 **Rechtssoziologie.** Tyler (1990) hat gemessen, was von beidem trägt: Menschen
 befolgen Recht **überwiegend, weil sie es für legitim halten**, nicht aus Furcht
@@ -681,7 +681,7 @@ Abschnitt 2.5. Das Boot, das im Kreis fährt, hat keine Regel gebrochen.
 nicht auf eine Formalie hin erfüllen, weil es keine Formalie gibt. Man kann die
 Frage übergehen, aber man kann sie nicht **technisch bestehen**.
 
-Daraus folgt die genauere Fassung von Klaus' Einwand:
+Damit lässt sich der Einwand genauer fassen:
 
 > **Eine Regel kann erfüllt werden, ohne getroffen zu sein.
 > Ein Grundsatz kann übergangen werden, ohne verletzt zu sein.**
@@ -909,7 +909,8 @@ Vergleich ist eine Subtraktion.
 
 #### Das Ergebnis widerlegt die naheliegende Erwartung
 
-**Die Ersparnis ist winzig**, und nach dem Abschnitt oben womöglich gar keine.
+**Die Ersparnis ist winzig.** Ob nach dem Abschnitt oben überhaupt eine bleibt,
+ist nicht gemessen.
 Eineinhalb Cent je Schicht auf der Eingabeseite, mit Zwischenspeicherung ein
 Zehntel davon, und auf der Ausgabeseite ein Umschlagpunkt bei einundvierzig Token.
 Gegen einen Schicht-Deckel von fünf Euro ist das nichts.
@@ -1172,9 +1173,9 @@ entscheidbar, weil die Regeln endlich und aufgeschrieben sind.
   Befund dieses Papiers: dann läge es nicht an der Reichweite, sondern daran, wie
   ein Zweck anders wirkt als eine Bedingung.
 
-#### Was ich hier schon vermute, und warum es benannt gehört
+#### Eine Vermutung, die vor der Messung feststeht
 
-Klaus' Formulierung war *„nicht erst tausende von Regeln lesen"*. **In diesem
+Der Einwand lautete *„nicht erst tausende von Regeln lesen"*. **In diesem
 Aufbau sind es keine tausend, sondern sechs. 1.723 Zeichen** (Stand 2026-09-03;
 1.572 vor der Reparatur der sechsten Regel). Bei dieser Größe ist
 **H2 unplausibel**: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte
@@ -1192,7 +1193,7 @@ Arbeit, der sich überhaupt widerlegen lässt.
 
 #### Sie schließen einander nicht aus
 
-Der wahrscheinlichste Ausgang ist, dass alle drei etwas beitragen. **Das ist kein
+Möglich ist, dass alle drei etwas beitragen. **Das ist kein
 Mangel des Aufbaus, sondern der Grund, ihn so zu bauen:** die beiden Kontrollen
 oben teilen den Beitrag auf, statt einen Sieger zu küren. Ein Papier, das nach
 *der* Ursache sucht, findet meistens die, die es erwartet hat.
