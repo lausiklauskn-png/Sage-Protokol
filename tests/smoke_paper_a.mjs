@@ -130,5 +130,20 @@ pruefe('Der DOI ist entweder echt oder ausdruecklich als fehlend vermerkt',
 pruefe('Zwei Schlussabschnitte tragen die eigene Seite',
   (abgelegt.match(/class="eigene-seite"/g) || []).length === 2);
 
+/* ⚠ EIN TRENNSTRICH VOR EINER ERZWUNGENEN SEITE KOSTET EINE GANZE SEITE.
+   Gemessen am 2026-09-03: der Strich passte nicht mehr aufs Blatt, wanderte
+   auf die naechste Seite, und die Ueberschrift schob sich per
+   `break-before:page` noch eine weiter. Uebrig blieb eine Seite mit einem
+   Strich darauf und sonst nichts. Gefunden hat es Klaus im PDF.
+   Gemessen wird die Reihenfolge im Dokument, nicht die Seitenzahl: die haengt
+   vom Text davor ab und aendert sich mit jedem Absatz. */
+pruefe('Kein Trennstrich steht direkt vor einer erzwungenen Seite',
+  !/<hr class="divider">\s*<h2 class="eigene-seite"/.test(rumpf));
+
+/* Der Verfasser-Block wird wie die Quellen klein gesetzt, damit der Schluss
+   nicht mit vier Zeilen allein auf einer eigenen Seite endet. */
+pruefe('Der Verfasser-Abschnitt steht in seinem eigenen Block',
+  /<div class="verfasser">/.test(rumpf));
+
 console.log('\n' + gruen + ' gruen, ' + rot.length + (rot.length ? ' ROT' : ' rot'));
 process.exit(rot.length ? 1 : 0);

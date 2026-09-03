@@ -146,6 +146,20 @@ try {
     "    /* nichts */",
     'smoke_paper_a.mjs', 'Die vierte Überschriften-Ebene ist gesetzt');
 
+  /* --- Der Schluss des Dokuments -------------------------------------------- */
+
+  fall('Der Trennstrich vor der erzwungenen Seite kommt zurueck',
+    P('tools/paper-md-zu-html.mjs'),
+    "        if (aus.length && aus[aus.length - 1].includes('<hr class=\"divider\">')) aus.pop();",
+    "        /* Strich bleibt stehen */",
+    'smoke_paper_a.mjs', 'Kein Trennstrich steht direkt vor einer erzwungenen Seite');
+
+  fall('Der Verfasser-Block faellt weg',
+    P('tools/paper-md-zu-html.mjs'),
+    "    } else if (/^(Zum Verfasser|About the author)$/i.test(text)) {",
+    "    } else if (/^@@@nie@@@$/.test(text)) {",
+    'smoke_paper_a.mjs', 'Der Verfasser-Abschnitt steht in seinem eigenen Block');
+
   /* --- Der Stil-Waechter --------------------------------------------------- */
 
   fall('paper.css laeuft von der inline-Fassung weg',

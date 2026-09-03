@@ -336,3 +336,25 @@ h4 {
   /* Gedruckt etwas kleiner als am Bildschirm, wie die uebrigen Ebenen. */
   h4 { font-size:13.4px; margin:14px 0 5px; }
 }
+
+/* ── DER SCHLUSS BLEIBT BEI ABSCHNITT 9 (Klaus 2026-09-03) ────────────────
+
+   „Versuchen, die letzte Seite unter dem Punkt, wo Abschnitt neun mit drin
+   ist, unterzubringen … dass der letzte Satz nicht unbedingt auf einer
+   einzelnen Seite liegt."
+
+   Gemessen: der Verfasser-Absatz endete mit vier Zeilen allein auf einer
+   eigenen Seite. Behandelt wie die Quellen daneben, kleiner gesetzt und mit
+   engem Abstand, passt er mit darunter.
+
+   Es ist derselbe Weg, den die Quellenangaben schon gegangen sind, und er
+   trifft NUR diesen Schluss: keine Regel hier gilt fuer den uebrigen Text. */
+.verfasser { margin-top:40px; }
+
+@media print {
+  .paper .verfasser { font-size:10.4px; margin-top:10px; }
+  .paper .verfasser h2 { margin:10px 0 5px; }
+  .paper .verfasser p { font-size:10.4px; line-height:1.4; margin-bottom:4px; }
+  /* Der Verfasser-Block ist kurz. Er soll ganz bleiben, wo er anfaengt. */
+  .verfasser { break-inside:avoid; }
+}

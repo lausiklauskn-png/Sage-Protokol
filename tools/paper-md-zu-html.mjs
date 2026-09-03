@@ -190,8 +190,28 @@ while (i < rumpf.length) {
       aus.push('  <div class="footnotes">');
       aus.push('    <h2>' + inline(text) + '</h2>');
       inAbschnitt = 'footnotes';
+    } else if (/^(Zum Verfasser|About the author)$/i.test(text)) {
+      /* Derselbe Weg, den Klaus am 2026-09-03 fuer die Quellen gewaehlt hat:
+         „Die Quellenangaben koennten kleiner geschrieben werden, sodass der
+         nachfolgende Punkt alles auf eine Seite passt." Ohne das stand der
+         Schluss des Verfasser-Absatzes mit vier Zeilen allein auf der letzten
+         Seite. */
+      aus.push('  <div class="verfasser">');
+      aus.push('    <h2>' + inline(text) + '</h2>');
+      inAbschnitt = 'verfasser';
     } else {
       const eigene = EIGENE_SEITE_HIER.some((a) => text.startsWith(a));
+      /* ⚠ EIN TRENNSTRICH VOR EINER ERZWUNGENEN SEITE ERZEUGT EINE LEERE SEITE.
+         Gemessen am 2026-09-03: der `---` vor Abschnitt 8 passte nicht mehr auf
+         Seite 39, wanderte auf Seite 40 — und die naechste Ueberschrift schob
+         sich per `break-before:page` auf 41. Uebrig blieb eine Seite mit einem
+         Strich darauf und sonst nichts. Gefunden hat es Klaus im PDF.
+         Wo ohnehin eine neue Seite beginnt, trennt der Seitenwechsel schon;
+         der Strich ist dort nicht nur ueberfluessig, er kostet eine Seite. */
+      if (eigene) {
+        while (aus.length && !aus[aus.length - 1].trim()) aus.pop();
+        if (aus.length && aus[aus.length - 1].includes('<hr class="divider">')) aus.pop();
+      }
       aus.push('    <h2' + (eigene ? ' class="eigene-seite"' : '') + '>' + inline(text) + '</h2>');
     }
     i++; continue;

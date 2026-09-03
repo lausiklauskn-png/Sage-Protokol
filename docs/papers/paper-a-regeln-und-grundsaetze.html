@@ -349,6 +349,28 @@ h4 {
   h4 { font-size:13.4px; margin:14px 0 5px; }
 }
 
+/* ── DER SCHLUSS BLEIBT BEI ABSCHNITT 9 (Klaus 2026-09-03) ────────────────
+
+   „Versuchen, die letzte Seite unter dem Punkt, wo Abschnitt neun mit drin
+   ist, unterzubringen … dass der letzte Satz nicht unbedingt auf einer
+   einzelnen Seite liegt."
+
+   Gemessen: der Verfasser-Absatz endete mit vier Zeilen allein auf einer
+   eigenen Seite. Behandelt wie die Quellen daneben, kleiner gesetzt und mit
+   engem Abstand, passt er mit darunter.
+
+   Es ist derselbe Weg, den die Quellenangaben schon gegangen sind, und er
+   trifft NUR diesen Schluss: keine Regel hier gilt fuer den uebrigen Text. */
+.verfasser { margin-top:40px; }
+
+@media print {
+  .paper .verfasser { font-size:10.4px; margin-top:10px; }
+  .paper .verfasser h2 { margin:10px 0 5px; }
+  .paper .verfasser p { font-size:10.4px; line-height:1.4; margin-bottom:4px; }
+  /* Der Verfasser-Block ist kurz. Er soll ganz bleiben, wo er anfaengt. */
+  .verfasser { break-inside:avoid; }
+}
+
 </style>
 </head>
 <body>
@@ -1093,13 +1115,11 @@ h4 {
       <p><strong>Der vierte Arm verbessert sich bei Aufgabenart B</strong> (Bestehendes verbessern, wiederkehrende Fälle) <strong>und nicht bei Art E</strong> (eigene Idee, neue Fälle).</p>
     </blockquote>
     <p>Trifft das zu, ist die These aus 3.5 bestätigt: was man aus Vorfällen ableitet, wirkt wie eine Regel. Es hilft dort, wo der Fall wiederkehrt, und nicht dort, wo er neu ist. Verbessert sich auch Art E, war die Unterscheidung zwischen abgeleiteten und gesetzten Grundsätzen zu scharf gezogen, und dieser Abschnitt ist zu verwerfen.</p>
-  <hr class="divider">
     <h2 class="eigene-seite">8 · Einordnung</h2>
     <p>Die Beobachtung, um die es geht, hat eine Form, die auch anderswo in dieser Arbeit auftritt: <strong>sie geht in beide Richtungen.</strong></p>
     <p>Der Mensch prägt die KI: über Regeln, die er erzwingt, und über Grundsätze, die er ihr mitgibt. Und die KI prägt den Menschen: über Gewöhnung, über Erleichterung, über Enttäuschung. Wer nur eine Richtung betrachtet, beschreibt die Hälfte.</p>
     <p>Dieselbe Figur trägt das SBKIM-Protokoll, an dem der Aufbau entstanden ist: eine Suche, in der <strong>beide Seiten fragen und beide antworten</strong>, ohne zentralen Index und ohne Hierarchie zwischen Suchendem und Gesuchtem. Die Richtungsgleichheit ist dort eine technische Entscheidung. Hier ist sie eine Beobachtung. Ob das mehr ist als eine Analogie, ist offen. Es wird hier benannt und nicht behauptet.</p>
     <p>Die zweite Richtung. Was die Nutzung mit dem Menschen macht, ist Gegenstand eines eigenen Papiers und in diesem ausdrücklich <strong>nicht</strong> behandelt.</p>
-  <hr class="divider">
     <h2 class="eigene-seite">9 · Verfügbarkeit</h2>
     <p>Material, Regeln, Grundsätze und der ausführliche Befund samt Grenzen liegen offen unter der MIT-Lizenz:</p>
     <p><a href="https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt">https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt</a></p>
@@ -1124,9 +1144,11 @@ h4 {
       <p><strong>Zu <em>specification gaming</em> und <em>reward hacking</em>:</strong> DeepMind führt eine öffentliche Sammlung von über hundert dokumentierten Fällen; der begriffliche Rahmen ist Goodharts Gesetz („wird ein Maß zum Ziel, taugt es nicht mehr als Maß").</p>
   </div>
   <hr class="divider">
+  <div class="verfasser">
     <h2>Zum Verfasser</h2>
-    <p>Kein Informatiker, kein Wissenschaftler. Handwerksbetrieb, seit März 2026 nebenher an einem Netz aus offen lizenzierten Web-Anwendungen und einem Protokoll für bedeutungsbasierte Suche zwischen unabhängigen Web-Anwendungen, <strong>ohne zentralen Index und ohne eigene Infrastruktur beim Nutzer</strong>, der Verkehr läuft über ein geliehenes Relais. Der hier beschriebene Aufbau ist zuerst ein Werkzeug dieser Arbeit gewesen: er ist entstanden, weil er gebraucht wurde, und erst danach zum Gegenstand geworden, und dann gezielt zu einem Versuchsaufbau ausgebaut (3.0).</p>
-    <p><strong>Was das wert ist und was nicht:</strong> die Beobachtungen stammen aus echten Aufgaben über fünf Monate, mit mitlaufendem Protokoll statt Erinnerung. Was fehlt, ist die Methode, und sie fehlt nicht aus Nachlässigkeit, sondern weil sie nicht vorhanden ist. Für den Versuchsaufbau in Abschnitt 7 wird ausdrücklich eine Zusammenarbeit gesucht.</p>
+      <p>Kein Informatiker, kein Wissenschaftler. Handwerksbetrieb, seit März 2026 nebenher an einem Netz aus offen lizenzierten Web-Anwendungen und einem Protokoll für bedeutungsbasierte Suche zwischen unabhängigen Web-Anwendungen, <strong>ohne zentralen Index und ohne eigene Infrastruktur beim Nutzer</strong>, der Verkehr läuft über ein geliehenes Relais. Der hier beschriebene Aufbau ist zuerst ein Werkzeug dieser Arbeit gewesen: er ist entstanden, weil er gebraucht wurde, und erst danach zum Gegenstand geworden, und dann gezielt zu einem Versuchsaufbau ausgebaut (3.0).</p>
+      <p><strong>Was das wert ist und was nicht:</strong> die Beobachtungen stammen aus echten Aufgaben über fünf Monate, mit mitlaufendem Protokoll statt Erinnerung. Was fehlt, ist die Methode, und sie fehlt nicht aus Nachlässigkeit, sondern weil sie nicht vorhanden ist. Für den Versuchsaufbau in Abschnitt 7 wird ausdrücklich eine Zusammenarbeit gesucht.</p>
+  </div>
 
 </div>
 
