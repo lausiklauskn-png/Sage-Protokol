@@ -441,11 +441,12 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
       </tbody>
     </table>
     <h3>3.2 Die sechs Regeln</h3>
-    <p>Sie decken ab, was sich formulieren lässt: Ehrlichkeit über den eigenen Stand · kein Personenbezug, kein Geheimnis · nichts erfinden · keine fremden Adressen · kurz und auf Deutsch schreiben · und: keine Werkzeuge, also auch nicht behaupten, etwas ausgeführt zu haben.</p>
+    <p>Sie decken ab, was sich formulieren lässt: Ehrlichkeit über den eigenen Stand · kein Personenbezug, kein Geheimnis · nichts erfinden · keine fremden Adressen · kurz und auf Deutsch schreiben · und: nichts behaupten, was man nicht wirklich getan hat.</p>
     <p>Drei davon tragen ihre Herkunft im Text. Sie stammen aus einem Schaden, nicht aus einem Lehrbuch. Die Regel gegen erfundene Zahlen begründet sich selbst mit dem Satz <em>„eine geratene Zahl klingt genau wie eine gemessene"</em>. Die Regel gegen Geheimnisse begründet sich nicht mit Datenschutz, sondern mit einer Beobachtung über Depots: <em>„privat" ist eine Einstellung, die ein Klick umdreht, und die Historie behält alles.</em></p>
-    <p><strong>Und die sechste Regel ist inzwischen falsch, in ihrem eigenen System.</strong> Gemessen am Stand von Kimhubs Hauptzweig am 2026-09-03: die Werkbank (<code>schicht/werkzeuge.mjs</code>) reicht den Rollen <strong>vier</strong> Werkzeuge: <code>datei_lesen</code>, <code>verzeichnis_zeigen</code>, <code>suchen</code> und, hinter einem eigenen Schalter, <code>netz_holen</code>. Sie wird in <code>schicht/lauf.mjs</code> gebaut und an jede Rolle gegeben. Im selben Prompt steht weiterhin der Satz <strong>„DU HAST KEINE WERKZEUGE."</strong></p>
-    <p>Der Befund gehört hierher und nicht in eine Fußnote, denn er belegt beiläufig, was 3.8 behauptet: <strong>ein Regelwerk altert mit seiner Umgebung.</strong> Die Regel war am 2026-08-20 richtig und aus einem echten Schaden geschrieben. Die Umgebung hat sich am 2026-08-23 geändert, die Regel nicht. Niemand hat es bemerkt, weil eine Regel nicht meldet, dass sie nicht mehr stimmt. Sie wird weiter erzwungen.</p>
-    <p>Ein Grundsatz hätte das überstanden: <em>„Behaupte nichts, was du nicht belegen kannst"</em> gilt mit Werkzeugen wie ohne. Die Regel nennt den Fall, der Grundsatz den Zweck, und nur der Fall veraltet.</p>
+    <p><strong>Die sechste Regel war elf Tage lang falsch, in ihrem eigenen System.</strong> Sie hieß <em>„DU HAST KEINE WERKZEUGE. Du kannst nichts ausführen, nichts aufrufen, keine Datei öffnen."</em> Am 2026-08-23 bekamen die Rollen eine Werkbank (<code>schicht/werkzeuge.mjs</code>) mit vier Werkzeugen: <code>datei_lesen</code>, <code>verzeichnis_zeigen</code>, <code>suchen</code> und, hinter einem eigenen Schalter, <code>netz_holen</code>. Von da an stand in <strong>ein und derselben Anweisung</strong> erst dieser Satz und wenige Absätze später sein Gegenteil. Bemerkt wurde es am 2026-09-03, beim Lesen.</p>
+    <p>Der Befund gehört hierher und nicht in eine Fußnote, denn er belegt beiläufig, was 3.8 behauptet: <strong>ein Regelwerk altert mit seiner Umgebung.</strong> Die Regel war am 2026-08-20 richtig und aus einem echten Schaden geschrieben. Die Umgebung hat sich geändert, die Regel nicht. <strong>Eine Regel meldet nicht, dass sie nicht mehr stimmt; sie wird weiter erzwungen.</strong></p>
+    <p><strong>Und die Prüfung war der Grund, warum es niemand sah.</strong> Der zuständige Wächter verlangte, dass die Zeichenfolge <code>KEINE WERKZEUGE</code> in der Anweisung vorkommt. Er nagelte damit einen <strong>Wortlaut</strong> fest statt einer Zusicherung und hielt genau die Regel am Leben, die falsch geworden war. Er war die ganze Zeit grün. Das ist die unangenehmere Hälfte des Befundes: nicht nur die Regel alterte, sondern auch ihr Wächter, und der Wächter hatte die Alterung sogar geschützt.</p>
+    <p>Repariert am 2026-09-03. Die Regel nennt jetzt nur noch, was in <strong>jedem</strong> Modus gilt: du kannst nicht schreiben, und du behauptest nichts, was du nicht getan hast. Was gerade gelesen werden darf, sagt der Werkzeug-Hinweis, der mit der Werkbank mitwandert. <strong>Das ist genau der Umbau, den ein Grundsatz nicht braucht:</strong> <em>„Behaupte nichts, was du nicht belegen kannst"</em> gilt mit Werkzeugen wie ohne. Die Regel nennt den Fall, der Grundsatz den Zweck, und nur der Fall veraltet.</p>
     <h3>3.3 Die fünf Grundsätze</h3>
     <ol>
       <li><strong>Was hat der Nächste davon?</strong></li>
@@ -634,15 +635,18 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
     <blockquote>
       <p><strong>Wer sich auf deine Ausgabe verlässt, muss sich verlassen können.</strong> Schreib nur hin, was du wirklich weißt. Was du nicht prüfen konntest, benennst du als ungeprüft. Eine geratene Zahl klingt genau wie eine gemessene.</p>
     </blockquote>
-    <p><strong>Gemessen, nicht geschätzt</strong> (Zeichenzahl am Wortlaut in <code>WERKSTATTREGELN.md</code>):</p>
+    <p><strong>Gemessen, nicht geschätzt</strong> (Zeichenzahl am Wortlaut in <code>WERKSTATTREGELN.md</code>, Stand 2026-08-23, Regelblock 1.572 Zeichen):</p>
     <table>
       <thead><tr><th></th><th>Zeichen</th></tr></thead>
       <tbody>
         <tr><td>Die drei Regeln zusammen</td><td><strong>938</strong></td></tr>
         <tr><td>Der eine Grundsatz, der sie trägt</td><td><strong>224</strong></td></tr>
-        <tr><td><strong>Ersparnis je Aufruf</strong></td><td><strong>714</strong>, der Regelblock schrumpft von 1.510 auf 796 Zeichen, also um <strong>47 %</strong></td></tr>
+        <tr><td><strong>Ersparnis je Aufruf</strong></td><td><strong>714</strong>, der Regelblock schrumpft von 1.572 auf 858 Zeichen, also um <strong>45 %</strong></td></tr>
       </tbody>
     </table>
+    <blockquote>
+      <p>⚠ <strong>Hier stand bis zum 2026-09-03 „von 1.510 auf 796 Zeichen, also um 47 %".</strong> Die drei Einzelwerte waren richtig gemessen und sind nachrechenbar; die <strong>Gesamtzahl</strong> war es nicht. Der Block hatte an keinem belegbaren Tag 1.510 Zeichen: die Quelldatei zeigt 1.505 am 21.08. früh, 1.572 am 21.08. spät und seit dem 03.09. 1.723. Aufgefallen beim Nachzählen, nicht beim Lesen. <strong>Eine Zahl, die aus richtig gemessenen Teilen gebildet wird, ist deshalb noch nicht selbst gemessen.</strong></p>
+    </blockquote>
     <p>Die Umrechnung in Token ist eine <strong>Schätzung</strong> und als solche gekennzeichnet: bei deutscher Prosa etwa 3 bis 4 Zeichen je Token, also <strong>rund 180 bis 240 Token</strong> je Aufruf. <em>Die genaue Zahl liefert die <code>count_tokens</code>-Schnittstelle; sie ist zu messen, bevor irgendwo eine Zahl behauptet wird.</em></p>
     <p><strong>Und jetzt die Rechnung, mit rund 200 Token je Aufruf und 5 USD je Million Eingabe-Token:</strong></p>
     <table>
@@ -809,7 +813,7 @@ code { font-family:'Source Code Pro',monospace; font-size:13px; background:#f0f0
       <li>Zeigt er sich <strong>auch innerhalb</strong> → dort greift eine Regel und tut es trotzdem nicht so gut wie ein Grundsatz. Das wäre <strong>H1</strong>, und es wäre der interessanteste Befund dieses Papiers: dann läge es nicht an der Reichweite, sondern daran, wie ein Zweck anders wirkt als eine Bedingung.</li>
     </ul>
     <p>#### Was ich hier schon vermute, und warum es benannt gehört</p>
-    <p>Klaus' Formulierung war <em>„nicht erst tausende von Regeln lesen"</em>. <strong>In diesem Aufbau sind es keine tausend, sondern sechs. 1.510 Zeichen.</strong> Bei dieser Größe ist <strong>H2 unplausibel</strong>: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte Aufmerksamkeit.</p>
+    <p>Klaus' Formulierung war <em>„nicht erst tausende von Regeln lesen"</em>. <strong>In diesem Aufbau sind es keine tausend, sondern sechs. 1.723 Zeichen</strong> (Stand 2026-09-03; 1.572 vor der Reparatur der sechsten Regel). Bei dieser Größe ist <strong>H2 unplausibel</strong>: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte Aufmerksamkeit.</p>
     <p>Das heißt nicht, dass H2 falsch ist. Es heißt, dass sie <strong>hier nicht greifen kann</strong> und erst in einem System mit einem wirklich großen Regelwerk messbar würde. Dort allerdings vermutlich stark. <strong>Wer diese Arbeit auf eine große Installation überträgt, sollte mit H2 rechnen; wer sie hier misst, wird sie nicht finden.</strong></p>
     <p>Diese Vermutung steht hier ausdrücklich <strong>vor</strong> der Messung, und sie ist im Versuchsaufbau genauer zu messen als bisher. Trifft sie nicht zu, ist das kein Missgeschick: eine Vorhersage, die vorher feststeht, ist der einzige Teil dieser Arbeit, der sich überhaupt widerlegen lässt.</p>
     <p>#### Sie schließen einander nicht aus</p>

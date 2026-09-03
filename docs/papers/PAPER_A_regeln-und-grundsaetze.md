@@ -441,8 +441,8 @@ Zwei Kanäle im selben System, absichtlich getrennt geführt.
 
 Sie decken ab, was sich formulieren lässt: Ehrlichkeit über den eigenen Stand ·
 kein Personenbezug, kein Geheimnis · nichts erfinden · keine fremden Adressen ·
-kurz und auf Deutsch schreiben · und: keine Werkzeuge, also auch nicht behaupten,
-etwas ausgeführt zu haben.
+kurz und auf Deutsch schreiben · und: nichts behaupten, was man nicht wirklich
+getan hat.
 
 Drei davon tragen ihre Herkunft im Text. Sie stammen aus einem Schaden, nicht
 aus einem Lehrbuch. Die Regel gegen erfundene Zahlen begründet sich selbst mit
@@ -451,23 +451,33 @@ Geheimnisse begründet sich nicht mit Datenschutz, sondern mit einer Beobachtung
 über Depots: *„privat" ist eine Einstellung, die ein Klick umdreht, und die
 Historie behält alles.*
 
-**Und die sechste Regel ist inzwischen falsch, in ihrem eigenen System.**
-Gemessen am Stand von Kimhubs Hauptzweig am 2026-09-03: die Werkbank
-(`schicht/werkzeuge.mjs`) reicht den Rollen **vier** Werkzeuge:
-`datei_lesen`, `verzeichnis_zeigen`, `suchen` und, hinter einem eigenen
-Schalter, `netz_holen`. Sie wird in `schicht/lauf.mjs` gebaut und an jede Rolle
-gegeben. Im selben Prompt steht weiterhin der Satz **„DU HAST KEINE
-WERKZEUGE."**
+**Die sechste Regel war elf Tage lang falsch, in ihrem eigenen System.** Sie
+hieß *„DU HAST KEINE WERKZEUGE. Du kannst nichts ausführen, nichts aufrufen,
+keine Datei öffnen."* Am 2026-08-23 bekamen die Rollen eine Werkbank
+(`schicht/werkzeuge.mjs`) mit vier Werkzeugen: `datei_lesen`,
+`verzeichnis_zeigen`, `suchen` und, hinter einem eigenen Schalter, `netz_holen`.
+Von da an stand in **ein und derselben Anweisung** erst dieser Satz und wenige
+Absätze später sein Gegenteil. Bemerkt wurde es am 2026-09-03, beim Lesen.
 
 Der Befund gehört hierher und nicht in eine Fußnote, denn er belegt beiläufig,
 was 3.8 behauptet: **ein Regelwerk altert mit seiner Umgebung.** Die Regel war
 am 2026-08-20 richtig und aus einem echten Schaden geschrieben. Die Umgebung hat
-sich am 2026-08-23 geändert, die Regel nicht. Niemand hat es bemerkt, weil eine
-Regel nicht meldet, dass sie nicht mehr stimmt. Sie wird weiter erzwungen.
+sich geändert, die Regel nicht. **Eine Regel meldet nicht, dass sie nicht mehr
+stimmt; sie wird weiter erzwungen.**
 
-Ein Grundsatz hätte das überstanden: *„Behaupte nichts, was du nicht belegen
-kannst"* gilt mit Werkzeugen wie ohne. Die Regel nennt den Fall, der Grundsatz
-den Zweck, und nur der Fall veraltet.
+**Und die Prüfung war der Grund, warum es niemand sah.** Der zuständige Wächter
+verlangte, dass die Zeichenfolge `KEINE WERKZEUGE` in der Anweisung vorkommt. Er
+nagelte damit einen **Wortlaut** fest statt einer Zusicherung und hielt genau die
+Regel am Leben, die falsch geworden war. Er war die ganze Zeit grün. Das ist die
+unangenehmere Hälfte des Befundes: nicht nur die Regel alterte, sondern auch ihr
+Wächter, und der Wächter hatte die Alterung sogar geschützt.
+
+Repariert am 2026-09-03. Die Regel nennt jetzt nur noch, was in **jedem** Modus
+gilt: du kannst nicht schreiben, und du behauptest nichts, was du nicht getan
+hast. Was gerade gelesen werden darf, sagt der Werkzeug-Hinweis, der mit der
+Werkbank mitwandert. **Das ist genau der Umbau, den ein Grundsatz nicht braucht:**
+*„Behaupte nichts, was du nicht belegen kannst"* gilt mit Werkzeugen wie ohne.
+Die Regel nennt den Fall, der Grundsatz den Zweck, und nur der Fall veraltet.
 
 ### 3.3 Die fünf Grundsätze
 
@@ -881,13 +891,22 @@ demselben Zweck:
 > Schreib nur hin, was du wirklich weißt. Was du nicht prüfen konntest, benennst du
 > als ungeprüft. Eine geratene Zahl klingt genau wie eine gemessene.
 
-**Gemessen, nicht geschätzt** (Zeichenzahl am Wortlaut in `WERKSTATTREGELN.md`):
+**Gemessen, nicht geschätzt** (Zeichenzahl am Wortlaut in
+`WERKSTATTREGELN.md`, Stand 2026-08-23, Regelblock 1.572 Zeichen):
 
 | | Zeichen |
 |---|---|
 | Die drei Regeln zusammen | **938** |
 | Der eine Grundsatz, der sie trägt | **224** |
-| **Ersparnis je Aufruf** | **714**, der Regelblock schrumpft von 1.510 auf 796 Zeichen, also um **47 %** |
+| **Ersparnis je Aufruf** | **714**, der Regelblock schrumpft von 1.572 auf 858 Zeichen, also um **45 %** |
+
+> ⚠ **Hier stand bis zum 2026-09-03 „von 1.510 auf 796 Zeichen, also um 47 %".**
+> Die drei Einzelwerte waren richtig gemessen und sind nachrechenbar; die
+> **Gesamtzahl** war es nicht. Der Block hatte an keinem belegbaren Tag 1.510
+> Zeichen: die Quelldatei zeigt 1.505 am 21.08. früh, 1.572 am 21.08. spät und
+> seit dem 03.09. 1.723. Aufgefallen beim Nachzählen, nicht beim Lesen.
+> **Eine Zahl, die aus richtig gemessenen Teilen gebildet wird, ist deshalb noch
+> nicht selbst gemessen.**
 
 Die Umrechnung in Token ist eine **Schätzung** und als solche gekennzeichnet: bei
 deutscher Prosa etwa 3 bis 4 Zeichen je Token, also **rund 180 bis 240 Token** je
@@ -1230,7 +1249,8 @@ entscheidbar, weil die Regeln endlich und aufgeschrieben sind.
 #### Was ich hier schon vermute, und warum es benannt gehört
 
 Klaus' Formulierung war *„nicht erst tausende von Regeln lesen"*. **In diesem
-Aufbau sind es keine tausend, sondern sechs. 1.510 Zeichen.** Bei dieser Größe ist
+Aufbau sind es keine tausend, sondern sechs. 1.723 Zeichen** (Stand 2026-09-03;
+1.572 vor der Reparatur der sechsten Regel). Bei dieser Größe ist
 **H2 unplausibel**: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte
 Aufmerksamkeit.
 
