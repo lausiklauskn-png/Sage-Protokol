@@ -68,9 +68,17 @@ node tools/paper-md-zu-html.mjs docs/papers/regeln-und-grundsaetze-in-ki-agenten
      --ziel docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html \
      --doi 10.5281/zenodo.NNNNNNNN
 
+node tools/paper-md-zu-html.mjs docs/papers/rules-and-principles-in-ai-agent-systems.md \
+     --ziel docs/papers/rules-and-principles-in-ai-agent-systems.html \
+     --sprache en --doi 10.5281/zenodo.NNNNNNNN
+
 node tools/paper-zu-pdf.mjs docs/papers/regeln-und-grundsaetze-in-ki-agentensystemen.html \
-     --ziel /tmp/paper-a.pdf
-node tools/paper-pdf-pruefen.mjs /tmp/paper-a.pdf
+     --ziel /tmp/regeln-und-grundsaetze-in-ki-agentensystemen.pdf
+node tools/paper-zu-pdf.mjs docs/papers/rules-and-principles-in-ai-agent-systems.html \
+     --ziel /tmp/rules-and-principles-in-ai-agent-systems.pdf
+
+node tools/paper-pdf-pruefen.mjs /tmp/regeln-und-grundsaetze-in-ki-agentensystemen.pdf
+node tools/paper-pdf-pruefen.mjs /tmp/rules-and-principles-in-ai-agent-systems.pdf
 node tests/smoke_paper_a.mjs
 ```
 
@@ -87,7 +95,11 @@ Download-Ordner.
 
 ## Schritt 3 · Klaus: hochladen und veröffentlichen
 
-1. Die **PDF-Datei** in den Zenodo-Eintrag hochladen.
+1. **BEIDE PDF-Dateien** in denselben Zenodo-Eintrag hochladen, die deutsche
+   und die englische. Sie sind **ein** Werk in zwei Sprachen, so wie beim
+   SBKIM-Papier: ein Eintrag, zwei Dateien, ein DOI. Zwei getrennte Einträge
+   machten aus einer Arbeit zwei, und wer die eine zitiert, hätte die andere
+   nicht mit erfasst.
 2. Die Angaben ausfüllen:
 
 | Feld | Wert für Paper A |
@@ -95,10 +107,22 @@ Download-Ordner.
 | Resource type | **Preprint** |
 | Title | Regeln und Grundsätze: Zwei Arten, ein KI-System zu lenken, und warum keine allein genügt |
 | Authors | Klaus Nitzsche |
-| Description | die Zusammenfassung aus dem Papier |
+| Description | die Zusammenfassung aus dem Papier (Abschnitt „Zusammenfassung", 322 Wörter) |
 | License | **Creative Commons Attribution 4.0 International (CC BY 4.0)** |
-| Keywords | die Schlagwörter aus dem Papier |
-| Language | Deutsch |
+| Keywords | **offen** — siehe unten |
+| Language | Deutsch (die englische Fassung liegt als zweite Datei bei) |
+
+> ⚠ **DIE SCHLAGWÖRTER SIND OFFEN, UND DAS IST KEINE LÜCKE, SONDERN EIN BEFUND.**
+>
+> Hier stand „die Schlagwörter aus dem Papier". Das ging ins Leere: die Zeile
+> wurde am 2026-09-03 aus dem Papier genommen. **Und zwar nicht, weil sie
+> überflüssig war, sondern weil sie nicht stimmte** (Klaus, am selben Tag).
+>
+> Deshalb steht hier auch keine Ersatzliste. Die alten Wörter noch einmal
+> anzubieten hieße, genau das zurückzuholen, was als falsch verworfen wurde,
+> nur an einer anderen Stelle. Neue müssen gewählt werden, bevor der Eintrag
+> veröffentlicht wird; ein Zenodo-Eintrag ohne Schlagwörter ist zulässig, ein
+> Eintrag mit falschen ist schlechter als keiner.
 
 3. **Publish** drücken.
 
