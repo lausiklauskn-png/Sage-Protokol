@@ -31,6 +31,92 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-04 (Bau) · 🔍 Paper A englisch gegengelesen — 19 Funde, nichts geändert
+
+**Übergabeprotokoll:** [`sessions/archiv/2026-09-04_paper-a-englisch-gegengelesen.md`](sessions/archiv/2026-09-04_paper-a-englisch-gegengelesen.md)
+**Fundliste:** [`papers/GEGENLESEN_EN_2026-09-04.md`](papers/GEGENLESEN_EN_2026-09-04.md)
+
+**Rolle:** Bausitzung. Auftrag: die englische Fassung von Paper A gegen die
+deutsche lesen. Sie war von niemandem außer der Sitzung vom 2026-09-03 gesehen
+worden und trägt bereits den DOI 10.5281/zenodo.22286072.
+
+**An den beiden Paper-Dateien wurde nichts geändert.** Das war die Vorgabe: eine
+Änderung an einer veröffentlichten Datei ist bei Zenodo eine neue Version, und
+das entscheidet Klaus.
+
+### Gemessen
+
+| | |
+|---|---|
+| DE / EN | **1.834** / **1.775** Zeilen |
+| Überschriften | **90 : 90**, gleiche Reihenfolge, 0 Abweichung |
+| Abschnitte mit abweichender Absatz-Blockzahl | **0 von 90** |
+| Tabellenzeilen und Listenpunkte je Abschnitt | in allen 90 gleich |
+| interne Querverweise | **25 verschiedene**, jeder gleich oft |
+| ISO-Daten | **16 : 16**, deckungsgleich |
+| `npm test` | **93 Proben — 93 grün, 0 rot, 0 nicht lauffähig** |
+| `gegenprobe_paper_a_parallel.mjs` | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
+
+Alle Rückgabewerte ohne Pipe abgefragt. Die Rechnungen in 3.9 sind nachgerechnet
+und gehen auf (45,4 % · 4.900 · 3.060 · 41 · 4 · 327 · 109).
+
+### Die 19 Funde in drei Gruppen
+
+- **A · 6 Punkte, die englische Fassung weicht ab:** Literaturverzeichnis anders
+  sortiert (DE nicht alphabetisch, EN schon) · der vierte Arm heißt `R+G+F` statt
+  `R+G+Rück`, während `R` und `G` unübersetzt blieben · „nachziehen" als „bring
+  along" (heißt mitnehmen, gemeint ist anpassen) · „Zuschnitt" an drei Stellen
+  drei verschiedene Wörter · „vorzeigen" als „produced on demand" · ein
+  „therefore" in der Zusammenfassung, das im Deutschen fehlt.
+- **B · 8 Punkte, Fehler in der DEUTSCHEN Fassung**, die die englische nicht hat:
+  sieben Satzzeichen- und Numerusfehler (Zeilen 812, 890, 907, 1510, 1639, 1773,
+  1793) und ein Grundsatz, der zweimal verschieden zitiert wird (`darf` / `muss`).
+- **C · 4 Punkte in BEIDEN Fassungen:** die Korrektur 47 % → 45 % ist in der
+  Tabelle „Die Rechnung von der richtigen Seite" nicht nachgezogen (DE 974,
+  EN 946) · „Zwei Dinge bleiben trotzdem stehen", und es folgen drei · Abschnitt
+  4.4 steht im Präsens und meint den Zustand vor dem 2026-08-23 · das
+  durchgerechnete Beispiel nennt die Regel bei ihrem zurückgezogenen Wortlaut.
+
+### Ein Wächter dazu, und er misst die Gestalt statt der Wörter
+
+`tests/smoke_paper_a_parallel.mjs` hält die beiden Sprachfassungen in derselben
+Gestalt: Zahl und Ebenen-Folge der Überschriften · je Abschnitt Absatz-Blöcke,
+Tabellenzeilen, Listenpunkte · Querverweise · ISO-Daten · derselbe DOI in beiden
+HTML-Fassungen.
+
+⚠ **Wortlaut wäre hier der falsche Anker.** Ein übersetzter Text muss andere
+Wörter haben; ein Wächter auf Wörter verböte die Übersetzung und jede spätere
+Berichtigung. Genau dieser Fehler steht in Paper A selbst als Befund (3.2) — der
+Kimhub-Wächter verlangte `KEINE WERKZEUGE` und hielt elf Tage die falsch
+gewordene Regel am Leben, grün die ganze Zeit.
+
+**Die Gegenprobe ist selbst gegengeprüft:** eine Zusicherung des Wächters von
+Hand blind gemacht, worauf die Gegenprobe genau ihren Fall als NICHT GEFANGEN
+meldete (Rückgabewert 1). Danach byte-gleich zurückgeschrieben. Ohne diesen
+Handgriff wäre „9 gefangen" nur ein grüner Haken.
+
+### Nebenbei
+
+- **Kimhub PR #75** (Regel 6) auf Klaus' Wort gemergt (Squash, `d5e1314`).
+- **Zenodo laut Klaus aktualisiert:** Version `1.0`, Titel einsprachig.
+  ⚠ **Nicht nachgeprüft** — zenodo.org und doi.org antworten hier mit 403.
+
+### Offen
+
+- **Die 19 Funde sind unentschieden.** Klaus entscheidet, was in eine
+  Berichtigung geht und ob daraus eine neue Zenodo-Version wird. Beide
+  Sprachfassungen liegen unter demselben DOI.
+- **Der Wächter fängt A1 nicht.** Eine Prüfung auf die Reihenfolge des
+  Literaturverzeichnisses wäre heute rot, weil die Abweichung besteht. Sie gehört
+  nachgetragen, sobald A1 entschieden ist.
+- **Nicht geprüft:** kein Browser-Sichttest, keine PDFs (liegen nicht im Depot),
+  kein Abgleich mit dem Zenodo-Eintrag, die Sachaussagen nicht gegen die Quellen.
+
+**Nächster sinnvoller Schritt:** Klaus entscheidet über die Funde; danach eine
+Berichtigungs-Sitzung, die Markdown ändert, HTML neu baut und die PDFs neu misst.
+
+---
+
 ## Stand 2026-09-03 (Bau) · 🗄 PULS ausgelagert — 2.927 → 2.079 Zeilen
 
 **Übergabeprotokoll:** [`sessions/archiv/2026-09-03_puls-auslagerung.md`](sessions/archiv/2026-09-03_puls-auslagerung.md)
