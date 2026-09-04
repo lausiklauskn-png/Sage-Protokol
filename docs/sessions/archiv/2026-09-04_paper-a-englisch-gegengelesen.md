@@ -195,10 +195,13 @@ der Zweig trägt nur noch die eigenen acht Dateien.
 
 ## Offen
 
-- **Die 19 Funde sind unentschieden.** Klaus entscheidet, welche davon in eine
-  Berichtigung gehen und ob daraus eine neue Zenodo-Version wird. **Beide
-  Sprachfassungen liegen unter demselben DOI** — eine Berichtigung an nur einer
-  Datei ist trotzdem eine neue Version des Werks.
+- **Die 19 Funde werden NICHT eingearbeitet** (Klaus 2026-09-04, nach Rückfrage).
+  Sachlich ist einer davon: C1, die Tabelle trägt 47 %, während der Kasten drei
+  Abschnitte höher 45 % als berichtigten Wert nennt — ohne Folge für eine
+  Schlussfolgerung. Die übrigen 18 sind Kommafehler, eine nicht alphabetische
+  Literaturliste und Übersetzungs-Nuancen. Eine neue Zenodo-Version dafür spaltete
+  den Zitier-Nachweis für nichts. Die Liste bleibt liegen und wird mitgenommen,
+  falls aus anderem Grund einmal eine Version 2 entsteht.
 - **Der Wächter fängt A1 nicht** (Reihenfolge des Literaturverzeichnisses). Eine
   Prüfung darauf wäre heute rot, weil die Abweichung besteht. Sie gehört
   nachgetragen, sobald A1 entschieden ist — ein rotes Depot legt die Gegenproben

@@ -153,8 +153,23 @@ Basis, der Diff zeigte deren Zeilen als Löschung. `origin/main` hereingenommen.
 > Fragen — „trägt der PR etwas?" und „nimmt er etwas weg?".** Die zweite stellt
 > sich niemand von selbst.
 
-**Nächster sinnvoller Schritt:** Klaus entscheidet über die Funde; danach eine
-Berichtigungs-Sitzung, die Markdown ändert, HTML neu baut und die PDFs neu misst.
+**Nächster sinnvoller Schritt: keiner an diesem Papier.** Klaus hat am
+2026-09-04 nachgefragt, ob die Datei dafür wirklich umgeschrieben werden muss.
+Nachgesehen: **von den 19 Funden ist einer sachlich** — C1, die Tabelle trägt
+47 %, während der Kasten drei Abschnitte höher 45 % als berichtigten Wert nennt.
+Er ändert an keiner Schlussfolgerung etwas; der Eurobetrag daneben ist über
+Token gerechnet, nicht über den Prozentsatz. Die übrigen 18 sind Kommafehler,
+eine nicht alphabetische Literaturliste und Übersetzungs-Nuancen.
+
+**Eine neue Zenodo-Version dafür wäre schlechter als die Fehler** — sie spaltet
+den Zitier-Nachweis für nichts. Die Funde bleiben dokumentiert liegen und werden
+mitgenommen, falls aus einem anderen Grund einmal eine Version 2 entsteht.
+
+⚠ **Hier stand zuerst „Klaus entscheidet, danach eine Berichtigungs-Sitzung".**
+Das war der Anfang einer Schleife: eine Sitzung liest den Auftrag, arbeitet 19
+Kleinigkeiten ab und schreibt den nächsten. **Wer einen nächsten Schritt
+aufschreibt, prüft vorher, ob er nötig ist** — sonst erzeugt die Übergabe
+selbst die Arbeit, die sie zu übergeben vorgibt.
 
 ---
 
