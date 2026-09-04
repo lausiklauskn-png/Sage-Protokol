@@ -86,6 +86,8 @@ Messungen im PULS-Eintrag sind ohne Pipe wiederholt.
 - `docs/PULS.md` steht bei **2.927 von 3.000 Zeilen**. Die nächste Sitzung
   lagert ins Archiv aus — **auslagern, nicht kürzen** (Schutz-Klausel im Kopf
   der Datei).
-- **Kimhub PR #75** (Regel 6) liegt weiter als Entwurf. Geprüft: 1093 grün,
-  Gegenprobe 421 gefangen / 0 durchgerutscht / 0 tote Anker. Der Betreiber hat
-  nicht gesagt, ob er gemergt werden soll.
+- ~~**Kimhub PR #75** (Regel 6) liegt weiter als Entwurf.~~ **Erledigt:** vom
+  Betreiber am **2026-09-04 um 08:00 Uhr** nach `main` gemergt (am PR selbst
+  nachgesehen, nicht aus der Benachrichtigung übernommen). Geprüft war:
+  1093 grün, Gegenprobe 421 gefangen / 0 durchgerutscht / 0 tote Anker.
+  Nachgetragen am 2026-09-04, damit keine Folge-Sitzung danach sucht.
