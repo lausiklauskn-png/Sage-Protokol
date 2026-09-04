@@ -151,6 +151,27 @@ Die vier Dateien selbst sind aus dem Commit herausgenommen (`git restore
 --source=origin/main`). Nichts geht verloren — der Erzeuger schreibt sie
 jederzeit neu.
 
+## Und eine Parallel-Sitzung hat unterwegs `main` bewegt
+
+Nach dem Push meldete `git diff --stat origin/main <zweig>` eine Datei mehr als
+erwartet: `docs/sessions/archiv/2026-09-03_paper-a-veroeffentlicht.md`, mit acht
+Zeilen. Angefasst hatte sie diese Sitzung nicht.
+
+**Der Zweig hätte fremde Arbeit zurückgedreht.** Eine Parallel-Sitzung hat um
+08:00 Uhr per PR #947 (`d24fec5`) dort nachgetragen, dass Kimhub #75 gemergt ist
+— genau der Merge, den diese Sitzung ausgeführt hat. Mein Zweig stand auf der
+älteren Basis `919ad6e`; der Diff zeigte deren Zeilen deshalb als **Löschung**.
+
+`origin/main` hereingenommen (Merge-Commit), danach ist der Unterschied weg und
+der Zweig trägt nur noch die eigenen acht Dateien.
+
+> Das ist der Fall, den der Skill `veroeffentlichung-pruefen` benennt: *„eine
+> Parallel-Sitzung bewegt main, und ein PR aus dem alten Zweig würde fremde
+> Arbeit zurückdrehen."* Aufgefallen ist er nur, weil nach dem Push wirklich
+> nachgesehen wurde. **Der Diff gegen `origin/main` ist nicht nur die Antwort auf
+> „trägt der PR etwas?", sondern auch auf „nimmt er etwas weg?"** — und die
+> zweite Frage stellt sich niemand von selbst.
+
 ## Was NICHT geprüft ist
 
 - **Kein Browser-Sichttest, kein PDF.** Die PDFs bei Zenodo liegen nicht im

@@ -140,6 +140,19 @@ ergänzen hätte diesen Fall geschlossen und den nächsten nicht.
 `tests/gegenprobe_werkzeuge_schreiben.mjs`: **1 gefangen · 0 durchgerutscht ·
 0 tote Anker.**
 
+### Eine Parallel-Sitzung hat unterwegs `main` bewegt
+
+Nach dem Push zeigte `git diff --stat origin/main <zweig>` eine Datei mehr als
+erwartet. Der Zweig hätte **fremde Arbeit zurückgedreht**: PR #947 (`d24fec5`,
+08:00 Uhr) hatte in `sessions/archiv/2026-09-03_paper-a-veroeffentlicht.md`
+nachgetragen, dass Kimhub #75 gemergt ist. Mein Zweig stand auf der älteren
+Basis, der Diff zeigte deren Zeilen als Löschung. `origin/main` hereingenommen.
+
+> Der Fall, den `veroeffentlichung-pruefen` benennt. Aufgefallen nur, weil nach
+> dem Push nachgesehen wurde. **Der Diff gegen `origin/main` beantwortet zwei
+> Fragen — „trägt der PR etwas?" und „nimmt er etwas weg?".** Die zweite stellt
+> sich niemand von selbst.
+
 **Nächster sinnvoller Schritt:** Klaus entscheidet über die Funde; danach eine
 Berichtigungs-Sitzung, die Markdown ändert, HTML neu baut und die PDFs neu misst.
 
