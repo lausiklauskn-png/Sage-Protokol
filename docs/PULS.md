@@ -112,6 +112,34 @@ Handgriff wäre „9 gefangen" nur ein grüner Haken.
 - **Nicht geprüft:** kein Browser-Sichttest, keine PDFs (liegen nicht im Depot),
   kein Abgleich mit dem Zenodo-Eintrag, die Sachaussagen nicht gegen die Quellen.
 
+### Ein Fund am Rande, der eine eigene Lehre trägt
+
+Beim `git add -A` kamen vier `docs/lesen/*.html` mit, die diese Sitzung nie
+angefasst hat — je eine Zeile, der Tagesstempel aus `tools/lesefassung-bauen.mjs`.
+
+**Ursache:** der Rumpf des Erzeugers stand auf **oberster Ebene**. Ein blosser
+`import` löschte damit `docs/lesen/` und baute es neu — und importiert wird er
+von `tests/smoke_werkzeuge_lauffaehig.mjs`, deren eigener Kopf sagt *„Ausführen
+schriebe Dateien … ein Import führt den Modulkopf aus"*. Bei diesem Werkzeug
+**war** der Modulkopf das ganze Programm. Die Positivliste `NUR_SYNTAX` dort
+kannte es nicht. Zweite Hälfte: `if (fehlend) process.exit(1)` ganz unten hätte
+die importierende Probe beendet und alles danach verschluckt.
+
+⚠ **Und die Zwischendiagnose war falsch, gemessen gegen eine verunreinigte
+Ausgangslage.** Ich hatte notiert, `npm test` schreibe nicht — geprüft nach einem
+`git checkout HEAD`, während HEAD den bereits gestempelten Stand trug. Der
+Vergleich konnte gar keinen Unterschied zeigen. **Dieselbe Falle, die die
+Verfassung als „miss auf einem frischen Klon" führt, nur von innen.** Erst der
+Abgleich gegen `origin/main` legte es offen.
+
+**Behoben:** Direkt-Riegel im Werkzeug (`const DIREKT = …`), Definitionen bleiben
+importierbar. Dazu ein Wächter, der **nicht** den einen Namen nachträgt, sondern
+misst: `smoke_werkzeuge_lauffaehig.mjs` tastet `docs/` vor und nach dem Laden ab
+und fällt um, sobald **irgendein** Werkzeug beim Import schreibt. Die Liste zu
+ergänzen hätte diesen Fall geschlossen und den nächsten nicht.
+`tests/gegenprobe_werkzeuge_schreiben.mjs`: **1 gefangen · 0 durchgerutscht ·
+0 tote Anker.**
+
 **Nächster sinnvoller Schritt:** Klaus entscheidet über die Funde; danach eine
 Berichtigungs-Sitzung, die Markdown ändert, HTML neu baut und die PDFs neu misst.
 

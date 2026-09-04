@@ -19,6 +19,9 @@ das entscheidet Klaus. Entstanden sind stattdessen
 | `docs/papers/GEGENLESEN_EN_2026-09-04.md` | die Fundliste, 19 Punkte in drei Gruppen, jeder mit Zeilenangabe in beiden Dateien |
 | `tests/smoke_paper_a_parallel.mjs` | Wächter: die beiden Sprachfassungen in derselben **Gestalt** |
 | `tests/gegenprobe_paper_a_parallel.mjs` | neun eingebaute Fehler, jeder muss den Wächter umwerfen |
+| `tools/lesefassung-bauen.mjs` | Direkt-Riegel — ein Import schreibt nicht mehr (Rand-Fund unten) |
+| `tests/smoke_werkzeuge_lauffaehig.mjs` | misst, ob das Laden der Werkzeuge etwas unter `docs/` schreibt |
+| `tests/gegenprobe_werkzeuge_schreiben.mjs` | nimmt den Riegel weg; die Probe muss es merken |
 
 ## Gemessen
 
@@ -33,6 +36,7 @@ das entscheidet Klaus. Entstanden sind stattdessen
 | `npm test` | **93 Proben — 93 grün, 0 rot, 0 nicht lauffähig** |
 | `gegenprobe_paper_a.mjs` | 18 von 18 gefangen · 0 durchgerutscht · 0 tote Anker |
 | `gegenprobe_paper_a_parallel.mjs` | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| `gegenprobe_werkzeuge_schreiben.mjs` | **1 gefangen · 0 durchgerutscht · 0 tote Anker** |
 
 Alle Rückgabewerte **ohne Pipe** abgefragt (`> datei; echo $?`). Die Falle ist in
 dieser Woche zweimal zugeschnappt.
@@ -86,6 +90,67 @@ Handgriff wäre „9 gefangen" nur ein grüner Haken.
   dieser Umgebung mit 403. Die Angabe steht hier, weil sie von Klaus kommt, nicht
   weil sie gemessen wäre.
 
+## Ein Fund am Rande, der eine eigene Lehre trägt
+
+Beim `git add -A` kamen vier Dateien mit, die diese Sitzung nie angefasst hat:
+`docs/lesen/00_index.html`, `70_forschungsaufgaben.html`, `75_abgrenzung.html`,
+`80_entstehung.html`. Die Änderung war in allen vieren dieselbe eine Zeile —
+`Lesefassung vom 2026-09-03` → `2026-09-04`, der Tagesstempel aus
+`tools/lesefassung-bauen.mjs` (`new Date()`).
+
+### Die Ursache
+
+Der **Rumpf** des Erzeugers stand auf oberster Ebene: `rmSync(ZIEL)`,
+`mkdirSync`, die Schleife, `writeFileSync` und ganz unten `if (fehlend)
+process.exit(1)`. Ein blosser `import` führte das alles aus.
+
+Importiert wird er von `tests/smoke_werkzeuge_lauffaehig.mjs`. Deren eigener Kopf
+sagt: *„Ausführen schriebe Dateien und kostete Minuten. Ein Import führt den
+Modulkopf aus."* Bei **diesem** Werkzeug war der Modulkopf das ganze Programm.
+Die Probe führt dafür eine Positivliste `NUR_SYNTAX` mit 25 Werkzeugen, die beim
+Laden etwas tun — `lesefassung-bauen.mjs` stand nicht darin.
+
+Die zweite Hälfte ist die stillere: `process.exit(1)` im importierten Modul hätte
+die importierende Probe beendet und alles danach verschluckt. Dass es nie feuerte,
+ist Glück, keine Vorsorge.
+
+### ⚠ Und meine Zwischendiagnose war falsch
+
+Ich hatte notiert, `npm test` schreibe **nicht** in den Arbeitsbaum, und das als
+„gemessen widerlegt" bezeichnet. Die Messung war wertlos: geprüft wurde nach
+`git checkout HEAD -- docs/lesen/`, und HEAD trug zu dem Zeitpunkt schon den
+gestempelten Stand meines eigenen Commits. Der Vergleich **konnte** keinen
+Unterschied zeigen.
+
+> **Dieselbe Falle, die die Verfassung als „miss auf einem frischen Klon, nicht
+> auf deiner Arbeitskopie" führt** — hier von innen: nicht der Klon war
+> verunreinigt, sondern die Bezugsgrösse, gegen die ich verglich. Erst der
+> Abgleich gegen `origin/main` legte es offen.
+>
+> Es ist der Befund aus Paper A 4.1, an mir selbst: *eine Prüfung greift genau
+> so weit, wie ihre Ausgangslage trägt.*
+
+### Behoben, und zwar nicht durch Nachtragen
+
+| | |
+|---|---|
+| **Direkt-Riegel** im Werkzeug | `const DIREKT = process.argv[1] && resolve(…) === fileURLToPath(import.meta.url)`; die Definitionen darüber bleiben importierbar |
+| **Wächter** in `smoke_werkzeuge_lauffaehig.mjs` | tastet `docs/` vor und nach dem Laden ab (Grösse **und** Änderungszeit) und fällt um, sobald **irgendein** Werkzeug beim Import schreibt |
+| **Gegenprobe** `tests/gegenprobe_werkzeuge_schreiben.mjs` | nimmt den Riegel weg — **1 gefangen · 0 durchgerutscht · 0 tote Anker** |
+
+**Warum nicht einfach den Namen in `NUR_SYNTAX` eintragen:** das hätte diesen
+Fall geschlossen und den nächsten nicht. Die Positivliste ist die Schwachstelle —
+wer ein schreibendes Werkzeug ergänzt und sie vergisst, bekommt keinen Fehler,
+sondern eine Probe, die still Dateien ändert. Gemessen statt aufgezählt.
+
+Beide Male ist zusätzlich von Hand nachgestellt worden, dass der Riegel in
+**beide** Richtungen wirkt: Import schreibt nichts (0 geänderte Dateien),
+direkter Aufruf schreibt weiterhin (4).
+
+Die vier Dateien selbst sind aus dem Commit herausgenommen (`git restore
+--source=origin/main`). Nichts geht verloren — der Erzeuger schreibt sie
+jederzeit neu.
+
 ## Was NICHT geprüft ist
 
 - **Kein Browser-Sichttest, kein PDF.** Die PDFs bei Zenodo liegen nicht im
@@ -103,6 +168,9 @@ Handgriff wäre „9 gefangen" nur ein grüner Haken.
   `sbkim/SIGNAL.json` bleibt unangetastet. Ein `seq`+1 ohne Inhalt wäre ein
   Signal, hinter dem nichts steht.
 - **Kein Modul-Code, kein `status.json`, kein Pie-Block** angefasst.
+- **`tests/manual_check.html` ungeprüft, weil kein Modul-Code angefasst wurde.**
+  Geändert sind zwei Proben, eine Gegenprobe, ein Bau-Werkzeug und Doku — nichts
+  davon liegt unter `src/`, und die Sichtprüfung misst die Module.
 
 ## Offen
 
@@ -114,11 +182,12 @@ Handgriff wäre „9 gefangen" nur ein grüner Haken.
   Prüfung darauf wäre heute rot, weil die Abweichung besteht. Sie gehört
   nachgetragen, sobald A1 entschieden ist — ein rotes Depot legt die Gegenproben
   still, und das ist der eigentliche Preis einer roten Probe.
-- **PULS:** 2.163 → **2.249** Zeilen, **751** Zeilen Luft bis zur Grenze.
+- **PULS:** 2.163 → **2.277** Zeilen, **723** Zeilen Luft bis zur Grenze.
   Auslagern ist kein Thema.
 
 > ⚠ **Hier stand zuerst „2.240 Zeilen, 760 Luft".** Das war geschätzt, bevor der
 > Eintrag geschrieben war — `wc -l` sagt 2.249. Dieselbe Falle wie am 2026-09-03:
 > eine Zahl im Text, die von der Länge eines noch nicht geschriebenen Textes
 > abhängt, ist keine Messung, auch wenn sie wie eine aussieht. Nachgemessen und
-> berichtigt.
+> berichtigt — und danach noch zweimal, als der Rand-Fund dazukam und seine
+> Berichtigung dazu. Der Endstand ist gemessen, nicht der erste Entwurf.
