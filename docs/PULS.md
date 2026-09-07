@@ -31,6 +31,43 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-07 (Brief aus Kimhub) · NETZWEIT § 3a — ein Cache-Bump ist kein „+1"
+
+**Rolle:** Fremd-Sitzung aus **Kimhub**, mit einer netzweiten Tafel-Ergänzung.
+Kein Modul-Code angefasst, kein `status.json`, keine Spec.
+
+**Was getan.** `docs/NETZWEIT.md` bekommt **§ 3a**, direkt hinter § 3 — dort
+gehört es hin, weil es derselbe Kern ist: *eine Zahl aus der eigenen Kopie ist
+eine Aussage über die eigene Kopie.*
+
+**Der Anlass, gemessen am 2026-09-07 in `kim-hub-company`:** zwei Sitzungen
+arbeiteten am selben Tag am selben Depot. Beide sahen `v25`, beide setzten
+`v26`, beide hatten recht — und der Inhalt war ein anderer. Die zweite Fassung
+wäre für jeden Browser, der die App dazwischen geöffnet hatte, **dieselbe**
+gewesen: der Vorrat hält sich an den Namen, nicht an den Inhalt. Aufgefallen ist
+es beim Zusammenführen, nicht durch eine Probe — **eine doppelt vergebene Nummer
+wirft keinen Fehler, und keine Probe fällt um.**
+
+Die Regel „wer eine Datei aus dem Vorrat ändert, erhöht `CACHE_VERSION`" steht
+in fast jedem Repo und ist richtig. Sie sagt nur **dass** hochgezählt wird,
+nicht **wogegen**. § 3a ergänzt das Wogegen: gegen `origin/main`, nicht gegen
+die eigene Datei.
+
+**Was offen ist.** Die Repo-Verfassungen tragen die Cache-Regel weiterhin
+einzeln; keine verweist bisher auf § 3a. Das ist kein Widerspruch (§ 3a
+ergänzt, es ersetzt nichts), aber wer die Repo-Regel liest, findet die
+Ergänzung nicht von allein. **In Kimhub konnte ich den Verweis nicht mehr
+setzen** — dort lief zu diesem Zeitpunkt ein voller Gegenprobe-Lauf, und am
+Arbeitsbaum zu bauen hätte ihn entwertet.
+
+**Nächster sinnvoller Schritt.** Beim nächsten Anfassen einer Repo-Verfassung
+den Verweis auf § 3a nachziehen, statt dafür 21 Depots aufzumachen — dieselbe
+Zurückhaltung, aus der NETZWEIT.md überhaupt entstanden ist.
+
+**Proben:** `npm test` — **92 grün, 0 rot, 0 nicht lauffähig.**
+
+---
+
 ## Stand 2026-09-03 (Bau) · 🗄 PULS ausgelagert — 2.927 → 2.079 Zeilen
 
 **Übergabeprotokoll:** [`sessions/archiv/2026-09-03_puls-auslagerung.md`](sessions/archiv/2026-09-03_puls-auslagerung.md)

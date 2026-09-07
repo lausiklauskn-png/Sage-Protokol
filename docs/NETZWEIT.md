@@ -222,6 +222,44 @@ Skill `veroeffentlichung-pruefen`.
 
 ---
 
+## 3a · Ein Cache-Bump ist kein „+1" (Kimhub 2026-09-07, gemessen)
+
+Fast jedes Repo hier trägt die Regel „wer eine Datei aus dem Vorrat ändert,
+erhöht `CACHE_VERSION`". Sie ist richtig und sie reicht nicht: sie sagt **dass**
+hochgezählt wird, nicht **wogegen**.
+
+**Was passiert ist.** Am 2026-09-07 haben zwei Sitzungen am selben Tag an
+`kim-hub-company` gearbeitet. Beide sahen `v25` in ihrer Arbeitskopie, beide
+setzten `v26`, beide hatten recht — und der Inhalt war ein anderer. Die erste
+wurde gemergt. Die zweite hätte für jeden Browser, der die App dazwischen
+geöffnet hatte, **dieselbe Fassung** bedeutet: der Vorrat hält sich an den
+**Namen**, nicht an das Datum und nicht am Inhalt. Der neue Stand wäre nie
+geholt worden, und die App hätte ausgesehen, als sei nichts passiert.
+
+**Die Regel.** Die neue Nummer wird gegen `origin/main` geprüft, nicht gegen
+die eigene Datei:
+
+```bash
+git fetch origin --quiet
+git show origin/main:sw.js | grep CACHE_VERSION     # welche Nummer ist VERGEBEN?
+```
+
+Die nächste freie ist **eins über der von `main`** — nicht eins über der, die
+im eigenen Klon steht. Bei einem Zusammenführen, das eine fremde Erhöhung
+mitbringt, wird **noch einmal** erhöht: zwei verschiedene Inhalte unter einer
+Nummer sind schlimmer als eine übersprungene Nummer.
+
+> **Der gemeinsame Kern mit § 3:** eine Zahl, die man aus der eigenen Kopie
+> abliest, ist eine Aussage über die eigene Kopie. Verbindlich ist, was auf
+> `main` steht.
+
+**Und der Schaden ist still.** Eine doppelt vergebene Nummer wirft keinen
+Fehler, keine Probe fällt um, der Push geht durch. Sie fällt erst dem Nutzer
+auf, der eine Verbesserung nicht bekommt — und der sucht den Fehler dann in der
+App statt im Vorrat.
+
+---
+
 ## 4 · Ton
 
 Klaus ist **kein Programmierer** (lernt gern): Antworten auf **Deutsch**, ruhig
