@@ -6718,3 +6718,74 @@ verschwinden solle, entschied er **„so lassen"**. Punkt 3 bleibt damit wie er 
 Panel-Feld kommt überall, ein app-eigenes Feld daneben bleibt bestehen und zieht mit.
 
 **Rezept mit Code:** Skill `geraetename` (`.claude/skills/geraetename/SKILL.md`).
+
+---
+
+### 11.8 Ein fester Platz für die Mycel-Blase (netzweite Regel, Klaus 2026-09-08)
+
+> „Das ist dir auch schon aufgefallen, dass die Mycelkarte immer irgendwo
+>  rumliegt, wenn ich die App öffne. Setz sie bitte an eine feste Stelle in der
+>  Navileiste oben. Und wenn ich sie mit der Maus anklicke und bewegen möchte,
+>  dann kann ich die wie ein Flying Widget in den freien Raum stellen. …
+>  und das in jeder App, denn es taucht immer wieder auf, dass diese
+>  Mycelkarte irgendwo was abdeckt."
+
+**Der Befund war konkret.** In PWA Toolpoint lag die Blase über dem
+Markennamen — zu lesen war „…A Toolpoint". Sie stand seit jeher
+`position:fixed` in einer Ecke und damit über allem, was dort steht.
+
+#### Der Vertrag: die Seite bietet den Platz an
+
+```html
+<header class="…">
+  <a class="brand" href="./">Meine App</a>
+  …
+  <span data-sbkim-mycel-platz></span>   <!-- hier hin, wenn du willst -->
+</header>
+```
+
+| | |
+|---|---|
+| **Merkmal** | `data-sbkim-mycel-platz` — an dem Element, in das die Blase gehängt wird |
+| **Findet Modul 23 eines** | die Blase hängt sich hinein, `position:static`, im Fluss der Leiste, mit der Marke `data-sbkim-angedockt="1"` |
+| **Findet es keines** | alles bleibt wie bisher: `position:fixed` in der konfigurierten Ecke |
+| **Mehrere Elemente** | das **erste** gewinnt (`querySelector`) |
+
+⚠ **DAS MODUL SUCHT SICH KEINE STELLE AUS.** Ein Modul, das sich selbst einen
+Platz in einer fremden Leiste erschließt („das erste `<nav>`", „das Element mit
+der Klasse …"), rät — und rät in der nächsten App falsch. Die Seite sagt, wo
+sie es haben will. **Fail-soft: eine App ohne Leiste merkt von dieser Regel
+nichts.**
+
+#### Ziehen löst, und die Lage gewinnt
+
+Ein Zug an der Blase löst sie aus der Leiste: sie wandert zurück in den
+`<body>`, wird wieder `position:fixed` und ihre Lage wird gemerkt
+(`sbkim_rdv_ui_pos`). **Eine gemerkte Lage gewinnt über den Platz** — sonst
+spränge die Blase beim nächsten Laden zurück, und das Ziehen wäre folgenlos.
+
+Der Weg zurück steht in der Kopfzeile des Panels: **⤺** (`data-sbkim-andocken`).
+Er löscht die gemerkte Lage und dockt wieder an. **Er steht nur da, wenn die
+Seite überhaupt einen Platz anbietet und die Blase gerade frei fliegt** — sonst
+wäre er ein toter Knopf.
+
+⚠ **DAS UMHÄNGEN IM DOM ZERSTÖRT DEN POINTER-CAPTURE**, und das ist beim Bau
+zugeschnappt. Gemessen am Ereignis-Mitschnitt: nach `pointerdown` kam genau
+**ein** `pointermove`, danach nichts mehr, kein `pointerup`. Die Folge war
+still — der Abschluss lief nie, die Lage wurde **nie gemerkt**, und beim
+nächsten Laden sprang die Blase in die Leiste zurück. Wer das Lösen umbaut,
+erneuert danach den Capture (`setPointerCapture`), und misst den **ganzen**
+Kreislauf, nicht den Anfangszustand.
+
+#### Was zu prüfen ist
+
+`tests/smoke_bau23_mycel_platz.mjs` misst es im echten Browser — ein
+DOM-Stub kennt kein Layout, und „liegt die Blase über dem Namen?" ist eine
+Layout-Frage:
+
+1. mit Platz: in der Leiste, `static`, **verdeckt den Markennamen nicht**
+2. Ziehen: löst, merkt die Lage, und die Blase ist wirklich mitgewandert
+3. gemerkte Lage überlebt das Neuladen · ⤺ dockt wieder an und löscht sie
+4. **ohne Platz**: alles wie bisher — und die Blase liegt dann wirklich über
+   dem Namen. Ohne diese Gegenrichtung könnte ein Wächter behaupten, es habe
+   den Befund nie gegeben.

@@ -1024,6 +1024,13 @@
   }
   function applyPos(node, p) {
     if (!node || !p) return;
+    /* ⚠ WER EINE FREIE LAGE BEKOMMT, GEHOERT NICHT MEHR IN DIE LEISTE
+       (Klaus 2026-09-08). Ein angedockter Knopf steht `position:static` im
+       Fluss — `left`/`top` waeren dort wirkungslos, und der Knopf bliebe
+       kleben, obwohl der Finger ihn zieht. Das Loesen steht deshalb HIER und
+       nicht nur im Zieh-Weg: jede Stelle, die eine Lage setzt (Ziehen,
+       Minimieren, gemerkte Lage beim Laden), meint eine freie Lage. */
+    if (node === btnEl && angedockt) abdocken();
     node.style.left = p.x + "px"; node.style.top = p.y + "px";
     node.style.right = "auto"; node.style.bottom = "auto";
     // ⚠ Und das Ecken-Merkmal abnehmen (Klaus 2026-08-11, zweiter Befund:
@@ -1046,6 +1053,83 @@
     // ohne gemerkte Position — dann steht der Knopf wieder in der Ecke.
     try { if (node.removeAttribute) node.removeAttribute("data-ecke-unten"); } catch (_e) {}
   }
+  /*
+   * ══ EIN FESTER PLATZ IN DER LEISTE (Klaus 2026-09-08) ════════════════════
+   *
+   * „Das ist dir auch schon aufgefallen, dass die Mycelkarte immer irgendwo
+   *  rumliegt, wenn ich die App öffne. Setz sie bitte an eine feste Stelle in
+   *  der Navileiste oben. Und wenn ich sie mit der Maus anklicke und bewegen
+   *  möchte, dann kann ich die wie ein Flying Widget in den freien Raum
+   *  stellen. … und das in jeder App, denn es taucht immer wieder auf, dass
+   *  diese Mycelkarte irgendwo was abdeckt."
+   *
+   * Bis hierher war der Knopf IMMER `position:fixed` in einer Ecke — er lag
+   * also über allem, was dort stand. In PWA Toolpoint verdeckte er den
+   * Markennamen: zu lesen war „…A Toolpoint".
+   *
+   * ⚠ DIE SEITE BIETET DEN PLATZ AN, DAS MODUL SUCHT IHN SICH NICHT.
+   * Ein Modul, das sich selbst eine Stelle in einer fremden Leiste aussucht
+   * („das erste <nav>", „das Element mit der Klasse …"), rät — und rät in der
+   * nächsten App falsch. Die Seite setzt `data-sbkim-mycel-platz` an die
+   * Stelle, an der sie ihn haben will; findet das Modul keine, bleibt alles
+   * wie bisher. **Fail-soft: eine App ohne Leiste merkt von dieser Änderung
+   * nichts.**
+   *
+   * ⚠ UND EINE GEMERKTE LAGE GEWINNT. Wer den Knopf einmal gezogen hat, will
+   * ihn dort haben — sonst spränge er beim nächsten Laden in die Leiste
+   * zurück, und das Ziehen wäre folgenlos.
+   */
+  var ANKER_WAHL = "[data-sbkim-mycel-platz]";
+  var angedockt = false;
+  var dockSichtbar = function () {};   /* wird beim Bau des Panels gesetzt */
+
+  function findeAnker() {
+    try { var d = doc(); return d && d.querySelector ? d.querySelector(ANKER_WAHL) : null; }
+    catch (_e) { return null; }
+  }
+
+  /* In die Leiste hängen: im Fluss stehen, nicht darüber schweben. */
+  function andocken() {
+    var platz = findeAnker();
+    if (!platz || !btnEl) return false;
+    try {
+      btnEl.style.position = "static";
+      btnEl.style.left = ""; btnEl.style.top = "";
+      btnEl.style.right = ""; btnEl.style.bottom = "";
+      /* Der Schatten trug die Blase über der Seite — im Fluss wäre er nur
+         Ballast, und die Leiste hat ihren eigenen Grund. */
+      btnEl.style.boxShadow = "none";
+      btnEl.removeAttribute("data-ecke-unten");
+      btnEl.setAttribute("data-sbkim-angedockt", "1");
+      platz.appendChild(btnEl);
+      angedockt = true;
+      dockSichtbar();
+      return true;
+    } catch (_e) { return false; }
+  }
+
+  /* Aus der Leiste lösen: zurück in den <body>, wieder frei fliegend.
+     ⚠ DIE LAGE WIRD VORHER GEMESSEN, sonst springt der Knopf beim ersten
+     Ziehen an eine fremde Stelle: `getBoundingClientRect` liefert danach die
+     Lage im Body, nicht die in der Leiste. */
+  function abdocken() {
+    if (!angedockt || !btnEl) return null;
+    var r = null;
+    try { r = btnEl.getBoundingClientRect(); } catch (_e) {}
+    try {
+      var d = doc();
+      btnEl.style.position = "fixed";
+      btnEl.style.boxShadow = "0 4px 14px rgba(0,0,0,.35)";
+      btnEl.removeAttribute("data-sbkim-angedockt");
+      if (d && d.body) d.body.appendChild(btnEl);
+      angedockt = false;
+      if (r) { btnEl.style.left = r.left + "px"; btnEl.style.top = r.top + "px";
+               btnEl.style.right = "auto"; btnEl.style.bottom = "auto"; }
+    } catch (_e) {}
+    dockSichtbar();
+    return r;
+  }
+
   function makeDraggable(node, handle) {
     handle = handle || node;
     handle.style.touchAction = "none";
@@ -1062,7 +1146,32 @@
     handle.addEventListener("pointermove", function (ev) {
       if (!dragging) return;
       var dx = ev.clientX - sx, dy = ev.clientY - sy;
-      if (!moved && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) moved = true;
+      if (!moved && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+        moved = true;
+        /*
+         * ⚠ DAS UMHAENGEN IM DOM ZERSTOERT DEN POINTER-CAPTURE (gemessen
+         * 2026-09-08). Der angedockte Knopf steht in der Leiste; ihn zu loesen
+         * heisst, ihn per `appendChild` in den <body> zu verschieben — und ein
+         * Element, das aus dem DOM genommen und neu eingehaengt wird, verliert
+         * seinen Capture. Gemessen am Ereignis-Mitschnitt: nach `pointerdown`
+         * kam genau EIN `pointermove`, danach nichts mehr, kein `pointerup`.
+         *
+         * Die Folge war still und teuer: der Knopf blieb dort liegen, wo der
+         * erste Schritt ihn hinsetzte, und `end()` lief nie — die Lage wurde
+         * NIE GEMERKT. Beim naechsten Laden sprang er in die Leiste zurueck,
+         * und das Ziehen war folgenlos. Genau die Zusicherung, die eine Zeile
+         * weiter oben steht („eine gemerkte Lage gewinnt").
+         *
+         * Deshalb: erst loesen, DANN den Capture erneuern — und beides hier,
+         * beim ersten echten Schritt. Ein Loesen schon im `pointerdown` waere
+         * falsch: ein blosser Klick soll das Panel oeffnen, nicht den Knopf
+         * aus der Leiste reissen.
+         */
+        if (node === btnEl && angedockt) {
+          abdocken();
+          try { handle.setPointerCapture(ev.pointerId); } catch (_e) {}
+        }
+      }
       if (!moved) return;
       applyPos(node, clampInts(ox + dx, oy + dy, node));
       ev.preventDefault();
@@ -1147,6 +1256,38 @@
       hideTip();
     });
     headBtns.appendChild(tipBtn);
+    /*
+     * ⚠ EIN LOESEN OHNE RUECKWEG WAERE EINE FALLE. Wer den Knopf einmal
+     * gezogen hat, kaeme sonst nie wieder in die Leiste zurueck — die Lage
+     * liegt im Speicher, und ein Nutzer weiss nicht, dass er ihn dort loeschen
+     * muesste. Derselbe Grund, aus dem das ✕ rueckgaengig zu machen sein muss.
+     *
+     * Der Knopf steht nur da, wenn die Seite ueberhaupt einen Platz anbietet
+     * UND der Knopf gerade frei fliegt. Sonst waere er ein toter Knopf.
+     */
+    var dockBtn = el("button", "background:none;border:none;color:#9aa7b6;font-size:1rem;cursor:pointer;padding:0 5px", "⤺");
+    dockBtn.type = "button";
+    dockBtn.title = "Zurück an den festen Platz in der Leiste";
+    dockBtn.setAttribute("data-sbkim-andocken", "");
+    dockBtn.addEventListener("click", function () {
+      try { global.localStorage.removeItem(POS_KEY); } catch (_e) {}
+      close();
+      /* Die Ecken-Vorgabe zurueckholen, falls die Seite doch keinen Platz hat
+         — sonst stuende der Knopf danach ohne jede Lage da. */
+      if (!andocken() && btnEl) {
+        btnEl.style.position = "fixed";
+        btnEl.style.cssText += ";" + cornerCss(cfg.corner, false);
+        if (cfg.corner !== "tl" && cfg.corner !== "tr") btnEl.setAttribute("data-ecke-unten", "1");
+      }
+      dockSichtbar();
+    });
+    headBtns.appendChild(dockBtn);
+    /* Eine Stelle entscheidet, ob er dasteht — zwei liefen auseinander. */
+    dockSichtbar = function () {
+      try { dockBtn.hidden = !(findeAnker() && !angedockt); } catch (_e) {}
+    };
+    dockSichtbar();
+
     var minBtn = el("button", "background:none;border:none;color:#9aa7b6;font-size:1.4rem;line-height:.6;cursor:pointer;padding:0 6px", "–");
     minBtn.type = "button";
     minBtn.title = "Zur Pille minimieren";
@@ -1463,6 +1604,10 @@
       var sicher = clampInts(savedPos.x, savedPos.y, btnEl);
       applyPos(btnEl, sicher);
       if (sicher.x !== savedPos.x || sicher.y !== savedPos.y) savePos(sicher.x, sicher.y);
+    } else {
+      /* Kein gemerkter Platz → in die Leiste, wenn die Seite eine anbietet.
+         Sonst bleibt es bei der Ecke, wie bisher (fail-soft). */
+      andocken();
     }
     makeDraggable(btnEl, btnEl);   // Blase direkt ziehbar
     makeDraggable(panelEl, head);  // Panel an der Kopfzeile ziehbar
