@@ -74,14 +74,14 @@
     }
     try {
       if (window.caches && caches.keys) {
-        var namen = await caches.keys();
-        await Promise.all(namen.map(function (n) { return caches.delete(n); }));
+        var namen = await caches.keys(); /* nur EIGENE Vorraete — caches gehoert dem Ursprung */
+        await Promise.all(namen.filter(function (n) { return n.startsWith('sbkim-demo-'); }).map(function (n) { return caches.delete(n); }));
       }
     } catch (_e) {}
     try {
       if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
-        var regs = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(function (r) { return r.unregister(); }));
+        var reg = await navigator.serviceWorker.getRegistration(); /* nur der EIGENE Worker — getRegistrations() meldete ALLE Apps des Ursprungs ab */
+        if (reg) await reg.unregister();
       }
     } catch (_e) {}
     location.replace(location.pathname + "?frisch=" + Date.now());

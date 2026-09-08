@@ -48,7 +48,7 @@
  * laufen lassen kann — die Ausgabe sagt dann ausdrücklich, dass sie Klone misst.
  */
 import { execFileSync } from "node:child_process";
-import { readdirSync, statSync, existsSync } from "node:fs";
+import { readdirSync, statSync, existsSync, readFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -89,6 +89,12 @@ const FENSTER_NACH = 120;
 export function stufeEin(umfeld) {
   /* Ein Präfix-Vergleich ist der einzige Filter, der fremde Vorräte stehen
      lässt. `k !== MEINER` lässt ALLE anderen durch — genau das ist der Fehler. */
+  /* `!k.startsWith('eigen-')` ist die Verneinung: ALLES ausser dem eigenen —
+     also jede Geschwister-App. Bis zum 2026-09-08 zaehlte das als „praefix-ok",
+     weil nur nach `.startsWith(` gesucht wurde. Ein Filter, der das Richtige
+     ausnimmt statt es zu treffen, ist der alte Fehler mit einem Ausrufezeichen. */
+  const verneint = umfeld.match(/!\s*\w+\s*\.\s*(?:startsWith|includes)\s*\(\s*(['"`])([^'"`]+)\1/);
+  if (verneint) return { urteil: "loescht-alles", filter: `!startsWith("${verneint[2]}") — alles AUSSER dem eigenen` };
   const praefix = umfeld.match(/\.startsWith\s*\(\s*(['"`])([^'"`]+)\1/);
   if (praefix) return { urteil: "praefix-ok", filter: `startsWith("${praefix[2]}")` };
 
@@ -157,9 +163,36 @@ export function findeStellen(text) {
  */
 const ADRESSE = /\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:de|com|io|net|org)\b/i;
 
+/* ⚠ KORREKTUR 2026-09-08. Hier stand: „Von hier aus ist die Auslieferung nicht
+ * nachsehbar: der Egress-Proxy sperrt github.io, und die Pages-Einstellung geben
+ * die GitHub-Werkzeuge dieser Sitzung nicht her." Der erste Halbsatz stimmt, der
+ * zweite nicht: `list_workflow_runs` liefert die Läufe „pages build and
+ * deployment" (event `dynamic`) und belegt damit, dass Pages für ein Depot baut
+ * und ausliefert. Abgefragt für alle 34 Depots, abgelegt in
+ * `docs/daten/auslieferung.json` — mit Datum, weil so eine Abfrage veraltet.
+ * Ich hatte eine Grenze erklärt, die keine war, und Klaus um Handarbeit gebeten,
+ * die er am Tablet gar nicht leisten kann. Eine Regel über den Normalfall ist
+ * kein Befund über den eigenen — und eine behauptete Grenze auch nicht. */
+const AUSLIEFERUNG = (() => {
+  try { return JSON.parse(readFileSync(join(HIER, "..", "docs", "daten", "auslieferung.json"), "utf8")); }
+  catch { return null; }
+})();
+
+export function pagesBeleg(name) {
+  const e = AUSLIEFERUNG && AUSLIEFERUNG.depots && AUSLIEFERUNG.depots[name];
+  if (!e || !e.pages) return null;
+  return { laeufe: e.laeufeGesamt, zuletzt: e.zuletzt, stand: AUSLIEFERUNG._stand };
+}
+
 export function ursprung(repo) {
+  const name = repoName(repo);
   const cname = (git(repo, ["show", "origin/main:CNAME"]) || "").trim().split("\n")[0];
-  if (cname) return { art: "eigen", wert: cname, quelle: "CNAME auf origin/main", zitate: [] };
+  const pages = pagesBeleg(name);
+  if (cname) return { art: "eigen", wert: cname,
+    quelle: "CNAME auf origin/main" + (pages ? ` · Pages baut darauf (zuletzt ${pages.zuletzt})` : ""), zitate: [] };
+  if (pages) return { art: "geteilt", wert: "lausiklauskn-png.github.io",
+    quelle: `Pages belegt — ${pages.laeufe} Läufe, zuletzt ${pages.zuletzt} (docs/daten/auslieferung.json, Stand ${pages.stand})`,
+    zitate: [] };
 
   /* Belegstellen sammeln, nicht auswerten. */
   const zitate = [];
@@ -177,9 +210,20 @@ export function ursprung(repo) {
   }
 
   return { art: "ungeprueft", wert: "—",
-           quelle: "keine CNAME — die Auslieferung ist von hier aus nicht nachsehbar",
+           quelle: "keine CNAME, kein Pages-Lauf in docs/daten/auslieferung.json",
            zitate };
 }
+
+/* ── Benannte Ausnahmen ─────────────────────────────────────────────────
+ * Zwei Stellen, die der Scan bis zum 2026-09-08 als Befund zählte und die
+ * keine sind. Eine zu hohe Zahl ist derselbe Fehler wie eine zu niedrige.
+ * Jede Ausnahme trägt ihren Grund; ohne Grund wird nichts ausgenommen. */
+export const AUSNAHMEN = [
+  { repo: "Sage-Protokol", datei: "tools/speicher.html",
+    grund: "ABSICHT — Klaus' Aufräum-Werkzeug löscht genau die Vorräte, die er anhakt; ursprungsweit ist hier der Zweck" },
+  { repo: "Sage-Protokol", datei: "tools/vorrat-scan.mjs",
+    grund: "SELBSTTREFFER — der Scanner findet sein eigenes Doku-Beispiel" },
+];
 
 /* ── Lauf ──────────────────────────────────────────────────────────────── */
 
@@ -214,7 +258,11 @@ export function scanne(wurzel, { fetch = true } = {}) {
     for (const datei of treffer) {
       const text = git(repo, ["show", `origin/main:${datei}`]);
       if (!text) continue;
-      for (const s of findeStellen(text)) stellen.push({ datei, ...s });
+      const ausnahme = AUSNAHMEN.find((a) => a.repo === name && a.datei === datei);
+      for (const s of findeStellen(text)) {
+        if (ausnahme) stellen.push({ datei, ...s, urteil: "gewollt", filter: ausnahme.grund });
+        else stellen.push({ datei, ...s });
+      }
     }
 
     ergebnis.push({ repo: name, pfad: repo, ursprung: ursprung(repo), stellen });
@@ -224,7 +272,7 @@ export function scanne(wurzel, { fetch = true } = {}) {
 
 /* ── Ausgabe ───────────────────────────────────────────────────────────── */
 
-const ZEICHEN = { "loescht-alles": "✗", "praefix-ok": "✓", unklar: "?" };
+const ZEICHEN = { "loescht-alles": "✗", "praefix-ok": "✓", gewollt: "○", unklar: "?" };
 
 function bericht(daten, fetch) {
   const zeilen = [];
@@ -249,18 +297,23 @@ function bericht(daten, fetch) {
 
   const zaehle = (art) => daten.filter((r) => r.ursprung.art === art).length;
   p(`Ursprung: **${zaehle("eigen")} belegt eigen** (CNAME) · `
+    + `**${zaehle("geteilt")} belegt geteilt** (Pages-Lauf) · `
     + `**${zaehle("ungeprueft")} ungeprüft**`);
   p("");
-  p("⚠ **„ungeprüft\" heisst ungeprüft, nicht „geteilt\".** Eine `CNAME` zu haben");
-  p("belegt einen eigenen Ursprung; sie nicht zu haben belegt nichts —");
-  p("family-project und Company-Brain liefern über eigene Adressen aus und haben");
-  p("keine. Von hier aus ist die Auslieferung nicht nachsehbar: der Egress-Proxy");
-  p("sperrt `github.io`, und die Pages-Einstellung geben die GitHub-Werkzeuge");
-  p("dieser Sitzung nicht her.");
+  p("Die Pages-Belege stammen aus `docs/daten/auslieferung.json` (GitHub-API,");
+  p(`Stand ${AUSLIEFERUNG ? AUSLIEFERUNG._stand : "—"}). Eine \`CNAME\` belegt einen eigenen Ursprung; ein Lauf`);
+  p("„pages build and deployment\" belegt, dass Pages baut und ausliefert. Beides");
+  p("zugleich gibt es — family-project liefert über Hetzner UND über Pages.");
   p("");
-  p("**Diese Frage beantwortet Klaus, nicht das Werkzeug.** Wo die Doku eine");
-  p("Adresse nennt, steht die Zeile als Belegstelle darunter — zitiert, nicht");
-  p("ausgewertet.");
+  p("> **Korrektur 2026-09-08.** Hier stand: *„Von hier aus ist die Auslieferung");
+  p("> nicht nachsehbar: der Egress-Proxy sperrt `github.io`, und die");
+  p("> Pages-Einstellung geben die GitHub-Werkzeuge dieser Sitzung nicht her.\"*");
+  p("> Der zweite Halbsatz war falsch — die Werkzeuge liefern die Pages-Läufe.");
+  p("> Ich hatte eine Grenze erklärt, die keine war.");
+  p("");
+  p("Zwei Stellen zählen als **○ gewollt** und nicht als Befund: Klaus' eigenes");
+  p("Aufräum-Werkzeug `tools/speicher.html` (löscht, was er anhakt — das ist der");
+  p("Zweck) und der Selbsttreffer dieses Scanners in seinem Doku-Beispiel.");
   p("");
 
   for (const r of daten) {
