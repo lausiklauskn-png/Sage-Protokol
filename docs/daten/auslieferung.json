@@ -1,0 +1,222 @@
+{
+  "_was": "Auslieferung je Depot, ABGEFRAGT über die GitHub-API (list_workflow_runs, je Depot der jüngste Lauf) am 2026-09-08 gegen 15:10 UTC. Ein Lauf namens 'pages build and deployment' (event dynamic) oder 'Deploy to GitHub Pages' belegt, dass GitHub Pages für das Depot baut und ausliefert. 'laeufeGesamt' zählt ALLE Workflow-Läufe des Depots, nicht nur Pages — bei Depots mit eigener CI (BookLedgerPro, PWA-Toolpoint) ist die Zahl deshalb keine Pages-Zahl. Eine CNAME-Datei belegt einen eigenen Ursprung; sie zu haben schliesst Pages nicht aus, sie nicht zu haben beweist nichts.",
+  "_grenze": "Ob eine Pages-Seite ohne Anmeldung lesbar ist (privates Depot mit Pro-Konto), sagt ein Lauf nicht. Das ist der Test im privaten Fenster aus Kimhubs Verfassung.",
+  "_stand": "2026-09-08",
+  "depots": {
+    "Alis-Moderaum": {
+      "laeufeGesamt": 99,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T15:05:43Z",
+      "pages": true
+    },
+    "BookLedgerPro": {
+      "laeufeGesamt": 1315,
+      "letzterLauf": "CI (push)",
+      "zuletzt": "2026-09-08T15:06:58Z",
+      "hinweis": "eigene CI; Pages-Workflow 'pages-build-deployment' per list_workflows belegt (id 295737078)",
+      "pages": true
+    },
+    "Company-Brain": {
+      "laeufeGesamt": 22,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:39Z",
+      "pages": true
+    },
+    "Jasons-Tresor": {
+      "laeufeGesamt": 230,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:20Z",
+      "pages": true
+    },
+    "Kim-Bell": {
+      "laeufeGesamt": 55,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:11Z",
+      "pages": true
+    },
+    "Kim-sync": {
+      "laeufeGesamt": 6,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-08-22T07:35:11Z",
+      "hinweis": "leeres Depot, Pages liefert trotzdem",
+      "pages": true
+    },
+    "Kimboard": {
+      "laeufeGesamt": 130,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:26Z",
+      "pages": true
+    },
+    "Kimhub": {
+      "laeufeGesamt": 153,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T13:35:51Z",
+      "hinweis": "Klaus nennt das Depot privat; Pages baut und liefert weiter",
+      "pages": true
+    },
+    "Kimseek": {
+      "laeufeGesamt": 75,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:14Z",
+      "pages": true
+    },
+    "Kuechenzettel": {
+      "laeufeGesamt": 10,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T15:05:46Z",
+      "pages": true
+    },
+    "Me-Mixarium": {
+      "laeufeGesamt": 0,
+      "letzterLauf": null,
+      "zuletzt": null,
+      "hinweis": "kein Pages",
+      "pages": false
+    },
+    "Mein-Mixarium-Page": {
+      "laeufeGesamt": 19,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-08-22T07:34:53Z",
+      "pages": true
+    },
+    "Mein-Mixarium": {
+      "laeufeGesamt": 649,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:29Z",
+      "pages": true
+    },
+    "Mein-Rezeptbuch-Page": {
+      "laeufeGesamt": 22,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:57Z",
+      "pages": true
+    },
+    "Mein-Rezeptbuch": {
+      "laeufeGesamt": 685,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:53:46Z",
+      "pages": true
+    },
+    "Mein-Tresor": {
+      "laeufeGesamt": 407,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:23Z",
+      "pages": true
+    },
+    "Mein-WorkFloh": {
+      "laeufeGesamt": 186,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:48Z",
+      "pages": true
+    },
+    "Mein-Workfloh-Page": {
+      "laeufeGesamt": 19,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:54Z",
+      "pages": true
+    },
+    "Meine-In-and-Out-Book": {
+      "laeufeGesamt": 0,
+      "letzterLauf": null,
+      "zuletzt": null,
+      "hinweis": "kein Pages",
+      "pages": false
+    },
+    "Muttis-Rezeptbuch-Seite": {
+      "laeufeGesamt": 0,
+      "letzterLauf": null,
+      "zuletzt": null,
+      "hinweis": "kein Pages",
+      "pages": false
+    },
+    "Muttis-Rezeptbuch": {
+      "laeufeGesamt": 227,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:53:51Z",
+      "pages": true
+    },
+    "New-Perfect-Skin-Beauty-": {
+      "laeufeGesamt": 11,
+      "letzterLauf": "Deploy to GitHub Pages (push)",
+      "zuletzt": "2026-08-22T07:34:57Z",
+      "pages": true
+    },
+    "PWA-Toolpoint-com": {
+      "laeufeGesamt": 4,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-08-22T07:35:07Z",
+      "cname": true,
+      "pages": true
+    },
+    "PWA-Toolpoint": {
+      "laeufeGesamt": 211,
+      "letzterLauf": "Eigenschaften prüfen (schedule)",
+      "zuletzt": "2026-09-08T08:54:19Z",
+      "cname": true,
+      "pages": true,
+      "hinweis": "CNAME pwa-toolpoint.de; Pages baut auf die eigene Adresse"
+    },
+    "Perfect-Skin-Beauty": {
+      "laeufeGesamt": 124,
+      "letzterLauf": "Deploy to GitHub Pages (push)",
+      "zuletzt": "2026-08-22T07:32:39Z",
+      "pages": true
+    },
+    "Perfect-Skin-Fashion": {
+      "laeufeGesamt": 53,
+      "letzterLauf": "Deploy to GitHub Pages (push)",
+      "zuletzt": "2026-08-22T07:32:42Z",
+      "pages": true
+    },
+    "Privat-Brain": {
+      "laeufeGesamt": 83,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:42Z",
+      "pages": true
+    },
+    "SB-KIMTool-Point": {
+      "laeufeGesamt": 430,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:45Z",
+      "pages": true
+    },
+    "SP-FP-md-Speicher": {
+      "laeufeGesamt": 26,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-08-22T22:14:27Z",
+      "hinweis": "Obsidian-Tresor, keine App — Pages liefert die .md-Notizen aus",
+      "pages": true
+    },
+    "Sage-Protokol": {
+      "laeufeGesamt": 1365,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T15:05:53Z",
+      "pages": true
+    },
+    "Tomys-Hub": {
+      "laeufeGesamt": 166,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T15:05:50Z",
+      "pages": true
+    },
+    "family-project": {
+      "laeufeGesamt": 386,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T14:46:35Z",
+      "hinweis": "liefert ZUSÄTZLICH über Hetzner/Caddy (family-projekt.de); die Pages-Kopie liegt auf dem geteilten Ursprung",
+      "pages": true
+    },
+    "mycel-karte": {
+      "laeufeGesamt": 26,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T15:05:37Z",
+      "pages": true
+    },
+    "kim-hub-company": {
+      "laeufeGesamt": 36,
+      "letzterLauf": "pages build and deployment",
+      "zuletzt": "2026-09-08T13:22:39Z",
+      "pages": true
+    }
+  }
+}
