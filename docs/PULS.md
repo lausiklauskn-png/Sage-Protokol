@@ -31,6 +31,56 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-08 (Mess-Sitzung) · 🧹 DER GETEILTE VORRAT — die Apps löschen einander die Offline-Vorräte
+
+**Kein Code an einer App geändert.** Klaus' Entscheidung: erst messen, dann
+entscheiden. Zwei neue Werkzeuge, ein Bericht.
+
+**Anlass:** ein zehnter Befund am Bündel-Prüfer in `kim-hub-company` (2026-09-08)
+— sein Service-Worker löscht in `activate` jeden Vorrat, der nicht seiner ist.
+`caches` gehört dem **Ursprung**, nicht dem Pfad.
+
+### Gemessen (Wirkung, echte Apps, headless)
+
+| | |
+|---|---|
+| `Kuechenzettel` **nur öffnen** | Vorrat `mycel-karte-v17` **ist weg** |
+| dasselbe mit Präfix-Filter (Gegenprobe) | Vorrat **bleibt** |
+| ⟳ in `mycel-karte` klicken (Sorte A stillgelegt, Kontrolle grün) | `kuechenzettel-v1` **ist weg** |
+
+### Gemessen (Verbreitung, gegen `origin/main`, 33 Depots)
+
+**Sorte A** (Service-Worker, läuft von allein): **23 Depots, 27 Stellen.**
+**Sorte B** (⟳-Knopf): **22 Depots, 36 Stellen.**
+Richtig gefiltert: 4 Depots, 8 Stellen — `Tomys-Hub` macht es als einziges
+durchgehend richtig (`startsWith` statt `!==`).
+
+### ⚠ Was NICHT gemessen wurde
+
+**Welche Apps wirklich denselben Ursprung teilen.** Der Egress-Proxy sperrt
+`github.io`, die Pages-Einstellung ist von hier nicht lesbar. Belegt sind
+**3 von 33** (CNAME); die übrigen **30 stehen als „ungeprüft"**, nicht als
+„geteilt". Eine fehlende CNAME beweist nichts — `Company-Brain` und
+`family-project` liefern über eigene Adressen aus und haben keine.
+
+### Zwei Fehler im eigenen Messwerkzeug, beide behoben
+
+Die erste Fassung **riet die Auslieferung aus Prosa** und lag in beide
+Richtungen daneben: zu eng (`Company-Brain` galt als „geteilt", weil dort
+„eigen**en** Adresse" steht und der Ausdruck „eigene Adresse" suchte) und zu
+weit (`Kimhub`/`Sage` galten als „ungeprüft", weil ihre CLAUDE.md das Wort
+*Hetzner* enthält). Seitdem wird **zitiert statt geschlossen**.
+
+**Bericht:** `docs/BEFUND_geteilter-vorrat.md` + `…_tabelle.md`
+**Werkzeuge:** `tools/vorrat-scan.mjs` · `tests/vorrat_wirkung.mjs`
+**Proben:** `npm test` → 93 grün, 0 rot, 0 nicht lauffähig (Rückgabewert 0).
+
+**Offen — für Klaus:** welche der 30 ungeprüften Apps liegen auf
+`lausiklauskn-png.github.io`? **Offen — für eine Bau-Sitzung:** die Reparatur
+(Präfix-Filter aus Tomys-Hub kopieren), je Repo ein PR mit Gegenprobe.
+
+---
+
 ## Stand 2026-09-07 (Brief aus Kimhub) · NETZWEIT § 3a — ein Cache-Bump ist kein „+1"
 
 **Rolle:** Fremd-Sitzung aus **Kimhub**, mit einer netzweiten Tafel-Ergänzung.
