@@ -6,6 +6,10 @@ in [`BEFUND_geteilter-vorrat_tabelle.md`](BEFUND_geteilter-vorrat_tabelle.md).
 
 **Kein Code wurde geändert.** Dieser Bericht misst; er repariert nicht.
 
+> **Nachtrag 2026-09-08 (abends):** repariert und gemergt, netzweit. Der Stand
+> danach steht in [`BEFUND_geteilter-vorrat_nachher.md`](BEFUND_geteilter-vorrat_nachher.md);
+> was noch offen ist, in `PULS.md`. Dieser Bericht bleibt, wie er gemessen wurde.
+
 ---
 
 ## Der Mechanismus

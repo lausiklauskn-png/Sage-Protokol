@@ -31,6 +31,104 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-08 (Bau-Sitzung, abends) · 🧹 DER GETEILTE VORRAT IST REPARIERT — netzweit, Sorte A und B
+
+**Anschluss an die Mess-Sitzung vom Vormittag (Eintrag darunter).** Klaus hat
+den Plan freigegeben; Auflage unverändert: *„allerhöchste Vorsicht, keine App
+darf gelöscht werden."* Es wurde nichts gelöscht, keine App entfernt, keine
+Funktion weggenommen.
+
+### Was repariert ist (alles gemergt, gegen `origin/main` gemessen)
+
+| | vorher (Vormittag) | nachher (abends) |
+|---|---|---|
+| **Sorte A** — Service-Worker `activate` löscht fremde Vorräte | 23 Depots, 27 Stellen | **0** auf dem geteilten Ursprung |
+| **Sorte B** — ⟳-Knopf meldet alle Worker ab und löscht alle Vorräte | 22 Depots, 36 Stellen | **2 Stellen**, bewusst offen (unten) |
+| richtig gefiltert | 4 Depots, 8 Stellen | **63 Stellen** in 27 Depots |
+
+Der Filter ist überall derselbe: `k.startsWith(VORRAT_PRAEFIX) && k !== CACHE`
+(Präfix aus der Vorrats-Konstante **abgelesen**, nicht geraten) und für den
+Worker `getRegistration()` (Einzahl — der eine, der DIESE Seite steuert) statt
+`getRegistrations()`. Jede Stelle in beide Richtungen gemessen
+(`tests/vorrat_wirkung.mjs`): fremder Vorrat bleibt · eigener alter geht ·
+fremder Worker bleibt registriert.
+
+**Kanon:** `src/modules/22_such_widget.js` (neue sha `052eb5f8…`) kennt jetzt
+`window.SBKIM_VORRAT_PRAEFIX` (String oder Liste, vom Wirt im `<head>` gesetzt
+wie `SBKIM_DB_SUFFIX`); ohne die Marke löscht der ⟳ des Widgets **nichts**
+(fail-soft). Ausgerollt in alle sechs Kopien (Sage ×3, Kimseek, SB-KIMTool ×2),
+Drift-Pins nachgezogen. Privat-Brains `pinnwand-widget.js` ist app-eigen und
+direkt repariert.
+
+**Die Rezeptbücher** (Klaus: *„sollen separat bleiben und sich nicht gegenseitig
+aufräumen"*) tragen eigene Namen: `meinrezeptbuch-v63` und `muttisrezeptbuch-v14`
+statt beide `mrz-`. Preis: je einmal die Schale online neu laden; Rezepte liegen
+nicht im Vorrat (gemessen). Die alten `mrz-*` räumt niemand automatisch weg —
+das träfe die Schwester; dafür gibt es `tools/speicher.html`.
+
+**Modell-Ausputzer** (Kimboard, Pinnwand, Privat-Brain): `!k.startsWith(Schale)`
+löschte alles *außer* der eigenen Schale — jetzt positiv `/webllm|mlc/i`.
+
+**Drei Depots, die erst abends auffielen:** `Kimhub/company-sw.js` (Zwilling von
+`kim-hub-company/sw.js`, in Kimhub von niemandem registriert — gemessen) ·
+`Muttis-Rezeptbuch/sw.js` (`handbuch-v1`, ebenfalls unregistriert, aber
+ausgeliefert) · **`New-Perfect-Skin-Beauty-`** liegt laut Pages-Beleg auf dem
+geteilten Ursprung, hat **keinen** Service-Worker und löschte per ⟳
+ausschließlich fremde Vorräte — jetzt löscht es keinen. Die Schwester
+`Perfect-Skin-Beauty` trägt dieselbe Zeile auf eigener CNAME und bleibt.
+
+### Pflichtangaben (Klaus: *„Copyright und Impressum nicht vergessen"*)
+
+Alle 30 Toolpoint-Einträge plus ausgelieferte Unterseiten geprüft. Nachgezogen
+nach dem Toolpoint-Muster (`impressum.html`, `datenschutz.html`, Fußzeilen-Link,
+im Offline-Vorrat, Cache-Bump): **kim-hub-company** (beide Seiten, über
+Kimhubs Ableiter `tools/company-schale-bauen.mjs`, Drift-Pin neu), **mycel-karte**,
+**BookLedgerPro**, **Alis-Moderaum** `warehouse.html`, **Küchenzettel**
+(Platzhalter ersetzt), Tomys `bookledger/`, Sages `mycel-karte/`-Kopie.
+
+### Kimhub ⟷ kim-hub-company — Klaus' drei Fragen, gemessen
+
+Stechuhr **ist geteilt** (gleicher `localStorage`-Schlüssel auf gleichem
+Ursprung, nur in diesem Browser) · Buchhaltung/Belege getrennt (IndexedDB) ·
+im Depot liegt nichts Privates (`.gitignore`, `git ls-tree`) · Copyright ja,
+Impressum **fehlte** — nachgezogen (oben). ⚠ Ich hatte zuerst „getrennt"
+geantwortet, weil ich nur `__WERKSTATT_DB` gemessen hatte; korrigiert.
+
+### Der Scanner urteilte nach der Reparatur falsch — 44 Fehlurteile
+
+`tools/vorrat-scan.mjs` kannte nur String-Literale. Nach der Reparatur meldete
+er weiter **25 von 33** Depots als „löscht alles": Konstanten
+(`startsWith(VORRAT_PRAEFIX)`), positives `includes`, gezielter Regex und die
+Wirt-Marke von Modul 22 fielen alle auf das `!==` dahinter durch. **Eine zu hohe
+Zahl ist derselbe Fehler wie eine zu niedrige.** Jetzt wird die Konstante in der
+Datei nachgeschlagen; nicht auflösbar heißt **„unklar"**, nicht „ok"; Depots mit
+eigener CNAME zählen nicht mehr in der Kopfzahl. Neue Probe
+`tests/smoke_vorrat_scan.mjs` (23 Haken, beide Richtungen) — und der Schnipsel
+darin war grün, während die **echte** Modul-22-Datei „unklar" blieb: die Marke
+lag außerhalb des 400-Zeichen-Fensters. Die Probe misst jetzt die Datei.
+Abschluss-Lauf: `docs/BEFUND_geteilter-vorrat_nachher.md`.
+
+### ⚠ Bewusst offen
+
+- **`ansicht.js:4232`** in Kimhub **und** kim-hub-company (byte-gepinnt, ein ⟳
+  ohne Filter): eine Parallel-Sitzung baut dort gerade Tresor und Buchhaltung
+  Karte 4 um (Klaus' Warnung). Zwei Stellen, ein Fix, nach deren Merge.
+- **Zwei offene Tabs** (Kimhub + Company) überschreiben einander die Stechuhr
+  still — `schreib("stechuhr")` ersetzt die ganze Liste. Nicht gebaut, benannt.
+- **Kimhubs eigenes Impressum** (`index.html`, privat gestellt, Pages läuft) ·
+  **Mein-Workfloh-Page** trägt Platzhalter mit Absicht, ist aber live gelistet —
+  **Klaus entscheidet** · der Toolpoint-Eigenschaften-Lauf kennt „Impressum
+  erreichbar" nicht als Merkmal (Wächter fehlt).
+- **Klaus' Sichttest** — headless beweist, dass Vorräte bleiben; ob die Apps am
+  Tablet normal starten und offline laufen, sieht nur er. Beide Rezeptbücher
+  **einmal online öffnen**, danach offline gegenprüfen.
+
+**Proben:** Sage `npm test` → **94 grün, 0 rot, 0 nicht lauffähig**; je Depot
+die eigene Suite grün oder als vorbestehend rot belegt (Übergabeprotokoll).
+**Protokoll:** `docs/sessions/archiv/2026-09-08_geteilter-vorrat-reparatur.md`.
+
+---
+
 ## Stand 2026-09-08 (Mess-Sitzung) · 🧹 DER GETEILTE VORRAT — die Apps löschen einander die Offline-Vorräte
 
 **Kein Code an einer App geändert.** Klaus' Entscheidung: erst messen, dann
