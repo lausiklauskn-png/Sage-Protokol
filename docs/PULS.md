@@ -31,6 +31,115 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-08 (Haupt-Sitzung, spät) · ✅ DER GETEILTE VORRAT IST BEI NULL — die letzte Stelle ist zu
+
+**Anschluss an die Bau-Sitzung vom Abend (Eintrag darunter).** Deren einzige
+bewusst offene Stelle war `ansicht.js` in **Kimhub und kim-hub-company** — ein ⟳
+ohne Filter, byte-gepinnt in beiden Depots, zurückgestellt wegen einer
+Parallel-Sitzung. Die ist gemergt (Kimhub #159–#164), die Stelle ist repariert.
+
+### Der Abschluss-Scan
+
+| | |
+|---|---|
+| `node tools/vorrat-scan.mjs`, geteilter Ursprung | **0 von 30 Depots** |
+| eigene CNAME (PWA-Toolpoint ×2, Perfect-Skin-Beauty ×1) | 3 Stellen, **nicht angefasst** |
+
+Bericht: `docs/BEFUND_geteilter-vorrat_nachher.md`. Die Zahlen der beiden
+früheren Läufe stehen dort daneben, nicht ersetzt — eine Reparatur ersetzt
+ihren Befund nicht.
+
+### Der Präfix kommt vom Wirt, nicht aus der Datei
+
+`ansicht.js` ist in beiden Depots byte-1:1 dieselbe Datei und **kann** den
+eigenen Präfix nicht kennen. Ein dort eingetragener Name wäre für eine der
+beiden Apps falsch — still, denn gelöscht würde trotzdem. Der Wirt setzt ihn
+im `<head>`, wie Modul 22 und wie `__WERKSTATT_DB` daneben:
+
+- Kimhub `index.html` → `window.SBKIM_VORRAT_PRAEFIX = "kimhub-werkstatt-"`
+- `tools/company-schale-bauen.mjs` tauscht ihn beim Ableiten auf `"kim-hub-company-"`
+- ohne Marke wird **nichts** gelöscht (fail-soft); der ⟳ wirkt über die
+  geänderte Adresse trotzdem
+
+**Der Name ist die netzweite Marke, nicht Kimhubs eigene.** Kimhub trägt kein
+SBKIM-Modul; ein zweiter Name für dieselbe Sache liefe auseinander, und
+`tools/vorrat-scan.mjs` stufte die Stelle als „unklar" ein — was nach der
+eigenen Regel dieses Netzes nicht „ok" heisst.
+
+### Was der Auftrag nannte und die Messung nicht hergab
+
+Der Brief nannte `getRegistration()` statt `getRegistrations()`. Gemessen:
+die Stelle meldet **gar keinen** Worker ab — `unregister` kommt in `ansicht.js`
+nicht vor. Es gab dort nichts zu ersetzen; einen Abmelde-Pfad zu ergänzen wäre
+neues Verhalten ohne Auftrag gewesen.
+
+### Klaus' Sichttest ist gelaufen
+
+Auf die Frage vom Abend: **beide Rezeptbücher einmal online geöffnet, danach
+offline gegengeprüft, alles startet normal.** Damit ist die Reparatur der
+Sorten A und B nicht mehr nur headless belegt. Der Sichttest der heutigen
+Änderung (Werkstatt, Company, Muster-Seite) steht aus.
+
+### Mein-Workfloh-Page — Klaus hat entschieden
+
+Gefragt: echte Betreiber-Angaben oder benannte Ausnahme? **Antwort: benannter
+Hinweis auf der Seite**, die Vorlage bleibt firmenneutral. Ein Band im Kopf
+sagt jetzt, dass Name, Anschrift, Telefon, Preise und Referenzen erfunden
+sind. Es steht als echtes HTML im Dokument (ein nachgetragenes Band schöbe
+die Seite) und ist nicht wegklickbar.
+
+**Und das Impressum sagte etwas Falsches:** die Angaben würden „vor
+Veröffentlichung ergänzt". Der Satz war richtig, solange die Seite ein Entwurf
+war — sie ist seit langem veröffentlicht und im Marktplatz gelistet. Eine
+Zusage auf einen Zeitpunkt, der vorbei ist, liest sich wie eine Auskunft.
+Richtiggestellt in Impressum und Datenschutz.
+
+### Zwei eigene blinde Wächter, beide beim Nachstellen gefunden
+
+- **Der Betreiber-Daten-Wächter prüfte nur die erste Fundstelle.** Er fragte,
+  ob der Name **vor** `<html>` steht, und wäre für jede weitere Stelle dahinter
+  grün geblieben — auch für eine im Impressum, also genau dort, wo es zählt.
+  Misst jetzt jede Stelle; erlaubt sind zwei (Kopf-Kommentar, `_CR`-Block).
+- **Der Company-Wächter auf `version.json` hat mich erwischt**, und zwar zu
+  Recht: Fingerabdrücke nachgezogen, Stand vergessen. Rot statt still falsch —
+  genau der Fall, für den er am 2026-09-06 gebaut wurde.
+
+### Proben (je Depot die eigene Suite, ein Depot ein PR)
+
+| Depot | Probe | Ausgangslage | nachher |
+|---|---|---|---|
+| **Kimhub** (#165) | `node tests/alle.mjs` | 2071 grün · 0 rot | **2075 grün · 0 rot** |
+| | 4 neue Gegenprobe-Fälle | — | **4 gefangen · 0 durch** |
+| **kim-hub-company** (#44) | `npm test` | — | **23 grün · 0 rot** |
+| **Mein-Workfloh-Page** (#19) | `npm test` | — | **82 grün · 0 rot** |
+| | `muster_hinweis.gegenprobe.mjs` | — | **8 gefangen · 0 durch** |
+
+Gemessen wird bei den Vorrats-Wächtern, **was nach dem Druck wirklich im
+Vorrat liegt** — nicht, ob im Quelltext ein `startsWith` steht. Und in beide
+Richtungen: „der fremde Vorrat bleibt" allein wäre auch dann grün, wenn der ⟳
+gar nichts mehr löscht. Prüfsummen der sechs angefassten Kimhub-Dateien vor
+und nach dem Gegenprobe-Lauf gleich (unberührter Baum).
+
+Cache-Bumps mit Grund, jeder gegen `origin/main` geprüft: Kimhub v41→v42,
+Company v43→v44, Workfloh-Page v9→v10. Alle drei geänderten Dateien liegen im
+Offline-Vorrat; ohne Bump käme keine der Reparaturen an.
+
+### ⚠ Bewusst offen
+
+- **Klaus' Sichttest der heutigen Änderungen.** Werkstatt und Company nach dem
+  ⟳, und wie das Muster-Band am Tablet aussieht — ein Band über der Kopfleiste
+  ist die Sorte Änderung, die auf schmalem Schirm anders wirkt als gedacht.
+- **Die drei Stellen auf eigener CNAME** (PWA-Toolpoint, Perfect-Skin-Beauty).
+  Kein Befund, solange sie dort liegen; wer eines der Depots auf den geteilten
+  Ursprung zieht, zieht die Stelle mit.
+- Unverändert aus dem Eintrag darunter: **zwei offene Tabs** überschreiben
+  einander die Stechuhr still · **Kimhubs eigenes Impressum** · der
+  Toolpoint-Eigenschaften-Lauf kennt „Impressum erreichbar" nicht als Merkmal.
+
+**Protokoll:** `docs/sessions/archiv/2026-09-08_vorrat-letzte-stelle.md`.
+
+---
+
 ## Stand 2026-09-08 (Bau-Sitzung, abends) · 🧹 DER GETEILTE VORRAT IST REPARIERT — netzweit, Sorte A und B
 
 **Anschluss an die Mess-Sitzung vom Vormittag (Eintrag darunter).** Klaus hat

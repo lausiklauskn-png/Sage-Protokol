@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-08",
-  "seq": 65,
-  "headline": "Geteilter Vorrat repariert: Service-Worker und ⟳ löschen nur noch Eigenes (Modul 22: window.SBKIM_VORRAT_PRAEFIX, sha 052eb5f8)",
+  "seq": 66,
+  "headline": "Geteilter Vorrat bei NULL auf dem geteilten Ursprung: die letzte Stelle (ansicht.js in Kimhub + kim-hub-company) filtert jetzt, Praefix vom Wirt (window.SBKIM_VORRAT_PRAEFIX im <head>). 3 Stellen auf eigener CNAME bleiben, benannt.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 66,
+      "datum": "2026-09-08",
+      "was": "Abschluss des geteilten Vorrats. Kimhub#165 und kim-hub-company#44 gemergt; vorrat-scan meldet 0 von 30 Depots auf dem geteilten Ursprung. Der Praefix kommt vom Wirt, weil ansicht.js in beiden Depots byte-1:1 dieselbe Datei ist und den eigenen Namen nicht kennen kann; ohne Marke wird nichts geloescht (fail-soft). Klaus' Sichttest der Rezeptbuecher ist gelaufen und in Ordnung. Mein-Workfloh-Page#19: benannter Muster-Hinweis auf der Seite statt echter Betreiber-Angaben (Klaus' Entscheidung)."
+    },
     {
       "seq": 63,
       "date": "2026-08-15",

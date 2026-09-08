@@ -1,15 +1,36 @@
-> **Abschluss-Lauf vom 2026-09-08 (abends), nach der Reparatur.** Der Bericht
-> vom Vormittag steht unverändert in `BEFUND_geteilter-vorrat.md`; dieser hier
-> ist derselbe Scan nach allen Merges, mit der reparierten Einstufung
-> (`tests/smoke_vorrat_scan.mjs`). Sages `mycel-karte/index.html` lag beim
-> Lauf noch im Zweig.
+> **Dritter Lauf, 2026-09-08 (spät) — der geteilte Ursprung ist bei null.**
+> Dieselbe Messung, dieselbe Einstufung, nach dem Merge von `Kimhub#165` und
+> `kim-hub-company#44`. Die zwei Stellen, die der Lauf vom Abend als bewusst
+> offen führte (`ansicht.js` in beiden Depots), sind repariert.
+>
+> **Die früheren Zahlen bleiben daneben stehen, nicht ersetzt:**
+>
+> | Lauf | Depots mit Befund auf dem geteilten Ursprung |
+> |---|---|
+> | Vormittag (`BEFUND_geteilter-vorrat.md`) | 23 Depots, Sorte A · 22 Depots, Sorte B |
+> | Abend (dieser Bericht, zweite Fassung) | **3** — Kimhub, Sage-Protokol, kim-hub-company |
+> | jetzt | **0** |
+>
+> Eine Reparatur ersetzt ihren Befund nicht; nur beide zusammen sagen, was
+> gemessen wurde. Der Bericht vom Vormittag steht unverändert in
+> `BEFUND_geteilter-vorrat.md`.
+>
+> **Die drei Stellen auf eigener CNAME bleiben stehen und wurden nicht
+> angefasst** (PWA-Toolpoint ×2, Perfect-Skin-Beauty ×1). Dort liegt kein
+> Geschwister, das sie treffen könnten — kein Befund, aber benannt: wer eines
+> dieser Depots auf den geteilten Ursprung zieht, zieht die Stelle mit.
+>
+> **Was `ansicht.js` betraf und was nicht.** Der Auftrag nannte auch
+> `getRegistration()` statt `getRegistrations()`. Gemessen: die Stelle meldet
+> **gar keinen** Worker ab — `unregister` kommt in der Datei nicht vor, der ⟳
+> arbeitet über Vorrat und geänderte Adresse. Es gab dort nichts zu ersetzen.
 
 # Wer löscht die Vorräte der Geschwister?
 
 Gemessen gegen `origin/main` jedes Depots.
 
-**3 von 30 Depots auf dem geteilten oder ungeprüften Ursprung**
-tragen mindestens eine Stelle, die jeden fremden Vorrat des Ursprungs löscht: Kimhub, Sage-Protokol, kim-hub-company.
+**0 von 30 Depots auf dem geteilten oder ungeprüften Ursprung**
+tragen mindestens eine Stelle, die jeden fremden Vorrat des Ursprungs löscht.
 
 Auf **eigenem** Ursprung (CNAME) tragen 2 Depots dieselbe Form (PWA-Toolpoint, Perfect-Skin-Beauty) — dort liegt kein Geschwister, das sie treffen könnten. Kein Befund, aber benannt:
 wer eines davon auf den geteilten Ursprung zieht, zieht die Stelle mit.
@@ -27,9 +48,10 @@ zugleich gibt es — family-project liefert über Hetzner UND über Pages.
 > Der zweite Halbsatz war falsch — die Werkzeuge liefern die Pages-Läufe.
 > Ich hatte eine Grenze erklärt, die keine war.
 
-Zwei Stellen zählen als **○ gewollt** und nicht als Befund: Klaus' eigenes
+Drei Dateien zählen als **○ gewollt** und nicht als Befund: Klaus' eigenes
 Aufräum-Werkzeug `tools/speicher.html` (löscht, was er anhakt — das ist der
-Zweck) und der Selbsttreffer dieses Scanners in seinem Doku-Beispiel.
+Zweck), der Selbsttreffer dieses Scanners in seinem Doku-Beispiel und seine
+Probe `tests/smoke_vorrat_scan.mjs`, die die falschen Formen absichtlich trägt.
 
 ## Alis-Moderaum
 
@@ -90,11 +112,11 @@ Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **0** · richtig ge
 
 Ursprung: **geteilt** (lausiklauskn-png.github.io) — Pages belegt — 153 Läufe, zuletzt 2026-09-08T13:35:51Z (docs/daten/auslieferung.json, Stand 2026-09-08)
 
-Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **1** · richtig gefiltert: 2
+Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **0** · richtig gefiltert: 3
 
-- ✗ `ansicht.js:4232` · Sorte B · Filter: `kein Filter`
+- ✓ `ansicht.js:4320` · Sorte B · Filter: `Wirt setzt window.SBKIM_VORRAT_PRAEFIX — ohne Wert wird nichts gelöscht`
 - ✓ `company-sw.js:54` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "kim-hub-company-")`
-- ✓ `sw.js:45` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "kimhub-werkstatt-")`
+- ✓ `sw.js:51` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "kimhub-werkstatt-")`
 
 ## Kimseek
 
@@ -221,10 +243,9 @@ Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **0** · richtig ge
 
 Ursprung: **geteilt** (lausiklauskn-png.github.io) — Pages belegt — 1365 Läufe, zuletzt 2026-09-08T15:05:53Z (docs/daten/auslieferung.json, Stand 2026-09-08)
 
-Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **1** · richtig gefiltert: 9
+Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **0** · richtig gefiltert: 9
 
 - ✓ `index.html:5247` · Sorte B · Filter: `startsWith("sage-protokol-")`
-- ✗ `mycel-karte/index.html:320` · Sorte B · Filter: `kein Filter`
 - ✓ `pinnwand/index.html:1687` · Sorte B · Filter: `/webllm|mlc/i.test(k) — gezielt`
 - ✓ `pinnwand/index.html:2239` · Sorte B · Filter: `startsWith("sbkim-pinnwand-")`
 - ✓ `pinnwand/sw.js:84` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "sbkim-pinnwand-")`
@@ -233,6 +254,21 @@ Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **1** · richtig ge
 - ✓ `src/modules/22_such_widget.js:4693` · Sorte B · Filter: `Wirt setzt window.SBKIM_VORRAT_PRAEFIX — ohne Wert wird nichts gelöscht`
 - ✓ `such-tool/modules/22_such_widget.js:4693` · Sorte B · Filter: `Wirt setzt window.SBKIM_VORRAT_PRAEFIX — ohne Wert wird nichts gelöscht`
 - ✓ `such-tool/sbkim-sw.js:61` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "sbkim-such-tool-")`
+- ○ `tests/smoke_vorrat_scan.mjs:25` · Sorte B · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:27` · Sorte B · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:29` · Sorte B · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:31` · Sorte B · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:33` · Sorte B · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:35` · Sorte B · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:40` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:53` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:56` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:59` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:62` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:66` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:68` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:75` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
+- ○ `tests/smoke_vorrat_scan.mjs:86` · Sorte A · Filter: `SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt`
 - ○ `tools/speicher.html:221` · Sorte B · Filter: `ABSICHT — Klaus' Aufräum-Werkzeug löscht genau die Vorräte, die er anhakt; ursprungsweit ist hier der Zweck`
 - ○ `tools/vorrat-scan.mjs:13` · Sorte B · Filter: `SELBSTTREFFER — der Scanner findet sein eigenes Doku-Beispiel`
 
@@ -262,10 +298,10 @@ Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **0** · richtig ge
 
 Ursprung: **geteilt** (lausiklauskn-png.github.io) — Pages belegt — 36 Läufe, zuletzt 2026-09-08T13:22:39Z (docs/daten/auslieferung.json, Stand 2026-09-08)
 
-Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **1** · richtig gefiltert: 2
+Sorte A (läuft von allein): **0** · Sorte B (⟳ / Knopf): **0** · richtig gefiltert: 3
 
-- ✗ `ansicht.js:4232` · Sorte B · Filter: `kein Filter`
-- ✓ `sw.js:60` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "kim-hub-company-")`
+- ✓ `ansicht.js:4320` · Sorte B · Filter: `Wirt setzt window.SBKIM_VORRAT_PRAEFIX — ohne Wert wird nichts gelöscht`
+- ✓ `sw.js:65` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "kim-hub-company-")`
 - ✓ `werkzeuge/buendel-pruefer/sw.js:30` · Sorte A · Filter: `startsWith(VORRAT_PRAEFIX = "buendel-pruefer-")`
 
 ## mycel-karte
