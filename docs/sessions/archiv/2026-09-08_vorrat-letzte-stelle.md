@@ -180,3 +180,71 @@ Jeder gegen `origin/main` geprüft, nicht gegen die eigene Datei — am
 | `Mein-Workfloh-Page#19` | gemergt (`12dcc16`) |
 
 Ein Depot, ein PR, je Depot die eigene Suite. Kein Sammel-PR.
+
+---
+
+## Nachtrag: die offenen PRs des Netzes durchgesehen
+
+Klaus' Frage am Ende der Sitzung: welche offenen PRs lassen sich mergen? Er
+vermutete, die der Parallel-Sitzung seien aktueller.
+
+**Die Vermutung traf nicht zu, und das ist der erste Befund.** Die
+Parallel-Sitzung hat nichts offen — ihre Arbeit ist vollständig gemergt
+(Kimhub #159–#166). Offen standen fünf **Entwürfe** vom 5. Juni bis 27. Juli.
+
+Beurteilt wurde jeder **gegen den heutigen `origin/main`**, nicht nach seinem
+PR-Text. Das ist der Unterschied, auf den es hier ankommt: ein PR-Text
+beschreibt die Lage bei seiner Entstehung, und vier von fünf hatten sich
+seitdem überholt.
+
+| PR | gemessen | Urteil |
+|---|---|---|
+| SB-KIMTool-Point #84 | PULS-Kopf `main` = 2026-06-27, Zweig = 2026-06-21 | Merge dreht Doku zurück |
+| Jasons-Tresor #65 | `openVault`: Zweig **0**, `main` **3**; `test/decoy.test.js` nur auf `main` | Merge zieht ältere Krypto-Fassung herein |
+| family-project #19 | WorkFloh steht in `listings.js` + `publicapps.js` | Begründung entfallen, übrig bleibt ein toter Knopf |
+| Alis-Moderaum #35 | `lsGet('sbbild_gh_token')` im Klartext; `main` 18 Commits voraus | Geheimnis auf geteilter Adresse |
+| ISD-Page-Entwurf #13 | `main`: 51× „ISD", 17× „Seevetal", 5× „Brunskamp"; Depot 404 ohne Anmeldung | offen, Klaus' Entscheidung |
+
+Vier geschlossen, jeder mit einem Kommentar, der den Grund nennt. **Die Zweige
+bleiben stehen.** Geschlossen wurde nicht, um aufzuräumen, sondern damit keine
+spätere Sitzung einen alten Entwurf für unerledigte Arbeit hält — genau der
+Fehler, den `veroeffentlichung-pruefen` beschreibt: *„eine Parallel-Sitzung
+bewegt main, und ein PR aus dem alten Zweig würde fremde Arbeit zurückdrehen."*
+
+### Zwei Befunde, die über das Aufräumen hinausgehen
+
+**1 · Ein Schlüssel im Klartext auf der geteilten Adresse.** Alis-Moderaum#35
+legt einen GitHub-PAT **mit Schreibrecht** nach
+`localStorage['sbbild_gh_token']`. `localStorage` gehört dem Ursprung; auf
+`lausiklauskn-png.github.io` liegen rund dreißig Apps, und jede hätte ihn lesen
+können. Der Name stammt zudem aus einer fremden App und kollidiert dort.
+
+Das ist derselbe Fehler wie ein übernommener DB-Suffix, nur eine Ebene höher —
+und er wäre durch keine Probe gefallen: `npm test` war grün (22/22), die
+Zusicherung „der Abgleich stimmt" hielt. **Gemessen wurde die Funktion, nicht
+der Wohnort des Schlüssels.** Wer den Abgleich neu aufsetzt, nimmt `mergeState`
+und die Proben mit (das ist die eigentliche Arbeit darin) und führt den Zugang
+über den verschlüsselten Tresor.
+
+**2 · Fremd-PII in einem stillgelegten Depot.** `ISD-Page-Entwurf` trägt auf
+`main` echte Namen mit Funktion, die Firmenanschrift, einen Instagram-Link und
+eine Maps-Einbettung. Gemessen: das Depot antwortet ohne Anmeldung mit **404**,
+liegt also privat — niemand liest es gerade. Klaus lässt es vorerst so.
+
+⚠ **Der Merge von #13 wäre nicht die Lösung, die er zu sein scheint.** Er macht
+den aktuellen Stand neutral; **in der Historie bleiben die Daten**. Und die
+neutrale Vorlage, die dabei entstünde, existiert längst als
+`Mein-Workfloh-Page` („Muster Werbetechnik"). Wer das auflösen will, löscht oder
+archiviert das Depot. Dazu die Erinnerung aus Kimhubs Verfassung: **privat
+stellen ist ein halber Schritt** — es ist eine Einstellung, die ein Klick
+umdreht.
+
+### Was NICHT getan wurde
+
+- **Kein PR gemergt.** Vier waren überholt oder schädlich, der fünfte gehört
+  Klaus.
+- **Kein Zweig gelöscht.** Ein geschlossener PR ist umkehrbar, ein gelöschter
+  Zweig nicht ohne Weiteres.
+- **Kein zweiter `seq`-Sprung im Briefkasten.** Er steht seit dem Bau-Teil
+  dieser Sitzung auf 66; ein Doku-Nachtrag ist keine neue Meldung an die
+  Gegenstellen, und ein Sprung ohne Inhalt macht das Signal wertlos.

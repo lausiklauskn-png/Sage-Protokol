@@ -136,6 +136,43 @@ Offline-Vorrat; ohne Bump käme keine der Reparaturen an.
   einander die Stechuhr still · **Kimhubs eigenes Impressum** · der
   Toolpoint-Eigenschaften-Lauf kennt „Impressum erreichbar" nicht als Merkmal.
 
+### Nachtrag am selben Abend · die offenen PRs durchgesehen
+
+Klaus' Frage: welche der offenen PRs lassen sich mergen? **Keiner.** Und es waren
+nicht die der Parallel-Sitzung — deren Arbeit ist vollständig gemergt (Kimhub
+#159–#166). Offen standen fünf **Entwürfe** vom 5. Juni bis 27. Juli, alle
+gemessen gegen den heutigen `main`, nicht nach PR-Text beurteilt.
+
+| PR | Befund | erledigt |
+|---|---|---|
+| **SB-KIMTool-Point #84** | `main` steht auf `Stand: 2026-06-27`, der Zweig auf `2026-06-21` — ein Merge drehte die Doku **zurück** und fügte einen überholten Brief ein („der neueste Brief gilt") | geschlossen |
+| **Jasons-Tresor #65** | das Tarnfach ist längst auf `main`, besser gebaut (`openVault` + `rec.decoy`, `test/decoy.test.js` 6 Fälle grün). Zweig: `openVault` **0×**, `main` 3× | geschlossen |
+| **family-project #19** | Begründung entfallen — WorkFloh ist seit 2026-07-25 öffentlich gelistet (`listings.js`). Übrig bliebe ein **leerer Knopf ohne Namen** in jeder Fußzeile | geschlossen |
+| **Alis-Moderaum #35** | GitHub-Zugang im **Klartext** in `localStorage['sbbild_gh_token']` — `localStorage` gehört dem Ursprung, dort liegen ~30 Apps. Schlüssel-Name obendrein aus einer fremden App | geschlossen |
+| **ISD-Page-Entwurf #13** | echte Fremd-PII auf `main` (Namen mit Funktion, Anschrift, Instagram, Maps): 51× „ISD", 17× „Seevetal", 5× „Brunskamp" | **offen — Klaus lässt es vorerst** |
+
+Jeder geschlossene PR trägt einen Kommentar mit dem Grund. **Die Zweige bleiben
+stehen**, nichts ist verloren — geschlossen wurde, damit keine spätere Sitzung
+einen alten Entwurf für unerledigte Arbeit hält und mergt.
+
+**Zwei davon sind mehr als Aufräumen und stehen als Befund:**
+
+- **Ein Geheimnis im Klartext auf geteilter Adresse.** Alis-Moderaum#35 hätte
+  einen GitHub-Schlüssel **mit Schreibrecht** dorthin gelegt, wo jede der ~30
+  Apps ihn lesen kann — unter einem Namen, der aus einer anderen App stammt.
+  Derselbe Fehler wie ein übernommener DB-Suffix, eine Ebene höher. Der
+  Abgleich selbst ist gut gebaut (`mergeState` rein und testbar, 22 Prüfungen);
+  wer ihn neu aufsetzt, führt den Zugang über den Tresor (Skill
+  `verschluesselter-schluessel-tresor`), nicht über `localStorage`.
+- **Fremd-PII in ISD-Page-Entwurf.** Das Depot steht **privat** (gemessen: 404
+  ohne Anmeldung), es liest also gerade niemand. Klaus lässt es vorerst so.
+  ⚠ **Ein Merge von #13 würde die Daten NICHT aus der Historie nehmen** — er
+  macht nur den aktuellen Stand neutral. Und die neutrale Vorlage gibt es schon:
+  Mein-Workfloh-Page ist dieselbe „Muster Werbetechnik". Wer das wirklich
+  auflösen will, löscht oder archiviert das Depot; das entscheidet Klaus.
+  Erinnerung aus Kimhubs Verfassung: **privat stellen ist ein halber Schritt**,
+  und die Historie behält alles, was je darin lag.
+
 **Protokoll:** `docs/sessions/archiv/2026-09-08_vorrat-letzte-stelle.md`.
 
 ---
