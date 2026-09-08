@@ -1136,8 +1136,20 @@ async function run() {
   let reloaded7 = false; const deleted7 = []; let unreg7 = 0;
   const w7 = Object.assign({}, stub);
   w7.document = stub7; w7.localStorage = ls7; delete w7.SbkimSearchWidget;
+  /* ⚠ 2026-09-08 (Sage #950): `caches` und `getRegistrations()` gehoeren dem URSPRUNG.
+     Der Knopf loeschte bis dahin ALLE Vorraete und meldete ALLE Worker der rund
+     zwanzig Apps auf lausiklauskn-png.github.io ab — und diese Probe verlangte
+     genau das („Cache-Eintraege geleert", „Service-Worker abgemeldet", ohne zu
+     fragen, WESSEN). Jetzt: "x" ist der Vorrat einer fremden App und muss STEHEN
+     bleiben; abgemeldet wird nur die EIGENE Registrierung (getRegistration,
+     Einzahl); getRegistrations darf nie gerufen werden. */
+  let fremdAbgemeldet7 = 0;
+  w7.SBKIM_VORRAT_PRAEFIX = "sbkim-shell-";
   w7.caches = { keys: async () => ["sbkim-shell-v1", "x"], delete: async (k) => { deleted7.push(k); return true; } };
-  w7.navigator = { serviceWorker: { getRegistrations: async () => [{ unregister: async () => { unreg7++; return true; } }] } };
+  w7.navigator = { serviceWorker: {
+    getRegistration: async () => ({ unregister: async () => { unreg7++; return true; } }),
+    getRegistrations: async () => { fremdAbgemeldet7++; return [{ unregister: async () => { fremdAbgemeldet7++; return true; } }]; },
+  } };
   w7.location = { reload: () => { reloaded7 = true; } };
   globalThis.window = w7;
   new Function("global", "window", "globalThis", "console",
@@ -1151,9 +1163,27 @@ async function run() {
   reloadBtn.dispatchEvent({ type: "click", target: reloadBtn, stopPropagation: () => {} });
   await new Promise(r => setTimeout(r, 0));
   await new Promise(r => setTimeout(r, 0));
-  record("Probe 50: Cache-Einträge geleert", "true", String(deleted7.length >= 1), deleted7.length >= 1);
-  record("Probe 50: Service-Worker abgemeldet", "true", String(unreg7 >= 1), unreg7 >= 1);
+  eq("Probe 50: NUR der eigene Vorrat geleert (fremdes \"x\" bleibt)", "sbkim-shell-v1", deleted7.join(","));
+  record("Probe 50: eigener Service-Worker abgemeldet", "true", String(unreg7 >= 1), unreg7 >= 1);
+  record("Probe 50: getRegistrations() wird NICHT gerufen (kein fremder Worker abgemeldet)", "0", String(fremdAbgemeldet7), fremdAbgemeldet7 === 0);
   record("Probe 50: Seite neu geladen", "true", String(reloaded7), reloaded7);
+  // Ohne SBKIM_VORRAT_PRAEFIX: fail-soft — KEIN Vorrat wird geloescht (lieber einer zu viel als zwanzig fremde zu wenig).
+  const stub7b = makeStubDocument(); const deleted7b = []; let reloaded7b = false;
+  const w7b = Object.assign({}, stub);
+  w7b.document = stub7b; w7b.localStorage = makeStubLocalStorage(); delete w7b.SbkimSearchWidget; delete w7b.SBKIM_VORRAT_PRAEFIX;
+  w7b.caches = { keys: async () => ["sbkim-shell-v1", "x"], delete: async (k) => { deleted7b.push(k); return true; } };
+  w7b.navigator = { serviceWorker: { getRegistration: async () => null } };
+  w7b.location = { reload: () => { reloaded7b = true; } };
+  globalThis.window = w7b;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w7b, w7b, w7b, console);
+  await w7b.SbkimSearchWidget.init({ areas: { app: true, knoten: false, internet: false }, reloadButton: true });
+  w7b.SbkimSearchWidget.expand();
+  const reloadBtn7b = queryFirst(stub7b.getElementById("sbkim-search-widget"), ".sbkim-sw-reloadbtn");
+  reloadBtn7b.dispatchEvent({ type: "click", target: reloadBtn7b, stopPropagation: () => {} });
+  await new Promise(r => setTimeout(r, 0)); await new Promise(r => setTimeout(r, 0));
+  eq("Probe 50: ohne SBKIM_VORRAT_PRAEFIX wird KEIN Vorrat geloescht", "", deleted7b.join(","));
+  record("Probe 50: ohne Praefix laedt die Seite trotzdem neu", "true", String(reloaded7b), reloaded7b);
   globalThis.window = stub;
 
   // ---- Probe 51: Schärfen-Mikro + KI-Zusammenfassung („warum diese Reihenfolge") ----
