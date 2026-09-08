@@ -5238,13 +5238,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     var arbeit = [];
     try {
       if ('serviceWorker' in navigator) {
-        arbeit.push(navigator.serviceWorker.getRegistrations()
-          .then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })
+        arbeit.push(navigator.serviceWorker.getRegistration() /* nur der EIGENE Worker — getRegistrations() meldete ALLE Apps des Ursprungs ab */
+          .then(function (r) { return r && r.unregister(); })
           .catch(function () {}));
       }
       if (window.caches && caches.keys) {
-        arbeit.push(caches.keys()
-          .then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); })
+        arbeit.push(caches.keys() /* nur EIGENE Vorraete — caches gehoert dem Ursprung */
+          .then(function (ks) { return Promise.all(ks.filter(function (k) { return k.startsWith('sage-protokol-'); }).map(function (k) { return caches.delete(k); })); })
           .catch(function () {}));
       }
     } catch (e) { /* fail-soft */ }

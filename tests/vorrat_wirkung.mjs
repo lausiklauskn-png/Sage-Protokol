@@ -108,8 +108,19 @@ async function lauf(ok, { sabotiereB }) {
   auschecken(APP_A.repo, join(BUEHNE, "a"));
   auschecken(APP_B.repo, join(BUEHNE, "b"));
 
-  if (sabotiereB) {
-    /* Der Präfix-Filter aus Tomys-Hub/sw.js — kopiert, nicht erfunden. */
+  if (sabotiereB === "regress") {
+    /* Seit dem 2026-09-08 traegt Kuechenzettel auf main den Praefix-Filter.
+       Die Gegenprobe nimmt ihn wieder HERAUS — der Schaden muss dann wieder
+       auftreten, sonst misst der Lauf nur, dass nichts passiert. */
+    const p = join(BUEHNE, "b", APP_B.sw);
+    const alt = readFileSync(p, "utf8");
+    const neu = alt.replace(/(\w+)\.startsWith\(VORRAT_PRAEFIX\)\s*&&\s*/g, "");
+    if (alt === neu) throw new Error("Praefix-Filter liess sich nicht herausnehmen — der Fall misst nichts");
+    writeFileSync(p, neu);
+  } else if (sabotiereB) {
+    /* Der Präfix-Filter aus Tomys-Hub/sw.js — kopiert, nicht erfunden.
+       (Historisch: so wurde der Befund am 2026-09-08 bewiesen, als main den
+       Filter noch nicht trug.) */
     const p = join(BUEHNE, "b", APP_B.sw);
     const alt = readFileSync(p, "utf8");
     const neu = alt.replace(/(\w+)\s*!==?\s*CACHE_VERSION/g,
@@ -298,25 +309,92 @@ export async function laufReparatur(ok, { opfer, geprueft, praefix, alterVorrat,
   }
 }
 
+/**
+ * Die Gegenprobe zur REPARATUR eines ⟳-Knopfs (Sorte B). Drei Zusicherungen,
+ * und die zweite wiegt am schwersten:
+ *   1. der fremde Vorrat (App A) BLEIBT
+ *   2. der fremde WORKER (App A) bleibt angemeldet — ein abgemeldeter Worker
+ *      macht die Geschwister-App bis zum naechsten Online-Besuch nicht mehr
+ *      offline-faehig; das ist schlimmer als ein geloeschter Vorrat
+ *   3. der eigene alte Vorrat GEHT — sonst ist der Filter nur andersherum falsch
+ */
+export async function laufReparaturB(ok, { opfer, geprueft, praefix, alterVorrat, knopf, unterpfad = "" }) {
+  rmSync(BUEHNE, { recursive: true, force: true });
+  auschecken(opfer.repo, join(BUEHNE, "a"));
+  auschecken(geprueft.repo, join(BUEHNE, "b"));
+  ok(`Quelle von ${geprueft.repo}: ${ARBEITSKOPIE.includes(geprueft.repo) ? "ARBEITSKOPIE (noch nicht gepusht)" : "origin/main"}`, true);
+
+  const { s, port } = await server(BUEHNE);
+  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const kontext = await browser.newContext();
+  const basis = `http://127.0.0.1:${port}`;
+  try {
+    const a = await kontext.newPage();
+    await a.goto(`${basis}/a/`, { waitUntil: "load" });
+    await warteAufWorker(a);
+    await a.waitForFunction(async () => (await caches.keys()).length > 0, null, { timeout: 20000 }).catch(() => {});
+    const fremd = (await vorraete(a)).filter((k) => k.includes(opfer.vorrat));
+    if (!fremd.length) { ok(`AUSGANGSLAGE: ${opfer.repo} hat einen Vorrat — NICHT MESSBAR`, false); return; }
+
+    const b = await kontext.newPage();
+    await b.goto(`${basis}/b/${unterpfad}`, { waitUntil: "load" });
+    await warteAufWorker(b);
+    await b.evaluate((n) => caches.open(n), alterVorrat);
+    const vorher = await vorraete(b);
+    ok(`Ausgangslage: fremd [${fremd.join(", ")}] + alter eigener "${alterVorrat}" + fremder Worker unter /a/`,
+      vorher.includes(alterVorrat) && fremd.every((k) => vorher.includes(k)));
+
+    /* `js:hardReload()` ruft die Funktion direkt — fuer Knoepfe hinter einem
+       Tor (Mein-Tresor: der Safe-Eingang verdeckt die Schale, bis er offen ist).
+       Gemessen wird dann der Handler, nicht der Klick. */
+    if (knopf.startsWith("js:")) await b.evaluate(knopf.slice(3)).catch(() => {});
+    else await b.click(knopf);
+    await b.waitForLoadState("load").catch(() => {});
+    await b.waitForTimeout(1500); // der Knopf laedt neu; die Loeschungen laufen davor
+    const p2 = await kontext.newPage();
+    await p2.goto(`${basis}/a/`, { waitUntil: "load" });
+    const danach = await vorraete(p2);
+    const scopes = await p2.evaluate(() => navigator.serviceWorker.getRegistrations().then((rs) => rs.map((r) => new URL(r.scope).pathname)));
+    ok(`HAELFTE 1 — fremder Vorrat BLEIBT: [${danach.filter((k) => k.includes(opfer.vorrat)).join(", ") || "nichts"}]`,
+      danach.some((k) => k.includes(opfer.vorrat)));
+    ok(`HAELFTE 2 — fremder WORKER bleibt angemeldet: [${scopes.join(", ") || "keiner"}]`,
+      scopes.includes("/a/"));
+    ok(`HAELFTE 3 — eigener ALTER Vorrat "${alterVorrat}" ist weg`, !danach.includes(alterVorrat));
+  } finally {
+    await browser.close(); s.close();
+    rmSync(BUEHNE, { recursive: true, force: true });
+  }
+}
+
 export async function lauf_(ok) {
-  /* ── Sorte A, Richtung 1: der echte activate von B ── */
-  const echt = await lauf(ok, { sabotiereB: false });
-  if (!echt.messbar) return;
+  /* ⚠ SEIT DEM 2026-09-08 MISST DIESER LAUF DEN STAND NACH DER REPARATUR.
+     Bis dahin bewies er den SCHADEN (Vorrat weg nach dem Besuch der Nachbar-
+     App). Seit die Reparatur auf main liegt, waere dieselbe Zusicherung rot —
+     nicht weil etwas kaputt ist, sondern weil es heil ist. Ein Wächter, der
+     den Befund festnagelt, verbietet die Reparatur. Deshalb jetzt in beide
+     Richtungen: der Stand auf main haelt, UND ohne den Filter kaeme der
+     Schaden zurueck (sonst misst der Lauf nur, dass nichts passiert). */
 
-  ok(`WIRKUNG Sorte A: nach dem Besuch von ${APP_B.repo} ist der Vorrat von `
-    + `${APP_A.repo} WEG — überlebt: [${echt.ueberlebt.join(", ") || "nichts"}]`,
-    echt.ueberlebt.length === 0);
+  /* ── Sorte A, Stand main ── */
+  const heil = await lauf(ok, { sabotiereB: false });
+  if (!heil.messbar) return;
+  ok(`STAND main, Sorte A: nach dem Besuch von ${APP_B.repo} steht der Vorrat von `
+    + `${APP_A.repo} noch — ueberlebt: [${heil.ueberlebt.join(", ") || "nichts"}]`,
+    heil.ueberlebt.length > 0);
 
-  /* ── Sorte A, Richtung 2: derselbe Aufbau, B mit Präfix-Filter ── */
-  const gefiltert = await lauf(ok, { sabotiereB: true });
-  if (!gefiltert.messbar) return;
+  /* ── Sorte A, Gegenprobe: Filter heraus → Schaden zurueck ── */
+  const regress = await lauf(ok, { sabotiereB: "regress" });
+  if (!regress.messbar) return;
+  ok(`GEGENPROBE Sorte A: ohne Praefix-Filter ist der Vorrat von ${APP_A.repo} WEG `
+    + `— ueberlebt: [${regress.ueberlebt.join(", ") || "nichts"}]`,
+    regress.ueberlebt.length === 0);
 
-  ok(`GEGENPROBE Sorte A: mit dem Präfix-Filter aus Tomys-Hub BLEIBT der Vorrat `
-    + `von ${APP_A.repo} stehen — überlebt: [${gefiltert.ueberlebt.join(", ") || "nichts"}]`,
-    gefiltert.ueberlebt.length > 0);
-
-  /* ── Sorte B: der Knopf ── */
-  await laufSorteB(ok);
+  /* ── Sorte B, Stand main: der ⟳ von mycel-karte gegen Kuechenzettel ── */
+  await laufReparaturB(ok, {
+    opfer: { repo: "Kuechenzettel", vorrat: "kuechenzettel" },
+    geprueft: { repo: "mycel-karte" },
+    praefix: "mycel-karte-", alterVorrat: "mycel-karte-v1", knopf: "#reloadBtn",
+  });
 }
 
 export { lauf_ as lauf };

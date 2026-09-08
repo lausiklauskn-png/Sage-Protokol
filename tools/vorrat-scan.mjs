@@ -89,6 +89,12 @@ const FENSTER_NACH = 120;
 export function stufeEin(umfeld) {
   /* Ein Präfix-Vergleich ist der einzige Filter, der fremde Vorräte stehen
      lässt. `k !== MEINER` lässt ALLE anderen durch — genau das ist der Fehler. */
+  /* `!k.startsWith('eigen-')` ist die Verneinung: ALLES ausser dem eigenen —
+     also jede Geschwister-App. Bis zum 2026-09-08 zaehlte das als „praefix-ok",
+     weil nur nach `.startsWith(` gesucht wurde. Ein Filter, der das Richtige
+     ausnimmt statt es zu treffen, ist der alte Fehler mit einem Ausrufezeichen. */
+  const verneint = umfeld.match(/!\s*\w+\s*\.\s*(?:startsWith|includes)\s*\(\s*(['"`])([^'"`]+)\1/);
+  if (verneint) return { urteil: "loescht-alles", filter: `!startsWith("${verneint[2]}") — alles AUSSER dem eigenen` };
   const praefix = umfeld.match(/\.startsWith\s*\(\s*(['"`])([^'"`]+)\1/);
   if (praefix) return { urteil: "praefix-ok", filter: `startsWith("${praefix[2]}")` };
 
