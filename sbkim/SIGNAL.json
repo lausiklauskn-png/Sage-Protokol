@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-08-16",
-  "seq": 64,
-  "headline": "Das Siegel prueft jetzt auch den gemeinsamen Raum: Modul 05b (Relais-Client) ist achtes Pflicht-Modul in PFLICHT_MODULE, Kanon-sha 3e17f6474fc7, netzweit 21/21 Kopien gegen origin/main geprueft. Anlass war ein Widerspruch, kein Codefehler: Alis Moderaum meldete auf Klaus' Tablet 'Raum-Lesen fehlgeschlagen - kein Nostr-Relais-Client', UND DAS SIEGEL LEUCHTETE TROTZDEM. Es prueft sieben Module, der Raum war keines davon - die Anti-Greenwashing-Klausel griff nicht, weil die LISTE unvollstaendig war, nicht weil die Pruefung schwach war. Geprueft wird die Flaeche subscribe, nicht publish: wer nur senden kann, nimmt nicht teil. Die Warnung dieser Sitzung, die Aufnahme lasse anderswo Siegel erloeschen, hat Klaus hinterfragt und die Messung widerlegt: alle 22 Knoten-Repos laden 05b. Dazu 13 sha-Pins nachgezogen und in ZEHN Repos die CACHE_VERSION erhoeht - ohne das liefert der Service-Worker die alte Fassung weiter. Neuer Waechter smoke_bau16_pflicht_05b.mjs mit eingebauter Gegenprobe (ohne Relais-Client MUSS das Siegel ausbleiben); er fing einen Fehler dieser Sitzung, der node --check ueberstanden haette: der neue Aspekt trug die Feldnamen moduleId/title statt module/aspect und waere im Modal LEER erschienen. OFFEN: Klaus' Browser-Sichttest - headless beweist die Logik, nicht das Abzeichen auf der Seite.",
+  "lastBuild": "2026-09-08",
+  "seq": 65,
+  "headline": "Geteilter Vorrat repariert: Service-Worker und ⟳ löschen nur noch Eigenes (Modul 22: window.SBKIM_VORRAT_PRAEFIX, sha 052eb5f8)",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -309,6 +309,11 @@
       "seq": 64,
       "date": "2026-08-16",
       "note": "Modul 16: 05b als achtes Pflicht-Modul, netzweit 21/21 (Kanon 3e17f6474fc7)"
+    },
+    {
+      "seq": 65,
+      "date": "2026-09-08",
+      "note": "Geteilter Vorrat: Präfix-Filter netzweit (Sorte A+B), Modul 22 kennt SBKIM_VORRAT_PRAEFIX (Kanon 052eb5f844fd), 63 Stellen gefiltert, 2 bewusst offen (ansicht.js Kimhub/Company)"
     }
   ]
 }
