@@ -108,6 +108,30 @@ function seite(b, html, nachbarn) {
 
 /* ── Bauen ─────────────────────────────────────────────────────────────── */
 
+/* ⚠ NUR BEIM DIREKTEN AUFRUF. Der Rumpf unten loescht `docs/lesen/` und baut es
+ * neu — mit dem Tagesdatum im Kopf jedes Blattes. Stand er auf oberster Ebene,
+ * tat ein blosser `import` dasselbe, und genau das ist passiert:
+ * `tests/smoke_werkzeuge_lauffaehig.mjs` laedt jedes Werkzeug, um zu pruefen,
+ * ob es sich ueberhaupt laden laesst. Ihr eigener Kopf sagt dazu „Ausfuehren
+ * schriebe Dateien und kostete Minuten. Ein Import fuehrt den Modulkopf aus" —
+ * bei DIESEM Werkzeug war der Modulkopf das ganze Programm.
+ *
+ * Die Folge sah harmlos aus und war es nicht: nach jedem `npm test` standen vier
+ * geaenderte Dateien im Arbeitsbaum, die niemand angefasst hatte. Wer danach
+ * `git add -A` sagte, nahm sie in einen Commit auf, dessen Nachricht von etwas
+ * anderem handelte. Gefunden am 2026-09-04, beim Aufraeumen genau so eines
+ * Commits.
+ *
+ * Und `if (fehlend) process.exit(1)` ganz unten war die zweite Haelfte: ein
+ * Import haette die importierende Probe beendet und alles danach verschluckt.
+ *
+ * Dieselbe Bauart wie in Kimhub (`tools/forschung-bauen.mjs`, 2026-08-26): der
+ * Rumpf steht hinter einem Direkt-Riegel, die Definitionen darueber sind frei
+ * importierbar. */
+const DIREKT = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (DIREKT) {
+
 if (existsSync(ZIEL)) rmSync(ZIEL, { recursive: true });
 mkdirSync(ZIEL, { recursive: true });
 
@@ -169,3 +193,5 @@ console.log('geschrieben: docs/lesen/');
 console.log('  ' + gebaut.length + ' Blätter' + (fehlend ? ' · ' + fehlend + ' FEHLEN' : ''));
 for (const g of gebaut) console.log('    ' + g.datei);
 if (fehlend) process.exit(1);
+
+}
