@@ -90,6 +90,19 @@ Kopf **Fall (B)**.
 <script>window.SBKIM_DB_SUFFIX="<eigener-wert>";</script>   <!-- vor </head> -->
 ```
 
+**Welcher Wert noch frei ist, steht im Register:
+[`sbkim/DB-SUFFIXE.md`](../sbkim/DB-SUFFIXE.md)** (angelegt 2026-09-08). Bis dahin
+musste man über zwanzig Klone durchsuchen — und wer das nicht tat, vergab einen
+doppelt. **Ein Suffix wird einmal vergeben und nie geändert:** ein anderer Wert
+ist ein anderer, leerer Knoten, und die alte Identität nicht mehr auffindbar.
+
+Beim Anlegen des Registers kamen zwei Berichtigungen heraus, und beide sind der
+Grund, weshalb es nicht aus dem Gedächtnis geführt wird: `toolpoint` gehört
+**SB·KIMTool·Point**, nicht PWA Toolpoint (das heißt `pwatoolpoint`), und es sind
+**22** vergebene Suffixe, nicht 16. Gemessen wird über **drei** Abfragen, weil ein
+Suffix auf drei Wegen gesetzt wird — im `<head>`, als Konstante im Klebstoff, als
+Feld in einer Konfiguration.
+
 **2 · Modul 05b geht NICHT über die Nachlade-Kette.**
 Es ist ein ES-Modul mit relativem Import auf `noble`. In der Kette (die
 Skripte per `document.createElement` nachhängt) läuft es **nie**. Es braucht
