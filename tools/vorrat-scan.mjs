@@ -262,6 +262,8 @@ export const AUSNAHMEN = [
     grund: "ABSICHT — Klaus' Aufräum-Werkzeug löscht genau die Vorräte, die er anhakt; ursprungsweit ist hier der Zweck" },
   { repo: "Sage-Protokol", datei: "tools/vorrat-scan.mjs",
     grund: "SELBSTTREFFER — der Scanner findet sein eigenes Doku-Beispiel" },
+  { repo: "Sage-Protokol", datei: "tests/smoke_vorrat_scan.mjs",
+    grund: "SELBSTTREFFER — die Probe des Scanners trägt absichtlich die falschen Formen, damit er sie erkennt" },
 ];
 
 /* ── Lauf ──────────────────────────────────────────────────────────────── */
@@ -363,9 +365,10 @@ function bericht(daten, fetch) {
   p("> Der zweite Halbsatz war falsch — die Werkzeuge liefern die Pages-Läufe.");
   p("> Ich hatte eine Grenze erklärt, die keine war.");
   p("");
-  p("Zwei Stellen zählen als **○ gewollt** und nicht als Befund: Klaus' eigenes");
+  p("Drei Dateien zählen als **○ gewollt** und nicht als Befund: Klaus' eigenes");
   p("Aufräum-Werkzeug `tools/speicher.html` (löscht, was er anhakt — das ist der");
-  p("Zweck) und der Selbsttreffer dieses Scanners in seinem Doku-Beispiel.");
+  p("Zweck), der Selbsttreffer dieses Scanners in seinem Doku-Beispiel und seine");
+  p("Probe `tests/smoke_vorrat_scan.mjs`, die die falschen Formen absichtlich trägt.");
   p("");
 
   for (const r of daten) {
