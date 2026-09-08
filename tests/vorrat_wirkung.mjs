@@ -51,10 +51,25 @@ const TYPEN = {
   ".svg": "image/svg+xml", ".png": "image/png", ".webmanifest": "application/manifest+json",
 };
 
+/* Standard ist `origin/main` — ein Klon im Container kann Monate alt sein.
+ *
+ * `ARBEITSKOPIE=<repo>[,<repo>]` nimmt fuer die genannten Depots stattdessen den
+ * ARBEITSBAUM. Das ist der Weg, eine Reparatur zu pruefen, BEVOR sie gepusht
+ * wird — und es steht in der Ausgabe, damit niemand eine ungepushte Messung
+ * fuer eine Aussage ueber `main` haelt. */
+const ARBEITSKOPIE = (process.env.ARBEITSKOPIE || "").split(",").filter(Boolean);
+
 function auschecken(repo, ziel) {
   const quelle = join(NETZ, repo);
-  execFileSync("git", ["-C", quelle, "fetch", "origin", "main", "--quiet"], { stdio: "ignore" });
   mkdirSync(ziel, { recursive: true });
+  if (ARBEITSKOPIE.includes(repo)) {
+    const tar = execFileSync("tar",
+      ["-c", "--exclude=.git", "--exclude=node_modules", "-C", quelle, "."],
+      { maxBuffer: 256 * 1024 * 1024 });
+    execFileSync("tar", ["-x", "-C", ziel], { input: tar });
+    return;
+  }
+  execFileSync("git", ["-C", quelle, "fetch", "origin", "main", "--quiet"], { stdio: "ignore" });
   const tar = execFileSync("git", ["-C", quelle, "archive", "origin/main"],
     { maxBuffer: 256 * 1024 * 1024 });
   execFileSync("tar", ["-x", "-C", ziel], { input: tar });
@@ -215,6 +230,70 @@ async function laufSorteB(ok) {
   } finally {
     await browser.close();
     s.close();
+    rmSync(BUEHNE, { recursive: true, force: true });
+  }
+}
+
+/* ══ DIE REPARATUR PRUEFEN — beide Haelften ══════════════════════════════
+ *
+ * ⚠ EIN ZU ENGER FILTER IST DERSELBE FEHLER, NUR ANDERSHERUM. Wer nur prueft,
+ * dass der FREMDE Vorrat bleibt, uebersieht eine App, die ihre EIGENEN alten
+ * Vorraete nicht mehr wegraeumt — die wachsen dann ewig, und niemand merkt es,
+ * weil nichts rot wird.
+ *
+ * Deshalb wird ein alter eigener Vorrat untergeschoben, BEVOR der Worker
+ * aktiviert. Danach muessen beide Aussagen zugleich gelten.
+ */
+export async function laufReparatur(ok, { opfer, geprueft, praefix, alterVorrat, unterpfad = "" }) {
+  /* `unterpfad` fuer Apps, die nicht an der Wurzel ihres Depots liegen
+     (SB-KIMTool-Point: such-tool/). Ohne ihn laedt die Messstrecke die
+     Wurzelseite und faesst den fraglichen Worker gar nicht an — sie waere
+     gruen, ohne etwas gemessen zu haben. */
+  rmSync(BUEHNE, { recursive: true, force: true });
+  auschecken(opfer.repo, join(BUEHNE, "a"));
+  auschecken(geprueft.repo, join(BUEHNE, "b"));
+
+  const ausArbeit = ARBEITSKOPIE.includes(geprueft.repo);
+  ok(`Quelle von ${geprueft.repo}: ${ausArbeit ? "ARBEITSKOPIE (noch nicht gepusht)" : "origin/main"}`,
+    true);
+
+  const { s, port } = await server(BUEHNE);
+  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const kontext = await browser.newContext();
+  const basis = `http://127.0.0.1:${port}`;
+
+  try {
+    const a = await kontext.newPage();
+    await a.goto(`${basis}/a/`, { waitUntil: "load" });
+    await warteAufWorker(a);
+    await a.waitForFunction(async () => (await caches.keys()).length > 0,
+      null, { timeout: 20000 }).catch(() => {});
+    const fremd = (await vorraete(a)).filter((k) => k.includes(opfer.vorrat));
+    if (!fremd.length) { ok(`AUSGANGSLAGE: ${opfer.repo} hat einen Vorrat — NICHT MESSBAR`, false); return; }
+
+    /* Einen ALTEN eigenen Vorrat unterschieben, vor der Aktivierung. */
+    await a.evaluate(async (n) => { const c = await caches.open(n); await c.put("/alt", new Response("alt")); },
+      alterVorrat);
+    const gesetzt = (await vorraete(a)).includes(alterVorrat);
+    ok(`Ausgangslage: fremd [${fremd.join(", ")}] + alter eigener Vorrat "${alterVorrat}" gesetzt`,
+      gesetzt);
+    if (!gesetzt) return;
+
+    const b = await kontext.newPage();
+    await b.goto(`${basis}/b/${unterpfad}`, { waitUntil: "load" });
+    await warteAufWorker(b);
+    await b.waitForFunction((n) => caches.keys().then((ks) => !ks.includes(n)),
+      alterVorrat, { timeout: 15000 }).catch(() => {});
+
+    const danach = await vorraete(b);
+    ok(`HAELFTE 1 — fremder Vorrat BLEIBT: [${danach.filter((k) => k.includes(opfer.vorrat)).join(", ") || "nichts"}]`,
+      danach.some((k) => k.includes(opfer.vorrat)));
+    ok(`HAELFTE 2 — eigener ALTER Vorrat "${alterVorrat}" wird weiter weggeraeumt`,
+      !danach.includes(alterVorrat));
+    ok(`und der eigene AKTUELLE Vorrat steht da: [${danach.filter((k) => k.startsWith(praefix)).join(", ") || "nichts"}]`,
+      danach.some((k) => k.startsWith(praefix)));
+  } finally {
+    await browser.close(); s.close();
     rmSync(BUEHNE, { recursive: true, force: true });
   }
 }
