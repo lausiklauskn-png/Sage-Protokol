@@ -383,6 +383,25 @@
     dlg.querySelector("#sbwiz-close").addEventListener("click", function () { closeWiz(dlg); });
     dlg.addEventListener("click", function (e) { if (e.target === dlg) closeWiz(dlg); });
     refreshWizardIdentities();
+    // Wizard-Init-Heilung (Klaus-Befund 2026-07-19: „Backup-Knopf loest nichts aus"):
+    // existiert bereits eine Identitaet (z. B. beim ersten Verbinden automatisch angelegt),
+    // schalte Schritt 2 (Spore signieren) + 3 (Backup) SOFORT frei — der Nutzer muss nicht
+    // erst „Identitaet erzeugen" klicken, um sichern zu koennen. listIdentities() erzeugt
+    // NICHTS (nur Lesen), fail-soft.
+    //
+    // ⚠ ZURUECKGEHOLT AM 2026-09-09. Die Heilung stand seit dem 2026-07-19 in der
+    // KOPIE (PWA-Toolpoint) und nie hier im Kanon — die Kopie war weiter als das
+    // Original. Wer von hier neu kopierte, holte sich den Fehler zurueck, und
+    // niemand haette es gesehen: der Knopf ist ja da, er tut nur nichts. Genau
+    // deshalb gilt „in Sage pflegen, dann neu kopieren" und nicht andersherum.
+    if (window.SbkimSpore && typeof window.SbkimSpore.listIdentities === "function") {
+      window.SbkimSpore.listIdentities().then(function (ids) {
+        if (ids && ids.length) {
+          var s2 = dlg.querySelector("#sbwiz-s2"); if (s2) s2.disabled = false;
+          var s3 = dlg.querySelector("#sbwiz-s3"); if (s3) s3.disabled = false;
+        }
+      }).catch(function () {});
+    }
   }
 
   // ---- Baustein 5: Identitäts-Wechsler (Mirror Sage refreshAndockIdentities/andockSwitchIdentity) ----
