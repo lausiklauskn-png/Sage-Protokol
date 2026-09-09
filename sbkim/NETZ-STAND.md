@@ -90,6 +90,7 @@ Andock-Konventionen: INTERFACES §11
 | **Muttis Rezeptbuch** (privates Original; Mein-Rezeptbuch = öffentl. Klon) | Kochrezepte | `8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg` | **`verified-match` 0.876583** (2026-07-23; eigene GETRENNTE Identität + DB-Suffix `muttisrezeptbuch`; Spore v0.2 im Browser erzeugt, headless reziprok verifiziert ✔ VALID; Sage-Cosinus 0.876583 ≥ 0.80; Live-Handshake wartet auf Klaus) | `sbkim/muttis_inbox.verify.md` + `Muttis-Rezeptbuch/sbkim/spore.json` |
 | **WorkFloh** (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 öffentlich angeboten) | Werbetechnik-Auftragsabwicklung (`lausiklauskn-png.github.io/Mein-WorkFloh/`) | `6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs` (echt, Browser) | **`verified-match` 0.906269** (2026-07-25 **Klaus' Browser-Andock + Re-Signatur — funktionierender Knoten mit LIVE-Handshake**; Spore v0.2 im Siegel erzeugt, dann `domainDescription` nach dem Rezeptbuch-Muster umgestaltet (Endknoten im SBKIM-Mycel/Sage-Protokoll, wandelbares Branchen-Tool) + **neu signiert** → nodeId unverändert, neuer `domainVector` + 6 Schnipsel, reziprok ✔ VALID. **Wirkung:** Sage⟷WorkFloh **0.7824 → 0.906269** = direkter Hub-Match; **12 Knoten ≥ 0.80** (Sage 0.906 · Point 0.897 · Muttis 0.878 · Rezeptbuch 0.876 · Tomys 0.860 · Kimseek 0.860 · …; nur Private Brain 0.771 drunter). **✅✅ LIVE-HANDSHAKE** (Mycel-Analyse 2026-07-25 19:37 + 19:43): **WorkFloh ⟷ Sage beidseitig `established`** übers echte Relais + Tablet⟷Handy `established`) | `Mein-WorkFloh/sbkim/spore.json` (echt, VALID) + Mycel-Analyse-Rekord 2026-07-25 19:44 |
 | **PWA Toolpoint** (Marktplatz) | Offener-PWA-Marktplatz (`pwa-toolpoint.de/`) | `WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4` | **`verified-match` 0.811205** (2026-09-09; Spore im Browser über das Verbinden-Fenster erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad; echter `domainVector`, L2=1, 384 Zahlen, 2 Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.811205 ≥ 0.80 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/spore.json` (verifiziert 2026-09-09) |
+| **Auslieferungsprüfer** | Auslieferung/Datenschutz/Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM` | **`verified-match` 0.840471** (2026-09-09; Spore im Browser des Prüfers erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad — deep-kanonisches JSON, Kennung = SHA-256 des rohen Schlüssels; echter `domainVector`, L2=1, 384 Zahlen; Sage-Cosinus **offline nachgerechnet** 0.840471 ≥ 0.80, Marktplatz⟷Prüfer 0.817974 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/pruefer-spore.json` (verifiziert 2026-09-09) |
 
 ### 📍 Die erste Spore auf einer Adresse mit ZWEI Knoten (2026-09-09)
 
@@ -106,9 +107,29 @@ dorthin die Spore des Marktplatzes — abgeleitet, nicht ausgesucht. Ein Wächte
 Endpunkt müssen zum Marktplatz passen, und der private Schlüssel darf nirgends
 darin stehen.
 
-⚠ **Wie der Prüfer seine bekommt, ist damit NICHT entschieden** — dafür braucht
-es einen zweiten Dateinamen, und den legt fest, wer die zweite Spore ablegt. Hier
-vorzubauen hieße, im Hintergrund etwas anzulegen, das noch niemand hat.
+✅ **UND AM SELBEN TAG KAM DIE ZWEITE** — die des Prüfers, aus seinem eigenen
+Browser. Sie liegt als `PWA-Toolpoint/sbkim/pruefer-spore.json`, dem Namen nach
+wie seine übrigen app-eigenen Dateien (`pruefer-netz.js`,
+`pruefer-siegel-inhalt.js`). Beide sind einzeln verifiziert (✔ VALID), und ein
+Wächter besteht darauf, dass sie **zwei verschiedene Kennungen und zwei
+verschiedene Schlüssel** tragen: zwei Dateien, die dalägen, sähen auch dann nach
+zwei Knoten aus, wenn beide aus demselben Browser-Zustand stammten. Ein Wächter
+auf „beide sind da" wäre dafür blind.
+
+⚠ **UND DABEI IST EINE GRENZE HERAUSGEFALLEN, DIE KEIN DATEINAME BEHEBT.**
+Modul 15 leitet die Sporen-Adresse aus dem Endpunkt ab. Für den Prüfer ergibt
+das `…/auslieferungspruefer.html/sbkim/spore.json` — **diese Adresse liefert
+nichts aus**, und auf GitHub Pages kann sie es auch nicht. Die abgelegte Datei
+ist damit **Beleg, nicht Sender**.
+
+Das widerspricht der Lehre nicht, es macht sie schärfer: *„Die Spore im Netz ist
+nicht die Spore im Depot"* — was ein Knoten ankündigt, entsteht im Browser. Neu
+ist, dass ein Knoten hier gar **keinen** Ort hat, an dem seine Ablage abholbar
+wäre, und das gilt für **jeden** Knoten, dessen Endpunkt eine Seite statt eines
+Verzeichnisses ist. Der Weg dahin führt über den Kanon (etwa ein `sporePath`
+neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeugte
+eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
+offene Frage benannt, nicht umfahren.
 
 
 ### ⏳ Zwei neue Knoten — gebaut, noch ohne Kennung (2026-09-08)
@@ -120,7 +141,7 @@ Sporen generieren und dir schicken."*
 | Knoten | Domäne | Schublade | Stufe |
 |---|---|---|---|
 | **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | **`gebaut-ohne-kennung`** |
-| **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | **`gebaut-ohne-kennung`** — seine Spore fehlt weiterhin; die vom 2026-09-09 gehört dem Marktplatz (siehe oben) |
+| **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | ✅ **`verified-match` 0.840471** seit 2026-09-09 — steht jetzt oben in der Haupttabelle |
 
 **Was gebaut ist:** die 13 Pflicht-Dateien byte-1:1 aus `src/modules/`, die fünf
 app-eigenen Klebstoff-Rollen, das Siegel **mit** dem Andock-Wizard darin

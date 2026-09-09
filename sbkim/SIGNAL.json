@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-09",
-  "seq": 68,
-  "headline": "PWA Toolpoint hat eine Kennung (verified-match 0.811205); ein Werkzeug misst den Kanon gegen die Quelle",
+  "seq": 69,
+  "headline": "Der Auslieferungspruefer hat eine Kennung (verified-match 0.840471) - zwei Knoten auf einer Adresse, zwei Sporen, zwei Schluessel",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,14 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 69,
+      "datum": "2026-09-09",
+      "was": "Die zweite Spore auf pwa-toolpoint.de ist da: der Auslieferungspruefer, yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM, headless reziprok verifiziert VALID, Sage-Cosinus offline nachgerechnet 0.840471 (Marktplatz-Pruefer 0.817974). Sie liegt als PWA-Toolpoint/sbkim/pruefer-spore.json - sbkim/spore.json gehoert dem Marktplatz, weil Modul 15 die Adresse aus dem Endpunkt ableitet. OFFENE FRAGE AN DEN KANON: fuer den Pruefer ergibt dieselbe Ableitung '.../auslieferungspruefer.html/sbkim/spore.json', und diese Adresse liefert nichts aus - auf GitHub Pages kann sie es nicht. Die abgelegte Spore ist damit Beleg, nicht Sender. Das gilt fuer JEDEN Knoten, dessen Endpunkt eine Seite statt eines Verzeichnisses ist. Vorschlag: ein optionales sporePath neben dem Endpunkt im Kanon (Vorgabe unveraendert), nicht ein Eingriff in eine Kopie - der ergaebe eine dritte Modul-Generation. Ausserdem: Kim Hub Companys Siegel wird jetzt gebaut wie bei PWA Toolpoint - die SEITE bringt die Lampen-Leiste mit, Modul 17 wird nicht geladen (es legte sonst ZWEITE Anker mit denselben Kennungen an). Falle 3 aus LEHREN gilt dort deshalb nicht mehr; an ihre Stelle tritt die umgekehrte Zusicherung, mit Waechter und Gegenprobe. Und: ein Drift-Guard sagt 'unveraendert', nicht 'aktuell' - zum dritten Mal in einer Woche. kim-hub-company/tools/aus-kimhub-holen.mjs holt deshalb ALLE gepinnten Kopien auf einmal und liest seine Liste aus dem Drift-Guard statt einer zweiten.",
+      "forNodes": [
+        "alle"
+      ]
+    },
     {
       "seq": 67,
       "datum": "2026-09-08",
