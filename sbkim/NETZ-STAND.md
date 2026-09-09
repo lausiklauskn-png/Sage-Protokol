@@ -89,6 +89,27 @@ Andock-Konventionen: INTERFACES §11
 | **Private Brain** | Privates Daten-Gehirn (`lausiklauskn-png.github.io/Privat-Brain/`) | `6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg` | **`verified-match` 0.810427** (REGISTER-REFRESH 2026-07-23: Sage-Cosinus 0.810427 ≥ 0.80; 2026-07-20 Identität; erste eigene Identität im Browser erzeugt, Spore v0.2 mit echtem `domainVector` L2=1 + 2 Satz-Schnipseln; headless reziprok verifiziert ✔ VALID; Cross-Knoten-Match jetzt ≥0.80 (offline nachgerechnet; Live-Handshake wartet auf Klaus)) | `Privat-Brain/sbkim/spore.json` (verifiziert 2026-07-20) |
 | **Muttis Rezeptbuch** (privates Original; Mein-Rezeptbuch = öffentl. Klon) | Kochrezepte | `8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg` | **`verified-match` 0.876583** (2026-07-23; eigene GETRENNTE Identität + DB-Suffix `muttisrezeptbuch`; Spore v0.2 im Browser erzeugt, headless reziprok verifiziert ✔ VALID; Sage-Cosinus 0.876583 ≥ 0.80; Live-Handshake wartet auf Klaus) | `sbkim/muttis_inbox.verify.md` + `Muttis-Rezeptbuch/sbkim/spore.json` |
 | **WorkFloh** (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 öffentlich angeboten) | Werbetechnik-Auftragsabwicklung (`lausiklauskn-png.github.io/Mein-WorkFloh/`) | `6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs` (echt, Browser) | **`verified-match` 0.906269** (2026-07-25 **Klaus' Browser-Andock + Re-Signatur — funktionierender Knoten mit LIVE-Handshake**; Spore v0.2 im Siegel erzeugt, dann `domainDescription` nach dem Rezeptbuch-Muster umgestaltet (Endknoten im SBKIM-Mycel/Sage-Protokoll, wandelbares Branchen-Tool) + **neu signiert** → nodeId unverändert, neuer `domainVector` + 6 Schnipsel, reziprok ✔ VALID. **Wirkung:** Sage⟷WorkFloh **0.7824 → 0.906269** = direkter Hub-Match; **12 Knoten ≥ 0.80** (Sage 0.906 · Point 0.897 · Muttis 0.878 · Rezeptbuch 0.876 · Tomys 0.860 · Kimseek 0.860 · …; nur Private Brain 0.771 drunter). **✅✅ LIVE-HANDSHAKE** (Mycel-Analyse 2026-07-25 19:37 + 19:43): **WorkFloh ⟷ Sage beidseitig `established`** übers echte Relais + Tablet⟷Handy `established`) | `Mein-WorkFloh/sbkim/spore.json` (echt, VALID) + Mycel-Analyse-Rekord 2026-07-25 19:44 |
+| **PWA Toolpoint** (Marktplatz) | Offener-PWA-Marktplatz (`pwa-toolpoint.de/`) | `WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4` | **`verified-match` 0.811205** (2026-09-09; Spore im Browser über das Verbinden-Fenster erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad; echter `domainVector`, L2=1, 384 Zahlen, 2 Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.811205 ≥ 0.80 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/spore.json` (verifiziert 2026-09-09) |
+
+### 📍 Die erste Spore auf einer Adresse mit ZWEI Knoten (2026-09-09)
+
+Klaus hat die erste echte Spore geschickt — und sie ist die des **Marktplatzes**,
+nicht die des Auslieferungsprüfers, obwohl der Auftrag den Prüfer nannte. Auf
+einer Adresse mit zwei Knoten sehen beide Wege gleich aus; er stand auf der
+Startseite, und dort erzeugt das Verbinden-Fenster die Kennung des Marktplatzes.
+
+**Welcher der beiden nach `sbkim/spore.json` gehört, ist nicht Geschmackssache:**
+Modul 15 baut die Adresse als `endpoint + "/sbkim/spore.json"`. Der Marktplatz
+endet auf der Wurzel, der Prüfer auf `auslieferungspruefer.html`. Also gehört
+dorthin die Spore des Marktplatzes — abgeleitet, nicht ausgesucht. Ein Wächter in
+`PWA-Toolpoint/tests/smoke.mjs` misst das jetzt samt Gegenprobe: Name und
+Endpunkt müssen zum Marktplatz passen, und der private Schlüssel darf nirgends
+darin stehen.
+
+⚠ **Wie der Prüfer seine bekommt, ist damit NICHT entschieden** — dafür braucht
+es einen zweiten Dateinamen, und den legt fest, wer die zweite Spore ablegt. Hier
+vorzubauen hieße, im Hintergrund etwas anzulegen, das noch niemand hat.
+
 
 ### ⏳ Zwei neue Knoten — gebaut, noch ohne Kennung (2026-09-08)
 
@@ -99,7 +120,7 @@ Sporen generieren und dir schicken."*
 | Knoten | Domäne | Schublade | Stufe |
 |---|---|---|---|
 | **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | **`gebaut-ohne-kennung`** |
-| **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | **`gebaut-ohne-kennung`** |
+| **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | **`gebaut-ohne-kennung`** — seine Spore fehlt weiterhin; die vom 2026-09-09 gehört dem Marktplatz (siehe oben) |
 
 **Was gebaut ist:** die 13 Pflicht-Dateien byte-1:1 aus `src/modules/`, die fünf
 app-eigenen Klebstoff-Rollen, das Siegel **mit** dem Andock-Wizard darin
