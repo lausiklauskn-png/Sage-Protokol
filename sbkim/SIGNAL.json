@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-09-08",
-  "seq": 67,
-  "headline": "Zwei neue Knoten gebaut, beide OHNE Kennung im Depot (Klaus erzeugt die Sporen im Browser): Kim Hub Company (kimhubcompany) und der Auslieferungspruefer (auslieferungspruefer, ZWEITER Knoten auf pwa-toolpoint.de). Je 13 Pflicht-Dateien byte-1:1, Siegel mit Andock-Wizard, SBKIM_DB_SUFFIX im <head>. NEU: sbkim/DB-SUFFIXE.md als netzweites Register (gemessen, 22 vergeben statt 16; toolpoint gehoert Point, nicht PWA Toolpoint). BEFUND: PWA-Toolpoint/sbkim/15_membran.js hing eine Generation zurueck, Drift-Guard war gruen gegen eine veraltete Erwartung - nachgezogen.",
+  "lastBuild": "2026-09-09",
+  "seq": 68,
+  "headline": "PWA Toolpoint hat eine Kennung (verified-match 0.811205); ein Werkzeug misst den Kanon gegen die Quelle",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -324,6 +324,11 @@
       "seq": 65,
       "date": "2026-09-08",
       "note": "Geteilter Vorrat: Präfix-Filter netzweit (Sorte A+B), Modul 22 kennt SBKIM_VORRAT_PRAEFIX (Kanon 052eb5f844fd), 63 Stellen gefiltert, 2 bewusst offen (ansicht.js Kimhub/Company)"
+    },
+    {
+      "seq": 68,
+      "datum": "2026-09-09",
+      "was": "PWA Toolpoint hat eine Kennung (verified-match 0.811205); ein Werkzeug misst den Kanon gegen die Quelle"
     }
   ]
 }
