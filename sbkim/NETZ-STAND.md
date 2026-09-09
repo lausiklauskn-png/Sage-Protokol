@@ -6,7 +6,7 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-07-20** · Protokoll-Version im Code **`0.2`** (Spore v0.2, A6+A10) ·
+**Stand: 2026-09-08** · Protokoll-Version im Code **`0.2`** (Spore v0.2, A6+A10) ·
 Andock-Konventionen: INTERFACES §11
 
 > **✅ Neu-Signier-Welle praktisch durch (2026-07-20, gegen `origin/main` verifiziert).** Die committeten
@@ -67,6 +67,7 @@ Andock-Konventionen: INTERFACES §11
 | `verified-spore` | Identität kryptografisch verifiziert (Signatur + nodeId), `domainVector` noch Demo → **kein** Match |
 | `verified-match` | zusätzlich echter Cross-Knoten-Match ≥ 0.80 (echter `domainVector` beidseits) |
 | `angekündigt` | Knoten hat Andock angekündigt, Identität noch flüchtig (kein dauerhafter Schlüssel/`spore.json`) → noch nicht verifiziert |
+| `gebaut-ohne-kennung` | Alle 13 Pflicht-Dateien + Klebstoff + Siegel eingebaut, aber im Depot liegt **KEINE** `spore.json` — auch keine Platzhalter-Spore. Die Kennung entsteht erst im Browser des Betreibers. Unterscheidet sich von `awaiting-browser-spore` genau darin: dort liegt eine Datei, hier keine |
 | `awaiting-browser-spore` | SBKIM-Code voll eingebaut, committete `spore.json` ist eine **Platzhalter-Spore** (headless VALID, aber `domainVector` = `_demo`-Stub + ephemere nodeId); echter Vektor + stabile Identität + Live-Handshake entstehen erst in Klaus' Browser über den Andock-Wizard |
 
 ## Knoten im Netz
@@ -88,6 +89,48 @@ Andock-Konventionen: INTERFACES §11
 | **Private Brain** | Privates Daten-Gehirn (`lausiklauskn-png.github.io/Privat-Brain/`) | `6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg` | **`verified-match` 0.810427** (REGISTER-REFRESH 2026-07-23: Sage-Cosinus 0.810427 ≥ 0.80; 2026-07-20 Identität; erste eigene Identität im Browser erzeugt, Spore v0.2 mit echtem `domainVector` L2=1 + 2 Satz-Schnipseln; headless reziprok verifiziert ✔ VALID; Cross-Knoten-Match jetzt ≥0.80 (offline nachgerechnet; Live-Handshake wartet auf Klaus)) | `Privat-Brain/sbkim/spore.json` (verifiziert 2026-07-20) |
 | **Muttis Rezeptbuch** (privates Original; Mein-Rezeptbuch = öffentl. Klon) | Kochrezepte | `8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg` | **`verified-match` 0.876583** (2026-07-23; eigene GETRENNTE Identität + DB-Suffix `muttisrezeptbuch`; Spore v0.2 im Browser erzeugt, headless reziprok verifiziert ✔ VALID; Sage-Cosinus 0.876583 ≥ 0.80; Live-Handshake wartet auf Klaus) | `sbkim/muttis_inbox.verify.md` + `Muttis-Rezeptbuch/sbkim/spore.json` |
 | **WorkFloh** (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 öffentlich angeboten) | Werbetechnik-Auftragsabwicklung (`lausiklauskn-png.github.io/Mein-WorkFloh/`) | `6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs` (echt, Browser) | **`verified-match` 0.906269** (2026-07-25 **Klaus' Browser-Andock + Re-Signatur — funktionierender Knoten mit LIVE-Handshake**; Spore v0.2 im Siegel erzeugt, dann `domainDescription` nach dem Rezeptbuch-Muster umgestaltet (Endknoten im SBKIM-Mycel/Sage-Protokoll, wandelbares Branchen-Tool) + **neu signiert** → nodeId unverändert, neuer `domainVector` + 6 Schnipsel, reziprok ✔ VALID. **Wirkung:** Sage⟷WorkFloh **0.7824 → 0.906269** = direkter Hub-Match; **12 Knoten ≥ 0.80** (Sage 0.906 · Point 0.897 · Muttis 0.878 · Rezeptbuch 0.876 · Tomys 0.860 · Kimseek 0.860 · …; nur Private Brain 0.771 drunter). **✅✅ LIVE-HANDSHAKE** (Mycel-Analyse 2026-07-25 19:37 + 19:43): **WorkFloh ⟷ Sage beidseitig `established`** übers echte Relais + Tablet⟷Handy `established`) | `Mein-WorkFloh/sbkim/spore.json` (echt, VALID) + Mycel-Analyse-Rekord 2026-07-25 19:44 |
+
+### ⏳ Zwei neue Knoten — gebaut, noch ohne Kennung (2026-09-08)
+
+Klaus: *„Beide Tools, Company und das Ausliefer-Tool, sollen als eigenständige
+Knoten agieren … mit Zelle und auch dem Siegel. Und anschließend werde ich die
+Sporen generieren und dir schicken."*
+
+| Knoten | Domäne | Schublade | Stufe |
+|---|---|---|---|
+| **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | **`gebaut-ohne-kennung`** |
+| **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | **`gebaut-ohne-kennung`** |
+
+**Was gebaut ist:** die 13 Pflicht-Dateien byte-1:1 aus `src/modules/`, die fünf
+app-eigenen Klebstoff-Rollen, das Siegel **mit** dem Andock-Wizard darin
+(einschließlich Identitäts-Wechsler), das Verbinden-Fenster, der Gerätename im
+Panel, alles im Offline-Vorrat, `SBKIM_DB_SUFFIX` im `<head>` vor jedem Modul.
+
+⚠ **`gebaut-ohne-kennung` IST EINE EIGENE STUFE, und sie fehlte in der Legende.**
+Sie ist nicht `awaiting-browser-spore`: dort liegt eine **Platzhalter-Spore** im
+Depot (headless VALID, Vektor `_demo`). Hier liegt **gar keine**. Klaus erzeugt
+sie in seinem Browser, der private Schlüssel bleibt dort — die Sitzung hat
+ausdrücklich keine erfunden. **Eine Datei, die aussieht wie eine Identität, ist
+schlimmer als keine**, weil sie die Frage „hat dieser Knoten eine Kennung?" mit
+einem Ja beantwortet, das niemand geprüft hat. Ein Wächter in
+`kim-hub-company/tests/smoke_knoten.mjs` besteht darauf, dass keine im Depot
+liegt.
+
+⚠ **ZWEI KNOTEN AUF EINER ADRESSE — zum ersten Mal im Netz.**
+`pwa-toolpoint.de` trägt seitdem den Marktplatz (`pwatoolpoint`) **und** den
+Prüfer. Geteilt: die Modul-Dateien, die Relais, die erlaubten Herkünfte.
+Getrennt: Schublade, Identität, Spore, Name, Beschreibung, Siegel-Band.
+Das Register aller Schubladen liegt neu in
+[`sbkim/DB-SUFFIXE.md`](DB-SUFFIXE.md) — **gemessen**, und dabei kamen zwei
+Berichtigungen heraus: `toolpoint` gehört SB·KIMTool·Point (nicht PWA Toolpoint,
+das `pwatoolpoint` heißt und in der Liste ganz fehlte), und es sind 22 vergebene
+Suffixe, nicht 16.
+
+⚠ **UND EIN MODUL HING EINE GENERATION ZURÜCK.** `PWA-Toolpoint/sbkim/15_membran.js`
+pinnte den Stand vor der `queryInclusion`-Kaskade (Kanon seit 2026-08-14) — der
+Drift-Guard war grün, **gegen eine veraltete Erwartung**. Nachgezogen.
+**Ein Drift-Guard sagt „unverändert", nicht „aktuell".** Wer einen Knoten andockt,
+vergleicht die Kopie mit `src/modules/`, nicht mit dem eigenen Pin.
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 

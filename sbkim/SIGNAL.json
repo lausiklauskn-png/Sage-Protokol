@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-08",
-  "seq": 66,
-  "headline": "Geteilter Vorrat bei NULL auf dem geteilten Ursprung: die letzte Stelle (ansicht.js in Kimhub + kim-hub-company) filtert jetzt, Praefix vom Wirt (window.SBKIM_VORRAT_PRAEFIX im <head>). 3 Stellen auf eigener CNAME bleiben, benannt.",
+  "seq": 67,
+  "headline": "Zwei neue Knoten gebaut, beide OHNE Kennung im Depot (Klaus erzeugt die Sporen im Browser): Kim Hub Company (kimhubcompany) und der Auslieferungspruefer (auslieferungspruefer, ZWEITER Knoten auf pwa-toolpoint.de). Je 13 Pflicht-Dateien byte-1:1, Siegel mit Andock-Wizard, SBKIM_DB_SUFFIX im <head>. NEU: sbkim/DB-SUFFIXE.md als netzweites Register (gemessen, 22 vergeben statt 16; toolpoint gehoert Point, nicht PWA Toolpoint). BEFUND: PWA-Toolpoint/sbkim/15_membran.js hing eine Generation zurueck, Drift-Guard war gruen gegen eine veraltete Erwartung - nachgezogen.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 67,
+      "datum": "2026-09-08",
+      "was": "Kim Hub Company und der Auslieferungspruefer sind SBKIM-Endknoten. Companys index.html ist eine byte-gleiche Kopie der in Kimhub abgeleiteten start.html - der Einbau steht deshalb im Ableiter (tools/company-schale-bauen.mjs, tools/company-steuerung.html), die Modul-Dateien liegen nur in kim-hub-company. Der Pruefer ist der ZWEITE Knoten auf pwa-toolpoint.de; geteilt sind Module, Relais und erlaubte Herkuenfte, getrennt sind Schublade, Identitaet, Spore, Name, Beschreibung, Siegel-Band. window.SBKIM_DB_SUFFIX hat im Kopf des Marktplatzes GEFEHLT und ist nachgetragen (index.html, knotenkarte.html) - solange er der einzige Knoten war, blieb es theoretisch. Gemessen: Kimhub 2180 gruen/0 ROT (Gegenprobe 17 neue Faelle, 17 gefangen), Company 50 gruen/0 ROT (eigene Gegenprobe neu, 21 gefangen), PWA-Toolpoint 698 gruen (Gegenprobe um 24 Faelle erweitert). Lighthouse des Pruefers gegengemessen, 3 Laeufe je Fassung: 100/94/100/100 und CLS 0 unveraendert, LCP unveraendert, TBT 0 -> 30-60 ms. Elf eigene Waechter waren beim Bauen blind und wurden behoben - die meisten suchten Namen, die nur im Erklaer-Kommentar stehen. NICHT gemessen: ob die Knoten im Rendezvous-Raum auftauchen - das sieht nur Klaus im Browser. Im Depot liegt keine Spore."
+    },
     {
       "seq": 66,
       "datum": "2026-09-08",
