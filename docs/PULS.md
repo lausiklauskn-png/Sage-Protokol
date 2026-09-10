@@ -31,6 +31,59 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DIE MYCEL-KARTE SPIELT DEN ECHTEN LAUF NACH
+
+Klaus: *„könnte man die 235 Ereignisse in der Mycelkarte mit den entsprechenden
+Knoten als Probelauf im Regler starten lassen, so dass man aus dem realen
+bereits Gelaufenen eine Demo macht … das natürlich langsamer abgespielt, in
+ungefähr 235 Sekunden?"*
+
+Gebaut in **mycel-karte** (PR #21, gemergt): ein Knopf **▶ Mitschnitt
+abspielen** im Regler spielt **191 echte Ereignisse** aus den fünf hier
+abgelegten Aufzeichnungen des 10.09.2026 ab, ein Ereignis je Sekunde — rund
+drei Minuten statt der vier Stunden des Originals.
+
+**Gemessen** (2026-09-10):
+
+| | |
+|---|---|
+| abgespielte Ereignisse | **191** aus 5 Mitschnitten (136 · 20 · 25 · 2 · 8) |
+| davon Anwesenheit / Anfrage / Handshake | 42 · 125 · 24 |
+| Takt | 1 000 ms je Ereignis |
+| statische Wächter | 34 grün · 0 ROT |
+| Gegenprobe | 18 gefangen · 0 durchgerutscht · 0 aus dem falschen Grund · 0 tote Anker |
+| im echten Chromium | 14 grün · 0 ROT |
+
+**Die Wiedergabe nimmt denselben Weg wie echter Verkehr** — sie gibt jedes
+Ereignis an `handleRelayEvent`, dieselbe Funktion, die auch die Poststellen
+bedient. Ein zweiter Zeichen-Weg wäre eine zweite Fassung.
+
+**Drei Riegel dagegen, dass eine Vorführung für einen echten Lauf gehalten
+wird:** der Rekorder schweigt während einer Wiedergabe · das Lauschen wird
+angehalten (sonst mischte sich echter Verkehr darunter und ginge zugleich aus
+der Aufzeichnung verloren) · das Band nennt Datum, Herkunft und ausdrücklich,
+dass das Originaltempo **nicht** wiedergegeben wird.
+
+⚠ **DIE MITSCHNITTE HIER BLEIBEN UNVERÄNDERT — SIE SIND DER BELEG.** Was die
+Karte abspielt, ist eine **abgeleitete** Datei
+(`mycel-karte/mitschnitt/mycel-lauf-2026-09-10.json`, 50 KB), gekürzt auf die
+Felder, die die Karte beim Zeichnen liest; sie sagt das in ihrem eigenen Kopf.
+Die 17 MB mit jeder Spore, jedem 384-stelligen Vektor und jeder Signatur
+liegen weiter unter `sbkim/mitschnitte/`. Abgeleitet wird mit
+`mycel-karte/tools/mitschnitt-eindampfen.mjs` — eine Datei, die einen echten
+Lauf behauptet und von Hand entstand, wäre eine erfundene Aufzeichnung.
+
+⚠ **UND DERSELBE GRIFF DANEBEN WIE IN `smoke_mitschnitt.mjs`, EINE DATEI
+WEITER:** der Kopf der abgeleiteten Datei nahm Anfang und Ende aus der nach
+**Dateinamen** geordneten Liste. `T` sortiert vor `_` — das Ende stand vor
+seinem Anfang. Geordnet wird nach der Zeit der Ereignisse; ein Wächter und ein
+Gegenprobe-Fall halten es fest.
+
+**Offen:** Klaus' Browser-Sichttest. Ob die drei Minuten die richtige Länge
+sind und ob man dem Band ansieht, dass es eine Vorführung ist, sagt nur er.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung) · ✅ MIXARIUM NACHGEZOGEN — 0.826040 → 0.883142
 
 **Was getan.** Klaus hat über das **Siegel** neu signiert. Der Mitschnitt von
