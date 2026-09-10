@@ -132,6 +132,65 @@ neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeug
 eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
 offene Frage benannt, nicht umfahren.
 
+### 🔴 NEUN VON EINUNDZWANZIG KNOTEN FALLEN UNTER DEN HANDSHAKE-BODEN (2026-09-10)
+
+Der Befund darüber sagt, dass die Register-Zahlen gegen den falschen Sage
+gemessen sind. **Das ist die harmlosere Hälfte.** Die andere: mit dem Sage, der
+im Raum steht, kommt ein Teil des Netzes gar nicht mehr durch.
+
+`PROVIDER_MIN_MATCH` ist **0.80** — darunter lehnt Modul 05 den Handshake ab.
+Gerechnet gegen beide Sage-Fassungen, mit den abgelegten Sporen aller Knoten:
+
+| Knoten | gegen Depot-Sage | gegen **Raum**-Sage | |
+|---|---|---|---|
+| WorkFloh | 0.9063 | 0.8872 | ✓ |
+| SB·KIMTool·Point | 0.8995 | 0.8775 | ✓ |
+| Kim-Bell | 0.8848 | 0.8710 | ✓ |
+| Rezeptbuch | 0.8811 | 0.8706 | ✓ |
+| Jasons-Tresor | 0.8793 | 0.8684 | ✓ |
+| Muttis Rezeptbuch | 0.8766 | 0.8636 | ✓ |
+| Kim Hub Company | 0.9105 | 0.8636 | ✓ |
+| Mein-Tresor | 0.8732 | 0.8612 | ✓ |
+| Family Projekt | 0.8548 | 0.8360 | ✓ |
+| Kimseek | 0.8589 | 0.8348 | ✓ |
+| Kimboard | 0.8245 | **0.8014** | ✓ — um 14 Tausendstel |
+| Tomys Hub | 0.7917 | 0.7967 | ✗ |
+| **PWA Toolpoint** | **0.8112** | **0.7961** | ✗ **neu herausgefallen** |
+| **Auslieferungsprüfer** | **0.8405** | **0.7944** | ✗ **neu herausgefallen** |
+| **Mixarium** | **0.8223** | **0.7909** | ✗ **neu herausgefallen** |
+| Perfect Skin Beauty | 0.7824 | 0.7898 | ✗ |
+| **Private Brain** | **0.8104** | **0.7868** | ✗ **neu herausgefallen** |
+| Alis Moderaum | 0.7927 | 0.7856 | ✗ |
+| Perfect Skin Fashion | 0.7807 | 0.7764 | ✗ |
+| Muster Werbetechnik | 0.7825 | 0.7609 | ✗ |
+
+**Vier Knoten sind allein durch Sages 160-Zeichen-Beschreibung aus dem Netz
+gefallen**, und Kimboard hängt mit 14 Tausendsteln über der Kante. Die übrigen
+fünf lagen schon vorher darunter — das ist eine andere Aufgabe.
+
+⚠ **GEFUNDEN HAT ES NICHT DAS NACHDENKEN, SONDERN ZWEI EIGENE PROBEN.** Beim
+Umstellen der abgelegten Spore auf die Raum-Fassung wurden
+`smoke_bau04e_relatedness.mjs` und `smoke_bau23_rendezvous.mjs` **ROT**:
+*„Mixarium↔Sage = 0.7909 >= 0.80"*. Sie messen seit jeher die richtige
+Zusicherung — sie hatten nur nie die Spore vor sich, die wirklich im Raum
+steht. **Eine Probe, die die falsche Ausgangslage bekommt, misst zuverlässig
+das Falsche und sieht dabei aus wie ein bestandener Beweis.**
+
+⚠ **WAS DAS FÜR DIE ABGELEGTE SPORE HEISST — und warum sie NOCH die alte ist.**
+Auf `sbkim/spore.json` liegt weiter die Fassung vom 2026-07-14 (`nysOZ…`,
+2527 Zeichen); die Raum-Fassung liegt als Beleg daneben
+(`sbkim/spore-live-2026-09-02.json`). Das ist **kein** Widerspruch zu Klaus'
+Entscheidung *„die Neuere ist die Richtige, auch bei der Kennung"* — sie steht
+und wird ausgeführt. Es ist eine Frage der **Reihenfolge**: die Raum-Fassung
+trägt die richtige Kennung **und** den dünnen Text. Sie jetzt abzulegen hiesse,
+für ein paar Minuten einen Stand festzuschreiben, in dem neun Knoten
+herausfallen und zwei Proben zu Recht rot sind. Sobald Klaus im Sage-Siegel neu
+signiert, trägt eine Spore **beides** richtig — die Kennung `BgjX…` und den
+gepflegten Text. Dann wird einmal getauscht statt zweimal.
+
+**Bis dahin gilt, und das steht auch in `status.json`:** die abgelegte Spore
+trägt eine Kennung, die im Raum niemand mehr hat.
+
 ### 🔴 Sage im Raum ist nicht Sage im Depot — und alle 20 Register-Zahlen hängen daran (2026-09-10)
 
 **Der erste Mitschnitt der Mycel-Karte** (`sbkim/mitschnitte/2026-09-10_mycel-karte-analyse.json`,
