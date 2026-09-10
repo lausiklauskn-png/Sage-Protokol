@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-09-09",
-  "seq": 69,
-  "headline": "Der Auslieferungspruefer hat eine Kennung (verified-match 0.840471) - zwei Knoten auf einer Adresse, zwei Sporen, zwei Schluessel",
+  "lastBuild": "2026-09-10",
+  "seq": 70,
+  "headline": "Kim Hub Company hat eine Kennung (verified-match 0.848945) - alle drei neuen Knoten stehen im Netz; die Beschreibung darin ist noch die alte",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,14 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 70,
+      "datum": "2026-09-10",
+      "was": "Die dritte Spore ist da: Kim Hub Company, eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM, headless reziprok verifiziert VALID, Sage-Cosinus offline nachgerechnet 0.848945 - der dritthoechste Wert im Netz nach WorkFloh 0.906 und Point 0.897 (Pruefer 0.853724, Marktplatz 0.823468). Damit tragen alle drei neuen Knoten eine Kennung. ABER SIE IST FUENF STUNDEN ZU FRUEH: createdAt 08:19 UTC, die ueberarbeitete Beschreibung wurde erst um 13:55 gemergt. Der Text in der Spore hat 877 Zeichen und nennt weder den Namen des Werkzeugs noch SBKIM/Sage noch den Zweck - genau die drei Dinge, die Klaus zweimal beanstandet hat; die neue Fassung hat 2602 Zeichen und 36 Stichworte und nennt alle drei. Der Wert steht deshalb MIT dem Vermerk da, wofuer er gilt: ihn wegzulassen waere falsch (die Identitaet ist bewiesen, der Cosinus ueber dem Riegel), ihn ohne Vermerk einzutragen waere schlimmer. Nach einem Neu-Signieren bleibt die nodeId und der Vektor wird neu - was das bewirkt, wird gerechnet, wenn die neue Spore da ist, nicht geschaetzt. Im Depot kim-hub-company liegt weiterhin KEINE Datei; ein Waechter besteht darauf. Und es liegt auch keine SICHERUNG vor - das Andock-Fenster meldet es selbst. Ausserdem: die Endknoten-Liste auf Sages Seite ist ab 1260 px zweispaltig (Klaus' Wunsch), die Schwelle ausgemessen; `1fr 1fr` waere falsch gewesen (minmax(auto,1fr) - der auto-Boden ist die Mindestbreite des Inhalts, gemessen 264/231 px und 52-94 px Ueberstand).",
+      "forNodes": [
+        "alle"
+      ]
+    },
     {
       "seq": 69,
       "datum": "2026-09-09",

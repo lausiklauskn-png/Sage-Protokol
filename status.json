@@ -545,7 +545,7 @@
     {
       "name": "Kim Hub Company",
       "domain": "Werkstatt/KI-Rollen/Auftrag",
-      "integrated": false,
+      "integrated": true,
       "stammCategories": [
         "Werkstatt",
         "Auftrag",
@@ -556,9 +556,13 @@
         "Gegenprobe",
         "Fahrtenbuch"
       ],
-      "pingStatus": "gebaut-ohne-kennung",
-      "note": "Gebaut als vollstaendiger Endknoten am 2026-09-08 - 13 Kanon-Module byte-1:1 aus src/modules/, fuenf app-eigene Klebstoff-Rollen, eigene Schublade kimhubcompany, Siegel MIT dem Andock-Wizard darin, SBKIM_DB_SUFFIX im <head> vor jedem Modul. ABER OHNE KENNUNG, und das ist eine eigene Stufe: es liegt hier KEINE Spore und auch keine Platzhalter-Spore. Klaus erzeugt sie in seinem Browser, der private Schluessel bleibt dort. Eine Datei, die aussieht wie eine Identitaet, ist schlimmer als keine - sie beantwortet die Frage 'hat dieser Knoten eine Kennung?' mit einem Ja, das niemand geprueft hat. Ein Waechter in kim-hub-company/tests/smoke_knoten.mjs besteht darauf, dass keine im Depot liegt. Sobald Klaus sie schickt, kommen nodeId, sporeUrl und der nachgerechnete matchScore hier hinein - nicht vorher.",
-      "url": "https://lausiklauskn-png.github.io/kim-hub-company/"
+      "pingStatus": "verified-match",
+      "note": "Klaus hat die Spore am 2026-09-09 in seinem Browser erzeugt und geschickt. Headless reziprok verifiziert mit Sages Modul-02-Pfad (deep-kanonisches JSON): VALID, id == base64url(SHA256(rawPub)), kein 'd' im JWK, key_ops nur ['verify'], echter domainVector mit L2 = 1 und 384 Zahlen, 5 Satz-Schnipsel, kein _demo. Sage-Cosinus offline nachgerechnet 0.848945 - der dritthoechste Wert im Netz nach WorkFloh 0.906 und SB-KIMTool-Point 0.897. Nachbarn: Auslieferungspruefer 0.853724, PWA Toolpoint 0.823468. ⚠ SIE TRAEGT DIE ALTE BESCHREIBUNG, und das ist gemessen, nicht vermutet: createdAt ist 08:19 UTC, die neue Fassung wurde erst um 13:55 gemergt (kim-hub-company #54). Der Text hat 877 Zeichen und nennt WEDER den Namen des Werkzeugs NOCH SBKIM/Sage NOCH den Zweck - genau die drei Dinge, die Klaus zweimal beanstandet hat. Die neue Fassung hat 2602 Zeichen und 36 Stichworte und nennt alle drei. Der Wert 0.848945 gilt also fuer den ALTEN Text; nach einem Neu-Signieren (git pull + Hard-Reload, dann im Siegel neu signieren) bleibt die nodeId gleich und der Vektor aendert sich - dann wird hier neu gerechnet, nicht geschaetzt. Im Depot kim-hub-company liegt weiterhin KEINE spore.json, und das bleibt so: der private Schluessel bleibt in Klaus' Browser, ein Waechter in tests/smoke_knoten.mjs besteht darauf. Der LIVE-HANDSHAKE steht aus.",
+      "url": "https://lausiklauskn-png.github.io/kim-hub-company/",
+      "integratedAt": "2026-09-09",
+      "nodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+      "matchScore": 0.848945,
+      "sporeUrl": "https://lausiklauskn-png.github.io/kim-hub-company/sbkim/spore.json"
     }
   ],
   "modules": [
