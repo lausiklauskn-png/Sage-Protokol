@@ -393,6 +393,40 @@ weiter die committete Identität.
 
 ---
 
+## ⚠ PRÄZISIERT: Mixariums Zahl kommt aus den Drinks, nicht aus der Beschreibung
+
+Der Abschnitt „DER DRITTE MITSCHNITT" sagt, Mein Mixarium sage im Raum 88 Zeichen
+an, während im Depot 1476 liegen, und *„wer dort neu signiert, bekommt den
+Zweizeiler"*. **Der Text-Teil stimmt. Die Folgerung über die ZAHL war zu kurz
+gegriffen.**
+
+Nachgesehen in der Raum-Spore vom 2026-09-02: **`embeddingSource: "content"`.**
+
+| Weg zur Spore | was eingebettet wird |
+|---|---|
+| **Siegel** (`reSignWithDescription`) | `embedPassage(beschreibung)` — der **Text** |
+| **stille Erst-Anmeldung** (`sbkim-init.js`) | `embedContentVector(samples)` — die **Getränke-Namen** aus dem eigenen Bestand |
+
+Die zweite Zeile ist eine **Entscheidung vom 2026-06-28**, ausdrücklich so
+gewollt: *„wenn echte Drinks vorhanden sind, entscheidet der INHALT statt der
+Selbstbeschreibung."* Sie bleibt — sie ist die ehrlichere Messung.
+
+**Daraus folgt:** Mixariums **0.826040** stammt aus seinen Drinks, nicht aus
+seiner Selbstbeschreibung. Eine bessere Beschreibung wirkt dort erst, wenn über
+das **Siegel** neu signiert wird. Wer nur die Datei ändert und wartet, dass die
+Zahl steigt, wartet vergeblich.
+
+**Behoben ist trotzdem beides, was wirklich ein Fehler war** (Mein-Mixarium
+PR #198): die zwei Wege trugen **verschiedene** Texte, und die gespeicherte
+Spore überschrieb den Vorschlag der App **still**. Klaus hat den Beleg als
+Bildschirmfoto des Siegels geschickt — dort stand der Zweizeiler im Feld, ohne
+Herkunfts-Zeile und ohne Rückhol-Knopf.
+
+> **Eine Folgerung ist keine Messung.** Der Text im Raum war gemessen; dass er
+> auch den Vektor bestimmt, war angenommen. Das eine stimmte, das andere nicht.
+
+---
+
 ## Stufen-Legende
 
 | Stufe | Bedeutung |

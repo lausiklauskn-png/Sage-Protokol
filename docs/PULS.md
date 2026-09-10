@@ -31,6 +31,36 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · ⚠ MIXARIUMS ZAHL KOMMT AUS DEN DRINKS
+
+**Was getan.** Klaus hat Mixariums Siegel fotografiert: im Feld stand der
+88-Zeichen-Zweizeiler, ohne Herkunfts-Zeile und ohne Rückhol-Knopf. Behoben in
+Mein-Mixarium PR #198 — beide Wege zur Spore tragen jetzt denselben Text (2141
+Zeichen, 22 Stichworte, mit Protokoll-Absatz), und der Vorschlag der App gewinnt.
+
+**⚠ Und dabei ist eine eigene Folgerung von heute Nachmittag präzisiert worden.**
+Ich hatte geschrieben, *„wer dort neu signiert, bekommt den Zweizeiler"* — und
+das im Register so vermerkt. Der Text-Teil stimmt. Die Folgerung über die **Zahl**
+war zu kurz gegriffen:
+
+| Weg zur Spore | was eingebettet wird |
+|---|---|
+| **Siegel** | `embedPassage(beschreibung)` — der Text |
+| **stille Erst-Anmeldung** | `embedContentVector(samples)` — die **Getränke-Namen** |
+
+Gemessen an der Raum-Spore vom 2026-09-02: `embeddingSource: "content"`.
+**Mixariums 0.826040 stammt aus seinen Drinks.** Das ist die Entscheidung vom
+2026-06-28 und bleibt so — sie ist die ehrlichere Messung. Eine bessere
+Beschreibung wirkt dort erst beim Signieren **über das Siegel**.
+
+> **Eine Folgerung ist keine Messung.** Der Text im Raum war gemessen; dass er
+> auch den Vektor bestimmt, war angenommen. Das eine stimmte, das andere nicht.
+
+**Proben:** `npm test` → **99 grün, 0 rot**. Mixarium: 15 Wächter grün,
+Gegenprobe 10 gefangen / 0 durchgerutscht.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DAS REGISTER MISST JETZT GEGEN DEN RAUM
 
 **Was getan.** Klaus: *„bevor du den Register auf den neuen Maßstab umstellst,
