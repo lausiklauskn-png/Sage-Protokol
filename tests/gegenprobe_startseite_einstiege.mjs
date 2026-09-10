@@ -75,6 +75,22 @@ const FAELLE = [
     kaputt: (t) => t.replace("  .hub-demo-badge {",
       "  .topology-cta { margin-top: 1rem; }\n  .hub-demo-badge {") },
 
+  /* ---- Tote Links (Auslieferungsprüfer 2026-09-11) ------------------- */
+  { was: "die Marke zeigt wieder auf # statt auf die Übersicht",
+    trifft: /kein <a> ohne Ziel|Marke springt auf die Übersicht/,
+    kaputt: (t) => t.replace('<a href="#screen-overview" class="brand"',
+                             '<a href="#" class="brand"') },
+
+  { was: "der PR-Link verliert sein Ziel wieder",
+    trifft: /kein <a> ohne Ziel|PR-Link zeigt auf die Datei/,
+    kaputt: (t) => t.replace(
+      '               href="https://github.com/lausiklauskn-png/sage-protokol/edit/main/status.json"\n', "") },
+
+  { was: "die Komponenten-Karte zeigt wieder ins Leere",
+    trifft: /kein <a> ohne Ziel|Komponenten-Karte zeigt auf ihren Ordner/,
+    kaputt: (t) => t.replace('<a id="md-link" href="docs/components/">',
+                             '<a id="md-link" href="#">') },
+
   { was: "das Such-Werkzeug steht wieder zweimal da",
     trifft: /EIN Weg zum Such-Werkzeug/,
     kaputt: (t) => t.replace("      url: 'such-tool/',",

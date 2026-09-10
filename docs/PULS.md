@@ -31,6 +31,63 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-11 (Haupt-Sitzung) · ✅ KEIN LINK FÜHRT MEHR NIRGENDWOHIN
+
+Klaus hat drei Berichte seines **Auslieferungsprüfers** geschickt und die
+Entscheidung überlassen, was davon zu beheben ist. Einer betraf diese Seite:
+
+> „1 Sache an 3 Stellen · Dieser Link führt nirgendwohin · ein Knopf, der
+> nichts tut" — die Marke oben links und zwei Platzhalter, die das Skript erst
+> später füllt.
+
+**Alle drei tragen jetzt ein echtes Ziel**, das auch ohne Skript etwas öffnet:
+
+| | vorher | jetzt |
+|---|---|---|
+| Marke oben links | `href="#"` | `#screen-overview` — den Abschnitt gibt es wirklich |
+| „PR auf status.json öffnen" | `href="#"` | die Datei auf GitHub; das Skript ergänzt die vorausgefüllte Nachricht |
+| Komponenten-Karte | `href="#"` | `docs/components/` — das Skript schärft auf die Datei des Moduls |
+
+⚠ **DAS `href` WEGZULASSEN WAR DER ZWEITE FEHLVERSUCH.** Der Prüfer meldet ein
+`<a>` **ohne** href genauso wie eines mit `#`, und zu Recht: in der
+ausgelieferten Datei führt beides nirgends hin. Eine Rückfalllinie, die
+wirklich irgendwohin führt, ist keine Krücke — sie ist das, was ein Link sein
+soll. Gemessen: der Prüfer meldet über diese Seite jetzt **0 Befunde**.
+
+⚠ **UND MEIN WÄCHTER DAZU WAR ZWEIMAL BLIND.** Beim ersten Lauf fand er
+`<a download>` — das steht als **Zeichenkette in einem `<script>`**, also im
+Code, nicht im Markup; der Prüfer überspringt Skripte aus genau diesem Grund.
+Beim zweiten hätte er seine eigenen Erklär-Kommentare mitgezählt, in denen
+`href="#"` wörtlich steht. Er misst jetzt das Markup ohne Kommentare und ohne
+Skripte. `tests/smoke_startseite_einstiege.mjs` (16 grün) ·
+`tests/gegenprobe_startseite_einstiege.mjs` (**12 gefangen · 0
+durchgerutscht**).
+
+### Die eingebettete Mycel-Karte — der Ableiter-Wächter hat zum ersten Mal gefangen
+
+Der gestern gebaute Wächter ist rot geworden, und zwar zu Recht: die Karte im
+Quell-Repo ist seither zweimal gewandert (Transportknöpfe hin und zurück).
+`node tools/mycelkarte-uebernehmen.mjs --schreiben` — nachgezogen, 24 grün.
+
+**Das ist der Beleg, dass die Frage „ist die Kopie noch die Kopie?" trägt, wo
+eine Liste von Fähigkeiten verrottet wäre.** Sie zählt nichts auf und altert
+deshalb nicht.
+
+### Was NICHT geändert wurde, und warum
+
+Die beiden anderen Berichte betrafen **PWA Toolpoint**; dort lagen zwei der
+vier Befundarten beim **Prüfer**, nicht an den Seiten (eigene Adresse einer
+gespeicherten Datei · `cid:` aus einer `.mhtml`). Behoben in
+`PWA-Toolpoint#105` und `Kimhub#182`. Unangetastet blieben `du@example.com`
+(RFC-2606-Beispieladresse, korrekt) und die 27 App-Symbole des Marktplatzes
+(sie gehören den gelisteten Apps; eine Kopie veraltet still).
+
+### Nächster sinnvoller Schritt
+
+Klaus' Browser-Sichttest auf der Sage-Page — und der Prüfer noch einmal über
+`family-projekt.de`, jetzt mit der neuen Fassung: aus 12 Stellen sollten 0
+werden.
+
 ## Stand 2026-09-10 (Haupt-Sitzung, Nacht) · ✅ DOPPELTE EINSTIEGE WEG, EINGEBETTETE KARTE NACHGEZOGEN
 
 Drei Befunde von Klaus, alle drei am Bildschirm gefunden, keiner von einer Probe:

@@ -349,11 +349,11 @@
          taste und zurück." Die Reihe erscheint ERST, wenn ein Mitschnitt
          geladen ist — Knoepfe, hinter denen nichts liegt, sind tote Knoepfe. -->
     <div class="row btnrow" id="replayTransport" hidden>
-      <button class="b" id="btnSpulZurueck" title="zehn Ereignisse zurück">⏪</button>
+      <button class="b" id="btnSpulZurueck" title="zehn Ereignisse zurück — danach hält die Wiedergabe an">⏪</button>
       <button class="b" id="btnSchrittZurueck" title="ein Ereignis zurück">◀</button>
       <span id="replayStand">—</span>
       <button class="b" id="btnSchrittVor" title="ein Ereignis vor">▶</button>
-      <button class="b" id="btnSpulVor" title="zehn Ereignisse vor — sie werden mitgespielt, nur ohne Wartezeit">⏩</button>
+      <button class="b" id="btnSpulVor" title="zehn Ereignisse vor — sie werden mitgespielt, nur ohne Wartezeit; danach hält die Wiedergabe an">⏩</button>
       <button class="b" id="btnReplayStop" title="Wiedergabe beenden">⏹</button>
     </div>
     <div class="hint">
@@ -367,7 +367,8 @@
       <b>📂 eigene Datei</b> nimmt jede Aufzeichnung des Rekorders 🔬.
       Läuft eine Wiedergabe, wird aus <b>▶</b> eine <b>⏸ Pause</b>, und darunter
       erscheint die Steuerung: <b>◀ ▶</b> ein Ereignis, <b>⏪ ⏩</b> zehn auf
-      einmal, <b>⏹</b> beendet. Alle vier halten dabei an — wie am Bandgerät.
+      einmal, <b>⏹</b> beendet. Alle vier halten dabei an — wie am Bandgerät:
+      spulen, hinsehen, dann <b>⏸/▶</b> drücken.
       <b>⏩ überspringt nichts</b>: die Ereignisse dazwischen werden mitgespielt,
       nur ohne Wartezeit. <b>⏪ bewegt das Band, nicht die Karte</b> — sie ist ein
       Gedächtnis und vergisst nicht, was sie schon gesehen hat; was noch einmal
@@ -1433,7 +1434,16 @@ function replayEnde() {
 
 /* ⏩ · die uebersprungenen Ereignisse werden MITGESPIELT, nur ohne Wartezeit.
    Wer sie ueberspraenge, bekaeme eine Karte, die weniger zeigt als ihr Stand
-   behauptet — und diese Luecke saehe niemand. */
+   behauptet — und diese Luecke saehe niemand.
+
+   ⚠ UND SIE HAELT DABEI AN — hin und zurueck entschieden (Klaus 2026-09-10).
+   Er bat zuerst darum, dass die Schnellvorspultaste DURCHLAEUFT; gebaut und
+   gemergt (#27). Auf Nachfrage, welche Fassung gelten soll, hat er sich fuer
+   die erste entschieden: alle vier kleinen Knoepfe halten an, wie am
+   Bandgeraet — spulen, hinsehen, dann ⏸/▶ druecken. Eine Regel statt zweier.
+
+   Beides steht hier, weil beides passiert ist: eine Entscheidung, die nur
+   ihr Ergebnis zeigt, sieht aus wie eine, die nie zur Debatte stand. */
 function replayVor(n) {
   if (!replayGeladen) return;
   replayPause();
@@ -1447,7 +1457,9 @@ function replayVor(n) {
 }
 
 /* ⏪ · zurueck im BAND. Die Karte vergisst dabei nichts — und das steht dran,
-   statt so zu tun, als liefe die Zeit rueckwaerts. */
+   statt so zu tun, als liefe die Zeit rueckwaerts.
+
+   ⚠ AUCH ER HAELT AN — dieselbe Regel wie beim Vorspulen, siehe dort. */
 function replayZurueck(n) {
   if (!replayGeladen) return;
   replayPause();
@@ -2139,6 +2151,9 @@ $("btnReplayDatei").addEventListener("click", function () {
 });
 /* Die Transportreihe. Alle vier kleinen Knoepfe HALTEN AN — wie am Bandgeraet:
    spulen, hinsehen, dann ⏸/▶ wieder druecken. Eine Regel statt zweier. */
+/* Alle vier gehen ueber dieselben zwei Funktionen, und die halten an — der
+   Unterschied ist nur die Weite. Zwei Regeln fuer denselben Griff waeren zwei,
+   die man sich merken muss, und die zweite lernt niemand. */
 $("btnSchrittVor").addEventListener("click", function () { replayVor(1); });
 $("btnSpulVor").addEventListener("click", function () { replayVor(REPLAY_SPRUNG); });
 $("btnSchrittZurueck").addEventListener("click", function () { replayZurueck(1); });
