@@ -31,6 +31,58 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · SBKIM WIRD WIEDER ÜBERALL GLEICH AUFGELÖST
+
+**Was getan.** `status.json` trug im Feld `fullName` eine **dritte** Auflösung
+von SBKIM — übernommen aus dem Abstract von
+[`docs/PAPER_NUTZEN_UND_INTEGRATION.md`](PAPER_NUTZEN_UND_INTEGRATION.md).
+Verbindlich ist seit dem 2026-09-03 die Lesart, die
+[`docs/papers/README.md`](papers/README.md) ausdrücklich als gültig nennt:
+**„Semantisches Bidirektionales KI-Matching"**. Sie steht im Netz 35 Mal.
+Register und Begleit-Dokument tragen sie jetzt; Klaus hat es so entschieden.
+
+**Damit standen drei Namen für dasselbe Protokoll im selben Depot**, und der
+eine davon, den die meisten lesen, war der falsche: das Register ist die Datei,
+aus der zwanzig Geschwister-Apps ihre Angaben ziehen.
+
+**Neu: `tests/smoke_sbkim_name.mjs`** (7 Prüfungen) + `gegenprobe_sbkim_name.mjs`
+(7 Fälle, jeder von Hand nachgestellt). Der Maßstab wird aus `docs/papers/README.md`
+**gelesen, nicht abgeschrieben** — stünde er in der Probe noch einmal, wäre das
+die vierte Stelle, an der er auseinanderlaufen kann.
+
+**Drei eigene Fehler, alle von der Gegenprobe gefunden:**
+
+| Was | Warum es nichts maß |
+|---|---|
+| meine Notiz im Register **zitierte** die falsche Auflösung im Wortlaut | eine Prüfung kann ein Zitat nicht von einer Behauptung unterscheiden |
+| die Probe war grün, weil sie **noch nicht eingecheckt** war | `git ls-files` führte sie nicht, also sah sie sich selbst nicht |
+| „mehr als 50 geführte Dateien" | in diesem Depot **nicht isoliert zu unterlaufen** — nimmt man `docs`, `assets` und `src` aus dem Index, bleiben 285. Der Fall dazu fiel einem Nachbar-Wächter zur Last und bewies über diesen Wächter nichts: **gefangen aus dem falschen Grund** |
+
+Gemessen wird seitdem, ob die Suche die zwei **Herkunfts-Dateien** wirklich in
+der Hand hatte. Ein Fall, der genau eine davon aus dem Index nimmt, trifft ihn
+allein.
+
+**Was offen ist.** `sbkim/spore.json` und die drei Wege zur Spore tragen die
+Form **ohne Endung** („Semantisch Bidirektionales …") als Stichwort und im
+Schnipsel. **Nicht angefasst, und das ist Absicht:** jedes Feld einer Spore
+steht unter der Signatur — eine Berichtigung dort kostet ein neues Signieren
+durch Klaus und rechnet alle zwanzig `matchScore` neu. Das ist seine
+Entscheidung, nicht die einer Sitzung. Die Probe jagt deshalb **nur** die dritte
+Auflösung, nicht die verkürzte.
+
+`docs/sessions/archiv/` und diese Datei tragen die dritte Auflösung weiter, und
+sie sollen es: die Einträge halten fest, **dass** es sie gab. Ein eigener
+Wächter besteht darauf — eine Probe, die sie tilgt, verlangt
+Geschichtsfälschung.
+
+**Nächster Schritt.** Perfect Skin Beauty (0.783216), der tiefste der fünf
+Knoten unter dem Handshake-Boden.
+
+**Proben:** `npm test` → **98 grün, 0 rot, 0 nicht lauffähig**.
+Gegenprobe → **7 gefangen, 0 durchgerutscht**.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung, Abschluss) · ✅ SAGE NEU SIGNIERT — VIER KNOTEN SIND ZURÜCK
 
 **Was getan.** Klaus hat um 13:20 UTC im Sage-Siegel neu signiert. Die Spore
