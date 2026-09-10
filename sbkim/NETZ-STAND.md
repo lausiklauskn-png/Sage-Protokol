@@ -74,7 +74,7 @@ Andock-Konventionen: INTERFACES §11
 
 | Knoten | Domäne | nodeId | Stufe | Beweis |
 |---|---|---|---|---|
-| **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` | `live-direct` · **Spore v0.2** (11 Schnipsel, 2026-07-14) | eigene Spore `sbkim/spore.json` |
+| **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | ⚠ **ZWEI**: im Raum `BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA` (2026-09-02), im Depot `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` (2026-07-14) — siehe den Abschnitt **Sage im Raum ist nicht Sage im Depot** | `live-direct`, am 2026-09-10 im Mitschnitt belegt | `sbkim/spore.json` (Depot) · `sbkim/spore-live-2026-09-02.json` (Raum) |
 | **Mein-Rezeptbuch** | Kochrezepte | `VtvtrDV4KhQv3Q9B9jwZL5UIc9W7xrsKLduZ9xqk9T8` | **`verified-match` 0.881144** (auch `live-direct`) | `sbkim/rezeptbuch_inbox.verify.md` |
 | **Mein-Mixarium** | Cocktails / Drinks | `YD68l2ScNzd-RWS8tCrL_JAtgpoPp3i3VKc4N9GKvbo` | **`verified-match` 0.822299** (auch `live-direct`) | `sbkim/mixarium_inbox.verify.md` |
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `JZ7MeMtprz5XAiXF81agCQ1mmynZUUPl_gLerqR_Zrg` | **`verified-match` 0.899516** | `sbkim/point_inbox.verify.md` |
@@ -131,6 +131,109 @@ Verzeichnisses ist. Der Weg dahin führt über den Kanon (etwa ein `sporePath`
 neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeugte
 eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
 offene Frage benannt, nicht umfahren.
+
+### 🔴 Sage im Raum ist nicht Sage im Depot — und alle 20 Register-Zahlen hängen daran (2026-09-10)
+
+**Der erste Mitschnitt der Mycel-Karte** (`sbkim/mitschnitte/2026-09-10_mycel-karte-analyse.json`,
+Analyse-Rekorder v1.3, 12:11:14–12:18:37 UTC, 13 Ereignisse) beantwortet die Frage,
+die kein Depot beantworten kann. Sages eigene Tafel verlangt ihn ausdrücklich:
+*„Wer den Netz-Auftritt eines Knotens beurteilt, braucht einen Mitschnitt der
+Mycel-Karte; die Datei zu lesen beantwortet eine andere Frage."* Hier ist er — und
+er widerlegt eine Zahl, die ich am selben Tag selbst eingetragen habe.
+
+**Der Handshake hat stattgefunden.** Sage → Kim Hub Company, `sbkim-anastomosis`
+12:12:58, Antwort `outcome: "established"`, Nonce richtig zurückgegeben. Aber:
+
+| | |
+|---|---|
+| **Score im Handshake** | **0.863579** |
+| Score im Register (von mir gerechnet) | 0.910528 |
+
+**Die Differenz liegt NICHT bei Kim Hub Company.** Dessen Spore im Raum ist
+inhaltlich dieselbe wie die abgelegte: Vektoren **identisch** (cos = 1.000000000),
+Beschreibung Zeichen für Zeichen gleich, 36 Stichworte, 20 Schnipsel. Sie trägt
+`createdAt` 26 Sekunden später (`01:26:24` statt `01:25:58`) — zweimal derselbe
+Text ergibt denselben Vektor, das Einbetten ist deterministisch.
+
+**Die Differenz liegt bei SAGE, und sie ist grundsätzlicher als eine Zahl:**
+
+| | im Depot (`sbkim/spore.json`) | im Raum (Mitschnitt) |
+|---|---|---|
+| Kennung | `nysOZE3VuKqZ…` | **`BgjXhSApoOrJ…`** |
+| erzeugt | 2026-07-14 | **2026-09-02** |
+| Beschreibung | 2527 Zeichen | **160 Zeichen** |
+| Schnipsel | 11 | **2** |
+| Vektoren zueinander | \_ | cos **0.927110** |
+
+**Das sind zwei verschiedene Knoten**, nicht zwei Fassungen eines Knotens: die
+Kennungen folgen aus zwei verschiedenen Schlüsseln. Die Kennung im Raum kommt im
+ganzen Depot **kein einziges Mal** vor — weder in `status.json`, noch in
+`sbkim/SIGNAL.json`, noch in dieser Datei. Nachgesucht, nicht vermutet.
+
+Beide Enden stimmen auf sechs Stellen, der Rechenweg ist damit eindeutig:
+
+| gerechnet | Wert | |
+|---|---|---|
+| Raum-Sage ⟷ Raum-KHC | **0.863578** | = der gemeldete Handshake-Wert 0.863579 |
+| Depot-Sage ⟷ Depot-KHC | 0.910528 | = meine Register-Zahl |
+| Raum-Sage ⟷ Depot-KHC | 0.863578 | |
+| Depot-Sage ⟷ Raum-KHC | 0.910528 | |
+
+⚠ **DARAUS FOLGT ETWAS ÜBER ALLE ZWANZIG EINTRÄGE, NICHT NUR ÜBER EINEN.** Jeder
+`matchScore` im Register ist gegen **Depot-Sage** gerechnet. Kein einziger misst
+den Knoten, dem eine App im Raum wirklich begegnet. Die Zahlen sind nicht
+erfunden und nicht falsch gerechnet — sie beantworten eine andere Frage als die,
+für die man sie liest.
+
+⚠ **UND DER HUB IST DER DÜNNSTE KNOTEN IM RAUM.** 160 Zeichen, 2 Schnipsel. Das
+ist genau der Mangel, den Klaus für Kim Hub Company zweimal beanstandet hat —
+nur an der Stelle, gegen die alle anderen gemessen werden. Die drei Werte, die
+sich aus dem Mitschnitt wirklich rechnen lassen:
+
+| | im Raum | im Register |
+|---|---|---|
+| Sage ⟷ Kim Hub Company | **0.863578** | 0.910528 |
+| Sage ⟷ Auslieferungsprüfer | **0.807650** | 0.840471 |
+| Kim Hub Company ⟷ Auslieferungsprüfer | **0.847706** | 0.853724 |
+
+**Alle drei fallen**, und das ist keine Eigenschaft der drei Knoten, sondern eine
+des Maßstabs.
+
+⚠ **WAS HIER NICHT ENTSCHIEDEN WIRD:** welche der beiden Sage-Kennungen die
+richtige ist, und ob die Register-Zahlen auf den Raum-Maßstab umgestellt werden.
+Das erste weiß nur Klaus — in seinem Browser liegt der private Schlüssel. Das
+zweite wäre eine Umstellung von zwanzig Zahlen auf eine Grundlage, die für die
+anderen siebzehn Knoten **nicht gemessen** ist: deren Live-Sporen stehen in
+keinem Mitschnitt. Eine halb umgestellte Tabelle wäre schlimmer als eine, die
+ihren Maßstab nennt. **Bis dahin gilt: jede Zahl im Register ist gegen
+Depot-Sage gerechnet, und das steht jetzt dabei.**
+
+⚠ **UND DIE ABGELEGTE PRÜFER-SPORE IST NICHT DIE, DIE IM RAUM STEHT.** Gleiche
+Kennung, anderer Text, 17 Sekunden auseinander: die abgelegte (10:59:44) hat 791
+Zeichen und **beginnt mit dem Namen des Knotens**, die im Raum (11:00:01) hat 767
+und beginnt mit *„Prüft, …"*. Der Text im Raum ist der, den
+`PWA-Toolpoint/assets/pruefer-siegel-inhalt.js` mitbringt — der abgelegte steht
+in **keiner** Datei des Depots. Es ist derselbe Mangel wie oben, an einem dritten
+Knoten: **der Name des Werkzeugs fehlt in dem Text, mit dem es sich ankündigt.**
+
+### 📍 Zwei Knoten stehen doppelt auf der Karte (2026-09-10, aus demselben Mitschnitt)
+
+Die Karte führt die drei neuen Knoten aus dem Register als `auto-…`-Einträge und
+legt einen **zweiten** daneben, wenn derselbe Knoten sich lebend meldet:
+
+| Knoten | Ereignis | Ergebnis |
+|---|---|---|
+| Sage | `fusion map` | auf den vorhandenen Eintrag **gelegt** |
+| Kim Hub Company | `fusion new` | **zweiter Eintrag** neben `auto-kimhubcompany` |
+| Auslieferungsprüfer | `fusion new` | **zweiter Eintrag** neben `auto-auslieferungsprüfer` |
+
+Der Grund steht in den Knoten selbst: `sage` trägt
+`aliveIds: ["BgjXhSApoOrJ…"]`, die `auto-…`-Einträge tragen `aliveIds: []`. Die
+Karte legt zusammen, was sie an der **Kennung** wiedererkennt — und die
+`auto-…`-Einträge bringen keine mit, obwohl `status.json` für alle drei Knoten
+eine `nodeId` führt. Am Ende des Mitschnitts: **24 Knoten statt 22**, Kim Hub
+Company und der Auslieferungsprüfer stehen je zweimal da, einmal grau und einmal
+lebend.
 
 ### ✅ Neu signiert — und der Knoten steht jetzt an der Spitze des Netzes (2026-09-10)
 
