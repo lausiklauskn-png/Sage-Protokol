@@ -88,8 +88,8 @@
       "integratedAt": "2026-05-21",
       "reSignedAt": "2026-07-14",
       "protocolVersion": "0.2",
-      "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
-      "note": "Neu-Signier-Welle Spore v0.2 (2026-07-14, Klaus' Browser, wiederhergestellte Identität): spore.json auf protocolVersion 0.2 gehoben, 11 Satz-Schnipsel (snippetVectors) aus einer ausführlicheren Domänen-Beschreibung angehängt, echter domainVector 384-dim L2=1 neu berechnet. nodeId nysOZE3V… UNVERÄNDERT (Identität aus verschlüsseltem Backup vom 2026-05-21 wiederhergestellt, nachdem Browser-Daten gelöscht waren). Reziprok verifiziert in dieser Sitzung: id == base64url(SHA256(rawPub)), Ed25519-Signatur gültig, 11/11 Schnipsel-Vektoren 384-dim, kein PII. snippetVectors = reine Anzeige/Verwandt-Messung, 0.80-Andock-Riegel unberührt. Peer-Identitäten am 2026-07-14 quergeprüft: 8/10 Live-Sporen == committet (BookLedgerPro + Kim-Bell von hier nicht abrufbar, kein Beweis für Abweichung).",
+      "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+      "note": "Neu-Signier-Welle Spore v0.2 (2026-07-14, Klaus' Browser, wiederhergestellte Identität): spore.json auf protocolVersion 0.2 gehoben, 11 Satz-Schnipsel (snippetVectors) aus einer ausführlicheren Domänen-Beschreibung angehängt, echter domainVector 384-dim L2=1 neu berechnet. nodeId nysOZE3V… UNVERÄNDERT (Identität aus verschlüsseltem Backup vom 2026-05-21 wiederhergestellt, nachdem Browser-Daten gelöscht waren). Reziprok verifiziert in dieser Sitzung: id == base64url(SHA256(rawPub)), Ed25519-Signatur gültig, 11/11 Schnipsel-Vektoren 384-dim, kein PII. snippetVectors = reine Anzeige/Verwandt-Messung, 0.80-Andock-Riegel unberührt. Peer-Identitäten am 2026-07-14 quergeprüft: 8/10 Live-Sporen == committet (BookLedgerPro + Kim-Bell von hier nicht abrufbar, kein Beweis für Abweichung). || KENNUNG NACHGEZOGEN 2026-09-10: Sage hat neu signiert, die geltende Kennung ist BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA. Die vorherige steht unter previousNodeIds. ⚠ AUFGEFALLEN IST ES AN KLAUS' RUECKFRAGE, nicht an einer Probe: das Skript, das die zwanzig matchScore-Werte neu gerechnet hat, ging ueber die Endknoten und ordnete jedem seinen Vektor ueber die nodeId zu - Sage selbst hat keinen matchScore (er misst nicht gegen sich), fiel dadurch aus der Schleife und behielt seine alte Kennung. Ein Eintrag, den eine Massen-Aenderung UEBERSPRINGT, sieht danach genauso aus wie einer, der richtig ist.",
       "sporeUrl": "https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json",
       "stammCategories": [
         "Protokoll-Doku",
@@ -106,7 +106,10 @@
         "Übergabeprotokolle"
       ],
       "pingStatus": "live-direct",
-      "url": "https://lausiklauskn-png.github.io/Sage-Protokol/"
+      "url": "https://lausiklauskn-png.github.io/Sage-Protokol/",
+      "previousNodeIds": [
+        "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA"
+      ]
     },
     {
       "name": "SB-KIMTool-Point",
