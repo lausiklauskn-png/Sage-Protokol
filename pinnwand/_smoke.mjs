@@ -160,14 +160,26 @@ ok("Probe 6: Multi-Query A5b (expandQuery + bestRelevance über Frage-Varianten)
   const sliceRoh = /activeRelais|activeRelays = RELAY_POOL\.slice\(0,\s*(\d+)\)/.exec(html);
   const anZahl = sliceRoh && sliceRoh[1] ? Number(sliceRoh[1]) : null;
   const tp = "wss://relay.pwa-toolpoint.de";
+  const heim = "wss://relay.family-projekt.de";
   ok("Probe 8: das Toolpoint-Relais steht in der Liste", pool.includes(tp));
-  ok("Probe 8: es ist NICHT voreingestellt an — zwei Namen sind keine zweite Poststelle",
-    anZahl !== null && pool.indexOf(tp) >= anZahl);
-  /* Der Grund muss DASTEHEN. Ohne ihn zieht die nächste Sitzung es nach vorn,
-     weil „Klaus' eigenes gehört zuerst" — und der Default-Satz schrumpft
-     still von fünf Speichern auf vier. */
+  ok("Probe 8: es ist voreingestellt AN (Klaus 2026-09-10: Default-Satz auf sechs)",
+    anZahl !== null && pool.indexOf(tp) < anZahl);
+  /* ⚠ DER KERN: die Streuung darf dabei NICHT geschrumpft sein. Beide Namen
+     führen in DENSELBEN Speicher; wer die zweite Tür in einen Fünfer-Satz
+     schiebt, hat vier verschiedene Speicher und schreibt weiter „fünf".
+     Gemessen wird deshalb die Zahl der VERSCHIEDENEN Speicher. */
+  const speicher = new Set(pool.slice(0, anZahl || 0).map((u) => (u === tp ? heim : u)));
+  ok("Probe 8: der Default-Satz deckt weiter fünf verschiedene Speicher ab (" +
+    speicher.size + " bei " + anZahl + " Pillen)", speicher.size === 5);
+  /* Der Grund muss DASTEHEN — sonst kürzt die nächste Sitzung den Satz wieder
+     auf fünf, „weil da eine Dopplung drin ist", und nimmt einen echten
+     Speicher mit. */
   ok("Probe 8: und der Grund steht daneben (zwei Namen, ein Speicher)",
     /ZWEI NAMEN SIND KEINE ZWEITE POSTSTELLE/.test(html));
+  ok("Probe 8: samt der Begründung, warum der Satz sechs zählt und nicht fünf",
+    /DESHALB SIND ES SECHS UND NICHT FÜNF/.test(html));
+  ok("Probe 8: die alte Angabe \u201e5 gestreut\u201c steht nirgends mehr",
+    !/Default: 5 gestreut/.test(html));
   ok("Probe 8: die überholte Toolpoint-Behauptung im Kopf ist weg",
     !/Erster Eintrag: Klaus' EIGENES, log-freies, neutrales Toolpoint-Relay/.test(html));
 }
