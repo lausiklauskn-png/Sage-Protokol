@@ -176,6 +176,116 @@ die eigene Bedeutungs-Beschreibung der nächste Hebel**, nicht Sage.
 
 ---
 
+## 🔬 DER DRITTE MITSCHNITT — das Netz ist vollständig gemessen (2026-09-10, 15:09–15:16)
+
+Beleg: [`sbkim/mitschnitte/2026-09-10T1516_mycel-karte-analyse.json`](mitschnitte/2026-09-10T1516_mycel-karte-analyse.json).
+Klaus hat die vier Knoten geöffnet, die im zweiten Mitschnitt gefehlt hatten.
+**Damit liegen für ALLE 21 Gegenstellen live gemessene Sporen vor.** Sage tritt
+zum zweiten Mal mit `cos = 1.0` gegen die abgelegte Spore an — der Maßstab hält.
+
+### ⚠ MEINE ERKLÄRUNG VON HEUTE NACHMITTAG IST WIDERLEGT
+
+Im Abschnitt darüber steht als Kandidat für den Vektor-Unterschied, die
+Depot-Sporen der betroffenen Knoten stammten aus der Neu-Signier-Welle vom
+18.–19.07. und seien mit `tools/resign_spore_v02.mjs` gerechnet worden, also in
+einer **anderen Umgebung** als der App. Sie stand ausdrücklich als Vermutung da.
+**Sie ist falsch**, und **PWA Toolpoint** widerlegt sie:
+
+| | Depot | Raum |
+|---|---|---|
+| Kennung | `WJ14jzCKnqlz…` | `WJ14jzCKnqlz…` — **dieselbe** |
+| signiert | 2026-09-09T08:11:**25**.674Z | 2026-09-09T08:11:**39**.000Z |
+| Text · Stichworte | 283 Zeichen · 8 | **byte-gleich** |
+| `cos(Depot, Raum)` | **0.992957** | |
+
+**Zwei Sporen, derselbe Schlüssel, derselbe Text, vierzehn Sekunden
+auseinander — und ein anderer Vektor.** Keine zweite Umgebung, kein zweites
+Werkzeug, keine Neu-Signier-Welle: dieselbe App, derselbe Browser, hintereinander
+weg. Das Embedding ist unter denselben Eingaben **nicht deterministisch**.
+
+⚠ **DIE URSACHE IST WEITERHIN NICHT GEMESSEN.** Widerlegt ist nur die eine
+Vermutung. Was übrig bleibt, ist ein Befund ohne Erklärung — und er steht so da,
+statt durch die nächste plausible Geschichte ersetzt zu werden.
+
+> **Eine Vermutung, die man nicht als solche kennzeichnet, wird beim nächsten
+> Lesen zum Befund.** Diese hier war gekennzeichnet, und deshalb ließ sie sich
+> mit einer Messung wieder einkassieren, statt weitergetragen zu werden.
+
+### ⚠ MEIN MIXARIUM SAGT IM RAUM ETWAS ANDERES AN, ALS IM DEPOT LIEGT
+
+Der auffälligste Einzelbefund des dritten Mitschnitts:
+
+| | Depot (`Mein-Mixarium/sbkim/spore.json`) | Raum |
+|---|---|---|
+| Text | **1476 Zeichen** | **88 Zeichen** |
+| Wortlaut im Raum | | *„Klaus Mixarium - Cocktails, Mocktails, Smoothies und mehr; Knabbereien als Begleit-Plus."* |
+| gegen Sage | 0.817718 (Register) | **0.826040** |
+
+Die App bringt einen **Zweizeiler** mit, während im Depot eine ausgearbeitete
+Beschreibung liegt. Wer im Mixarium neu signiert, bekommt den Zweizeiler — genau
+die Vorrang-Falle, die Sage und Kim Hub Company am 2026-09-10 abgestellt haben
+und die dort **nicht** abgestellt ist.
+
+**Dass die Zahl trotzdem leicht STEIGT, ist kein Trost**, sondern zeigt nur, dass
+Länge nicht entscheidet (siehe unten).
+
+### 📏 LÄNGE ENTSCHEIDET NICHT — der Inhalt tut es
+
+Über alle 21 live gemessenen Gegenstellen:
+
+| Knoten | Zeichen | gegen Sage | nennt SBKIM/Mycel/Knoten? |
+|---|---|---|---|
+| Kim-Bell | **82** | **0.874864** | ja |
+| SB-KIMTool-Point | **61** | **0.865795** | ja |
+| Muster Werbetechnik | 421 | 0.793613 | nein |
+| Perfect Skin Fashion | 273 | 0.793030 | nein |
+| Perfect Skin Beauty | 265 | 0.783216 | nein |
+
+**Zweiundachtzig Zeichen schlagen vierhunderteinundzwanzig**, wenn die zwei
+Sätze vom Protokoll handeln und die vierhundert nicht. Für die fünf Knoten unter
+dem Handshake-Boden heißt das: der Hebel ist **nicht mehr Text**, sondern der
+Satz, dass sie zum SBKIM-Mycel gehören.
+
+Klaus hat das am selben Tag von sich aus benannt: *„dass sie im Sage Protokoll
+mit sind, das wird nämlich bedeuten, dass sie leichter gefunden würden innerhalb
+des Mycels."* Die Zahlen oben sind die Messung dazu.
+
+### Das vollständige Bild — 21 Gegenstellen, live
+
+| gegen Sage | Zeichen | Knoten |
+|---|---|---|
+| 0.917107 | 2602 | Kim Hub Company |
+| 0.902126 | 1025 | WorkFloh |
+| 0.874864 | 82 | Kim-Bell |
+| 0.874249 | 458 | Jasons Tresor |
+| 0.871942 | 463 | Mein Tresor |
+| 0.871142 | 272 | Kimseek |
+| 0.870249 | 851 | Muttis Rezeptbuch |
+| 0.865795 | 61 | SB-KIMTool-Point |
+| 0.865385 | 767 | Auslieferungsprüfer |
+| 0.847287 | 238 | Kimboard |
+| 0.842038 | 303 | Family Projekt |
+| 0.835683 | 851 | Mein Rezeptbuch |
+| 0.826818 | 83 | BookLedgerPro |
+| 0.826040 | 88 | Mein Mixarium |
+| 0.808113 | 283 | PWA Toolpoint |
+| 0.800773 | 171 | Private Brain |
+| **0.793613** | 421 | Muster Werbetechnik ⬇ |
+| **0.793347** | 270 | Alis Moderaum ⬇ |
+| **0.793030** | 273 | Perfect Skin Fashion ⬇ |
+| **0.786371** | 300 | Tomys Hub ⬇ |
+| **0.783216** | 265 | Perfect Skin Beauty ⬇ |
+
+**Fünf liegen unter dem Handshake-Boden** `PROVIDER_MIN_MATCH = 0.80`, und alle
+fünf sind Läden und Vorlagen, die das Protokoll nicht erwähnen. **Private Brain**
+liegt mit 0.800773 acht Zehntausendstel darüber.
+
+**Der Grund, aus dem das Register trotzdem noch nicht umgestellt ist**, ist damit
+weggefallen — es war „für vier Knoten liegt kein Mitschnitt vor". Die Entscheidung
+selbst liegt bei Klaus und ist ihm vorgelegt.
+
+---
+
 ## Stufen-Legende
 
 | Stufe | Bedeutung |
