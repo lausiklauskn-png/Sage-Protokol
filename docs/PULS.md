@@ -46,12 +46,18 @@ zweiter Caddy-Block auf **demselben** Relais-Container (Klaus hat es an der
 Server-Konsole gemessen — Zertifikat, HTTP 200, NIP-11-Name „Toolpoint-Relay").
 Beide Türen führen in denselben Nachrichten-Speicher.
 
-**Daraus folgt, wo es NICHT hingehört:** in den Default-Aktiv-Satz. Der zählt
-fünf **verschiedene** Speicher (`RELAY_POOL.slice(0, 5)`); mit der zweiten Tür
-darin wären es vier, und die Oberfläche schriebe weiter „fünf gestreut" — eine
-Zahl, die etwas anderes verspricht, als sie hält. Es steht deshalb als
-**wählbare** Tür in der Liste, und der Grund steht im Code daneben, damit die
-nächste Sitzung es nicht „nach vorn korrigiert".
+**Daraus folgt etwas für den Default-Aktiv-Satz.** Der zählte fünf
+**verschiedene** Speicher (`RELAY_POOL.slice(0, 5)`); die zweite Tür einfach
+hineinzuschieben hätte daraus vier gemacht, während die Oberfläche weiter
+„fünf gestreut" schreibt — eine Zahl, die etwas anderes verspricht, als sie
+hält.
+
+**Klaus hat den Satz deshalb auf SECHS gehoben** (*„Ja, mach den Default-Satz
+auf sechs"*): fünf Speicher wie vorher, plus die zweite Tür des ersten. Die
+Streuung schrumpft dadurch nicht, und der Grund steht im Code daneben — sonst
+kürzt die nächste Sitzung den Satz wieder auf fünf, „weil da eine Dopplung
+drin ist", und nimmt dabei einen echten Speicher mit. Gemessen wird nicht die
+Zahl der Pillen, sondern die Zahl der **verschiedenen Speicher** darin.
 
 Doppelt ankommende Zettel sind unkritisch: Kimboard verwirft sie über
 `seen.has(ev.id)` (nachgesehen, nicht angenommen).
@@ -62,11 +68,12 @@ eine Notiz, die es in keinem der Depots gibt. Der erste Eintrag ist
 `relay.family-projekt.de`.
 
 **Gemessen:** Sage `node tests/run_alle.mjs` **99 grün · 0 rot**,
-`pinnwand/_smoke.mjs` **71 grün** (vorher 67) · Kimboard
-`smoke_vorgezeichnet` **18 grün** (vorher 11). Vier neue Wächter je App, jeder
-von Hand gegengeprüft: Relais entfernt · nach vorn geschoben · Grund gestrichen
-· „(eigenes)" nur am Heim-Relais — jedes Mal fällt genau die Zusicherung um,
-die es betrifft.
+`pinnwand/_smoke.mjs` **74 grün** (vorher 67) · Kimboard `tests/alle.mjs`
+**alle 31 Prüfungen grün**, `smoke_vorgezeichnet` **22 grün** (vorher 11).
+Von Hand gegengeprüft: Relais entfernt · Grund gestrichen · „(eigenes)" nur am
+Heim-Relais · **den Satz wieder auf fünf gekürzt** — der letzte meldet
+„4 verschiedene Speicher bei 5 Pillen", jeder mit dem Namen seiner eigenen
+Zusicherung in der roten Zeile.
 
 ---
 
