@@ -91,6 +91,7 @@ Andock-Konventionen: INTERFACES §11
 | **WorkFloh** (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 öffentlich angeboten) | Werbetechnik-Auftragsabwicklung (`lausiklauskn-png.github.io/Mein-WorkFloh/`) | `6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs` (echt, Browser) | **`verified-match` 0.906269** (2026-07-25 **Klaus' Browser-Andock + Re-Signatur — funktionierender Knoten mit LIVE-Handshake**; Spore v0.2 im Siegel erzeugt, dann `domainDescription` nach dem Rezeptbuch-Muster umgestaltet (Endknoten im SBKIM-Mycel/Sage-Protokoll, wandelbares Branchen-Tool) + **neu signiert** → nodeId unverändert, neuer `domainVector` + 6 Schnipsel, reziprok ✔ VALID. **Wirkung:** Sage⟷WorkFloh **0.7824 → 0.906269** = direkter Hub-Match; **12 Knoten ≥ 0.80** (Sage 0.906 · Point 0.897 · Muttis 0.878 · Rezeptbuch 0.876 · Tomys 0.860 · Kimseek 0.860 · …; nur Private Brain 0.771 drunter). **✅✅ LIVE-HANDSHAKE** (Mycel-Analyse 2026-07-25 19:37 + 19:43): **WorkFloh ⟷ Sage beidseitig `established`** übers echte Relais + Tablet⟷Handy `established`) | `Mein-WorkFloh/sbkim/spore.json` (echt, VALID) + Mycel-Analyse-Rekord 2026-07-25 19:44 |
 | **PWA Toolpoint** (Marktplatz) | Offener-PWA-Marktplatz (`pwa-toolpoint.de/`) | `WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4` | **`verified-match` 0.811205** (2026-09-09; Spore im Browser über das Verbinden-Fenster erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad; echter `domainVector`, L2=1, 384 Zahlen, 2 Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.811205 ≥ 0.80 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/spore.json` (verifiziert 2026-09-09) |
 | **Auslieferungsprüfer** | Auslieferung/Datenschutz/Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM` | **`verified-match` 0.840471** (2026-09-09; Spore im Browser des Prüfers erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad — deep-kanonisches JSON, Kennung = SHA-256 des rohen Schlüssels; echter `domainVector`, L2=1, 384 Zahlen; Sage-Cosinus **offline nachgerechnet** 0.840471 ≥ 0.80, Marktplatz⟷Prüfer 0.817974 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/pruefer-spore.json` (verifiziert 2026-09-09) |
+| **Kim Hub Company** | Werkstatt/KI-Rollen/Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM` | **`verified-match` 0.848945** (2026-09-09; Spore in Klaus' Browser erzeugt, headless reziprok verifiziert ✔ VALID; echter `domainVector`, L2=1, 384 Zahlen, 5 Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.848945 — der **dritthöchste Wert im Netz** nach WorkFloh 0.906 und Point 0.897. Nachbarn: Prüfer 0.853724, Marktplatz 0.823468. ⚠ **Sie trägt die ALTE Beschreibung** — `createdAt` 08:19 UTC, die neue Fassung wurde erst um 13:55 gemergt. Der Wert gilt für den alten Text; **der Live-Handshake steht aus**) | **keine Datei im Depot** — der private Schlüssel bleibt in Klaus' Browser, ein Wächter besteht darauf |
 
 ### 📍 Die erste Spore auf einer Adresse mit ZWEI Knoten (2026-09-09)
 
@@ -131,6 +132,51 @@ neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeug
 eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
 offene Frage benannt, nicht umfahren.
 
+### ⚠ Der dritte Knoten ist da — und seine Spore ist fünf Stunden zu früh (2026-09-09)
+
+Kim Hub Company hat eine Kennung: `eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM`,
+✔ VALID, Sage-Cosinus **0.848945**. Damit tragen alle drei neuen Knoten eine.
+
+**Aber der Wert gilt für einen Text, den Klaus zweimal beanstandet hat.** Die Spore
+trägt `createdAt` **08:19 UTC**; die überarbeitete Beschreibung wurde erst um **13:55**
+gemergt (kim-hub-company #54). Gemessen am mitgeschickten Text:
+
+| | alte Fassung (in der Spore) | neue Fassung (auf `main`) |
+|---|---|---|
+| Länge | 877 Zeichen | 2602 Zeichen |
+| Stichworte | 16 | 36 |
+| nennt den **Namen** des Werkzeugs | **nein** | ja |
+| nennt **SBKIM / Sage-Protokoll** | **nein** | ja |
+| nennt den **Zweck** | **nein** | ja |
+
+Das sind genau die drei Dinge, die er beanstandet hat — *„es besteht noch nicht mal
+der Name des Tools da"* und *„sie erwähnt die Forschung nicht … es muss zusätzlich
+der Zweck angegeben werden"*.
+
+⚠ **Der Wert ist trotzdem eingetragen, und zwar mit dem Vermerk, wofür er gilt.**
+Ihn wegzulassen wäre falsch: die Identität ist bewiesen, und der Cosinus liegt über
+dem Riegel. Ihn ohne den Vermerk einzutragen wäre schlimmer: dann stünde eine
+gemessene Zahl da, von der niemand wüsste, dass sie den alten Text misst.
+
+**Was ein Neu-Signieren ändert und was nicht** — am WorkFloh-Fall vom 2026-07-25
+nachgesehen, nicht angenommen: die **nodeId bleibt**, weil sie aus dem Schlüssel folgt
+und nicht aus dem Text; **der `domainVector` wird neu**, und damit der Cosinus. Bei
+WorkFloh hat dieselbe Umarbeitung 0.7824 auf 0.906269 gehoben. Was sie hier bewirkt,
+wird **gerechnet, wenn die neue Spore da ist** — eine erwartete Zahl klingt genau wie
+eine gemessene.
+
+⚠ **UND IM DEPOT LIEGT WEITERHIN KEINE DATEI.** Anders als bei den zwei
+Toolpoint-Knoten wandert diese Spore **nicht** ins Depot: `kim-hub-company/CLAUDE.md`
+verbietet es ausdrücklich, und ein Wächter in dessen `tests/smoke_knoten.mjs` besteht
+darauf. Die Kennung steht hier, die Datei bleibt in Klaus' Browser.
+
+⚠ **UND ES LIEGT AUCH KEINE SICHERUNG VOR.** Klaus' Andock-Fenster meldet es selbst:
+*„Für diesen Knoten liegt hier noch KEINE Sicherung. Ohne sie ist ein Verlust nicht
+reparierbar."* Räumt der Browser seinen Speicher, ist die Kennung weg und der Knoten
+muss unter neuer Identität von vorn anfangen. Das ist kein Fehler der App, sondern
+der Preis dafür, dass der private Schlüssel das Gerät nie verlässt.
+
+
 
 ### ⏳ Zwei neue Knoten — gebaut, noch ohne Kennung (2026-09-08)
 
@@ -140,7 +186,7 @@ Sporen generieren und dir schicken."*
 
 | Knoten | Domäne | Schublade | Stufe |
 |---|---|---|---|
-| **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | **`gebaut-ohne-kennung`** |
+| **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | ✅ **`verified-match` 0.848945** seit 2026-09-09 — steht jetzt oben in der Haupttabelle |
 | **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | ✅ **`verified-match` 0.840471** seit 2026-09-09 — steht jetzt oben in der Haupttabelle |
 
 **Was gebaut ist:** die 13 Pflicht-Dateien byte-1:1 aus `src/modules/`, die fünf
