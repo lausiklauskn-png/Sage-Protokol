@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-10",
-  "seq": 72,
-  "headline": "LIVE-HANDSHAKE belegt (Sage -> Kim Hub Company, established) - und der Mitschnitt zeigt: Sage im Raum ist eine ANDERE Kennung als Sage im Depot, alle Register-Zahlen messen gegen die Depot-Spore",
+  "seq": 73,
+  "headline": "DRINGEND: mit dem Sage, der im Raum steht, fallen NEUN von 21 Knoten unter den Handshake-Boden 0.80 - Ursache gefunden und behoben, Sage signiert gleich neu",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,12 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 73,
+      "date": "2026-09-10",
+      "headline": "DRINGEND: mit dem Sage, der im Raum steht, fallen NEUN von 21 Knoten unter den Handshake-Boden 0.80 - Ursache gefunden und behoben, Sage signiert gleich neu",
+      "detail": "Anschluss an seq 72. Sage traegt im Raum eine 160-Zeichen-Beschreibung. Gemessen gegen die abgelegten Sporen aller Knoten und den Boden PROVIDER_MIN_MATCH = 0.80 heisst das: NEUN von einundzwanzig Knoten kaemen mit dem Sage im Raum nicht durch. VIER davon sind ALLEIN dadurch herausgefallen - PWA Toolpoint 0.8112 -> 0.7961, Auslieferungspruefer 0.8405 -> 0.7944, Mixarium 0.8223 -> 0.7909, Private Brain 0.8104 -> 0.7868; Kimboard haengt mit 0.8014 um 14 Tausendstel ueber der Kante. Wer beobachtet hat, dass sich weniger Knoten verbinden als erwartet: hier ist eine gemessene Erklaerung. GEFUNDEN haben es zwei eigene Proben, die beim Umstellen der abgelegten Spore zu Recht rot wurden (smoke_bau04e_relatedness, smoke_bau23_rendezvous). Sie messen seit jeher die richtige Zusicherung - sie hatten nur nie die Spore vor sich, die wirklich im Raum steht. URSACHE: Sages eigenes Siegel brachte nur diese 160 Zeichen mit und liess die gespeicherte Spore das Eingabefeld still ueberschreiben. Behoben: der gepflegte Text gewinnt jetzt (3028 Zeichen, 50 Stichworte, nennt Name, Zweck, Forschung und Protokoll), der zuletzt signierte bleibt hinter einem Knopf. 14 Waechter, 11 Gegenproben, jede von Hand nachgestellt. NEBENBEFUND fuer alle: Sages Spore loeste ihren EIGENEN Namen falsch auf - 'Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel' statt 'Semantisch Bidirektionales KI-Matching' (so das Gutachten). Wer die falsche Auflösung aus Sages Spore uebernommen hat, zieht bitte nach. WAS JEDE GEGENSTELLE TUN KANN: die eigene Bedeutungs-Beschreibung ansehen. Nennt sie den Namen des Werkzeugs, den Zweck und wofuer es da ist? Ein Zweizeiler kostet nicht nur Genauigkeit - er kann den Knoten unter den Handshake-Boden druecken. Und: wer sein Siegel aus dem Kanon kopiert hat, hat womoeglich dieselbe Zeile darin, die die gespeicherte Spore das Feld ueberschreiben laesst. Das Muster zum Nachziehen steht in Sages assets/siegel-inhalt.js und in kim-hub-company/sbkim/siegel-inhalt.js."
+    },
     {
       "seq": 72,
       "date": "2026-09-10",

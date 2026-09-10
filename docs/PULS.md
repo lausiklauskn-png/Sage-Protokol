@@ -31,6 +31,50 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung, später) · 🔴 NEUN VON 21 KNOTEN FALLEN UNTER DEN HANDSHAKE-BODEN
+
+**Was getan.** Klaus' Mycel-Mitschnitt hat gezeigt, dass Sage im Raum mit einer
+**160-Zeichen-Beschreibung** steht. Nachgemessen gegen den Boden
+`PROVIDER_MIN_MATCH = 0.80`: **neun von einundzwanzig** Knoten kämen damit nicht
+durch, **vier allein deswegen** — PWA Toolpoint 0.8112 → 0.7961 ·
+Auslieferungsprüfer 0.8405 → 0.7944 · Mixarium 0.8223 → 0.7909 · Private Brain
+0.8104 → 0.7868. Kimboard hängt mit 0.8014 um 14 Tausendstel über der Kante.
+
+⚠ **Gefunden haben es zwei eigene Proben**, die beim Umstellen der abgelegten
+Spore zu Recht rot wurden (`smoke_bau04e_relatedness`,
+`smoke_bau23_rendezvous`). Sie messen seit jeher die richtige Zusicherung — sie
+hatten nur nie die Spore vor sich, die wirklich im Raum steht. **Eine Probe, die
+die falsche Ausgangslage bekommt, misst zuverlässig das Falsche.**
+
+**Ursache und Abhilfe.** Sages `assets/siegel-inhalt.js` brachte selbst nur die
+160 Zeichen mit und ließ die gespeicherte Spore das Feld still überschreiben —
+dieselbe Fassung, die Klaus in Kim Hub Company zweimal beanstandet hat. Jetzt
+gewinnt der gepflegte Text (**3028 Zeichen, 50 Stichworte**, nennt Name, Zweck,
+Forschung, Protokoll), der zuletzt signierte bleibt hinter einem Knopf.
+**14 Wächter, 11 Gegenproben**, jede von Hand nachgestellt — jede rote Zeile
+trägt den Namen ihrer eigenen Zusicherung.
+
+**Nebenbefund:** Sages Spore löste ihren **eigenen Namen falsch** auf —
+*„Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel"* statt *„Semantisch
+Bidirektionales KI-Matching"*, wie das Gutachten es seit jeher sagt.
+
+**Klaus hat entschieden:** *„die Neuere ist die Richtige, auch bei der Kennung"*
+— Sages geltende Kennung ist `BgjXhSApoOrJ…`. Ausgeführt wird sie **mit dem
+nächsten Signieren**: die Raum-Fassung trägt die richtige Kennung **und** den
+dünnen Text; sie jetzt abzulegen hieße, den kaputten Stand festzuschreiben.
+
+**Was offen ist.** Klaus signiert im Sage-Siegel neu → dann einmal tauschen
+(Kennung **und** Text), alle zwanzig `matchScore` neu rechnen, und die sechs
+`sage_inbox.json` in den Schwester-Repos nachziehen. Die fünf Knoten, die schon
+**vorher** unter 0.80 lagen (Tomys Hub, Alis Moderaum, beide Perfect Skin,
+Muster Werbetechnik), sind eine eigene Aufgabe.
+
+**Nächster sinnvoller Schritt.** Klaus: Sage-Siegel öffnen, den Text im Feld
+stehen lassen, „Beschreibung übernehmen → Vektor & Spore neu signieren", Spore
+schicken.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung) · ✅ KIM HUB COMPANY IST NEU SIGNIERT — 0.910528, DER HÖCHSTE WERT IM NETZ
 
 **Was getan.**
