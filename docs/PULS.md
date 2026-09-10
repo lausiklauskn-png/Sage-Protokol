@@ -31,6 +31,51 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DAS REGISTER MISST JETZT GEGEN DEN RAUM
+
+**Was getan.** Klaus: *„bevor du den Register auf den neuen Maßstab umstellst,
+prüfe bitte die Analyse."* Geprüft, dann umgestellt — in dieser Reihenfolge.
+
+**PWA Toolpoint ist von 0.808113 auf 0.917550 gesprungen**, nachdem Klaus mit der
+neuen Beschreibung neu signiert hat. Geprüft wurde:
+
+| | Ergebnis |
+|---|---|
+| Signatur beider Sporen | **VALID**, `id == SHA256(pub)`, kein `d`, L2 = 1 |
+| Kennung | `WJ14jzCKnqlz…` — **dieselbe**, die Identität hat den Wechsel überlebt |
+| Text im Raum ⟷ Depot | **byte-gleich** (2585 Zeichen, 37 Stichworte) |
+| Handshake | **beide Richtungen**, 6/6 und 1/2 |
+
+**⭐ Modul 05 hat die Zahl selbst gemeldet:** `"score": 0.9175501500545508`,
+achtmal — und die Nachrechnung ergibt dieselbe Zahl. Genau der Vergleich, der
+beim ersten Mitschnitt nicht stimmte.
+
+**⚠ Ist der Sprung echt, oder nur Sages Vokabular gespiegelt?** Gemessen gegen
+**alle** 21 Knoten: Toolpoint stieg gegen 19 (KHC +0.070, Muttis +0.072, WorkFloh
++0.069) und **fiel** gegen die zwei ohne Protokoll-Bezug — Tomys Hub −0.013,
+Muster Werbetechnik −0.010. Hätte der Text nur gespiegelt, wäre alles
+gleichmäßig gestiegen und nichts gefallen.
+
+**Benannt bleibt:** der Anstieg gegen **Sage** (+0.109) ist rund doppelt so groß
+wie der Durchschnitt gegen die übrigen. Sages Text ist der protokoll-dichteste im
+Netz — *„schreib wie Sage"* ist ein Hebel auf **diese** Zahl, und das ist nicht
+dasselbe wie *„passe besser zu allen"*. Und die obersten zwei trennen **vier
+Zehntausendstel** (0.917550 / 0.917107): das ist keine Rangfolge.
+
+**Umgestellt:** alle 21 `matchScore` messen jetzt gegen die Spore, die der Knoten
+im **Raum** angesagt hat. `matchScoreMassstab` sagt es im Register, jeder Eintrag
+trägt `matchScoreQuelle`. Sieben Werte bewegen sich gar nicht. **Kein Knoten
+wechselt die Seite des Bodens 0.80**, die `nodeId`-Spalte bleibt die committete
+Identität.
+
+**Nächster Schritt.** Mein Mixarium — Klaus hat den Beleg im Bild geschickt: im
+Siegel steht der 88-Zeichen-Zweizeiler, ohne Herkunfts-Zeile und ohne
+Rückhol-Knopf. Dieselbe Vorrang-Falle, dort noch offen.
+
+**Proben:** `npm test` → **99 grün, 0 rot, 0 nicht lauffähig**.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DRITTER MITSCHNITT — das Netz ist vollständig gemessen
 
 **Was getan.** Klaus hat die vier Knoten geöffnet, die im zweiten Mitschnitt

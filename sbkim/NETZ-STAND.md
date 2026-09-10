@@ -286,6 +286,113 @@ selbst liegt bei Klaus und ist ihm vorgelegt.
 
 ---
 
+## ✅ DAS REGISTER MISST JETZT GEGEN DEN RAUM (2026-09-10, geprüft dann umgestellt)
+
+Klaus: *„bevor du den Register auf den neuen Maßstab umstellst, prüfe bitte die
+Analyse."* Gemacht — hier steht, was geprüft wurde, bevor eine Zahl bewegt wurde.
+
+Beleg: [`sbkim/mitschnitte/2026-09-10T1606_mycel-karte-analyse.json`](mitschnitte/2026-09-10T1606_mycel-karte-analyse.json).
+
+### Was PWA Toolpoint gezeigt hat
+
+Klaus hat den Marktplatz mit der neuen Beschreibung neu signiert. Der Sprung:
+**0.808113 → 0.917550**.
+
+| geprüft | Ergebnis |
+|---|---|
+| Signatur beider Sporen | **VALID**, `id == base64url(SHA256(rawPub))`, kein `d`, `key_ops` nur `["verify"]`, L2 = 1 |
+| Kennung | `WJ14jzCKnqlz…` — **dieselbe wie vorher**, die Identität hat den Text-Wechsel überlebt |
+| Text im Raum ⟷ Text im Depot | **byte-gleich**, 2585 Zeichen, 37 Stichworte |
+| Handshake | **beide Richtungen** — Sage → Toolpoint 6 Anfragen / 6 Antworten, Toolpoint → Sage 1 / 2 |
+
+**⭐ DER BESTE BELEG: Modul 05 hat die Zahl selbst gemeldet.** In den acht
+Handshake-Antworten steht `"score": 0.9175501500545508` — und die Nachrechnung
+aus den beiden Vektoren ergibt dieselbe Zahl. Das ist genau der Vergleich, der
+beim **ersten** Mitschnitt nicht stimmte (0.863579 gegen 0.910528, Ursache waren
+zwei Sage-Identitäten). Jetzt stimmt er.
+
+### ⚠ Ist der Sprung echt, oder wurde nur Sages Vokabular gespiegelt?
+
+Das war die eigentliche Frage, und sie ist **gemessen**: Toolpoints neuer Vektor
+wurde gegen **alle** 21 Knoten gehalten, nicht nur gegen Sage.
+
+| | Δ gegen den alten Toolpoint |
+|---|---|
+| Kim Hub Company | +0.070 |
+| Muttis Rezeptbuch | +0.072 |
+| WorkFloh | +0.069 |
+| Jasons Tresor | +0.062 · Kim-Bell +0.061 · Mein Tresor +0.059 |
+| **Tomys Hub** | **−0.013** |
+| **Muster Werbetechnik** | **−0.010** |
+| Perfect Skin Beauty | +0.0003 |
+
+**Es stieg gegen 19 Knoten und FIEL gegen die zwei, die das Protokoll nicht
+erwähnen.** Hätte der Text nur Sages Wörter gespiegelt, wäre alles gleichmäßig
+gestiegen und nichts gefallen. Der Knoten hat sich wirklich zum Protokoll-Feld
+hin bewegt und leicht von den Läden weg.
+
+⚠ **BENANNTE EINSCHRÄNKUNG.** Der Anstieg gegen **Sage** (+0.109) ist rund
+**doppelt** so groß wie der Durchschnitt gegen die übrigen (+0.04). Sages eigene
+Beschreibung ist der protokoll-dichteste Text im Netz, also landet jeder Text
+über das Protokoll in ihrer Nähe. Das ist eine **Eigenschaft des Maßstabs**, kein
+Fehler — aber es heißt: *„schreib wie Sage"* ist ein Hebel auf **diese** Zahl,
+und das ist nicht dasselbe wie *„passe besser zu allen"*.
+
+⚠ **UND DIE OBERSTEN ZWEI TRENNEN VIER ZEHNTAUSENDSTEL** — PWA Toolpoint
+0.917550, Kim Hub Company 0.917107. **Das ist keine Rangfolge**, das sind zwei
+gleich nahe Knoten. Wer die Liste als Rangliste liest, liest sie falsch.
+
+### Was umgestellt wurde
+
+Alle **21** `matchScore` sind jetzt gegen die Spore gerechnet, die der Knoten im
+**Raum** angesagt hat — je Knoten die neueste aus den vier Mitschnitten.
+`status.json` sagt das im Feld `matchScoreMassstab`, und jeder Eintrag trägt
+`matchScoreQuelle: "raum-2026-09-10"`.
+
+**Sieben Werte bewegen sich gar nicht**, weil Depot- und Raum-Spore denselben
+Vektor tragen. Die größten Bewegungen:
+
+| Knoten | alt | neu | Δ |
+|---|---|---|---|
+| PWA Toolpoint | 0.811202 | **0.917550** | +0.106348 |
+| Rezeptbuch | 0.874048 | 0.835683 | −0.038365 |
+| BookLedgerPro | 0.855505 | 0.826818 | −0.028687 |
+| Auslieferungsprüfer | 0.836978 | 0.865385 | +0.028407 |
+| Kimboard | 0.818961 | 0.847287 | +0.028326 |
+| SB-KIMTool-Point | 0.893026 | 0.865795 | −0.027231 |
+
+**Kein Knoten wechselt die Seite des Handshake-Bodens** `0.80`; die fünf darunter
+bleiben dieselben fünf. **Die `nodeId`-Spalte ist NICHT mitgewandert** — sie führt
+weiter die committete Identität.
+
+### Der Stand nach der Umstellung
+
+| gegen Sage | Zeichen | Knoten |
+|---|---|---|
+| 0.917550 | 2585 | PWA Toolpoint |
+| 0.917107 | 2602 | Kim Hub Company |
+| 0.902126 | 1025 | WorkFloh |
+| 0.874864 | 82 | Kim-Bell |
+| 0.874249 | 458 | Jasons Tresor |
+| 0.871942 | 463 | Mein Tresor |
+| 0.871142 | 272 | Kimseek |
+| 0.870249 | 851 | Muttis Rezeptbuch |
+| 0.865795 | 61 | SB-KIMTool-Point |
+| 0.865385 | 767 | Auslieferungsprüfer |
+| 0.847287 | 238 | Kimboard |
+| 0.842038 | 303 | Family Projekt |
+| 0.835683 | 851 | Mein Rezeptbuch |
+| 0.826818 | 83 | BookLedgerPro |
+| 0.826040 | 88 | Mein Mixarium |
+| 0.800773 | 171 | Private Brain |
+| **0.793613** | 421 | Muster Werbetechnik ⬇ |
+| **0.793347** | 270 | Alis Moderaum ⬇ |
+| **0.793030** | 273 | Perfect Skin Fashion ⬇ |
+| **0.786371** | 300 | Tomys Hub ⬇ |
+| **0.783216** | 265 | Perfect Skin Beauty ⬇ |
+
+---
+
 ## Stufen-Legende
 
 | Stufe | Bedeutung |
