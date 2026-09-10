@@ -77,5 +77,49 @@ pruef(!/class="nav-pill mycel-link"/.test(html),
 pruef(!/\.topology-cta \{/.test(html) && !/a\.nav-pill\.mycel-link/.test(html),
   "und seine CSS-Regeln sind mitgegangen");
 
+
+/* ---- 5 · Kein Link fuehrt nirgendwohin (Auslieferungsprüfer 2026-09-11) --
+ *
+ * Sein Bericht: „1 Sache an 3 Stellen · Dieser Link führt nirgendwohin · ein
+ * Knopf, der nichts tut" — die Marke oben links und zwei Platzhalter, die
+ * das Skript erst spaeter fuellt.
+ *
+ * ⚠ DAS href WEGZULASSEN WAR DER ZWEITE FEHLVERSUCH. Der Prüfer meldet ein
+ * <a> OHNE href genauso wie eines mit `#`, und zu Recht: in der
+ * ausgelieferten Datei fuehrt beides nirgends hin. Jeder Link traegt jetzt
+ * ein ECHTES Ziel, das auch ohne Skript etwas oeffnet; das Skript schaerft
+ * es danach.
+ *
+ * ⚠ GEMESSEN WIRD IM MARKUP, NICHT IN DER GANZEN DATEI. Die Erklaer-
+ * Kommentare daneben nennen `href="#"` woertlich — ein Waechter, der frei
+ * sucht, wird in seiner eigenen Begruendung fuendig und misst nichts.
+ */
+/* ⚠ UND DIE SKRIPTE MUESSEN AUCH RAUS. Im JS steht `<a download>` als
+   Zeichenkette — Markup, das erst zur Laufzeit entsteht und dessen Ziel dann
+   ein blob: ist. Der Auslieferungsprüfer ueberspringt `<script>`-Inhalte aus
+   genau diesem Grund; ein Waechter, der es nicht tut, meldet Code als Markup.
+   Beim ersten Lauf ist er prompt darueber gefallen. */
+const ohneKommentare = html.replace(/<!--[\s\S]*?-->/g, "")
+                           .replace(/<script\b[\s\S]*?<\/script\s*>/gi, "");
+const tote = [...ohneKommentare.matchAll(/<a\b[^>]*>/gi)].filter((m) => {
+  const tag = m[0];
+  const treffer = /\shref\s*=\s*("([^"]*)"|'([^']*)')/i.exec(tag);
+  if (!treffer) return true;                              // gar kein href
+  const ziel = (treffer[2] !== undefined ? treffer[2] : treffer[3]).trim();
+  return ziel === "" || ziel === "#" || /^javascript:void/i.test(ziel);
+});
+pruef(tote.length === 0,
+  "kein <a> ohne Ziel — kein Knopf, der nichts tut (gefunden: " + tote.length + ")");
+if (tote.length) tote.slice(0, 3).forEach((m) => console.log("      ↳ " + m[0].slice(0, 110)));
+
+/* Und die drei aus dem Bericht namentlich — damit ein Ruecktausch auffaellt,
+   nicht nur ein neuer toter Link. */
+pruef(/<a href="#screen-overview" class="brand"/.test(ohneKommentare),
+  "  · die Marke springt auf die Übersicht, die es wirklich gibt");
+pruef(/id="ad-pr-link"[\s\S]{0,220}?href="https:\/\/github\.com\/[^"]*status\.json"/.test(ohneKommentare),
+  "  · der PR-Link zeigt auf die Datei, die der Andockende bearbeiten muss");
+pruef(/<a id="md-link" href="docs\/components\/">/.test(ohneKommentare),
+  "  · die Komponenten-Karte zeigt auf ihren Ordner");
+
 console.log("\n" + bestanden + " grün · " + gefallen + " ROT");
 process.exit(gefallen ? 1 : 0);

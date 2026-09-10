@@ -1231,7 +1231,12 @@
   <div class="bg"></div>
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="#" class="brand" onclick="goScreen('overview'); return false;">
+      <!-- ⚠ EIN ECHTES ZIEL, KEIN `#` (Auslieferungsprüfer 2026-09-11: „Dieser
+           Link führt nirgendwohin — ein Knopf, der nichts tut").
+           `#screen-overview` gibt es wirklich (die Übersicht weiter unten):
+           ohne Skript springt die Seite dorthin, mit Skript wechselt sie den
+           Bildschirm. Ein `href="#"` haette beides nicht getan. -->
+      <a href="#screen-overview" class="brand" onclick="goScreen('overview'); return false;">
         <img src="assets/icon.svg" alt="" aria-hidden="true">
         <span class="brand-mark">SAGE<span class="dot">·</span>PROTOKOL</span>
       </a>
@@ -1588,7 +1593,22 @@
             <pre class="code mono" id="ad-spore"></pre>
             <h4><span class="num">2</span>Eintrag für <code>status.json</code> <button onclick="copyText('ad-line', this)">kopieren</button></h4>
             <pre class="code mono" id="ad-line"></pre>
-            <a id="ad-pr-link" class="andock-pr-link" href="#" target="_blank" rel="noopener noreferrer">→ PR auf status.json öffnen</a>
+            <!-- ⚠ EIN ECHTES ZIEL, DAS AUCH OHNE SKRIPT TRAEGT
+                 (Auslieferungsprüfer 2026-09-11). Hier stand `href="#"` — ein
+                 Knopf, der nichts tut. Das href WEGZULASSEN war der zweite
+                 Fehlversuch: der Prüfer meldet ein <a> ohne href genauso, und
+                 zu Recht, denn in der ausgelieferten Datei fuehrt es nirgends
+                 hin.
+
+                 Die Adresse hier ist die Datei, die der Andockende ohnehin
+                 bearbeiten muss. `erzeugeSpore()` ERGAENZT sie danach um die
+                 vorausgefuellte PR-Nachricht — ohne Skript landet man an
+                 derselben Stelle, nur ohne Vorbelegung. Eine Rueckfalllinie,
+                 die wirklich irgendwohin fuehrt, ist keine Krücke: sie ist
+                 das, was ein Link sein soll. -->
+            <a id="ad-pr-link" class="andock-pr-link"
+               href="https://github.com/lausiklauskn-png/sage-protokol/edit/main/status.json"
+               target="_blank" rel="noopener noreferrer">→ PR auf status.json öffnen</a>
             <div class="andock-steps">
               <strong>Nächste Schritte:</strong>
               <ol>
@@ -1860,7 +1880,11 @@
           <dt>Status</dt><dd id="md-siegel">—</dd>
           <dt>Score</dt><dd id="md-score">—</dd>
           <dt>Abhängigkeiten</dt><dd><div class="deps" id="md-deps"></div></dd>
-          <dt>Komponenten-Karte</dt><dd><a id="md-link" href="#">docs/components/—</a></dd>
+          <!-- Auch hier ein echtes Ziel statt eines Platzhalters: der Ordner
+               mit den Komponenten-Karten. `zeigeModul()` schaerft ihn auf die
+               Datei des gewaehlten Moduls; ohne Skript landet man im Ordner
+               statt nirgendwo. -->
+          <dt>Komponenten-Karte</dt><dd><a id="md-link" href="docs/components/">docs/components/—</a></dd>
         </dl>
       </div>
     </main>
