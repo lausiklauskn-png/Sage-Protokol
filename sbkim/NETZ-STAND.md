@@ -91,7 +91,7 @@ Andock-Konventionen: INTERFACES §11
 | **WorkFloh** (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 öffentlich angeboten) | Werbetechnik-Auftragsabwicklung (`lausiklauskn-png.github.io/Mein-WorkFloh/`) | `6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs` (echt, Browser) | **`verified-match` 0.906269** (2026-07-25 **Klaus' Browser-Andock + Re-Signatur — funktionierender Knoten mit LIVE-Handshake**; Spore v0.2 im Siegel erzeugt, dann `domainDescription` nach dem Rezeptbuch-Muster umgestaltet (Endknoten im SBKIM-Mycel/Sage-Protokoll, wandelbares Branchen-Tool) + **neu signiert** → nodeId unverändert, neuer `domainVector` + 6 Schnipsel, reziprok ✔ VALID. **Wirkung:** Sage⟷WorkFloh **0.7824 → 0.906269** = direkter Hub-Match; **12 Knoten ≥ 0.80** (Sage 0.906 · Point 0.897 · Muttis 0.878 · Rezeptbuch 0.876 · Tomys 0.860 · Kimseek 0.860 · …; nur Private Brain 0.771 drunter). **✅✅ LIVE-HANDSHAKE** (Mycel-Analyse 2026-07-25 19:37 + 19:43): **WorkFloh ⟷ Sage beidseitig `established`** übers echte Relais + Tablet⟷Handy `established`) | `Mein-WorkFloh/sbkim/spore.json` (echt, VALID) + Mycel-Analyse-Rekord 2026-07-25 19:44 |
 | **PWA Toolpoint** (Marktplatz) | Offener-PWA-Marktplatz (`pwa-toolpoint.de/`) | `WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4` | **`verified-match` 0.811205** (2026-09-09; Spore im Browser über das Verbinden-Fenster erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad; echter `domainVector`, L2=1, 384 Zahlen, 2 Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.811205 ≥ 0.80 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/spore.json` (verifiziert 2026-09-09) |
 | **Auslieferungsprüfer** | Auslieferung/Datenschutz/Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM` | **`verified-match` 0.840471** (2026-09-09; Spore im Browser des Prüfers erzeugt, headless reziprok verifiziert ✔ VALID mit Sages Modul-02-Pfad — deep-kanonisches JSON, Kennung = SHA-256 des rohen Schlüssels; echter `domainVector`, L2=1, 384 Zahlen; Sage-Cosinus **offline nachgerechnet** 0.840471 ≥ 0.80, Marktplatz⟷Prüfer 0.817974 — der **Live-Handshake steht aus**) | `PWA-Toolpoint/sbkim/pruefer-spore.json` (verifiziert 2026-09-09) |
-| **Kim Hub Company** | Werkstatt/KI-Rollen/Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM` | **`verified-match` 0.848945** (2026-09-09; Spore in Klaus' Browser erzeugt, headless reziprok verifiziert ✔ VALID; echter `domainVector`, L2=1, 384 Zahlen, 5 Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.848945 — der **dritthöchste Wert im Netz** nach WorkFloh 0.906 und Point 0.897. Nachbarn: Prüfer 0.853724, Marktplatz 0.823468. ⚠ **Sie trägt die ALTE Beschreibung** — `createdAt` 08:19 UTC, die neue Fassung wurde erst um 13:55 gemergt. Der Wert gilt für den alten Text; **der Live-Handshake steht aus**) | **keine Datei im Depot** — der private Schlüssel bleibt in Klaus' Browser, ein Wächter besteht darauf |
+| **Kim Hub Company** | Werkstatt/KI-Rollen/Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM` | **`verified-match` 0.910528** (2026-09-10, **neu signiert mit der neuen Beschreibung**; headless reziprok verifiziert ✔ VALID; echter `domainVector`, L2=1.000000356, 384 Zahlen, **20** Schnipsel; Sage-Cosinus **offline nachgerechnet** 0.910528 — der **höchste Wert im Netz**, vor WorkFloh 0.906269 und Point 0.899516. Nachbarn: Marktplatz 0.823468→**0.841326**, Prüfer 0.853724→**0.818751**. Die Fassung vom 2026-09-09 stand bei 0.848945 und trug die alte Beschreibung; **der Live-Handshake steht aus**) | `sbkim/spore.json` **liegt seit 2026-09-10 im Depot** — nur der öffentliche Teil, der private Schlüssel bleibt in Klaus' Browser |
 
 ### 📍 Die erste Spore auf einer Adresse mit ZWEI Knoten (2026-09-09)
 
@@ -131,6 +131,79 @@ Verzeichnisses ist. Der Weg dahin führt über den Kanon (etwa ein `sporePath`
 neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeugte
 eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
 offene Frage benannt, nicht umfahren.
+
+### ✅ Neu signiert — und der Knoten steht jetzt an der Spitze des Netzes (2026-09-10)
+
+Klaus hat um **01:25 UTC** neu signiert. Der Absatz darunter sagte voraus, was ein
+Neu-Signieren ändert und was nicht — beides ist eingetroffen, **gerechnet statt
+erwartet**:
+
+| | 2026-09-09 | 2026-09-10 |
+|---|---|---|
+| Kennung | `eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM` | **unverändert** |
+| Beschreibung | 877 Zeichen · 16 Stichworte | **2602 · 36** |
+| Satz-Schnipsel | 5 | **20** |
+| **Sage-Cosinus** | 0.848945 | **0.910528** |
+| Rang im Netz | 11. von 20 | **1. von 20** |
+
+**0.910528 ist der höchste Wert im Netz**, vor WorkFloh 0.906269 und
+SB·KIMTool·Point 0.899516. Der Sprung von **+0.061583** entspricht der Größenordnung,
+die dieselbe Umarbeitung 2026-07-25 bei WorkFloh gebracht hat (0.7824 → 0.906269).
+
+⚠ **UND DIE NACHBARN HABEN SICH IN BEIDE RICHTUNGEN BEWEGT.** Das gehört dazu und
+wird nicht weggelassen:
+
+| Gegenstelle | alt | neu | |
+|---|---|---|---|
+| Sage | 0.848945 | **0.910528** | +0.061583 |
+| PWA Toolpoint | 0.823468 | **0.841326** | +0.017858 |
+| Auslieferungsprüfer | 0.853724 | **0.818751** | **−0.034973** |
+
+Der neue Text redet mehr vom **Protokoll und von der Forschung** und weniger vom
+Werkzeug-Alltag — deshalb rückt der Knoten an Sage heran und vom Prüfer weg. Beide
+Bewegungen sind dieselbe Ursache von zwei Seiten. Alte gegen neue Fassung desselben
+Knotens: **0.883004** — die Umarbeitung hat den Knoten also spürbar verschoben, nicht
+nur ausgeschmückt.
+
+Geprüft wurde außerdem, dass der signierte Text **wortgleich** der ist, den die App
+in **beiden** Wegen zur Spore mitbringt (`sbkim/rendezvous-init.js` und
+`sbkim/siegel-inhalt.js`). Zwei verschiedene Texte ergäben zwei verschiedene Vektoren
+für denselben Knoten.
+
+⚠ **UND DIE DATEI LIEGT JETZT IM DEPOT — der Absatz weiter unten sagt das Gegenteil
+und bleibt trotzdem stehen.** Er beschreibt den Stand vom 2026-09-09 richtig. Was
+sich geändert hat, ist der **Wächter**, nicht die Sorge dahinter: er verbot bis dahin
+jede Datei namens `spore.json` und maß damit den **Dateinamen**. Das warf Klaus'
+echte Spore hinaus — während in Sages `status.json` für diesen Knoten die ganze Zeit
+`…/kim-hub-company/sbkim/spore.json` stand, **eine Adresse, die nichts auslieferte** —
+und ließ eine erfundene durch, sobald sie anders hieß. Gemessen wird jetzt die
+**Zusicherung**: Signatur gegen den eigenen Schlüssel · nur der öffentliche Teil
+(`key_ops: ["verify"]`, kein `d`) · genau **dieser** Knoten (die Kennung ist genagelt)
+· die Beschreibung, die die App **heute** mitbringt. Neun Gegenprobe-Fälle, jeder
+einzeln von Hand nachgestellt.
+
+Das ist zugleich die Rückkehr zu Sages eigener Tafel: **die Spore im Netz ist nicht
+die Spore im Depot** — die Datei ist *„Ablage und Beleg, kein Sender"*. Zwölf
+Geschwister-Knoten legen sie so ab; Kim Hub Company war die Ausnahme.
+
+⚠ **WER DIE KENNUNG WECHSELT, ZIEHT SIE AN ZWEI STELLEN NACH:** hier bzw. in
+`status.json` **und** in `kim-hub-company/tests/smoke_knoten.mjs` (Konstante
+`KENNUNG`). Der Preis ist beabsichtigt — ohne den Nagel fängt kein Wächter eine
+erfundene Spore, denn ein frisches Schlüsselpaar ergibt eine, die in sich tadellos
+ist und nur einen anderen Knoten ankündigt.
+
+✅ **UND DIE SICHERUNG GIBT ES JETZT.** Der Absatz weiter unten meldet, dass keine
+vorlag; Klaus' Verbinden-Fenster vermerkt am 2026-09-10 die erste
+(`sbkim-sicherung-kimhubcompany-2026-09-10.json`, 466 KB). Die Datei selbst liegt bei
+ihm, nicht hier — das Fenster hält nur das Datum fest.
+
+⚠ **NICHT GEMESSEN: ob Modul 03 die 2602 Zeichen bei `EMBEDDING_MAX_TOKENS = 512`
+abschneidet.** Das Modell läuft im Browser, ein Tokenizer liegt in dieser Umgebung
+nicht vor (huggingface ist gesperrt) — eine geschätzte Token-Zahl klingt genau wie
+eine gemessene, deshalb steht hier keine. Praktisch ist die Frage entschärft: der
+Wert ist mit dem längeren Text **gestiegen**, nicht gefallen. Sieht Klaus beim
+Signieren in der Konsole `MODUL 03 EMBEDDING: Eingabe > 512 Tokens, abgeschnitten`,
+wird von **hinten** gekürzt — der Baukasten-Absatz zuerst.
 
 ### ⚠ Der dritte Knoten ist da — und seine Spore ist fünf Stunden zu früh (2026-09-09)
 
@@ -186,7 +259,7 @@ Sporen generieren und dir schicken."*
 
 | Knoten | Domäne | Schublade | Stufe |
 |---|---|---|---|
-| **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | ✅ **`verified-match` 0.848945** seit 2026-09-09 — steht jetzt oben in der Haupttabelle |
+| **Kim Hub Company** | Werkstatt / KI-Rollen / Auftrag (`lausiklauskn-png.github.io/kim-hub-company/`) | `kimhubcompany` | ✅ **`verified-match` 0.910528** seit 2026-09-10 (neu signiert) — steht jetzt oben in der Haupttabelle |
 | **Auslieferungsprüfer** | Auslieferung / Datenschutz / Werkzeug (`pwa-toolpoint.de/auslieferungspruefer.html`) | `auslieferungspruefer` | ✅ **`verified-match` 0.840471** seit 2026-09-09 — steht jetzt oben in der Haupttabelle |
 
 **Was gebaut ist:** die 13 Pflicht-Dateien byte-1:1 aus `src/modules/`, die fünf

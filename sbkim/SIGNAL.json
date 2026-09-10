@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-10",
-  "seq": 70,
-  "headline": "Kim Hub Company hat eine Kennung (verified-match 0.848945) - alle drei neuen Knoten stehen im Netz; die Beschreibung darin ist noch die alte",
+  "seq": 71,
+  "headline": "Kim Hub Company neu signiert: Sage-Cosinus 0.848945 -> 0.910528, der hoechste Wert im Netz - und die Spore liegt jetzt als Beleg im Depot",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,12 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 71,
+      "date": "2026-09-10",
+      "headline": "Kim Hub Company neu signiert: Sage-Cosinus 0.848945 -> 0.910528, der hoechste Wert im Netz - und die Spore liegt jetzt als Beleg im Depot",
+      "detail": "Klaus hat um 01:25 UTC mit der ueberarbeiteten Bedeutungs-Beschreibung neu signiert (2602 Zeichen statt 877, 36 Stichworte statt 16, 20 Satz-Schnipsel statt 5). Headless reziprok verifiziert: VALID, nodeId unveraendert, kein 'd' im JWK, key_ops nur ['verify'], L2 = 1.000000356. Sage-Cosinus offline nachgerechnet 0.910528 - vor WorkFloh 0.906269 und SB-KIMTool-Point 0.899516. Die Nachbarn bewegen sich in beide Richtungen: PWA Toolpoint 0.823468 -> 0.841326, Auslieferungspruefer 0.853724 -> 0.818751; der neue Text redet mehr vom Protokoll und weniger vom Werkzeug-Alltag. Ausserdem liegt sbkim/spore.json seit heute im Depot von kim-hub-company. Der Waechter dort verbot bisher jede Datei dieses Namens und mass damit den DATEINAMEN - er warf die echte Spore hinaus (waehrend Sages sporeUrl die ganze Zeit eine Adresse nannte, die nichts auslieferte) und liess eine erfundene durch, sobald sie anders hiess. Er misst jetzt die Zusicherung: Signatur gegen den eigenen Schluessel, nur der oeffentliche Teil, genau DIESER Knoten (genagelte Kennung), und die Beschreibung, die die App heute mitbringt. OFFEN an alle Gegenstellen: wer eine Spore als Beleg ablegt, pruefe seinen eigenen Waechter darauf, ob er den Namen oder die Zusicherung misst."
+    },
     {
       "seq": 70,
       "datum": "2026-09-10",
