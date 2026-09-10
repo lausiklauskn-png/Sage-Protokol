@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <!-- Sage-Protokol · Mycel-Live-Karte — UEBERNOMMEN aus dem eigenstaendigen Repo
-     `lausiklauskn-png/mycel-karte` (Stand 2026-08-11).
+     `lausiklauskn-png/mycel-karte`.
 
-     ANLASS: Diese Kopie war seit dem 2026-07-08 nicht mehr nachgezogen worden
-     und lief still auf altem Stand — EIN fest verdrahtetes Relais, keine
-     Relais-Wahl, kein Doppeltipp auf die Pillen. Sie sah funktionsfaehig aus,
-     weil nichts fehlschlug; sie zeigte nur weniger. Genau diese Sorte Fehler
-     faellt erst auf, wenn jemand die beiden Fassungen nebeneinanderlegt.
+     ⚠ NICHT VON HAND BEARBEITEN. Diese Datei wird ABGELEITET:
+
+         node tools/mycelkarte-uebernehmen.mjs --schreiben
+
+     Eine Handarbeit neben einem Ableiter ist eine zweite Fassung, die
+     auseinanderlaeuft — und genau das ist hier zweimal passiert (2026-08-11
+     und 2026-09-10). Neue Funktionen gehoeren ins Repo `mycel-karte` und
+     kommen von dort herueber.
 
      ABWEICHUNGEN von der Standalone-Fassung — und NUR diese vier:
-       1. Titel + Kopfzeile nennen Sage-Protokol
-       2. Rueck-Link zeigt auf ../index.html (Sage-Page) statt nach aussen
-       3. kein manifest-Verweis   (die Datei liegt hier nicht)
-       4. keine Service-Worker-Anmeldung (diese Fassung ist eingebettet,
-          keine eigene PWA)
-     Wer hier etwas anderes aendert, baut eine zweite Wahrheit auf. Neue
-     Funktionen gehoeren ins Repo `mycel-karte` und kommen von dort herueber;
-     `tests/smoke_mycelkarte_kopie.mjs` schlaegt an, wenn die Kopie zurueckfaellt.
+       1. Titel nennt Sage-Protokol
+       2. Kopfzeile nennt Sage-Protokol
+       3. Rueck-Link zeigt auf ../index.html (Sage-Page) statt nach aussen
+       4. kein Manifest, keine Service-Worker-Anmeldung — diese Fassung ist
+          eingebettet und keine eigene PWA (die Dateien liegen hier nicht)
+
+     `tests/smoke_mycelkarte_kopie.mjs` misst beides: dass die tragenden
+     Faehigkeiten da sind UND dass die vier Abweichungen stimmen.
+-->
 <!-- FP-COPYRIGHT
   ╔═══════════════════════════════════════════════════════════════════╗
   ║  Mycel-Karte  ©  2026  Klaus Nitzsche                             ║
@@ -93,7 +97,7 @@
   /* Relais-Pillen: eine je Poststelle, benannt, klickbar. Abgeschaltete
      bleiben SICHTBAR (nur blass) — eine Liste, aus der Einträge verschwinden,
      macht das Wiedereinschalten zum Suchspiel. */
-  /* Knoten-Karte: erscheint auf Doppeltipp ueber einer Pille. Mittig und
+  /* Knoten-Karte: erscheint auf EINEN Tipp ueber einer Pille. Mittig und
      ueber allem, damit sie auf dem Tablet nicht halb unter dem Regler liegt. */
   #knotenKarte { position: fixed; inset: 0; z-index: 40; display: none;
                  align-items: center; justify-content: center; padding: 1rem;
@@ -102,11 +106,41 @@
   #knotenKarte .kk { background: var(--card); border: 1px solid var(--line);
                      border-radius: 14px; padding: 1rem 1.1rem; max-width: 26rem; width: 100%;
                      box-shadow: 0 18px 50px rgba(0,0,0,0.5); }
-  #knotenKarte h2 { margin: 0 0 0.15rem; font-size: 1.05rem; color: var(--text); }
+  #knotenKarte h2 { margin: 0; font-size: 1.05rem; color: var(--text); }
+  #knotenKarte .kk-kopf { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.15rem; }
+  /* Feste Kantenlänge, damit der Kopf nicht springt, wenn das Bild erst
+     nachkommt — und `object-fit`, weil die Symbole der Apps nicht alle
+     quadratisch geschnitten sind. */
+  #knotenKarte #kkIcon { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 10px;
+    object-fit: contain; background: rgba(255,255,255,0.06); }
+  #knotenKarte .kk-emo { font-size: 1.6rem; line-height: 1; flex: 0 0 auto; }
+  #knotenKarte .kk-emo[hidden] { display: none; }
   #knotenKarte .kennung { font-size: 0.68rem; color: var(--dim); word-break: break-all; margin-bottom: 0.6rem; }
   #knotenKarte .was { font-size: 0.82rem; color: var(--text); line-height: 1.45; margin-bottom: 0.8rem; }
+  /* Anmeldungen unter einer Pille. Ruhig gehalten: es ist eine Auskunft,
+     keine Warnung — auffällig wird es erst durch das, was dort steht. */
+  #knotenKarte .kkanm { margin: 0 0 0.8rem; padding: 0.5rem 0.6rem; border-radius: 8px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+  #knotenKarte .kk-anmeldungen-kopf { font-size: 0.7rem; color: var(--dim); margin-bottom: 0.35rem; }
+  #knotenKarte .kk-anmeldung { font-size: 0.76rem; line-height: 1.5; word-break: break-word; }
+  #knotenKarte .kk-anmeldung span { color: var(--dim); font-size: 0.68rem; }
+  #knotenKarte .kk-anmeldungen-fuss { font-size: 0.66rem; color: var(--dim); line-height: 1.4; margin-top: 0.4rem; }
   #knotenKarte .kkbtn { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
   #knotenKarte .kkhint { font-size: 0.72rem; color: var(--dim); line-height: 1.45; }
+  /* Die Karte kann lang werden — sie scrollt in sich, statt aus dem Bild zu
+     wachsen. Ohne das steht auf einem Handy-Schirm der Schließen-Knopf
+     unerreichbar unter dem Rand. */
+  #knotenKarte .kk { max-height: calc(100vh - 2rem); overflow-y: auto; }
+  #knotenKarte .kkfakt { margin: 0 0 0.7rem; padding: 0.5rem 0.6rem; border-radius: 8px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+  #knotenKarte .kkfakt-kopf { font-size: 0.7rem; color: var(--dim); margin-bottom: 0.35rem; }
+  #knotenKarte .kkzeile { font-size: 0.76rem; line-height: 1.55; word-break: break-word; }
+  #knotenKarte .kkzeile b { color: var(--text); }
+  #knotenKarte .kkzeile span { color: var(--dim); }
+  #knotenKarte .kkfuss { font-size: 0.66rem; color: var(--dim); line-height: 1.4; margin-top: 0.4rem; }
+  /* Ruhig, nicht schrill: eine Abweichung ist eine Auskunft. Auffällig wird
+     sie durch das, was dort steht — nicht durch die Farbe. */
+  #knotenKarte .kkanders { color: #f0b429; }
   .pills { display: flex; flex-wrap: wrap; gap: 0.3rem; }
   .rpill { font-size: 0.72rem; padding: 0.14rem 0.5rem; cursor: pointer; }
   .rpill.aus { opacity: 0.45; }
@@ -158,6 +192,21 @@
   .b.gold { border-color: rgba(244,180,53,0.5); color: var(--gold); }
   .b.active { background: rgba(244,180,53,0.15); border-color: var(--gold); color: var(--gold); }
   .apps .b { min-width: 46%; font-size: 0.78rem; padding: 0.4rem 0.5rem; }
+
+  /* ⚠ `hidden` IST NUR EINE UA-REGEL UND VERLIERT GEGEN JEDE KLASSE MIT
+     `display`. Die Transportreihe traegt `.btnrow` (display:flex) — ohne
+     diese Zeile stuende sie sichtbar da, obwohl `el.hidden` gesetzt ist.
+     Kimhubs Lehre vom 2026-08-22, an einer anderen Tuer. */
+  [hidden] { display: none !important; }
+  /* Die Transportknoepfe sind klein und stehen NEBENEINANDER, nicht in der
+     Breite der grossen. `flex: 0 0 auto` statt `flex: 1`, sonst zieht jeder
+     von ihnen ein Sechstel der Reihe auf sich. */
+  #replayTransport { align-items: center; gap: 0.35rem; margin-top: 0.4rem; }
+  #replayTransport .b { flex: 0 0 auto; min-width: 2.4rem; padding: 0.3rem 0.45rem; font-size: 0.9rem; }
+  #replayStand {
+    flex: 1 1 auto; text-align: center; font-size: 0.72rem; color: var(--dim);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
   .hint { font-size: 0.72rem; color: var(--dim); line-height: 1.45; margin-top: 0.35rem; }
 
   #log {
@@ -210,9 +259,18 @@
 
 <div id="knotenKarte" role="dialog" aria-modal="true" aria-labelledby="kkName">
   <div class="kk">
-    <h2 id="kkName">—</h2>
+    <div class="kk-kopf">
+      <img id="kkIcon" alt="" width="44" height="44" hidden
+           referrerpolicy="no-referrer" decoding="async">
+      <span id="kkEmo" class="kk-emo" aria-hidden="true"></span>
+      <h2 id="kkName">—</h2>
+    </div>
     <div class="kennung" id="kkKennung"></div>
     <div class="was" id="kkWas"></div>
+    <div class="kkanm" id="kkAnmeldungen" style="display:none"></div>
+    <div class="kkfakt" id="kkRaum" style="display:none"></div>
+    <div class="kkfakt" id="kkRegister" style="display:none"></div>
+    <div class="kkfakt" id="kkVerbindungen" style="display:none"></div>
     <div class="kkbtn" id="kkKnoepfe"></div>
     <div class="kkhint" id="kkHint"></div>
   </div>
@@ -267,25 +325,54 @@
          Sie zeigte SECHS Apps, während auf der Karte fünfzehn Knoten standen —
          wer eine der anderen neun öffnen wollte, fand keinen Weg. Und sie stand
          weit weg von dem Ding, um das es ging: der Pille. Jetzt führt der Weg
-         über den Knoten selbst (Doppeltipp), und damit über ALLE, nicht über
+         über den Knoten selbst (ein Tipp), und damit über ALLE, nicht über
          eine handverlesene Auswahl. -->
     <div class="row">
       <label class="top">Apps öffnen</label>
-      <div class="hint"><b>Doppeltipp auf eine Pille</b> öffnet ihre Karte: App starten,
-      Landingpage lesen, und was du dort tun kannst. Einfach ziehen verschiebt sie wie bisher.<br>
+      <div class="hint"><b>Ein Tipp auf eine Pille</b> öffnet ihre Karte: App starten,
+      Landingpage lesen — und was die Karte über den Knoten <b>weiß</b>: was er im Raum
+      von sich sagt, woraus sein Vektor gerechnet ist, seine Bedeutungs-Nähe zu Sage aus
+      dem Register, und mit wem er hier verbunden ist. Einfach ziehen verschiebt sie wie bisher.<br>
       In der App dann <b>„🌐 Mit dem Netz verbinden"</b> drücken — das ist das
       „Hier bin ich"-Signal, bewusst per Hand, kein Auto-Funk.</div>
     </div>
     <div class="row btnrow">
       <button class="b gold" id="btnDemo">🎬 Probelauf</button>
+      <button class="b gold" id="btnReplay">▶ Mitschnitt abspielen</button>
+      <button class="b" id="btnReplayDatei" title="eine eigene Aufzeichnung des Rekorders wählen">📂 eigene Datei</button>
+      <input type="file" id="replayFile" accept=".json,application/json" hidden>
       <button class="b" id="btnFull">⛶ Vollbild</button>
       <button class="b" id="btnReset">↺ Zurücksetzen</button>
+    </div>
+    <!-- Klaus 2026-09-10: „eine Pausetaste welche anstelle der Playtaste
+         auftaucht, darunter eine kleine Vor zurück und eine Schnellvorspulen
+         taste und zurück." Die Reihe erscheint ERST, wenn ein Mitschnitt
+         geladen ist — Knoepfe, hinter denen nichts liegt, sind tote Knoepfe. -->
+    <div class="row btnrow" id="replayTransport" hidden>
+      <button class="b" id="btnSpulZurueck" title="zehn Ereignisse zurück">⏪</button>
+      <button class="b" id="btnSchrittZurueck" title="ein Ereignis zurück">◀</button>
+      <span id="replayStand">—</span>
+      <button class="b" id="btnSchrittVor" title="ein Ereignis vor">▶</button>
+      <button class="b" id="btnSpulVor" title="zehn Ereignisse vor — sie werden mitgespielt, nur ohne Wartezeit">⏩</button>
+      <button class="b" id="btnReplayStop" title="Wiedergabe beenden">⏹</button>
     </div>
     <div class="hint">
       Diese Karte <b>lauscht nur</b>: Fenster-Ereignisse (<code>sbkim:*</code>) und
       BroadcastChannel <code>sbkim</code>/<code>sbkim-membrane</code>. Läuft eine deiner
       Apps (Mixarium, Rezeptbuch …) im selben Browser, leuchtet echter Verkehr hier live auf.
-      Gestrichelt = Probelauf (simuliert). Pillen lassen sich ziehen; Rad/Pinch = Zoom.
+      Gestrichelt = Probelauf (simuliert). <b>▶ Mitschnitt abspielen</b> spielt dagegen den
+      <b>echten</b> Verkehr des 10.09.2026 nach — 191 Ereignisse aus fünf Aufzeichnungen,
+      gleichmäßig ein Ereignis je Sekunde, also rund drei Minuten; die vier Stunden des
+      Originals werden dabei <b>nicht</b> im Originaltempo wiedergegeben.
+      <b>📂 eigene Datei</b> nimmt jede Aufzeichnung des Rekorders 🔬.
+      Läuft eine Wiedergabe, wird aus <b>▶</b> eine <b>⏸ Pause</b>, und darunter
+      erscheint die Steuerung: <b>◀ ▶</b> ein Ereignis, <b>⏪ ⏩</b> zehn auf
+      einmal, <b>⏹</b> beendet. Alle vier halten dabei an — wie am Bandgerät.
+      <b>⏩ überspringt nichts</b>: die Ereignisse dazwischen werden mitgespielt,
+      nur ohne Wartezeit. <b>⏪ bewegt das Band, nicht die Karte</b> — sie ist ein
+      Gedächtnis und vergisst nicht, was sie schon gesehen hat; was noch einmal
+      abgespielt wird, blinkt erneut auf.
+      Pillen lassen sich ziehen; Rad/Pinch = Zoom.
     </div>
   </div>
 </div>
@@ -316,11 +403,8 @@ function hardReloadApp(){
   try{
     const to=setTimeout(go,2500);
     const tasks=[];
-    /* Diese Kopie registriert keinen eigenen Worker und legt keinen eigenen Vorrat an.
-       `getRegistrations()` meldete trotzdem ALLE Apps des Ursprungs ab, `caches.delete`
-       loeschte deren Offline-Vorraete (gemessen 2026-09-08, tests/vorrat_wirkung.mjs).
-       Jetzt: nur der Worker, der DIESE Seite steuert (hier keiner) — und kein Vorrat. */
-    if('serviceWorker' in navigator){ tasks.push(navigator.serviceWorker.getRegistration().then(r=>r&&r.unregister()).catch(()=>{})); }
+    if('serviceWorker' in navigator){ tasks.push(navigator.serviceWorker.getRegistration().then(r=>r&&r.unregister()) /* nur der EIGENE Worker — getRegistrations() meldete ALLE Apps des Ursprungs ab */.catch(()=>{})); }
+    if(window.caches && caches.keys){ tasks.push(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('mycel-karte-')).map(k=>caches.delete(k)))) /* nur EIGENE Vorraete — caches gehoert dem Ursprung */.catch(()=>{})); }
     Promise.all(tasks).then(()=>{ clearTimeout(to); go(); }).catch(()=>{ clearTimeout(to); go(); });
   }catch(_e){ go(); }
 }
@@ -369,7 +453,19 @@ var SEED_NODES = [
   { id: "kimseek",   label: "Kimseek",          hub: false },
   { id: "kimboard",  label: "Kimboard",         hub: false },
   { id: "kimbell",   label: "Kim-Bell",         hub: false },
-  { id: "privatbrain",label: "Private Brain",   hub: false }
+  { id: "privatbrain",label: "Private Brain",   hub: false },
+  // Nachgezogen 2026-08-17: Sage fuehrt neunzehn Knoten, die Karte kannte
+  // dreizehn. Die sechs hier tauchten deshalb nur auf, SOLANGE die App lief —
+  // war sie aus, fehlten sie ganz, waehrend die anderen als graue Pille
+  // stehenblieben. Perfect Skin Beauty erschien am 2026-08-17 in Klaus'
+  // Aufzeichnung als loser „live_q-sW…"-Knoten statt auf einer Pille; das war
+  // der Anlass.
+  { id: "muttisrezeptbuch", label: "Muttis Rezeptbuch",  hub: false },
+  { id: "workfloh",         label: "WorkFloh",           hub: false },
+  { id: "alismoderaum",     label: "Alis Moderaum",      hub: false },
+  { id: "perfectskinfashion", label: "Perfect Skin Fashion", hub: false },
+  { id: "perfectskinbeauty",  label: "Perfect Skin Beauty",  hub: false },
+  { id: "musterwerbetechnik", label: "Muster Werbetechnik",  hub: false }
 ];
 var SEED_EDGES = [ // bekannte etablierte Andocks/Beziehungen (Anzeige, kein Urteil)
   ["sage", "mixarium"], ["sage", "rezeptbuch"], ["sage", "family"],
@@ -377,7 +473,25 @@ var SEED_EDGES = [ // bekannte etablierte Andocks/Beziehungen (Anzeige, kein Urt
   ["sage", "tomyhub"], ["sage", "kimseek"], ["sage", "kimboard"], ["sage", "kimbell"],
   ["mixarium", "rezeptbuch"], ["mixarium", "family"],
   // 2026-07-11 live bewiesene Cross-Knoten-Handshakes (Klaus' Browser-Lauf):
-  ["toolpoint", "tomyhub"]
+  ["toolpoint", "tomyhub"],
+  /* Nachgezogen 2026-08-17 — und BEWUSST nicht alle an Sage gehaengt.
+   *
+   * Die Zahl in Klammern ist der gemessene Cosinus aus Sage-Protokol/
+   * status.json; 0.80 ist der Riegel, ab dem sich zwei Knoten ueberhaupt die
+   * Hand geben. Muttis Rezeptbuch und WorkFloh liegen gegen Sage darueber
+   * (verified-match) — sie bekommen ihren Faden zum Hub wie die dreizehn davor.
+   *
+   * Die anderen vier liegen gegen Sage DARUNTER (0.78-0.79). Ein Faden zu Sage
+   * wuerde dort eine Verbindung behaupten, die der Riegel gerade verweigert —
+   * ein Kosmetikstudio und eine Protokoll-Bibliothek haben fachlich nichts
+   * miteinander. Sie bekommen stattdessen den Faden zu dem Knoten, mit dem sie
+   * WIRKLICH ueber dem Riegel liegen. Lieber vier ehrliche Faeden als sechs
+   * bequeme. */
+  ["sage", "muttisrezeptbuch"],                    // 0.8766, verified-match
+  ["sage", "workfloh"],                            // 0.9063, verified-match
+  ["perfectskinbeauty", "perfectskinfashion"],     // 0.8612
+  ["alismoderaum", "perfectskinfashion"],          // 0.8527
+  ["workfloh", "musterwerbetechnik"]               // 0.8417
 ];
 
 // ---------- Graph-Zustand ----------
@@ -388,7 +502,7 @@ var nodeById = {};
 /* ---------- Adressbuch: welcher Knoten ist welche App? -------------------
  *
  * Die Karte kennt Knoten nur als Name + Kennung — eine Adresse steht in der
- * Visitenkarte nicht drin. Damit ein Doppeltipp trotzdem irgendwo hinführt,
+ * Visitenkarte nicht drin. Damit ein Tipp trotzdem irgendwo hinführt,
  * liegt hier die Zuordnung.
  *
  * ⚠ EHRLICH ZUR HERKUNFT (2026-08-11): Diese Adressen sind aus den Repo-Namen
@@ -403,36 +517,52 @@ var nodeById = {};
  * Unbekannte Knoten sind KEIN Fehler: die Karte sagt dann ehrlich, dass keine
  * Adresse hinterlegt ist, statt einen Knopf ins Leere anzubieten. */
 var GH = "https://lausiklauskn-png.github.io/";
+/* ⚠ DAS `icon` IST DER PFAD AUS DEM MANIFEST DER JEWEILIGEN APP, nicht ein
+ * geratener. Jeder wurde gegen `origin/main` des zugehoerigen Depots geprueft:
+ * die Datei gibt es wirklich. Wo eine App ihr Symbol als data-URI in der Seite
+ * traegt (SB-KIMTool-Point, Mein-Tresor, Jasons-Tresor) oder wo das Depot leer
+ * ist (Me-Mixarium, Kim-sync), steht KEIN `icon` — dort bleibt es beim
+ * Sinnbild. Ein Pfad, den es nicht gibt, waere ein stiller 404.
+ *
+ * ⚠ UND DAS SINNBILD BLEIBT DIE RUECKFALLLINIE. Das Symbol kommt von der
+ * Adresse der App; ist sie nicht erreichbar (offline, Depot umbenannt), zeigt
+ * die Karte das Sinnbild statt eines kaputten Bild-Rahmens.
+ *
+ * ⚠ PERFECT SKIN BEAUTY hat mit Absicht KEINS. Die Seite laeuft unter eigener
+ * Adresse, und WELCHES der beiden Depots dort ausgeliefert wird, steht nirgends
+ * fest (die Verfassung dort sagt ausdruecklich „nachsehen, nicht annehmen").
+ * Ein Symbol aus dem falschen Depot waere geraten. */
 var ADRESSBUCH = {
-  sage:              { emo: "🍄", app: GH + "Sage-Protokol/", was: "Der Hub des Mycels: Protokoll, Module, Bibliothek. Hier entsteht, was die anderen einbauen." },
-  sageprotokol:      { emo: "🍄", app: GH + "Sage-Protokol/", was: "Der Hub des Mycels: Protokoll, Module, Bibliothek." },
-  meinmixarium:      { emo: "🍹", app: GH + "Mein-Mixarium/",     seite: GH + "Mein-Mixarium-Page/",     was: "Getränke-Labor: Cocktails, Mocktails, Sirupe, Tees — mit eigenem Labor zum Erfinden." },
+  sage:              { emo: "🍄", icon: "assets/icon.svg", app: GH + "Sage-Protokol/", was: "Der Hub des Mycels: Protokoll, Module, Bibliothek. Hier entsteht, was die anderen einbauen." },
+  sageprotokol:      { emo: "🍄", icon: "assets/icon.svg", app: GH + "Sage-Protokol/", was: "Der Hub des Mycels: Protokoll, Module, Bibliothek." },
+  meinmixarium:      { emo: "🍹", icon: "mixarium_icon.svg", app: GH + "Mein-Mixarium/",     seite: GH + "Mein-Mixarium-Page/",     was: "Getränke-Labor: Cocktails, Mocktails, Sirupe, Tees — mit eigenem Labor zum Erfinden." },
   memixarium:        { emo: "🍹", app: GH + "Me-Mixarium/",       was: "Getränke-Labor, zweite Ausfertigung." },
-  meinrezeptbuch:    { emo: "🍲", app: GH + "Mein-Rezeptbuch/",   seite: GH + "Mein-Rezeptbuch-Page/",   was: "Rezeptbuch: Kochen, Wochenplan, Einkaufszettel — offline nutzbar." },
-  muttisrezeptbuch:  { emo: "🍲", app: GH + "Muttis-Rezeptbuch/", seite: GH + "Muttis-Rezeptbuch-Seite/", was: "Das Original-Rezeptbuch, aus dem Mein Rezeptbuch hervorging." },
-  workfloh:          { emo: "🪲", app: GH + "Mein-WorkFloh/",     seite: GH + "Mein-Workfloh-Page/",     was: "Digitaler Auftragszettel für den Werbetechnik-Betrieb: Annahme, Produktion, Übergabe, Zeiten." },
-  meinworkfloh:      { emo: "🪲", app: GH + "Mein-WorkFloh/",     seite: GH + "Mein-Workfloh-Page/",     was: "Digitaler Auftragszettel: Annahme, Produktion, Übergabe, Zeiten." },
-  bookledgerpro:     { emo: "📒", app: GH + "BookLedgerPro/",     was: "Buchhaltung: offline, verschlüsselt, GoBD-fest. Nimmt fertige Aufträge aus WorkFloh an." },
+  meinrezeptbuch:    { emo: "🍲", icon: "icons/icon-book-blue-192.png", app: GH + "Mein-Rezeptbuch/",   seite: GH + "Mein-Rezeptbuch-Page/",   was: "Rezeptbuch: Kochen, Wochenplan, Einkaufszettel — offline nutzbar." },
+  muttisrezeptbuch:  { emo: "🍲", icon: "icons/icon-book-192.svg", app: GH + "Muttis-Rezeptbuch/", seite: GH + "Muttis-Rezeptbuch-Seite/", was: "Das Original-Rezeptbuch, aus dem Mein Rezeptbuch hervorging." },
+  workfloh:          { emo: "🪲", icon: "icon-192.png", app: GH + "Mein-WorkFloh/",     seite: GH + "Mein-Workfloh-Page/",     was: "Digitaler Auftragszettel für den Werbetechnik-Betrieb: Annahme, Produktion, Übergabe, Zeiten." },
+  meinworkfloh:      { emo: "🪲", icon: "icon-192.png", app: GH + "Mein-WorkFloh/",     seite: GH + "Mein-Workfloh-Page/",     was: "Digitaler Auftragszettel: Annahme, Produktion, Übergabe, Zeiten." },
+  bookledgerpro:     { emo: "📒", icon: "assets/icons/icon-192.png", app: GH + "BookLedgerPro/",     was: "Buchhaltung: offline, verschlüsselt, GoBD-fest. Nimmt fertige Aufträge aus WorkFloh an." },
   sbkimtoolpoint:    { emo: "🧰", app: GH + "SB-KIMTool-Point/",  was: "Werkzeugkiste für Forker: die SBKIM-Module zum Kopieren, mit Erklärung." },
-  familyproject:     { emo: "👨‍👩‍👧", app: "https://family-projekt.de/", was: "Der Marktplatz für Freunde und Bekannte mit eigenem Gewerbe." },
-  familyprojekt:     { emo: "👨‍👩‍👧", app: "https://family-projekt.de/", was: "Der Marktplatz für Freunde und Bekannte mit eigenem Gewerbe." },
-  pwatoolpoint:      { emo: "🛒", app: "https://pwa-toolpoint.de/", was: "Der offene Laden für PWAs — für wildfremde Anbieter, gleiche Technik wie family-projekt.de." },
+  familyproject:     { emo: "👨‍👩‍👧", icon: "icon-192.png", app: "https://family-projekt.de/", was: "Der Marktplatz für Freunde und Bekannte mit eigenem Gewerbe." },
+  familyprojekt:     { emo: "👨‍👩‍👧", icon: "icon-192.png", app: "https://family-projekt.de/", was: "Der Marktplatz für Freunde und Bekannte mit eigenem Gewerbe." },
+  pwatoolpoint:      { emo: "🛒", icon: "assets/icon-192.png", app: "https://pwa-toolpoint.de/", was: "Der offene Laden für PWAs — für wildfremde Anbieter, gleiche Technik wie family-projekt.de." },
   meintresor:        { emo: "🔐", app: GH + "Mein-Tresor/",       was: "Tresor mit Dreh-Safe und 20 Fächern: Dateien verschlüsselt ablegen." },
   jasonstresor:      { emo: "🗝️", app: GH + "Jasons-Tresor/",     was: "Tresor und Bibliothek für JSON-Dateien und Schlüssel." },
-  kimboard:          { emo: "🌳", app: GH + "Kimboard/",          was: "Fragen aufs geborgte Brett legen und Antworten einsammeln — server-los, geräteübergreifend." },
-  kimseek:           { emo: "🔍", app: GH + "Kimseek/",           was: "Suchen im Mycel." },
-  kimbell:           { emo: "🔔", app: GH + "Kim-Bell/",          was: "Benachrichtigungen im Mycel." },
+  kimboard:          { emo: "🌳", icon: "icon-192.png", app: GH + "Kimboard/",          was: "Fragen aufs geborgte Brett legen und Antworten einsammeln — server-los, geräteübergreifend." },
+  kimseek:           { emo: "🔍", icon: "icon-192.png", app: GH + "Kimseek/",           was: "Suchen im Mycel." },
+  kimbell:           { emo: "🔔", icon: "icon-192.png", app: GH + "Kim-Bell/",          was: "Benachrichtigungen im Mycel." },
   kimsync:           { emo: "🔄", app: GH + "Kim-sync/",          was: "Abgleich zwischen Geräten." },
-  kimhub:            { emo: "🧭", app: GH + "Kimhub/",            was: "Sammelpunkt der Kim-Werkzeuge." },
-  tomyshub:          { emo: "🏪", app: GH + "Tomys-Hub/",         was: "Tomys Katalog und sein eigenes WorkFloh." },
-  privatebrain:      { emo: "🧠", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: eigene Dateien einmal einlesen, danach nach Bedeutung durchsuchen." },
-  privatbrain:       { emo: "🧠", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: nach Bedeutung suchen statt nach Stichwort." },
-  companybrain:      { emo: "🏢", app: GH + "Company-Brain/",     was: "Dasselbe für den Betrieb." },
-  alismoderaum:      { emo: "👗", app: GH + "Alis-Moderaum/",     was: "Moderaum." },
-  perfectskinbeauty: { emo: "💄", app: GH + "Perfect-Skin-Beauty/", was: "Beauty-Seite." },
-  perfectskinfashion:{ emo: "👠", app: GH + "Perfect-Skin-Fashion/", was: "Fashion-Seite mit Warenwirtschaft." },
-  kuechenzettel:     { emo: "📝", app: GH + "Kuechenzettel/",     was: "Küchenzettel." },
-  mycelkarte:        { emo: "🍄", app: GH + "mycel-karte/",       was: "Diese Karte." }
+  kimhub:            { emo: "🧭", icon: "icons/kimhub-192.png", app: GH + "Kimhub/",            was: "Sammelpunkt der Kim-Werkzeuge." },
+  tomyshub:          { emo: "🏪", icon: "icons/icon-192.png", app: GH + "Tomys-Hub/",         was: "Tomys Katalog und sein eigenes WorkFloh." },
+  privatebrain:      { emo: "🧠", icon: "icon-192.png", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: eigene Dateien einmal einlesen, danach nach Bedeutung durchsuchen." },
+  privatbrain:       { emo: "🧠", icon: "icon-192.png", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: nach Bedeutung suchen statt nach Stichwort." },
+  companybrain:      { emo: "🏢", icon: "icon-192.png", app: GH + "Company-Brain/",     was: "Dasselbe für den Betrieb." },
+  alismoderaum:      { emo: "👗", icon: "assets/icon-192.png", app: GH + "Alis-Moderaum/",     was: "Damenboutique: Kleider, Dessous, Taschen, Parfüm — mit eigener Warenwirtschaft für Bestand, Wareneingang und Kasse." },
+  perfectskinbeauty: { emo: "💄", app: "https://perfectskinbeauty.de/", was: "Kosmetikstudio in Hamburg: Sugaring, Waxing, apparative Kosmetik — Behandlungen, Hautpflege, Termin." },
+  perfectskinfashion:{ emo: "👠", icon: "assets/icon-192.png", app: GH + "Perfect-Skin-Fashion/", was: "Online-Modeshop für limitierte Mode aus Italien, mit Design-Studio zum Selbstgestalten und eigener Warenwirtschaft." },
+  kuechenzettel:     { emo: "📝", icon: "icons/icon-192.png", app: GH + "Kuechenzettel/",     was: "Küchenzettel." },
+  musterwerbetechnik:{ emo: "🪧", icon: "icon-192.png", app: GH + "Mein-Workfloh-Page/", was: "Website-Vorlage für einen Werbetechnik-Betrieb: Leistungen, Kontakt, PWA-Gestaltung zum Nachbauen." },
+  mycelkarte:        { emo: "🍄", icon: "icon-192.png", app: GH + "mycel-karte/",       was: "Diese Karte." }
 };
 function adressSchluessel(name) {
   return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -475,6 +605,21 @@ function normNodeName(s) {
   n = n.replace(/^mein/, "");                      // "Mein Rezeptbuch" == "Rezeptbuch" (Register-Kurzform)
   return n;
 }
+/* ⚠ DAS REGISTER WIRD GEHOLT UND WAR BISHER FAST GANZ WEGGEWORFEN. Genommen
+ * wurde nur der NAME, um fehlende Pillen nachzuziehen. Jeder Eintrag traegt
+ * aber die Sachen, nach denen man eine Karte ueberhaupt anklickt: die Domaene,
+ * die Bedeutungs-Zahl gegen Sage samt ihrem Datum, die committete Kennung, die
+ * Stamm- und Gast-Kategorien, die Adresse der abgelegten Spore. Sie werden
+ * jetzt behalten — dieselbe Anfrage, dieselben Bytes, nur nicht mehr
+ * weggeworfen. */
+var REGISTER = {};              // normNodeName -> Eintrag aus status.json
+var REGISTER_MASSSTAB = "";     // was die Zahlen bedeuten, in Sages eigenen Worten
+var REGISTER_STAND = "";        // wann das Register zuletzt fortgeschrieben wurde
+var registerDa = false;
+function registerFuer(name) {
+  if (!name) return null;
+  return REGISTER[normNodeName(name)] || REGISTER[normNodeName(namensTeile(name).kanon)] || null;
+}
 (function autoSyncNodesFromRegister() {
   if (typeof fetch !== "function") return;
   try {
@@ -484,10 +629,14 @@ function normNodeName(s) {
       .then(function (r) { return r && r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d || !Array.isArray(d.endknoten)) return;
+        REGISTER_MASSSTAB = String(d.matchScoreMassstab || "");
+        REGISTER_STAND = String(d.lastUpdated || "");
+        registerDa = true;
         d.endknoten.forEach(function (k) {
           var nm = k && k.name;
           if (!nm) return;
           var key = normNodeName(nm);
+          REGISTER[key] = k;                  // IMMER merken, auch fuer bekannte Pillen
           if (known[key]) return;             // schon im Seed / bereits live
           addNode("auto-" + key, nm, false);  // edgeless — CENTER_PULL haelt ihn im Bild
           known[key] = true;
@@ -505,7 +654,7 @@ function normNodeName(s) {
 var SEED_ALIASES = {
   sage:      ["sage", "sage protokoll", "sage protokol"],
   mixarium:  ["mein mixarium", "mixarium"],
-  rezeptbuch:["mein rezeptbuch", "rezeptbuch", "muttis rezeptbuch"],
+  rezeptbuch:["mein rezeptbuch", "rezeptbuch"],
   family:    ["family project", "family projekt", "familyprojekt", "familyproject"],
   blp:       ["bookledgerpro", "book ledger pro", "bookledger pro"],
   toolpoint: ["sb kimtool point", "kimtool point", "sbkimtool point", "sb kimtoolpoint"],
@@ -515,7 +664,13 @@ var SEED_ALIASES = {
   kimseek:   ["kimseek", "kim seek", "kim sieg"],
   kimboard:  ["kimboard", "kim board"],
   kimbell:   ["kim bell", "kim-bell", "kimbell"],
-  privatbrain:["private brain", "privat brain", "privatbrain"]
+  privatbrain:["private brain", "privat brain", "privatbrain"],
+  muttisrezeptbuch:["muttis rezeptbuch", "muttisrezeptbuch"],
+  workfloh:["workfloh", "work floh", "mein workfloh"],
+  alismoderaum:["alis moderaum", "alismoderaum"],
+  perfectskinfashion:["perfect skin fashion", "perfectskinfashion"],
+  perfectskinbeauty:["perfect skin beauty", "perfectskinbeauty"],
+  musterwerbetechnik:["muster werbetechnik", "musterwerbetechnik"]
 };
 function normName(x) { return String(x || "").toLowerCase().replace(/[^a-z0-9äöüß]+/g, " ").trim(); }
 function seedForName(name) {
@@ -550,8 +705,8 @@ function migrateLiveNode(oldNode, seed, nodeId) {
     e.a = na; e.b = nb; edgeByKey[key] = e;
   }
   if (!seed.aliveIds) seed.aliveIds = {};
-  if (oldNode.aliveIds) for (var k in oldNode.aliveIds) seed.aliveIds[k] = true;
-  seed.aliveIds[nodeId] = true;
+  if (oldNode.aliveIds) for (var k in oldNode.aliveIds) seed.aliveIds[k] = oldNode.aliveIds[k];
+  seed.aliveIds[nodeId] = (oldNode.label && oldNode.id.indexOf("live_") === 0) ? oldNode.label : true;
   for (var lid in liveIdMap) if (liveIdMap[lid] === oldNode.id) liveIdMap[lid] = seed.id;
   delete nodeById[oldNode.id];
   var idx = nodes.indexOf(oldNode);
@@ -582,7 +737,15 @@ function nodeForLiveId(nodeId, name) {
     liveIdMap[nodeId] = seed.id;
     seed.live = true; seed.pulse = 1;
     if (!seed.aliveIds) seed.aliveIds = {};
-    seed.aliveIds[nodeId] = true;
+    /* Den GEMELDETEN Namen mitnehmen, nicht nur ein `true`.
+     *
+     * Vorher fiel er hier weg, und aus zwei Anmeldungen wurde ein blosses
+     * „×2" — genau die Unterscheidung, fuer die es den Geraetenamen gibt, war
+     * damit wieder verloren. Mit fremden Nutzern wiegt das schwerer: wer sein
+     * Rezeptbuch „Backshop" nennt, meldet sich weiterhin als „Mein Rezeptbuch
+     * · Backshop", und die Pille zeigte nur „Mein Rezeptbuch ×2". Zwei
+     * verschiedene Sachen sahen aus wie eine. */
+    seed.aliveIds[nodeId] = name || true;
     recEvent("fusion", "map", { nodeId: nodeId, name: name }, "auf Seed-Pille '" + seed.label + "' fusioniert");
     return seed;
   }
@@ -599,6 +762,13 @@ function nodeForLiveId(nodeId, name) {
 var rec = null;
 function recEvent(source, kind, data, decision) {
   if (!rec) return;
+  /* ⚠ WÄHREND EINER WIEDERGABE WIRD NICHT AUFGEZEICHNET. Sonst entstünde eine
+     Datei, die aussieht wie ein echter Lauf und in Wahrheit die Kopie einer
+     Kopie ist — genau die Sorte Beleg, die dieses Netz nicht gebrauchen kann. */
+  /* ⚠ GEMESSEN WIRD DER MITSCHNITT, NICHT DER TAKT. `replayTimer` ist waehrend
+     einer PAUSE null — haenge der Riegel daran, schriebe der Rekorder genau
+     dann wieder mit, und in der Aufzeichnung staende die Kopie einer Kopie. */
+  if (replayGeladen || replayTimer) return;
   try {
     rec.entries.push({ t: new Date().toISOString(), source: source, kind: kind,
                        data: data, decision: decision || null });
@@ -880,6 +1050,78 @@ function relaisAbgleichen() {
   }
   relayStand();
 }
+/* ---------- Was ein Knoten im Raum von sich SAGT ------------------------
+ *
+ * Die angesagte Spore traegt genau die Sachen, nach denen man eine Pille
+ * ueberhaupt anklickt: was der Knoten ueber sich schreibt, seine Stichworte,
+ * WORAUS sein Vektor gerechnet wurde, und den Vektor selbst.
+ *
+ * ⚠ NUR DAS, WAS SICH ANSEHEN LAESST. Der Vektor hat 384 Stellen; sie
+ * hinzuschreiben waere keine Auskunft, sondern eine Wand aus Zahlen. Behalten
+ * werden seine LAENGE und seine Norm — die Norm ist eine Pruefung, kein
+ * Schmuck: sie muss 1 sein, und wenn sie es nicht ist, stimmt etwas nicht.
+ *
+ * ⚠ UND ES IST DIE SPORE AUS DEM RAUM, NICHT AUS DEM DEPOT. Sages Tafel sagt
+ * das ausdruecklich: was ein Knoten ankuendigt, entsteht in seinem Browser.
+ * Die Karte zeigt deshalb beides getrennt — was er sagt, und was im Register
+ * steht. */
+function merkeRaumSpore(n, spore, nodeId) {
+  if (!n || !spore || typeof spore !== "object") return;
+  var v = spore.domainVector;
+  var norm = null, stellen = 0, normQuelle = "";
+  if (Array.isArray(v) && v.length) {
+    var q = 0;
+    for (var i = 0; i < v.length; i++) { var z = +v[i]; if (z === z) q += z * z; }
+    norm = Math.sqrt(q);
+    stellen = v.length;
+    normQuelle = "gerechnet";
+  } else if (typeof spore.vektorNorm === "number" && spore.vektorStellen) {
+    /* ⚠ AUS EINEM MITSCHNITT KOMMT DIE LÄNGE ALS ZAHL, NICHT AUS EIGENER
+       RECHNUNG. Der 384-stellige Vektor wiegt zu viel, um mitzureisen (22
+       Sporen = 723 KB), also rechnet ihn das Ableit-Werkzeug einmal aus dem
+       echten Vektor aus. Das ist ehrlich — aber es ist etwas anderes, als
+       selbst nachzurechnen, und deshalb steht die Herkunft dran. Eine Karte,
+       die eine abgelesene Zahl als eigene Prüfung ausgibt, prüft nichts. */
+    norm = spore.vektorNorm;
+    stellen = spore.vektorStellen;
+    normQuelle = "aus der Aufzeichnung";
+  }
+  n.raum = {
+    kennung: nodeId || spore.id || "",
+    name: spore.nodeName || "",
+    domain: spore.domain || "",
+    beschreibung: spore.domainDescription || "",
+    stichworte: Array.isArray(spore.domainKeywords) ? spore.domainKeywords.slice(0, 40) : [],
+    stamm: Array.isArray(spore.stammCategories) ? spore.stammCategories.slice(0, 40) : [],
+    gast: Array.isArray(spore.guestCategories) ? spore.guestCategories.slice(0, 40) : [],
+    knotentyp: spore.nodeType || "",
+    endpunkt: spore.endpoint || "",
+    modell: spore.embeddingModel || "",
+    grundlage: spore.embeddingSource || "",
+    signiert: spore.createdAt || "",
+    stellen: stellen,
+    norm: norm,
+    normQuelle: normQuelle,
+    gehoert: Date.now()
+  };
+}
+/* Die LIVE gemessene Zahl aus einem Handschlag. Sie ist etwas anderes als die
+   Zahl im Register: die steht seit ihrem Messtag fest, diese ist von eben. */
+function merkeMessung(content, dd) {
+  var s = +content.score;
+  if (!(s === s)) return;                                   // keine Zahl, nichts zu merken
+  var eintrag = { score: s, outcome: content.outcome || "", wann: Date.now() };
+  [content.fromNodeId, content.toNodeId || dd].forEach(function (id) {
+    if (!id) return;
+    var k = nodeForLiveId(id);
+    if (!k) return;
+    var gegen = (id === content.fromNodeId ? (content.toNodeId || dd) : content.fromNodeId) || "";
+    if (!k.messungen) k.messungen = [];
+    k.messungen.unshift({ score: eintrag.score, outcome: eintrag.outcome,
+                          wann: eintrag.wann, gegen: gegen });
+    if (k.messungen.length > 8) k.messungen.length = 8;     // die Karte zeigt ohnehin wenige
+  });
+}
 function handleRelayEvent(evt) {
   /* Zuerst der Doppel-Filter, VOR allem anderen: dasselbe Ereignis kommt ueber
      jede Poststelle einmal. Ohne diese Zeile stuende jeder Handshake so oft im
@@ -895,14 +1137,20 @@ function handleRelayEvent(evt) {
   recEvent("relais", tt || "event", { content: content, d: dd }, null);
   if (tt === "sbkim-rdv" && content.kind === "sbkim-presence" && content.nodeId) {
     var n = nodeForLiveId(content.nodeId, content.nodeName);
-    if (n) n.pulse = 1;
+    if (n) { n.pulse = 1; merkeRaumSpore(n, content.spore, content.nodeId); }
     relayLog("<b>Hier bin ich</b> · " + (n ? n.label : "?") + " ist im Raum", "ok");
     SOUND.alive();
   } else if (tt === "sbkim-anastomosis") {
     onRequest(content.fromNodeId || null, content.toNodeId || dd || null, false);
+    /* Die Anfrage traegt die Spore des ABSENDERS mit — dieselbe Auskunft wie
+       im Raum-Ruf, nur auf einem anderen Weg. Wer nur den Raum-Ruf auswertet,
+       weiss von einem Knoten nichts, der sich nach dem Verbinden gemeldet hat. */
+    var abs = content.fromNodeId ? nodeForLiveId(content.fromNodeId) : null;
+    if (abs) merkeRaumSpore(abs, content.senderSpore, content.fromNodeId);
   } else if (tt === "sbkim-anastomosis-reply") {
     var ok = content.outcome === "established";
     if (ok && dd) { var m = nodeForLiveId(dd); if (m) m.pulse = 1; }
+    merkeMessung(content, dd);
     relayLog("<b>" + (ok ? "✓ Handshake" : "Antwort: " + (content.outcome || "?")) + "</b>", ok ? "ok" : "");
     if (ok) SOUND.established();
   } else if (tt === "sbkim-query" || tt === "sbkim-query-reply") {
@@ -1000,8 +1248,225 @@ function runDemo() {
 }
 function stopDemo() {
   if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+  demoBadge.textContent = DEMO_TEXT;
   demoBadge.classList.remove("show");
   document.getElementById("btnDemo").classList.remove("active");
+}
+
+/* ---------- Mitschnitt abspielen (Klaus 2026-09-10) ----------------------
+   „aus dem Realen bereits Gelaufenen eine Demo machen … das natürlich
+   langsamer abgespielt."
+
+   ⚠ DIE WIEDERGABE NIMMT DENSELBEN WEG WIE ECHTER VERKEHR. Sie baut aus jedem
+   aufgezeichneten Eintrag wieder ein Relais-Ereignis und gibt es an
+   `handleRelayEvent` — dieselbe Funktion, die auch die Poststellen bedient.
+   Ein zweiter Zeichen-Weg wäre eine zweite Fassung, und zwei Fassungen laufen
+   auseinander: dann zeigte die Wiedergabe etwas anderes als der Live-Betrieb,
+   und niemand sähe es.
+
+   ⚠ GLEICHMÄSSIG, NICHT IM ORIGINALTEMPO. Der Mitschnitt trägt echte
+   Zeitstempel; abgespielt wird trotzdem ein Ereignis je Sekunde. Das ist eine
+   ANDERE Aussage als „so ist es gelaufen" — deshalb steht es im Hinweis und im
+   Band, statt still unterschlagen zu werden.
+
+   ⚠ UND ES IST KEIN LIVE-VERKEHR. Das Band sagt, aus welcher Datei und von
+   wann. Eine Aufzeichnung, die man für den Live-Betrieb halten kann, ist
+   schlimmer als gar keine. */
+var replayTimer = null;
+/* ⚠ EIN LAUF-ZAEHLER, WEIL DER DOPPEL-FILTER SONST DIE WIEDERHOLUNG FRISST.
+   `schonGesehen` merkt sich jede Kennung. Waere sie aus Datei + Nummer
+   gebaut, zeigte ein zweiter Durchlauf DERSELBEN Datei gar nichts — die
+   Karte bliebe stumm, und es sähe aus wie ein kaputter Mitschnitt. */
+var replayLauf = 0;
+var DEMO_TEXT = demoBadge.textContent;
+var REPLAY_ARTEN = { "sbkim-rdv": 1, "sbkim-anastomosis": 1, "sbkim-anastomosis-reply": 1,
+                     "sbkim-query": 1, "sbkim-query-reply": 1 };
+
+/* ---------- Der Stand einer Wiedergabe (Klaus 2026-09-10) ---------------
+ *
+ * „den Mitschnitt abspielen sollte eine Pausetaste welche anstelle der
+ *  Playtaste auftaucht, darunter eine kleine Vor zurück und eine
+ *  Schnellvorspulen taste und zurück."
+ *
+ * Dafuer braucht die Wiedergabe einen STAND, den man bewegen kann — vorher
+ * lebte die laufende Nummer in einer Schliessung im Taktgeber und war von
+ * aussen nicht erreichbar. `replayPos` ist das Ereignis, das als NAECHSTES
+ * an der Reihe ist.
+ *
+ * ⚠ ANGEHALTEN IST NICHT BEENDET. `replayTimer` sagt nur, ob der Takt laeuft;
+ * ob ueberhaupt ein Mitschnitt auf dem Teller liegt, sagt `replayGeladen`.
+ * Wer beides zusammenwirft, laesst waehrend einer Pause den Rekorder wieder
+ * mitschreiben — und in der Aufzeichnung staende dann die Kopie einer Kopie.
+ *
+ * ⚠ ZURUECK BEWEGT DAS BAND, NICHT DIE KARTE. Die Karte ist ein Gedaechtnis:
+ * sie vergisst nicht, was sie schon gesehen hat, und ein Knoten verschwindet
+ * nicht wieder. ◀ und ⏪ setzen also den Stand zurueck; was danach noch einmal
+ * abgespielt wird, blinkt erneut auf. Das steht im Protokoll dran, statt
+ * stillschweigend so zu tun, als liefe die Zeit rueckwaerts.
+ *
+ * ⚠ SCHNELLVORSPULEN UEBERSPRINGT NICHTS. ⏩ spielt die Ereignisse dazwischen
+ * mit, nur ohne Wartezeit. Wuerde es sie ueberspringen, zeigte die Karte
+ * WENIGER, als der Stand behauptet — eine Luecke, die niemand sieht. */
+var replayListe = [];        // die abspielbaren Ereignisse dieser Aufzeichnung
+var replaySporen = {};       // die einmal abgelegten Sporen dazu
+var replayPos = 0;           // welches Ereignis ist als NAECHSTES an der Reihe
+var replayGeladen = false;   // liegt ueberhaupt ein Mitschnitt auf dem Teller?
+var replayAusgabe = 0;       // wie oft in diesem Durchlauf schon gesendet wurde
+var replayBandBasis = "";    // der Text des Bandes ohne den Zusatz „angehalten"
+var REPLAY_TAKT = 1000;      // ein Ereignis je Sekunde — Klaus' „235 Sekunden"
+var REPLAY_SPRUNG = 10;      // was ⏪ und ⏩ auf einmal bewegen
+
+function spieleMitschnitt(daten, name) {
+  stopReplay(); stopDemo();
+  var alle = (daten && daten.ereignisse) || [];
+  var liste = [];
+  for (var i = 0; i < alle.length; i++) {
+    var e = alle[i];
+    if (e && e.source === "relais" && REPLAY_ARTEN[e.kind] && e.data && e.data.content) liste.push(e);
+  }
+  if (!liste.length) {
+    logEvent("<b>▶ Wiedergabe</b> · in dieser Datei steht kein Relais-Verkehr zum Abspielen", "bad");
+    return;
+  }
+  /* ⚠ DAS LAUSCHEN WIRD ANGEHALTEN. Zwei Gründe, und beide zählen: sonst
+     mischte sich echter Verkehr unter die Wiedergabe, ohne dass man die beiden
+     im Protokoll auseinanderhalten könnte — und weil der Rekorder währenddessen
+     schweigt, gingen genau diese echten Ereignisse aus der Aufzeichnung
+     verloren. Angehalten wird laut, nicht still; angeschaltet wird es wieder
+     von Hand, denn ein Draht, der sich von allein neu öffnet, ist eine
+     Überraschung. */
+  if (lauscht) { relayStop(); logEvent("<b>▶ Wiedergabe</b> · das Lauschen wurde angehalten", ""); }
+  replayLauf++;
+  /* ⚠ DIE SPOREN LIEGEN EINMAL DA, DIE EREIGNISSE VERWEISEN DARAUF. Ohne das
+     wäre die Datei ein halbes Megabyte aus Wiederholungen. Beim Abspielen
+     werden sie wieder eingesetzt — die Wiedergabe reicht dieselbe Gestalt
+     weiter, die vom Draht kommt, und `handleRelayEvent` merkt keinen
+     Unterschied. */
+  replayListe = liste;
+  replaySporen = (daten && daten.sporen) || {};
+  replayPos = 0;
+  replayAusgabe = 0;
+  replayGeladen = true;
+  var wann = (daten.gestartet || "").slice(0, 16).replace("T", " ");
+  var quellen = (daten.quellen || []).length;
+  replayBandBasis = "▶ MITSCHNITT — echter Verkehr ab " + wann + " UTC"
+    + (quellen > 1 ? " aus " + quellen + " Aufzeichnungen" : "") + " · " + liste.length
+    + " Ereignisse, gleichmäßig abgespielt (nicht im Originaltempo) · kein Live-Verkehr";
+  demoBadge.classList.add("show");
+  logEvent("<b>▶ Wiedergabe gestartet</b> · " + liste.length + " Ereignisse aus <i>"
+    + (name || "Mitschnitt") + "</i> · rund " + liste.length + " Sekunden", "ok");
+  replayWeiter();
+}
+
+/* EIN Ereignis auf den Weg bringen — und zwar auf DEMSELBEN, den echter
+   Verkehr nimmt (`handleRelayEvent`). Eine zweite Zeichen-Fassung liefe
+   auseinander, und dann zeigte die Vorführung etwas anderes als der
+   Live-Betrieb. */
+function replayEines() {
+  var e = replayListe[replayPos];
+  if (!e) return false;
+  var inhalt = e.data.content;
+  if (inhalt.sporeRef || inhalt.senderSporeRef) {
+    var kopie = {};
+    for (var f in inhalt) if (Object.prototype.hasOwnProperty.call(inhalt, f)) kopie[f] = inhalt[f];
+    if (kopie.sporeRef && replaySporen[kopie.sporeRef]) kopie.spore = replaySporen[kopie.sporeRef];
+    if (kopie.senderSporeRef && replaySporen[kopie.senderSporeRef]) kopie.senderSpore = replaySporen[kopie.senderSporeRef];
+    e = { kind: e.kind, data: { content: kopie, d: e.data.d } };
+  }
+  /* ⚠ EINE EIGENE KENNUNG JE EREIGNIS, JE DURCHLAUF *UND* JE AUSGABE.
+     `schonGesehen` merkt sich jede. Durchlauf und laufende Nummer allein
+     reichten, solange es nur vorwaerts ging — seit ◀ den Stand zurueckdreht,
+     wird DASSELBE Ereignis im SELBEN Durchlauf noch einmal gesendet, und der
+     Doppel-Filter wuerfe es still weg. Die Karte bliebe stumm, und es saehe
+     aus wie ein kaputter Knopf. */
+  handleRelayEvent({
+    id: "replay-" + replayLauf + "-" + replayPos + "-" + (replayAusgabe++),
+    content: JSON.stringify(e.data.content),
+    tags: [["t", e.kind], ["d", e.data.d || ""]]
+  });
+  replayPos++;
+  replayStand();
+  return true;
+}
+
+/* Wie die Knoepfe und das Band gerade aussehen muessen. EINE Stelle — zwei
+   Stellen, die denselben Zustand behaupten, laufen auseinander. */
+function replayStand() {
+  var knopf = document.getElementById("btnReplay");
+  var reihe = document.getElementById("replayTransport");
+  var stand = document.getElementById("replayStand");
+  if (!replayGeladen) {
+    knopf.textContent = "▶ Mitschnitt abspielen";
+    knopf.classList.remove("active");
+    reihe.hidden = true;
+    return;
+  }
+  /* Klaus' Bitte woertlich: die Pausetaste taucht ANSTELLE der Playtaste auf. */
+  knopf.textContent = replayTimer ? "⏸ Pause" : "▶ Weiter";
+  knopf.classList.add("active");
+  reihe.hidden = false;
+  stand.textContent = "Ereignis " + Math.min(replayPos + 1, replayListe.length)
+    + " / " + replayListe.length;
+  demoBadge.textContent = replayBandBasis + (replayTimer ? "" : " · ⏸ ANGEHALTEN");
+}
+
+function replayWeiter() {
+  if (!replayGeladen || replayTimer) return;
+  if (replayPos >= replayListe.length) replayPos = 0;   // am Ende wieder von vorn
+  replayTimer = setInterval(function () {
+    if (!replayEines()) { replayEnde(); return; }
+    if (replayPos >= replayListe.length) replayEnde();
+  }, REPLAY_TAKT);
+  replayStand();
+}
+
+function replayPause() {
+  if (!replayTimer) return;
+  clearInterval(replayTimer); replayTimer = null;
+  replayStand();
+}
+
+function replayEnde() {
+  logEvent("<b>▶ Wiedergabe zu Ende</b> · " + replayListe.length + " Ereignisse abgespielt", "ok");
+  stopReplay();
+}
+
+/* ⏩ · die uebersprungenen Ereignisse werden MITGESPIELT, nur ohne Wartezeit.
+   Wer sie ueberspraenge, bekaeme eine Karte, die weniger zeigt als ihr Stand
+   behauptet — und diese Luecke saehe niemand. */
+function replayVor(n) {
+  if (!replayGeladen) return;
+  replayPause();
+  var getan = 0;
+  while (getan < n && replayEines()) getan++;
+  logEvent("<b>⏩</b> " + getan + " Ereignis" + (getan === 1 ? "" : "se")
+    + " im Schnelldurchlauf abgespielt · Stand " + Math.min(replayPos + 1, replayListe.length)
+    + "/" + replayListe.length, "");
+  if (replayPos >= replayListe.length) logEvent("<b>▶ Wiedergabe</b> · am Ende des Bandes", "");
+  replayStand();
+}
+
+/* ⏪ · zurueck im BAND. Die Karte vergisst dabei nichts — und das steht dran,
+   statt so zu tun, als liefe die Zeit rueckwaerts. */
+function replayZurueck(n) {
+  if (!replayGeladen) return;
+  replayPause();
+  var vorher = replayPos;
+  replayPos = Math.max(0, replayPos - n);
+  replayStand();
+  logEvent("<b>⏪</b> zurück auf Ereignis " + (replayPos + 1) + "/" + replayListe.length
+    + " (von " + Math.min(vorher + 1, replayListe.length) + ") · die Karte vergisst nichts: "
+    + "sie zeigt weiter, was sie schon gesehen hat", "");
+}
+
+function stopReplay() {
+  if (!replayGeladen && !replayTimer) return;
+  if (replayTimer) { clearInterval(replayTimer); replayTimer = null; }
+  replayGeladen = false;
+  replayListe = []; replaySporen = {}; replayPos = 0;
+  demoBadge.textContent = DEMO_TEXT;
+  demoBadge.classList.remove("show");
+  replayStand();
 }
 
 // ---------- Physik ----------
@@ -1192,21 +1657,280 @@ function draw() {
 
 function loop() { fitCanvas(); stepPhysics(); draw(); requestAnimationFrame(loop); }
 
-/* ---------- Knoten-Karte (Doppeltipp auf eine Pille) --------------------
+/* ---------- Knoten-Karte (ein Tipp auf eine Pille) ----------------------
  * Zeigt, was dieser Knoten IST und was man mit ihm tun kann. Bewusst eine
  * Karte statt eines sofortigen Sprungs in die App: nicht jeder Knoten hat
  * eine hinterlegte Adresse, und wer nur wissen will, was das Ding tut, will
  * deswegen nicht gleich einen neuen Tab. */
+/* Der gemeldete Name kann drei Teile tragen, durch „·" getrennt:
+ *
+ *     Mein Rezeptbuch · Backshop Anna · Klaus-Handy
+ *     └ Kanon-Name     └ App-Zusatz    └ Geraet
+ *
+ * Der Kanon-Name steht IMMER vorn. Nur so trifft das Adressbuch weiter, und
+ * nur so fusioniert die Karte den Knoten auf die richtige Pille — die Zusaetze
+ * duerfen frei sein, ohne dass die Zuordnung zerbricht. */
+function namensTeile(name) {
+  var t = String(name || "").split("·").map(function (s) { return s.trim(); }).filter(Boolean);
+  return { kanon: t[0] || "", zusatz: t.slice(1) };
+}
+function kurzeKennung(id) {
+  var s = String(id || "");
+  return s.length > 14 ? s.slice(0, 6) + "…" + s.slice(-4) : s;
+}
+
+/* Text sicher einsetzen: alles, was hier hineingeht, kommt von FREMDEN
+   Knoten. Ein Name mit spitzen Klammern darf keine Auszeichnung werden. */
+function sicher(t) {
+  var d = document.createElement("div");
+  d.textContent = String(t == null ? "" : t);
+  return d.innerHTML;
+}
+function seither(ms) {
+  var s = Math.round((Date.now() - ms) / 1000);
+  if (s < 60) return "vor " + s + " s";
+  if (s < 3600) return "vor " + Math.round(s / 60) + " min";
+  return "vor " + Math.round(s / 3600) + " h";
+}
+function zahl6(x) { return (x === null || x === undefined || x !== x) ? "—" : Number(x).toFixed(6); }
+
+/* ---- Was der Knoten im RAUM von sich sagt ---- */
+function fuelleRaum(n) {
+  var box = document.getElementById("kkRaum");
+  if (!box) return;
+  var r = n.raum;
+  if (!r) {
+    /* ⚠ EIN LEERER KASTEN IST KEINE AUSKUNFT. Wer nichts gehört hat, sagt
+       das — sonst sieht ein Knoten, der nur im Register steht, genauso aus
+       wie einer, dessen Ansage nichts enthielt. */
+    box.innerHTML = '<div class="kkfakt-kopf">Was er im Raum von sich sagt</div>'
+      + '<div class="kkzeile"><span>In dieser Sitzung hat sich dieser Knoten nicht gemeldet. '
+      + 'Mit <b>📡 Relais an</b> lauschen — oder <b>▶ Mitschnitt abspielen</b>, dann sagt er es aus der Aufzeichnung.</span></div>';
+    box.style.display = "";
+    return;
+  }
+  var z = '<div class="kkfakt-kopf">Was er im Raum von sich sagt · gehört ' + sicher(seither(r.gehoert)) + '</div>';
+  if (r.domain) z += '<div class="kkzeile"><b>Fach:</b> ' + sicher(r.domain) + '</div>';
+  if (r.beschreibung) {
+    z += '<div class="kkzeile" style="margin-top:0.3rem">' + sicher(r.beschreibung) + '</div>'
+       + '<div class="kkfuss">' + sicher(r.beschreibung.length) + ' Zeichen. Aus diesem Text (oder aus seinen Inhalten) '
+       + 'rechnet er seinen Vektor — daran wird gemessen, wer zu wem passt.</div>';
+  }
+  if (r.stichworte.length) {
+    z += '<div class="kkzeile" style="margin-top:0.35rem"><b>Stichworte:</b> <span>'
+       + sicher(r.stichworte.join(" · ")) + '</span></div>';
+  }
+  if (r.stamm.length) z += '<div class="kkzeile"><b>Bietet an:</b> <span>' + sicher(r.stamm.join(" · ")) + '</span></div>';
+  if (r.gast.length)  z += '<div class="kkzeile"><b>Nimmt auf:</b> <span>' + sicher(r.gast.join(" · ")) + '</span></div>';
+
+  /* Der Vektor — als Auskunft, nicht als Zahlenwand. Die Norm IST die
+     Prüfung: sie muss 1 sein. */
+  if (r.stellen) {
+    var normOk = r.norm !== null && Math.abs(r.norm - 1) < 0.0005;
+    z += '<div class="kkzeile" style="margin-top:0.35rem"><b>Vektor:</b> ' + sicher(r.stellen) + ' Stellen · Länge '
+       + sicher(zahl6(r.norm))
+       + (normOk ? ' <span>(1 — wie es sein muss)</span>'
+                 : ' <span class="kkanders">(sollte 1 sein)</span>')
+       + (r.normQuelle ? ' <span>· ' + sicher(r.normQuelle) + '</span>' : "") + '</div>';
+  }
+  if (r.grundlage) {
+    /* ⚠ DIE GRUNDLAGE IST DER UNTERSCHIED, DEN NIEMAND SIEHT. „content" heißt:
+       gerechnet aus den eigenen Inhalten (bei Mixarium die Getränke-Namen),
+       nicht aus der Selbstbeschreibung. Wer das nicht weiß, wundert sich, warum
+       ein besserer Text die Zahl nicht bewegt. */
+    var wortlaut = r.grundlage === "content"
+      ? "aus seinen eigenen Inhalten gerechnet, nicht aus dem Text oben"
+      : (r.grundlage === "passage" ? "aus dem Text oben gerechnet" : "");
+    z += '<div class="kkzeile"><b>Grundlage:</b> <span>' + sicher(r.grundlage)
+       + (wortlaut ? " — " + sicher(wortlaut) : "") + '</span></div>';
+  }
+  if (r.modell) z += '<div class="kkzeile"><b>Modell:</b> <span>' + sicher(r.modell) + '</span></div>';
+  if (r.knotentyp) z += '<div class="kkzeile"><b>Knotentyp:</b> <span>' + sicher(r.knotentyp) + '</span></div>';
+  if (r.signiert) z += '<div class="kkzeile"><b>Signiert:</b> <span>' + sicher(String(r.signiert).slice(0, 16).replace("T", " ")) + '</span></div>';
+  box.innerHTML = z;
+  box.style.display = "";
+}
+
+/* ---- Was im REGISTER steht ---- */
+function fuelleRegister(n, adr) {
+  var box = document.getElementById("kkRegister");
+  if (!box) return;
+  var e = registerFuer(n.label) || registerFuer(n.id.replace(/^auto-/, ""));
+  if (!e) {
+    box.innerHTML = '<div class="kkfakt-kopf">Im Register von Sage</div><div class="kkzeile"><span>'
+      + (registerDa ? "Zu diesem Knoten steht dort kein Eintrag."
+                    : "Das Register ist noch nicht geladen (oder die Karte ist offline).")
+      + '</span></div>';
+    box.style.display = "";
+    return;
+  }
+  var z = '<div class="kkfakt-kopf">Im Register von Sage'
+        + (REGISTER_STAND ? ' · Stand ' + sicher(REGISTER_STAND) : "") + '</div>';
+  if (e.domain) z += '<div class="kkzeile"><b>Fach:</b> ' + sicher(e.domain) + '</div>';
+  if (typeof e.matchScore === "number") {
+    /* Die Zahl, um die es in diesem Netz geht. Sie steht MIT ihrem Datum und
+       MIT der Schwelle da — eine Zahl ohne beides ist keine Auskunft. */
+    var ueber = e.matchScore >= 0.80;
+    z += '<div class="kkzeile" style="margin-top:0.3rem"><b>Bedeutungs-Nähe zu Sage:</b> '
+       + sicher(zahl6(e.matchScore))
+       + (ueber ? ' <span>(über der Schwelle 0.80)</span>'
+                : ' <span class="kkanders">(unter der Schwelle 0.80 — ein Handschlag käme nicht zustande)</span>')
+       + '</div>';
+    if (e.matchScoreQuelle) z += '<div class="kkfuss">gemessen: ' + sicher(e.matchScoreQuelle) + '</div>';
+  } else {
+    z += '<div class="kkzeile"><span>Für diesen Knoten ist keine Zahl hinterlegt — nicht „0", sondern nicht gemessen.</span></div>';
+  }
+  if (e.pingStatus) z += '<div class="kkzeile"><b>Zuletzt geprüft:</b> <span>' + sicher(e.pingStatus) + '</span></div>';
+  if (e.nodeId) {
+    /* ⚠ DER ABGLEICH IST DER EIGENTLICHE WERT DIESES KASTENS. Das Register
+       führt die COMMITTETE Kennung; im Raum kann eine andere stehen — nach
+       einem Identitäts-Wechsel etwa. Beides nebeneinander macht sichtbar,
+       was sonst niemandem auffiele. */
+    var raumId = n.raum && n.raum.kennung;
+    var gleich = raumId && raumId === e.nodeId;
+    z += '<div class="kkzeile" style="margin-top:0.3rem"><b>Kennung im Register:</b> <span>'
+       + sicher(kurzeKennung(e.nodeId)) + '</span></div>';
+    if (raumId) {
+      z += '<div class="kkzeile"><b>Kennung im Raum:</b> <span'
+         + (gleich ? '>' : ' class="kkanders">') + sicher(kurzeKennung(raumId))
+         + (gleich ? " — dieselbe" : " — eine ANDERE als im Register") + '</span></div>';
+      if (!gleich && Array.isArray(e.previousNodeIds) && e.previousNodeIds.indexOf(raumId) >= 0) {
+        z += '<div class="kkfuss">Sie steht im Register als frühere Kennung dieses Knotens.</div>';
+      } else if (!gleich) {
+        z += '<div class="kkfuss">Das kann ein Identitäts-Wechsel sein, der noch nicht nachgetragen wurde — '
+           + 'oder ein fremder Knoten, der sich genauso nennt. Die Karte kann das nicht entscheiden.</div>';
+      }
+    }
+  }
+  box.innerHTML = z;
+  box.style.display = "";
+}
+
+/* ---- Mit wem er auf DIESER Karte verbunden ist ---- */
+function fuelleVerbindungen(n) {
+  var box = document.getElementById("kkVerbindungen");
+  if (!box) return;
+  var offen = [], warm = [];
+  for (var i = 0; i < edges.length; i++) {
+    var e = edges[i];
+    if (e.a !== n.id && e.b !== n.id) continue;
+    var anderer = nodeById[e.a === n.id ? e.b : e.a];
+    if (!anderer) continue;
+    if (e.active) offen.push(anderer.label);
+    else if (e.heat > 0.01) warm.push(anderer.label);
+  }
+  var z = '<div class="kkfakt-kopf">Verbindungen auf dieser Karte</div>';
+  if (offen.length) {
+    z += '<div class="kkzeile"><b>Handschlag steht:</b> ' + sicher(offen.join(" · ")) + '</div>';
+  }
+  if (warm.length) z += '<div class="kkzeile"><b>Angefragt, kein Handschlag:</b> <span>' + sicher(warm.join(" · ")) + '</span></div>';
+  if (!offen.length && !warm.length) {
+    z += '<div class="kkzeile"><span>Auf dieser Karte ist noch kein Faden zu ihm gezogen. '
+       + 'Die vorgezeichneten Linien zeigen, wer zu wem passen KÖNNTE — ein Faden entsteht erst durch einen echten Handschlag.</span></div>';
+  }
+  /* Die live gemessenen Zahlen — etwas anderes als die im Register. */
+  if (n.messungen && n.messungen.length) {
+    z += '<div class="kkfakt-kopf" style="margin-top:0.5rem">Live gemessen in dieser Sitzung</div>';
+    for (var k = 0; k < Math.min(n.messungen.length, 4); k++) {
+      var m = n.messungen[k];
+      var gegner = nodeById[liveIdMap[m.gegen]] || null;
+      z += '<div class="kkzeile">' + sicher(zahl6(m.score)) + ' <span>gegen '
+         + sicher(gegner ? gegner.label : kurzeKennung(m.gegen))
+         + ' · ' + sicher(m.outcome || "?") + ' · ' + sicher(seither(m.wann)) + '</span></div>';
+    }
+    z += '<div class="kkfuss">Diese Zahlen sind von eben. Die Zahl im Register steht seit ihrem Messtag fest — '
+       + 'beide können auseinandergehen, und dann ist das der Befund.</div>';
+  }
+  box.innerHTML = z;
+  box.style.display = "";
+}
+
+/* ---- Das ECHTE Symbol der App, mit dem Sinnbild als Rückfalllinie ------
+ *
+ * Klaus 2026-09-10: „Füge bitte nur noch die echten Icons der jeweiligen App
+ * in den Container mit den Infos."
+ *
+ * ⚠ ES WIRD VON DER APP GEHOLT, ALSO KANN ES AUSBLEIBEN. Offline, umbenanntes
+ * Depot, geänderter Pfad — dann darf kein kaputter Bild-Rahmen dastehen. Das
+ * Sinnbild bleibt sichtbar, bis das Bild wirklich da ist, und kommt zurück,
+ * sobald es scheitert. Beides wird umgeschaltet, nicht nur eines: sonst stünden
+ * am Ende beide oder keines da.
+ *
+ * ⚠ UND DER PFAD IST RELATIV ZUR APP-ADRESSE, nicht zur Karte. `new URL(pfad,
+ * adr.app)` löst das auf; ein zusammengesetzter Text ginge bei jeder Adresse
+ * mit oder ohne Schrägstrich am Ende anders aus. */
+function zeigeSymbol(adr) {
+  var img = document.getElementById("kkIcon"), emo = document.getElementById("kkEmo");
+  if (!img || !emo) return;
+  emo.textContent = (adr && adr.emo) || "•";
+  emo.hidden = false;
+  img.hidden = true;
+  img.removeAttribute("src");
+  if (!adr || !adr.icon || !adr.app) return;
+  var quelle;
+  try { quelle = new URL(adr.icon, adr.app).href; } catch (e) { return; }
+  img.onload = function () { img.hidden = false; emo.hidden = true; };
+  img.onerror = function () { img.hidden = true; emo.hidden = false; };
+  img.src = quelle;
+}
+
 function knotenKarteOeffnen(n) {
   var box = document.getElementById("knotenKarte");
-  var adr = adresseFuer(n.label) || adresseFuer(n.id);
-  document.getElementById("kkName").textContent = (adr && adr.emo ? adr.emo + " " : "") + n.label;
+  /* Adresse auch dann finden, wenn der Knoten Zusaetze gemeldet hat: gesucht
+     wird mit dem Kanon-Namen, nicht mit „Mein Rezeptbuch Backshop Anna". */
+  var adr = adresseFuer(n.label) || adresseFuer(namensTeile(n.label).kanon) || adresseFuer(n.id);
+  document.getElementById("kkName").textContent = n.label;
+  zeigeSymbol(adr);
   /* Die Kennung MIT anzeigen: der Name ist frei gewaehlt und beweist nichts,
      die Kennung unterscheidet zwei Geraete derselben App. */
   document.getElementById("kkKennung").textContent = "Kennung: " + n.id;
   document.getElementById("kkWas").textContent = adr && adr.was
     ? adr.was
     : "Für diesen Knoten ist hier keine Beschreibung hinterlegt. Er hat sich im Raum gemeldet — mehr weiß die Karte nicht über ihn.";
+
+  /* ---- Wer hat sich unter dieser Pille angemeldet? ------------------------
+   *
+   * Mehrere Anmeldungen landen absichtlich auf EINER Pille, sonst sähe das
+   * Netz größer aus, als es ist. Bis hierher stand dafür nur ein „×2" an der
+   * Pille, und damit war nicht zu sehen, WER die zwei sind: Tablet und Handy?
+   * Oder ein Fremder, der seine App genauso genannt hat wie deine?
+   *
+   * Das ist keine ausgedachte Sorge. Die Karte ordnet allein nach dem NAMEN
+   * zu, und der ist frei gewählt. Wer sein Rezeptbuch „Mein Rezeptbuch" nennt,
+   * landet auf deiner Pille. Die Kennung dagegen kann er nicht wählen — und
+   * darum steht sie hier zu jeder Zeile. Sichtbar statt authentifiziert: die
+   * Karte kann Fremde nicht aussperren, aber sie kann aufhören, sie zu
+   * verstecken. */
+  var liste = document.getElementById("kkAnmeldungen");
+  if (liste) {
+    var ids = n.aliveIds ? Object.keys(n.aliveIds) : [];
+    if (!ids.length) {
+      liste.innerHTML = "";
+      liste.style.display = "none";
+    } else {
+      var zeilen = ids.map(function (id) {
+        var gemeldet = n.aliveIds[id];
+        var teile = typeof gemeldet === "string" ? namensTeile(gemeldet) : { kanon: "", zusatz: [] };
+        var zusatz = teile.zusatz.length ? teile.zusatz.join(" · ") : "ohne eigenen Namen";
+        var d = document.createElement("div");
+        d.className = "kk-anmeldung";
+        var b = document.createElement("b"); b.textContent = zusatz;
+        var s = document.createElement("span"); s.textContent = " · " + kurzeKennung(id);
+        d.appendChild(b); d.appendChild(s);
+        return d.outerHTML;
+      }).join("");
+      liste.innerHTML = "<div class=\"kk-anmeldungen-kopf\">" +
+        (ids.length === 1 ? "Eine Anmeldung" : ids.length + " Anmeldungen") +
+        " unter diesem Namen</div>" + zeilen +
+        "<div class=\"kk-anmeldungen-fuss\">Die Zusätze wählt der Betreiber selbst, sie beweisen nichts. " +
+        "Die Kennung dahinter kann er nicht wählen.</div>";
+      liste.style.display = "";
+    }
+  }
+
+  fuelleRaum(n);
+  fuelleRegister(n, adr);
+  fuelleVerbindungen(n);
 
   var knoepfe = "";
   if (adr && adr.app) {
@@ -1276,29 +2000,30 @@ canvas.addEventListener("pointermove", function (ev) {
     view.x -= dx / view.zoom; view.y -= dy / view.zoom;
   }
 });
-/* Doppeltipp SELBST erkennen statt `dblclick` zu nehmen. Grund: Klaus arbeitet
-   am Tablet, und dort ist ein Doppeltipp zuerst einmal eine Zoom-Geste des
-   Browsers — `dblclick` kommt unzuverlaessig oder gar nicht. Zwei kurze Tipps
-   auf DIESELBE Pille innerhalb von 400 ms sind eindeutig genug, und weil ein
-   Tipp nur zaehlt, wenn der Finger sich kaum bewegt hat, kollidiert er nicht
-   mit dem Ziehen: wer schiebt, oeffnet nichts. */
-var letzterTipp = { node: null, zeit: 0 };
+/* EIN Tipp öffnet die Karte (Klaus 2026-09-10, nach dem Sichttest):
+   „wenn ich 'n Klick drauf mache, wär's cool, wenn sich 'n kleines Fenster
+   öffnet, wo dann steht zum Beispiel App öffnen oder Informationen über den
+   Knoten."
+
+   ⚠ VORHER BRAUCHTE ES ZWEI TIPPS, UND DAS HAT NIEMAND GEFUNDEN. Der
+   Doppeltipp war seinerzeit gegen `dblclick` entschieden — am Tablet ist der
+   zuerst einmal eine Zoom-Geste des Browsers und kommt unzuverlässig. Diese
+   Begründung galt der ERKENNUNG, nicht der Zahl der Tipps: eine Auskunft, die
+   man nur findet, wenn man zweimal auf dieselbe Stelle tippt, ist so gut wie
+   nicht da.
+
+   ⚠ ES KOLLIDIERT NICHT MIT DEM ZIEHEN, und daran hängt alles. Ein Tipp zählt
+   nur, wenn der Finger sich um weniger als 8 px bewegt hat — wer schiebt,
+   öffnet nichts. Die Rechnung steht deshalb unverändert; sie war schon vorher
+   der Riegel, nur hinter einem zweiten Tipp versteckt.
+
+   `dblclick` wird weiterhin NICHT benutzt. */
 function endPointer() {
   var n = pointer.node;
   if (n && pointer.down) {
     var dx = pointer.lastX - pointer.startX, dy = pointer.lastY - pointer.startY;
     var getippt = (dx * dx + dy * dy) < 64;        // < 8 px Weg = Tipp, kein Zug
-    var jetzt = Date.now();
-    if (getippt) {
-      if (letzterTipp.node === n && (jetzt - letzterTipp.zeit) < 400) {
-        letzterTipp.node = null;                   // verbraucht — kein Dreifach-Tipp
-        knotenKarteOeffnen(n);
-      } else {
-        letzterTipp.node = n; letzterTipp.zeit = jetzt;
-      }
-    } else {
-      letzterTipp.node = null;                     // gezogen = kein angefangener Doppeltipp
-    }
+    if (getippt) knotenKarteOeffnen(n);
   }
   pointer.down = false;
   if (pointer.node) { pointer.node.dragging = false; pointer.node = null; }
@@ -1382,6 +2107,63 @@ $("recBtn").addEventListener("click", function () {
   rec ? recStop() : recStart();
 });
 $("btnDemo").addEventListener("click", function () { demoTimer ? stopDemo() : runDemo(); });
+/* Der Hauptweg braucht KEINE Dateiwahl: die eingedampfte Aufzeichnung liegt
+   im Depot. Klaus wollte im Regler drücken und zusehen — wer erst eine Datei
+   suchen muss, hat nicht bekommen, worum er gebeten hat.
+   ⚠ Geholt wird sie ERST BEIM DRÜCKEN und steht deshalb NICHT im Offline-Vorrat
+   der Schale: sie ist Daten, keine Schale, und 50 KB gehören nicht auf den
+   Weg zum ersten Bild. */
+var REPLAY_DATEI = "mitschnitt/mycel-lauf-2026-09-10.json";
+$("btnReplay").addEventListener("click", function () {
+  /* Klaus 2026-09-10: derselbe Knopf traegt drei Lagen — er HOLT, er HAELT AN,
+     er MACHT WEITER. Anstelle der Playtaste taucht die Pausetaste auf; ein
+     zweiter Knopf daneben waere ein zweiter Ort fuer denselben Zustand. */
+  if (replayTimer) { replayPause(); return; }
+  if (replayGeladen) { replayWeiter(); return; }
+  logEvent("<b>▶ Wiedergabe</b> · Aufzeichnung wird geholt…", "");
+  fetch(REPLAY_DATEI, { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) { spieleMitschnitt(d, REPLAY_DATEI); })
+    .catch(function () {
+      /* Fail-soft mit Weg: ein Knopf, der nur „geht nicht" sagt, ist ein toter
+         Knopf mit Beschriftung. */
+      logEvent("<b>▶ Wiedergabe</b> · die hinterlegte Aufzeichnung ist nicht erreichbar — "
+        + "mit <b>📂 eigene Datei</b> lässt sich eine Aufzeichnung des Rekorders wählen", "bad");
+    });
+});
+$("btnReplayDatei").addEventListener("click", function () {
+  /* Beenden tut jetzt ⏹, nicht dieser Knopf. `spieleMitschnitt` legt ohnehin
+     zuerst auf (stopReplay) — eine laufende Wiedergabe steht der Dateiwahl
+     also nicht im Weg. */
+  $("replayFile").click();
+});
+/* Die Transportreihe. Alle vier kleinen Knoepfe HALTEN AN — wie am Bandgeraet:
+   spulen, hinsehen, dann ⏸/▶ wieder druecken. Eine Regel statt zweier. */
+$("btnSchrittVor").addEventListener("click", function () { replayVor(1); });
+$("btnSpulVor").addEventListener("click", function () { replayVor(REPLAY_SPRUNG); });
+$("btnSchrittZurueck").addEventListener("click", function () { replayZurueck(1); });
+$("btnSpulZurueck").addEventListener("click", function () { replayZurueck(REPLAY_SPRUNG); });
+$("btnReplayStop").addEventListener("click", function () {
+  if (!replayGeladen) return;
+  logEvent("<b>⏹ Wiedergabe beendet</b> · bei Ereignis " + (replayPos + 1)
+    + "/" + replayListe.length, "");
+  stopReplay();
+});
+$("replayFile").addEventListener("change", function (ev) {
+  var f = ev.target.files && ev.target.files[0];
+  ev.target.value = "";                       // dieselbe Datei zweimal waehlbar
+  if (!f) return;
+  var leser = new FileReader();
+  leser.onload = function () {
+    var daten = null;
+    try { daten = JSON.parse(leser.result); } catch (e) {
+      logEvent("<b>▶ Wiedergabe</b> · die Datei ist kein lesbares JSON", "bad"); return;
+    }
+    spieleMitschnitt(daten, f.name);
+  };
+  leser.onerror = function () { logEvent("<b>▶ Wiedergabe</b> · Datei nicht lesbar", "bad"); };
+  leser.readAsText(f);
+});
 $("btnFull").addEventListener("click", function () {
   if (document.fullscreenElement) { document.exitFullscreen(); }
   else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
@@ -1403,11 +2185,10 @@ setTimeout(centerView, 600);
 logEvent("<b>Karte bereit</b> · lauscht auf sbkim-Ereignisse dieser Origin", "ok");
 loop();
 
-/* KEIN Service-Worker in dieser Fassung — bewusst.
-   Die eigenstaendige Karte (Repo `mycel-karte`) ist eine installierbare PWA
-   und meldet dort `./sw.js` an. HIER liegt nur die index.html als Unterseite
-   der Sage-Page; ein Anmelde-Versuch liefe auf eine Datei, die es nicht gibt.
-   Aus demselben Grund fehlt oben der manifest-Verweis. */
+/* ⚠ HIER STEHT KEINE SERVICE-WORKER-ANMELDUNG, und das ist Abweichung 4.
+   Diese Fassung ist in die Sage-Seite eingebettet und keine eigene PWA; ein
+   Worker unter dieser Adresse wuerde die Vorraete der Sage-Seite anfassen.
+   Die eigenstaendige Fassung im Repo `mycel-karte` hat ihn. */
 </script>
 
 <!-- ── family-projekt.de · dezenter Fuß-Verweis (netzweit identisch) ──────────
@@ -1441,7 +2222,7 @@ loop();
      title="Zum Marktplatz family-projekt.de — weitere Werkzeuge und Apps">
     <span class="fp-dot"></span> Mehr Werkzeuge auf family-projekt.de
   </a>
-  <div class="fp-copy">&copy; 2026 Klaus Nitzsche &middot; kostenlos, ohne Konto, offline nutzbar &middot; <a href="../impressum.html">Impressum &amp; Datenschutz</a></div>
+  <div class="fp-copy">&copy; 2026 Klaus Nitzsche &middot; kostenlos, ohne Konto, offline nutzbar &middot; <a href="impressum.html">Impressum</a> &middot; <a href="datenschutz.html">Datenschutz</a></div>
 </div>
 </body>
 </html>
