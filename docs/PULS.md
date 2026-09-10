@@ -31,6 +31,44 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung, Abschluss) · ✅ SAGE NEU SIGNIERT — VIER KNOTEN SIND ZURÜCK
+
+**Was getan.** Klaus hat um 13:20 UTC im Sage-Siegel neu signiert. Die Spore
+trägt **beides** richtig: die geltende Kennung `BgjXhSApoOrJ…` und den
+gepflegten Text (3028 Zeichen, 50 Stichworte, 17 Schnipsel). Verifiziert: VALID,
+L2 = 0.999999927, wortgleich mit **allen drei** Wegen zur Spore.
+
+**Alle zwanzig `matchScore` neu gerechnet** — gegen die Spore, die wirklich im
+Raum steht. Von den neun Knoten unter dem Boden 0.80 sind **vier zurück**:
+
+| | vorher | jetzt |
+|---|---|---|
+| Auslieferungsprüfer | 0.7944 | **0.836978** |
+| Mixarium | 0.7909 | **0.817718** |
+| Private Brain | 0.7868 | **0.811482** |
+| PWA Toolpoint | 0.7961 | **0.811202** |
+| Kim Hub Company | 0.8636 | **0.917107** ← höchster Wert im Netz |
+
+**Was offen ist.**
+
+- **Fünf liegen weiter unter 0.80**, und Sage ist nicht mehr ihr Hebel — vier
+  von ihnen sind mit dem neuen Hub sogar gestiegen. Was fehlt, ist die **eigene**
+  Beschreibung: Alis Moderaum 0.795460 · Muster Werbetechnik 0.793613 · Perfect
+  Skin Fashion 0.793030 · Tomys Hub 0.786371 · Perfect Skin Beauty 0.783216.
+- **BookLedgerPro** steht weiter mit 0.855505 gegen die ALTE Sage — keine
+  erreichbare Spore in dieser Umgebung. Benannte Lücke, keine geschätzte Zahl.
+- **Die Gegenseite ist ungemessen:** gerechnet ist gegen die *abgelegten* Sporen.
+  Ob die den Live-Fassungen entsprechen, ist für achtzehn von zwanzig offen.
+- **Die Adresskarten** in fünf Schwester-Repos (`sbkim/sage_inbox.json`) zeigen
+  noch auf die alte Kennung.
+
+**Nächster sinnvoller Schritt.** Die Adresskarten nachziehen (die
+`*.verify.md`-Prüfprotokolle bleiben unangetastet — sie belegen, was am
+jeweiligen Datum galt). Danach: die fünf Knoten unter dem Boden, einer nach dem
+anderen.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung, später) · 🔴 NEUN VON 21 KNOTEN FALLEN UNTER DEN HANDSHAKE-BODEN
 
 **Was getan.** Klaus' Mycel-Mitschnitt hat gezeigt, dass Sage im Raum mit einer

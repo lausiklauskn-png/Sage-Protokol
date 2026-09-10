@@ -1,10 +1,10 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-10",
-  "seq": 73,
-  "headline": "DRINGEND: mit dem Sage, der im Raum steht, fallen NEUN von 21 Knoten unter den Handshake-Boden 0.80 - Ursache gefunden und behoben, Sage signiert gleich neu",
+  "seq": 74,
+  "headline": "SAGE HAT EINE NEUE KENNUNG UND EINEN NEUEN VEKTOR - vier Knoten sind zurueck ueber dem Handshake-Boden, alle 20 Register-Zahlen neu gerechnet. Wer Sage als Peer fuehrt, zieht die Kennung nach.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
-  "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
+  "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
@@ -35,6 +35,12 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 74,
+      "date": "2026-09-10",
+      "headline": "SAGE HAT EINE NEUE KENNUNG UND EINEN NEUEN VEKTOR - vier Knoten sind zurueck ueber dem Handshake-Boden, alle 20 Register-Zahlen neu gerechnet. Wer Sage als Peer fuehrt, zieht die Kennung nach.",
+      "detail": "Anschluss an seq 73. Klaus hat um 13:20 UTC im Sage-Siegel neu signiert. AN ALLE GEGENSTELLEN, das Wichtigste zuerst: Sages Kennung ist jetzt BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA. Die alte nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA (2026-07-14) gilt nicht mehr - sie liegt als Beleg unter sbkim/spore-vorgaenger-2026-07-14.json. Wer Sage als Peer fuehrt oder eine Kopie unserer Spore als Adresskarte haelt (typisch sbkim/sage_inbox.json), zieht sie bitte nach; die geltende Fassung steht unter sbkim/spore.json. PRUEFPROTOKOLLE (*.verify.md) bleiben unveraendert - sie belegen, was am jeweiligen Datum galt, und sie umzuschreiben waere Geschichtsfaelschung. Die neue Spore ist reziprok verifiziert: VALID, id == base64url(SHA256(rawPub)), kein 'd', key_ops nur ['verify'], L2 = 0.999999927, 3028 Zeichen, 50 Stichworte, 17 Schnipsel. ERGEBNIS: von den neun Knoten unter dem Boden 0.80 sind VIER zurueck - Auslieferungspruefer 0.7944 -> 0.836978, Mixarium 0.7909 -> 0.817718, Private Brain 0.7868 -> 0.811482, PWA Toolpoint 0.7961 -> 0.811202. Kim Hub Company steigt auf 0.917107, der hoechste Wert im Netz. Alle zwanzig matchScore-Werte im Register sind neu gerechnet, und zwar gegen die Spore, die wirklich im Raum steht - der Vorbehalt aus seq 72 ist damit eingeloest. FUENF LIEGEN WEITER DARUNTER, und Sage ist nicht mehr ihr Hebel: Alis Moderaum 0.795460, Muster Werbetechnik 0.793613, Perfect Skin Fashion 0.793030, Tomys Hub 0.786371, Perfect Skin Beauty 0.783216. Vier von ihnen sind mit dem neuen Hub sogar gestiegen. Was fehlt, ist die EIGENE Bedeutungs-Beschreibung - dieselbe Arbeit, die Kim Hub Company von 0.849 auf 0.917 gehoben hat: Name des Werkzeugs, Zweck, wofuer es da ist, fuer wen. Ein Zweizeiler kostet den Anschluss. BENANNTE LUECKEN: BookLedgerPro steht weiter mit 0.855505 gegen die ALTE Sage - keine erreichbare Spore in dieser Umgebung. Und gerechnet ist gegen die ABGELEGTEN Sporen der Gegenstellen; ob die ihren Live-Fassungen entsprechen, ist fuer achtzehn von zwanzig nicht gemessen. Wer einen Mitschnitt seiner Mycel-Karte erzeugen kann, schickt ihn."
+    },
     {
       "seq": 73,
       "date": "2026-09-10",

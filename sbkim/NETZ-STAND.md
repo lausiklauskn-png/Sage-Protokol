@@ -74,7 +74,7 @@ Andock-Konventionen: INTERFACES §11
 
 | Knoten | Domäne | nodeId | Stufe | Beweis |
 |---|---|---|---|---|
-| **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | ⚠ **ZWEI**: im Raum `BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA` (2026-09-02), im Depot `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` (2026-07-14) — siehe den Abschnitt **Sage im Raum ist nicht Sage im Depot** | `live-direct`, am 2026-09-10 im Mitschnitt belegt | `sbkim/spore.json` (Depot) · `sbkim/spore-live-2026-09-02.json` (Raum) |
+| **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | `BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA` (Vorgänger: `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA`) | `live-direct` · **neu signiert 2026-09-10** (3028 Zeichen, 50 Stichworte, 17 Schnipsel) · im Raum belegt | `sbkim/spore.json` · Vorgänger als Beleg `sbkim/spore-vorgaenger-2026-07-14.json` |
 | **Mein-Rezeptbuch** | Kochrezepte | `VtvtrDV4KhQv3Q9B9jwZL5UIc9W7xrsKLduZ9xqk9T8` | **`verified-match` 0.881144** (auch `live-direct`) | `sbkim/rezeptbuch_inbox.verify.md` |
 | **Mein-Mixarium** | Cocktails / Drinks | `YD68l2ScNzd-RWS8tCrL_JAtgpoPp3i3VKc4N9GKvbo` | **`verified-match` 0.822299** (auch `live-direct`) | `sbkim/mixarium_inbox.verify.md` |
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `JZ7MeMtprz5XAiXF81agCQ1mmynZUUPl_gLerqR_Zrg` | **`verified-match` 0.899516** | `sbkim/point_inbox.verify.md` |
@@ -131,6 +131,64 @@ Verzeichnisses ist. Der Weg dahin führt über den Kanon (etwa ein `sporePath`
 neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeugte
 eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
 offene Frage benannt, nicht umfahren.
+
+### ✅ EINGELÖST — Sage neu signiert, vier Knoten sind zurück im Netz (2026-09-10, 13:20 UTC)
+
+Klaus hat im Sage-Siegel neu signiert. Die Spore trägt jetzt **beides** richtig:
+die geltende Kennung `BgjXhSApoOrJ…` **und** den gepflegten Text. Reziprok
+verifiziert: VALID · `id == base64url(SHA256(rawPub))` · kein `d` ·
+`key_ops` nur `["verify"]` · L2 = 0.999999927 · 3028 Zeichen · 50 Stichworte ·
+17 Schnipsel · kein `_demo`. Der signierte Text ist **wortgleich** der, den alle
+drei Wege zur Spore mitbringen — gemessen, nicht angenommen.
+
+**Damit sind die drei Vorbehalte der Abschnitte darunter eingelöst:** die
+Kennung ist die aus dem Raum, der Text ist der gepflegte, und **alle
+`matchScore`-Werte im Register sind gegen diese Spore gerechnet** — gegen den
+Knoten, dem eine App im Raum wirklich begegnet.
+
+| Knoten | Raum, dünn | **jetzt** | |
+|---|---|---|---|
+| **Kim Hub Company** | 0.8636 | **0.917107** | höchster Wert im Netz |
+| WorkFloh | 0.8872 | 0.902126 | |
+| SB·KIMTool·Point | 0.8775 | 0.893026 | |
+| Rezeptbuch | 0.8706 | 0.874048 | |
+| Kim-Bell | 0.8710 | 0.873750 | |
+| Jasons-Tresor | 0.8684 | 0.872405 | |
+| Muttis Rezeptbuch | 0.8636 | 0.870249 | |
+| Mein-Tresor | 0.8612 | 0.866101 | |
+| Kimseek | 0.8348 | 0.861596 | |
+| Family Projekt | 0.8360 | 0.842038 | |
+| **Auslieferungsprüfer** | **0.7944** | **0.836978** | ↑ **zurück** |
+| Kimboard | 0.8014 | 0.818961 | |
+| **Mixarium** | **0.7909** | **0.817718** | ↑ **zurück** |
+| **Private Brain** | **0.7868** | **0.811482** | ↑ **zurück** |
+| **PWA Toolpoint** | **0.7961** | **0.811202** | ↑ **zurück** |
+| Alis Moderaum | 0.7856 | 0.795460 | ✗ |
+| Muster Werbetechnik | 0.7609 | 0.793613 | ✗ |
+| Perfect Skin Fashion | 0.7764 | 0.793030 | ✗ |
+| Tomys Hub | 0.7967 | 0.786371 | ✗ |
+| Perfect Skin Beauty | 0.7898 | 0.783216 | ✗ |
+
+**Alle vier, die allein durch Sages dünne Beschreibung herausgefallen waren,
+sind über dem Boden.** Neun unter 0.80 sind fünf geworden.
+
+⚠ **DIE FÜNF SIND EINE EIGENE AUFGABE, UND SAGE IST NICHT MEHR IHR HEBEL.** Sie
+lagen schon gegen die alte Fassung darunter, und vier von ihnen sind mit dem
+neuen Hub sogar **gestiegen** (Muster Werbetechnik +0.011, Perfect Skin Fashion
++0.012, Alis Moderaum +0.003). Was ihnen fehlt, ist die **eigene**
+Bedeutungs-Beschreibung — dieselbe Sorte Arbeit, die Kim Hub Company von 0.849
+auf 0.917 gehoben hat.
+
+⚠ **BENANNTE LÜCKE: BookLedgerPro steht weiter mit 0.855505 da** — gegen die
+ALTE Sage-Spore gerechnet. In dieser Umgebung liegt keine erreichbare Spore
+dieses Knotens vor. Eine geschätzte Zahl klingt genau wie eine gemessene,
+deshalb bleibt die alte stehen, und diese Zeile sagt, warum.
+
+⚠ **UND EINS BLEIBT UNGEMESSEN:** ob diese Zahlen den **Live**-Sporen der
+anderen Knoten entsprechen. Gerechnet ist gegen ihre **abgelegten** Sporen. Für
+Kim Hub Company war beides identisch, für den Auslieferungsprüfer nicht — für
+die übrigen achtzehn liegt kein Mitschnitt vor. Der Maßstab auf Sages Seite
+stimmt jetzt; auf der Gegenseite steht er weiter aus.
 
 ### ⚠ SAGE HAT DREI WEGE ZUR SPORE — und der erste Wächter mass nur einen (2026-09-10)
 
