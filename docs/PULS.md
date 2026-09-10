@@ -31,6 +31,106 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung, Nacht) · ✅ DOPPELTE EINSTIEGE WEG, EINGEBETTETE KARTE NACHGEZOGEN
+
+Drei Befunde von Klaus, alle drei am Bildschirm gefunden, keiner von einer Probe:
+
+> *„im Sage Protokol gibt es zweimal Suche, ich würde das Flying widget
+> wegnehmen und mycelkarte öffnen gibt es auch zweimal"* ·
+> *„und die sage-Mycel karte hat nicht die selben funktionen wie die PWA App"* ·
+> *„den Mitschnitt abspielen sollte eine Pausetaste welche anstelle der
+> Playtaste auftaucht, darunter eine kleine Vor zurück und eine
+> Schnellvorspulen taste und zurück"*
+
+### 1 · Die doppelten Einstiege
+
+Die Lasche am rechten Rand (`.tool-launcher`) trug 🔍 Suche und 📌 Pinnwand;
+das Such-Werkzeug stand damit **zweimal** auf der Seite — einmal dort, einmal
+als Karte in der PWA-Liste. „Mycel-Karte öffnen" stand unter der
+**Modul**-Topologie und noch einmal unter der eingebetteten Live-Karte.
+
+⚠ **DIE PINNWAND HING NUR AN DER LASCHE.** Wer sie ohne Ersatz entfernt, nimmt
+ihr den einzigen Weg von dieser Seite aus — aufgeräumt und dabei eine stille
+Sackgasse gebaut. Sie steht jetzt als Karte neben dem Such-Werkzeug, in
+derselben Liste, in der man Werkzeuge sucht.
+
+Von den zwei Karten-Knöpfen blieb der unter der **Einbettung**: dort ist die
+Karte auch zu sehen, und ein Vollbild-Knopf bedeutet dort etwas. Der andere
+stand unter der Modul-Topologie und zeigte auf etwas anderes als das, was
+darüber steht.
+
+Neu: `tests/smoke_startseite_einstiege.mjs` (12 grün) ·
+`tests/gegenprobe_startseite_einstiege.mjs` (**9 gefangen · 0 durchgerutscht ·
+0 aus dem falschen Grund · 0 tote Anker**). Der teuerste Fall darin ist nicht
+die Dopplung, sondern das Zumauern: „die Pinnwand-Karte fällt weg".
+
+### 2 · Die eingebettete Karte hing ZWEI Baustufen zurück
+
+Gemessen, bevor gebaut wurde:
+
+| | Kopie | PWA |
+|---|---|---|
+| Ein Tipp auf eine Pille | **0** | 1 |
+| Doppeltipp auf eine Pille | 2 | 0 |
+| `btnReplay` | **0** | 6 |
+| `kkRaum` | **0** | 2 |
+
+Kein Einzeltipp, keine Wiedergabe, keine Auskunft in der Knoten-Karte.
+**Nichts schlug fehl — sie zeigte nur weniger.**
+
+⚠ **UND `tests/smoke_mycelkarte_kopie.mjs` WAR DABEI GRÜN.** Er fragte nach
+Fähigkeiten vom **11. August** und wusste von den neueren nichts. *Ein
+Wächter, der nur den Stand seines Bautags kennt, verrottet mit der Kopie.*
+
+Zwei Abhilfen, und die zweite ist die, die nicht altert:
+
+- **`tools/mycelkarte-uebernehmen.mjs`** leitet die Kopie ab und legt genau die
+  vier bewussten Abweichungen darauf (Titel · Kopfzeile · Rück-Link · kein
+  Manifest/Worker). Findet ein Anker seine Stelle nicht, **schreibt es gar
+  nichts**. *Eine Handarbeit neben einem Ableiter ist eine zweite Fassung, die
+  auseinanderläuft* — genau das ist hier **zweimal** passiert (2026-08-11 und
+  heute). Eine Regel, an die man sich erinnern muss, ist keine.
+- Der Wächter fragt jetzt zusätzlich, ob die Kopie **genau das ist, was der
+  Ableiter erzeugt**. Diese Frage zählt nichts auf und altert deshalb nicht.
+  ⚠ Sie ist **nur messbar, wenn der Klon von `mycel-karte` daneben liegt**; in
+  einem frischen Behälter sagt die Probe „nicht messbar" statt eines grünen
+  Hakens. Ein Haken, der von seinem Fehlen nicht zu unterscheiden ist, ist
+  keine Deckung.
+
+⚠ **UND DIE NEUE GEGENPROBE HAT DREI BLINDE WÄCHTER ENTLARVT** — alle drei aus
+demselben Grund: `schonGesehenAlt` **enthält** `schonGesehen`. Wer den Namen
+ohne seine öffnende Klammer sucht, findet die umbenannte Fassung mit und bleibt
+grün, während die Funktion weg ist. Dieselbe Familie wie `.gitignore` statt
+`.git`. Betroffen waren `schonGesehen`, `fuelleRegister` und `zeigeSymbol`;
+`schonGesehen` war seit dem 2026-08-11 blind.
+`tests/gegenprobe_mycelkarte_kopie.mjs`: **12 gefangen · 0 durchgerutscht ·
+0 aus dem falschen Grund · 0 tote Anker**.
+
+### 3 · Pause, Schritt und Spulen (im Repo `mycel-karte`, gemergt als #25)
+
+Aus **▶** wird **⏸ Pause**, sobald etwas läuft, darunter `⏪ ◀ Ereignis 42/191
+▶ ⏩ ⏹`. Vier Dinge daran sind Absicht: **⏩ überspringt nichts** (sonst zeigte
+die Karte weniger, als ihr Stand behauptet) · **⏪ bewegt das Band, nicht die
+Karte** (sie ist ein Gedächtnis und vergisst nicht — das steht dran) · die
+erfundene Kennung brauchte eine **dritte Stelle**, sonst frisst `schonGesehen`
+jeden Rücklauf · **angehalten ist nicht beendet**, sonst schriebe der Rekorder
+in der Pause wieder mit.
+Gemessen im echten Browser: **31 grün · 0 ROT**, Gegenprobe **35/35**.
+
+### Was offen bleibt
+
+- **`docs/PULS.md` stand bei 3.077 von 3.000 Zeilen** — zwei Einträge vom
+  2026-09-03/04 sind ins Archiv ausgelagert, **nicht gekürzt**; die Datei steht
+  jetzt bei 2.939. Beim nächsten Mal wieder auslagern.
+- Fünf Knoten liegen unter 0.80; Private Brain bei 0.800773.
+- PWA-Toolpoints `smoke_pruefer.mjs` braucht seine eigene Kindprozess-Frist.
+
+### Nächster sinnvoller Schritt
+
+Klaus' Browser-Sichttest auf der Sage-Page: steht die Suche nur noch einmal da,
+ist die Pinnwand über die PWA-Liste erreichbar, und trägt die eingebettete
+Karte Pause/Schritt/Spulen?
+
 ## Stand 2026-09-10 (Haupt-Sitzung, Abend) · ✅ DIE ZWEITE EIGENE TÜR IST IN DER LISTE
 
 Klaus: *„In Kimboard fehlt ein Relais und auch in der Pinnwand … das von PWA
@@ -846,160 +946,25 @@ selbst die Arbeit, die sie zu übergeben vorgibt.
 
 ---
 
-## Stand 2026-09-03 (Bau) · 🗄 PULS ausgelagert — 2.927 → 2.079 Zeilen
+## Zwei Sitzungen vom 2026-09-04 und 2026-09-03 — ausgelagert am 2026-09-10
 
-**Übergabeprotokoll:** [`sessions/archiv/2026-09-03_puls-auslagerung.md`](sessions/archiv/2026-09-03_puls-auslagerung.md)
+Die Datei stand nach dem Eintrag von heute Nacht bei **3.077 von 3.000 Zeilen**.
+Die Schutz-Klausel im Kopf verlangt **auslagern statt kürzen** und verbietet,
+die Grenze herabzusetzen. Der volle Wortlaut steht deshalb unverändert in
+[`sessions/archiv/2026-09-10_puls-auslagerung-paper-a.md`](sessions/archiv/2026-09-10_puls-auslagerung-paper-a.md):
+die PULS-Auslagerung vom 2026-09-03 (2.927 → 2.079 Zeilen) und **Paper A ist
+veröffentlicht** (Zenodo `10.5281/zenodo.22286072`, Concept-DOI
+`10.5281/zenodo.22286071`, CC BY 4.0).
 
-**Rolle:** Bausitzung. Auftrag: die Datei stand bei **2.927 von 3.000 Zeilen**,
-die Schutz-Klausel im Kopf verlangt **auslagern statt kürzen** und verbietet,
-die Grenze herabzusetzen. Kein Modul-Code angefasst, kein `status.json`, kein
-Pie-Block.
+⚠ **DER ERSTE ANLAUF HAT EINEN VORHANDENEN PRÜF-BELEG ÜBERSCHRIEBEN.**
+`2026-09-03_puls-eintraege-zwei-sitzungen.md` gibt es hier bereits, aus einer
+früheren Auslagerung; die gleichnamige Neuschrift hat sie ersetzt — 228 Zeilen
+weg, ohne dass etwas fehlgeschlagen wäre. Gefunden hat es `git status`, nicht
+das Nachdenken; zurückgeholt mit `git checkout --`. Die neue Datei trägt
+deshalb das Datum ihrer **Auslagerung**, nicht das der Einträge.
+**Ein Archiv, das sich selbst überschreiben kann, ist keins** — und ein
+Dateiname aus dem Datum der Einträge lädt genau dazu ein.
 
-| | |
-|---|---|
-| vorher | **2.927** Zeilen |
-| nach dem Auslagern | **2.079** Zeilen |
-| ausgelagert | **848** Zeilen Wortlaut in drei Archiv-Dateien |
-| mit diesem Eintrag | **2.163** Zeilen — das ist der Stand, den `wc -l` meldet |
-| Luft bis zur Grenze | **837** Zeilen |
-
-### Was wohin ging
-
-Ausgelagert wurden **alle Sitzungs-Einträge außer dem obersten**. Der neueste
-bleibt in voller Länge stehen; er trägt den Stand, den eine Folge-Sitzung
-zuerst braucht.
-
-| Archiv-Datei | Einträge | Zeilen |
-|---|---|---|
-| `sessions/archiv/2026-09-03_puls-eintraege-zwei-sitzungen.md` | DOI ist da · PDFs für Zenodo | 250 |
-| `sessions/archiv/2026-09-02_puls-eintrag-papers-feldbericht.md` | Papers als Feldbericht | 322 |
-| `sessions/archiv/2026-08-26_puls-eintraege-drei-sitzungen.md` | Forschungsaufgaben · lückenlose Dokumentation · Unterlagen der Reihe nach | 306 |
-
-Im PULS steht an jeder Stelle ein **Zeiger-Block** mit Überschrift, Zeilenzahl,
-Weg zum Wortlaut und — neu gegenüber den früheren Auslagerungen — dem Weg zum
-**Übergabeprotokoll** derselben Sitzung, wo es eines gibt.
-
-### Gemessen, nicht behauptet: es fehlt nichts
-
-Jede nicht-leere Zeile der alten Datei wurde gegen die neue Datei **und** gegen
-die drei Archiv-Dateien geprüft: **0 Zeilen ohne Fundstelle.**
-
-⚠ **Und die Prüfung ist nicht blind.** Dieselbe Prüfung, gegen ein um 50 Zeilen
-beschnittenes Archiv gefahren, meldet **37** fehlende Zeilen. Ohne diese
-Gegenprobe wäre „0 fehlt" nur ein grüner Haken — eine Prüfung, die dir recht
-gibt, ist der Ort, an dem man am genauesten hinsieht.
-
-### Ein Befund, der auch die früheren Auslagerungen betrifft
-
-Die Verweise **im ausgelagerten Wortlaut** waren relativ zu `docs/` geschrieben.
-Aus `docs/sessions/archiv/` lösen sie nicht auf — `](papers/REVISION_2026-09-02.md)`
-zeigt dort ins Leere. Dasselbe gilt für die beiden **früheren** Auslagerungs-Dateien
-(2026-08-23 und 2026-08-24); dort steht der Fehler seit dem 2026-09-02.
-
-Die Links wurden **nicht umgeschrieben**: eine ausgelagerte Fassung, die sich vom
-Original unterscheidet, wäre keine Auslagerung mehr, und der Kopf behauptet
-„Wortlaut unverändert". Stattdessen trägt jede der **fünf** Dateien jetzt einen
-Kasten, der die Lesart nennt (`docs/` davorstellen). **Eine benannte Lücke ist
-Arbeit, eine stille ist Schaden.**
-
-### Nicht geprüft
-
-- **Kein Browser-Lauf.** Diese Sitzung hat nur Markdown bewegt; `tests/manual_check.html`
-  wurde nicht geöffnet.
-- Die Zeiger-Tabellen sind **nicht** durchgeklickt worden. Geprüft ist, dass jede
-  verlinkte Datei existiert (siehe unten) — nicht, wie GitHub sie darstellt.
-- **zenodo.org und doi.org sind aus dieser Umgebung gesperrt** (403). Die DOI-Nummern
-  in den Zeiger-Tabellen sind aus dem ausgelagerten Text übernommen, **nicht aufgelöst**.
-
-### Offen (unverändert von der Vorsitzung)
-
-- Im Zenodo-Eintrag von Paper A: Doppel-Titel in einem Feld · `Version 1.0` statt
-  `1.0`. Beides ändert Klaus selbst, ohne neue Version.
-- Die **englische Fassung** von Paper A ist von niemandem außer der Sitzung vom
-  2026-09-03 gegengelesen.
-- **Kimhub PR #75** (Regel 6) liegt als Entwurf — 1093 grün, Gegenprobe 421/0/0.
-  Klaus hat nicht entschieden.
-
-### Nächster sinnvoller Schritt
-
-Die Datei hat wieder Luft; das Auslagern ist bis auf Weiteres **kein** Thema.
-Der nächste Griff ist eine der drei offenen Sachen oben — die Zenodo-Angaben
-sind Klaus' Handgriff, das Gegenlesen der englischen Fassung ist der einzige
-Punkt, an dem eine Sitzung etwas Nachprüfbares beitragen kann.
-
----
-
-
-## Stand 2026-09-03 (Bau) · ✅ PAPER A IST VERÖFFENTLICHT
-
-**Das zweite Papier dieses Depots ist draußen.** „Regeln und Grundsätze — zwei
-Arten, ein KI-System zu lenken", beide Sprachfassungen in **einem** Zenodo-Eintrag.
-
-```
-Eintrag        zenodo.org/records/22286072
-Versions-DOI   10.5281/zenodo.22286072     (steht in beiden PDFs)
-Concept-DOI    10.5281/zenodo.22286071     (führt immer zur neuesten Fassung)
-```
-
-Vorabdruck, Version 1.0, offen zugänglich, CC BY 4.0. Verknüpft mit dem
-SBKIM-Papier (`References` auf `10.5281/zenodo.22277738`).
-
-### Der Concept-DOI ist um eins kleiner — zweimal gemessen, nicht zugesichert
-
-Bei Paper A wie beim SBKIM-Papier liegt die Werknummer eins unter der
-Fassungsnummer (22286071/22286072 und 22277737/22277738). **Zwei Fälle sind
-eine Beobachtung, keine Regel von Zenodo.** Abgelesen wurde sie deshalb am Satz
-„Alle Versionen zitieren?" im Kasten *Versionen*, nicht gerechnet.
-
-Er existiert **auch bei einer einzigen Version**. Das ist sein Zweck: Verweise,
-die heute gesetzt werden, sollen die nächste Fassung überstehen.
-
-### Wo die Nummern jetzt stehen
-
-| Stelle | Was |
-|---|---|
-| beide Markdown-Quellen | die `paper-doi`-Zeile, von dort in die HTML und ins PDF |
-| `docs/papers/README.md` | eigener Abschnitt „Paper A", beide Nummern mit Rolle |
-| `index.html`, Station 9 und 10 | im Erzähl-Text der Galerie |
-| `docs/papers/ZENODO_WEG.md` | die Messung vom 03.09. |
-
-### Gemessen nach der Änderung
-
-| Probe | |
-|---|---|
-| `smoke_paper_a.mjs` | 26 grün, 0 rot |
-| `smoke_paper_css.mjs` | 20 grün, 0 rot |
-| `smoke_antragsmappe.mjs` | grün |
-| `gegenprobe_paper_a.mjs` | 18 von 18 gefangen, 0 durchgerutscht, 0 tote Anker |
-| Galerie headless (Chromium) | 10 Prüfungen grün, kein JS-Fehler, zehn Stationen |
-
-⚠ Der erste Aufruf der Papier-Probe endete auf `… | tail -12; echo exit=$?` —
-der gemeldete Rückgabewert war der von `tail`. Wiederholt ohne Pipe. Die Falle
-steht seit Monaten in `CLAUDE.md` und ist trotzdem zugeschnappt.
-
-### Offen: zwei Angaben im Zenodo-Eintrag
-
-Beides ist ohne neue Version und ohne neue DOI änderbar (Zenodo sperrt die
-Dateien, die Angaben nicht):
-
-1. **Der Titel trägt beide Sprachen in einem Feld** — englischer und deutscher
-   Titel hintereinander. Der deutsche gehört als *Translated title* darunter.
-   So erscheint der Doppel-Titel in jeder Zitation.
-2. **Das Versions-Feld enthält `Version 1.0`**, Zenodo setzt das Wort selbst
-   davor. Angezeigt wird deshalb „Version Version 1.0".
-
-### Nicht geprüft
-
-Die englische Fassung ist von niemandem außer dieser Sitzung gegengelesen.
-zenodo.org und doi.org sind aus dieser Umgebung gesperrt — jede Aussage über
-die Eintragsseite stammt aus Klaus' Bildschirmfotos, nicht aus einem Abruf.
-
-### Nächster sinnvoller Schritt
-
-`docs/PULS.md` steht bei 2.927 von 3.000 Zeilen. **Die nächste Sitzung
-lagert ins Archiv aus — auslagern, nicht kürzen** (Schutz-Klausel oben).
-
----
 
 ## Zwei Sitzungen vom 2026-09-03 — ausgelagert
 
