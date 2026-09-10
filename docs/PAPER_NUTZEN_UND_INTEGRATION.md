@@ -15,8 +15,8 @@
 
 ## Zusammenfassung (Abstract)
 
-Das **SBKIM-Protokoll** (Semantisch-Empfangendes Bidirektionales
-KI-Matching) und seine Referenz-Implementierung **Sage-Protokol**
+Das **SBKIM-Protokoll** (Semantisches Bidirektionales KI-Matching)
+und seine Referenz-Implementierung **Sage-Protokol**
 beschreiben einen dezentralen Ansatz, mit dem kleine Web-Anwendungen
 (typischerweise PWAs) einander **semantisch finden, signiert
 verbinden und kontrolliert Daten austauschen** können, ohne
