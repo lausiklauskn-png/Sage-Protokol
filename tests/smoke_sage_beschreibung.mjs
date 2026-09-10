@@ -27,6 +27,30 @@ import { dirname, join } from "node:path";
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), "..");
 const sieg = readFileSync(join(WURZEL, "assets/siegel-inhalt.js"), "utf8");
 
+/* ⚠ SAGE HAT DREI WEGE ZUR SPORE, NICHT EINEN — und beim ersten Bau dieser
+   Probe am 2026-09-10 hat sie nur den ersten gemessen. Gefunden hat es Klaus'
+   Rückfrage („du hast die Beschreibung jetzt geändert, richtig?"), nicht der
+   Lauf: die Probe war grün, während zwei Drittel der Wahrheit ungeprüft
+   danebenlagen.
+
+     assets/siegel-inhalt.js   das Siegel-Fenster  (WIZ.domainDescription)
+     index.html                das Semantik-Feld der Seite selbst
+                               (SBKIM_SEMANTIK_CONFIG.defaultDomainDescription)
+     sbkim-init.js             die stille Erst-Anmeldung
+                               (C.defaultDomainDescription)
+
+   Drei verschiedene Texte ergäben drei verschiedene Vektoren für denselben
+   Knoten — je nachdem, welchen Weg der Nutzer nimmt. Genau diese Falle bewacht
+   kim-hub-company seit dem 2026-09-09 mit einem Wortgleich-Wächter; hier fehlte
+   sie, und die beiden nachgelassenen Wege trugen 135 bzw. 95 Zeichen. */
+const seite = readFileSync(join(WURZEL, "index.html"), "utf8");
+const init = readFileSync(join(WURZEL, "sbkim-init.js"), "utf8");
+const holText = (quelle) => {
+  const m = quelle.match(/(?:default)?[dD]omainDescription:\s*("((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')/);
+  if (!m) return "";
+  return JSON.parse(m[3] !== undefined ? '"' + m[3].replace(/"/g, '\\"') + '"' : m[1]);
+};
+
 let gruen = 0, rot = 0;
 const ok = (was, bedingung) => {
   if (bedingung) { gruen++; console.log("  ✓ " + was); }
@@ -67,6 +91,15 @@ ok(`… und sie ist kein Zweizeiler mehr (${text.length} Zeichen, war 160)`,
 const kw = sieg.match(/domainKeywords:\s*\[([^\]]*)\]/);
 const anzahl = kw ? (kw[1].match(/"/g) || []).length / 2 : 0;
 ok(`… und die Stichwort-Liste trägt den Text (${anzahl} Stück, waren 6)`, anzahl >= 20);
+
+/* ── Alle DREI Wege tragen denselben Text ────────────────────────────────
+   Gemessen wird die Gleichheit, nicht die Länge: drei Texte, die alle vier
+   Sachen nennen und trotzdem verschieden sind, ergeben drei Vektoren. */
+const tSieg = holText(sieg), tSeite = holText(seite), tInit = holText(init);
+ok(`… und die Seite selbst bringt denselben Text mit (${tSeite.length} Zeichen)`,
+  tSeite.length > 0 && tSeite === tSieg);
+ok(`… und die stille Erst-Anmeldung auch (${tInit.length} Zeichen)`,
+  tInit.length > 0 && tInit === tSieg);
 
 console.log("\nWer im Feld gewinnt\n");
 
@@ -110,6 +143,16 @@ ok("der Knopf holt den eigenen Text zurück und zeigt sich nur bei Abweichung",
    nicht zu unterscheiden — außer für den Nutzer, der es nicht sieht. */
 ok("… und beide hängen wirklich im Block",
   /wrap\.appendChild\(herkunft\)/.test(sieg) && /wrap\.appendChild\(zurueck\)/.test(sieg));
+
+/* Und dasselbe im Semantik-Feld der SEITE. Dort stand bis zum 2026-09-10
+   `apply(sp.domainDescription ? … : fallback)` — die gespeicherte Spore
+   gewann, und ein Wächter nur am Siegel hätte das nie gesehen. */
+const iPre = seite.indexOf("function prefillSemantik");
+const iPreEnde = seite.indexOf("\n  }", iPre);
+const pre = iPre >= 0 && iPreEnde > iPre ? seite.slice(iPre, iPreEnde) : "";
+ok("auch das Semantik-Feld der Seite zeigt den gepflegten Vorschlag",
+  pre.length > 0 && /apply\(fallback\)\s*;/.test(pre)
+  && !/sp\.domainDescription/.test(pre));
 
 console.log(`\n═══ ${gruen} grün · ${rot} ROT ═══\n`);
 process.exit(rot > 0 ? 1 : 0);

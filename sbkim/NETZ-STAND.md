@@ -132,6 +132,38 @@ neben dem Endpunkt), **nicht** über einen Eingriff in eine Kopie — der erzeug
 eine dritte Modul-Generation, und der Drift-Guard schlüge zu Recht an. Als
 offene Frage benannt, nicht umfahren.
 
+### ⚠ SAGE HAT DREI WEGE ZUR SPORE — und der erste Wächter mass nur einen (2026-09-10)
+
+Der Abschnitt darunter nennt Sages Siegel als Ursache. **Das war ein Drittel
+der Wahrheit.** Gefunden hat den Rest nicht der Lauf, sondern Klaus' Rückfrage
+— *„du hast die Textbeschreibung bei Sage jetzt geändert, richtig?"*:
+
+| Weg | Konfiguration | Text vorher |
+|---|---|---|
+| das **Siegel-Fenster** | `WIZ.domainDescription` in `assets/siegel-inhalt.js` | 160 Zeichen |
+| das **Semantik-Feld der Seite** | `SBKIM_SEMANTIK_CONFIG.defaultDomainDescription` in `index.html` | **135 Zeichen** |
+| die **stille Erst-Anmeldung** | `C.defaultDomainDescription` in `sbkim-init.js` | **95 Zeichen** |
+
+**Drei verschiedene Texte ergeben drei verschiedene Vektoren für denselben
+Knoten** — je nachdem, welchen Weg der Nutzer nimmt. Und der dünnste von allen
+lag ausgerechnet auf dem Weg, den niemand bewusst wählt: der Erst-Anmeldung.
+
+⚠ **UND DIE VORRANG-FALLE STAND ZWEIMAL DA.** Nicht nur im Siegel, auch in
+`prefillSemantik` in der Seite: `apply(sp.domainDescription ? … : fallback)` —
+die gespeicherte Spore gewann. Ein Wächter nur am Siegel hätte das nie gesehen.
+
+**Alle drei tragen jetzt denselben Text**, und der Wächter misst die
+**Gleichheit**, nicht die Länge: drei Texte, die alle vier Sachen nennen und
+trotzdem verschieden sind, ergäben weiter drei Vektoren. Genau diese Prüfung
+gibt es in `kim-hub-company` seit dem 2026-09-09 — dort für zwei Wege. **Sie
+hier nicht zu haben, war die Lücke; sie dort zu haben, war der Grund, dass die
+Frage überhaupt gestellt wurde.**
+
+> **Die Lehre ist eine bekannte, an einer neuen Tür:** ein Wächter, der EINEN
+> Weg misst, sagt nichts über die anderen — und er sieht dabei aus wie ein
+> vollständiger Beweis. Die Probe war grün, während zwei Drittel ungeprüft
+> danebenlagen.
+
 ### 🔴 NEUN VON EINUNDZWANZIG KNOTEN FALLEN UNTER DEN HANDSHAKE-BODEN (2026-09-10)
 
 Der Befund darüber sagt, dass die Register-Zahlen gegen den falschen Sage
