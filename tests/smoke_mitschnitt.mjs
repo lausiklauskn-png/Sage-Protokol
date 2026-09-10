@@ -82,55 +82,83 @@ ok("jeder Mitschnitt ist lesbares JSON und sagt selbst, wann er endete",
 const { f: neuester, inhalt: mit } = geordnet[geordnet.length - 1];
 console.log(`     neuester: ${neuester} (beendet ${geordnet[geordnet.length - 1].ende})`);
 
-/* ── 2 · Die Sporen im Raum ─────────────────────────────────────────────── */
-const raum = new Map();
-for (const e of mit.ereignisse || []) {
-  if (e.kind !== "sbkim-rdv") continue;
-  const c = e.data?.content || {};
-  if (c.nodeId && c.spore?.domainVector && !raum.has(c.nodeId)) raum.set(c.nodeId, c.spore);
-}
-ok("der Mitschnitt trägt Sporen aus dem Rendezvous-Raum", raum.size > 0);
-
+/* ── 2 · Die Sporen in ALLEN Mitschnitten ────────────────────────────────── */
+/* ⚠ ALLE, NICHT NUR DER NEUESTE. Die erste Fassung prüfte die Sporen des
+   jüngsten Mitschnitts — und ließ damit jeden älteren Beleg ungeprüft. Ein
+   Mitschnitt ist Belegmaterial; einer, den niemand nachrechnet, ist eine
+   Behauptung mit Dateinamen. Aufgefallen ist es an vier Gegenprobe-Fällen, die
+   plötzlich durchrutschten, weil ihre Sabotage in einem anderen Mitschnitt
+   landete als der, den der Wächter ansah. */
 const canon = (v) => v === null ? null : Array.isArray(v) ? v.map(canon)
   : (typeof v === "object" ? Object.keys(v).sort().reduce((o, k) => (o[k] = canon(v[k]), o), {}) : v);
 const b64u = (b) => Buffer.from(b).toString("base64")
   .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
+let sporenGesamt = 0;
+const kaputt = [], mitPrivat = [], falscheId = [];
+for (const g of geordnet) {
+  const gesehen = new Set();
+  for (const e of g.inhalt?.ereignisse || []) {
+    if (e.kind !== "sbkim-rdv") continue;
+    const c = e.data?.content || {};
+    const nid = c.nodeId, sp = c.spore;
+    if (!nid || !sp?.domainVector || gesehen.has(nid)) continue;
+    gesehen.add(nid);
+    sporenGesamt++;
+    const { signature, ...unsigned } = sp;
+    const jwk = sp.publicKey || {};
+    if ("d" in jwk) mitPrivat.push(`${g.f}:${nid.slice(0, 8)}`);
+    try {
+      const key = createPublicKey({ key: jwk, format: "jwk" });
+      const bytes = Buffer.from(JSON.stringify(canon(unsigned)), "utf8");
+      const sig = Buffer.from(String(signature).replace(/-/g, "+").replace(/_/g, "/"), "base64");
+      if (!verify(null, bytes, key, sig)) kaputt.push(`${g.f}:${nid.slice(0, 8)}`);
+      const roh = Buffer.from(String(jwk.x).replace(/-/g, "+").replace(/_/g, "/"), "base64");
+      if (b64u(createHash("sha256").update(roh).digest()) !== nid) falscheId.push(`${g.f}:${nid.slice(0, 8)}`);
+    } catch { kaputt.push(`${g.f}:${nid.slice(0, 8)}`); }
+  }
+}
+ok("die Mitschnitte tragen Sporen aus dem Rendezvous-Raum", sporenGesamt > 0);
+
 /* ⚠ IDENTITÄT VOR INHALT. Ein Mitschnitt ist `untrusted external data` — er
    kommt aus einem Browser und liegt als Datei im Depot. Bevor irgendeine Zahl
    daraus gilt, muss jede Spore darin für sich selbst geradestehen. */
-const kaputt = [], mitPrivat = [], falscheId = [];
-for (const [nid, sp] of raum) {
-  const { signature, ...unsigned } = sp;
-  const jwk = sp.publicKey || {};
-  if ("d" in jwk) mitPrivat.push(nid);
-  try {
-    const key = createPublicKey({ key: jwk, format: "jwk" });
-    const bytes = Buffer.from(JSON.stringify(canon(unsigned)), "utf8");
-    const sig = Buffer.from(String(signature).replace(/-/g, "+").replace(/_/g, "/"), "base64");
-    if (!verify(null, bytes, key, sig)) kaputt.push(nid);
-    const roh = Buffer.from(String(jwk.x).replace(/-/g, "+").replace(/_/g, "/"), "base64");
-    if (b64u(createHash("sha256").update(roh).digest()) !== nid) falscheId.push(nid);
-  } catch { kaputt.push(nid); }
-}
-ok(`jede Spore im Mitschnitt verifiziert gegen ihren eigenen Schlüssel (${raum.size})`,
+ok(`jede Spore verifiziert gegen ihren eigenen Schlüssel (${sporenGesamt} über ${geordnet.length} Mitschnitte)`,
   kaputt.length === 0);
-ok("… und jede Kennung ist base64url(SHA256(rawPub))", falscheId.length === 0);
+ok(`… und jede Kennung ist base64url(SHA256(rawPub))${
+  falscheId.length ? " — verletzt bei " + falscheId.join(", ") : ""}`, falscheId.length === 0);
 
 /* Ein privater Schlüsselteil in einer abgelegten Datei wäre ein Geheimnis im
    öffentlichen Depot — der eine Fehler, den dieses Netz sich nicht leisten kann. */
-ok("KEIN privater Schlüsselteil ('d') in irgendeiner Spore des Mitschnitts",
-  mitPrivat.length === 0);
+ok(`KEIN privater Schlüsselteil ('d') in irgendeiner Spore${
+  mitPrivat.length ? " — gefunden bei " + mitPrivat.join(", ") : ""}`, mitPrivat.length === 0);
 
 /* ── 3 · Sage im Raum IST Sage im Depot ──────────────────────────────────── */
+/* ⚠ NICHT JEDER MITSCHNITT TRÄGT SAGE, und das ist kein Fehler. Die erste
+   Fassung verlangte Sage im NEUESTEN — und wurde am 2026-09-10 zu Recht rot:
+   der Mitschnitt von 16:30 ist ein 76-Sekunden-Lauf, in dem nur Mixarium
+   ansagte. Ein Wächter, der einen Ein-Knoten-Mitschnitt für einen Defekt hält,
+   verbietet das Ablegen genau der Belege, die eine einzelne Reparatur zeigen.
+
+   Die Zusicherung lautet anders: WO Sage in einem Mitschnitt auftritt, MUSS es
+   die abgelegte Spore sein. Gemessen wird deshalb am neuesten Mitschnitt, DER
+   SAGE TRÄGT — und dass es überhaupt einen gibt, ist eine eigene Prüfung: ohne
+   sie misst der ganze Block nichts und wäre trivial grün. */
 const depot = JSON.parse(readFileSync(join(WURZEL, "sbkim", "spore.json"), "utf8"));
 const SAGE = depot.id || depot.nodeId;
-const sageRaum = raum.get(SAGE);
 
-ok(`Sage tritt im neuesten Mitschnitt unter der abgelegten Kennung auf (${String(SAGE).slice(0, 12)}…)`,
-  !!sageRaum);
+const mitSage = geordnet.filter((g) => (g.inhalt?.ereignisse || []).some(
+  (e) => e.kind === "sbkim-rdv" && e.data?.content?.nodeId === SAGE));
+ok(`mindestens ein Mitschnitt trägt Sage unter der abgelegten Kennung (${String(SAGE).slice(0, 12)}…)`,
+  mitSage.length > 0);
 
-if (sageRaum) {
+if (mitSage.length === 0) {
+  console.log("     (kein Mitschnitt mit Sage — der Vergleich unten misst nichts)");
+} else {
+  const jueng = mitSage[mitSage.length - 1];
+  console.log(`     Sage zuletzt in: ${jueng.f}`);
+  const sageRaum = (jueng.inhalt.ereignisse.find(
+    (e) => e.kind === "sbkim-rdv" && e.data?.content?.nodeId === SAGE)).data.content.spore;
   /* Der Vektor ist die Sache, an der es hängt: er IST der Maßstab. Ein
      Vergleich der Texte allein wäre zu wenig — zwei gleiche Texte haben in
      diesem Netz schon verschiedene Vektoren ergeben (fünfmal, gemessen am

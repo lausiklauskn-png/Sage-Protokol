@@ -90,21 +90,23 @@ const FAELLE = [
       return m;
     } },
 
-  { was: "Sage tritt im Raum unter einer ANDEREN Kennung auf",
+  /* ⚠ DIE SABOTAGE MUSS DEN MITSCHNITT TREFFEN, IN DEM SAGE STEHT — nicht den
+     neuesten. Seit dem 2026-09-10 misst die Probe am juengsten Mitschnitt MIT
+     Sage; ein Eingriff in einen Ein-Knoten-Mitschnitt daneben aendert nichts
+     und saehe wie eine bestandene Pruefung aus. */
+  { was: "KEIN Mitschnitt traegt Sage mehr unter der abgelegten Kennung",
+    alleMitSage: true,
     mit: (m, sageId) => {
-      const e = sageEreignis(m, sageId);
-      const neu = neuSignieren(e.data.content.spore);
-      e.data.content.spore = neu.spore;
-      e.data.content.nodeId = neu.kennung;
+      for (const e of m.ereignisse) {
+        if (e.kind === "sbkim-rdv" && e.data?.content?.nodeId === sageId) {
+          const neu = neuSignieren(e.data.content.spore);
+          e.data.content.spore = neu.spore;
+          e.data.content.nodeId = neu.kennung;
+        }
+      }
       return m;
     } },
 
-  /* ⚠ UND DIESE ZWEI EBENSO. Eine Spore lässt sich nur mit einem frischen
-     Schlüssel neu unterschreiben, und damit wandert die Kennung mit — der
-     Kennungs-Wächter fiel jedes Mal mit um, und über den gemeinten Wächter war
-     damit nichts bewiesen. Die abgelegte Spore zieht deshalb MIT: dann ist die
-     Identität auf beiden Seiten stimmig, und der EINZIGE Unterschied ist der,
-     um den es geht. Ein Fehler, zwei Dateien — das ist immer noch ein Fehler. */
   { was: "Sages Vektor im Raum weicht vom abgelegten ab",
     mit: (m, sageId) => {
       const e = sageEreignis(m, sageId);
@@ -169,12 +171,22 @@ try {
 
   /* Der neueste Mitschnitt, am Inhalt erkannt — wie die Probe selbst. */
   const namen = gefuehrt.filter((p) => p.startsWith("sbkim/mitschnitte/"));
-  const neuester = namen
-    .map((p) => ({ p, ende: JSON.parse(readFileSync(join(kopie, p), "utf8")).beendet || "" }))
-    .sort((a, b) => a.ende.localeCompare(b.ende)).pop().p;
-  const rein = readFileSync(join(kopie, neuester), "utf8");
   const sporeRein = readFileSync(join(kopie, SPORE), "utf8");
   const sageId = JSON.parse(sporeRein).id;
+  /* ⚠ DER MITSCHNITT MIT SAGE, nicht der neueste. Die Probe misst dort, und ein
+     Eingriff woanders aendert nichts — er saehe wie eine bestandene Pruefung aus. */
+  const traegtSage = (p) => (JSON.parse(readFileSync(join(kopie, p), "utf8")).ereignisse || [])
+    .some((e) => e.kind === "sbkim-rdv" && e.data?.content?.nodeId === sageId);
+  const kandidaten = namen
+    .map((p) => ({ p, ende: JSON.parse(readFileSync(join(kopie, p), "utf8")).beendet || "" }))
+    .sort((a, b) => a.ende.localeCompare(b.ende));
+  const mitSage = kandidaten.filter((k) => traegtSage(k.p));
+  if (!mitSage.length) {
+    console.log("⚠ ABBRUCH: kein Mitschnitt traegt Sage. Kein Fall misst etwas.\n");
+    process.exit(2);
+  }
+  const neuester = mitSage[mitSage.length - 1].p;
+  const rein = readFileSync(join(kopie, neuester), "utf8");
 
   for (const f of FAELLE) {
     if (f.git) {
@@ -182,6 +194,16 @@ try {
       if (laeuft()) { console.log("  ✗ NICHT GEFANGEN: " + f.was); durch++; }
       else { console.log("  ✓ gefangen: " + f.was); gefangen++; }
       git("reset", "-q"); git("add", "-A");
+      continue;
+    }
+    if (f.alleMitSage) {
+      const sicher = mitSage.map((k) => [k.p, readFileSync(join(kopie, k.p), "utf8")]);
+      for (const [pfad, inh] of sicher) {
+        writeFileSync(join(kopie, pfad), JSON.stringify(f.mit(JSON.parse(inh), sageId)), "utf8");
+      }
+      if (laeuft()) { console.log("  ✗ NICHT GEFANGEN: " + f.was); durch++; }
+      else { console.log("  ✓ gefangen: " + f.was); gefangen++; }
+      for (const [pfad, inh] of sicher) writeFileSync(join(kopie, pfad), inh, "utf8");
       continue;
     }
     const gebaut = f.roh ? null : f.mit(JSON.parse(rein), sageId);

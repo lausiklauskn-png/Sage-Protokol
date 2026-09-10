@@ -31,6 +31,41 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung) · ✅ MIXARIUM NACHGEZOGEN — 0.826040 → 0.883142
+
+**Was getan.** Klaus hat über das **Siegel** neu signiert. Der Mitschnitt von
+16:29 zeigt Mixarium mit **2141 Zeichen** im Raum statt 88, und der Wert steigt
+auf **0.883142**. Die Spore liegt jetzt in Mein-Mixarium (PR #199), die alte als
+Vorgänger daneben; Sages Register führt Zahl und `nodeId` nach, die alte Kennung
+steht unter `previousNodeIds`.
+
+**Geprüft vor dem Ablegen:** VALID · `id == base64url(SHA256(rawPub))` · kein `d`
+· `key_ops` nur `["verify"]` · L2 = 1.000000103 · kanonisch byte-gleich mit der
+Spore im Raum · Text byte-gleich mit dem Depot. **Die Kennung ist dieselbe** —
+die Identität hat den Text-Wechsel überlebt.
+
+**⚠ Benannt: das ist eine andere MESSGRUNDLAGE, nicht nur ein besserer Text.**
+Vorher rechnete die Zahl aus den Getränke-Namen (`embeddingSource: "content"`),
+jetzt aus der Selbstbeschreibung (Siegel-Weg, 14 Schnipsel). Beide Wege sind
+gewollt. **Und es gab keinen Handshake** — Sage war nicht im Raum, die 0.883142
+ist nachgerechnet und **nicht** von Modul 05 bestätigt.
+
+**Zwei eigene Wächter waren zu streng oder zu eng:**
+
+| Was | Warum es falsch war |
+|---|---|
+| „Sage tritt im **neuesten** Mitschnitt auf" | der Mitschnitt von 16:30 ist ein 76-Sekunden-Lauf mit nur Mixarium. Ein Wächter, der einen Ein-Knoten-Mitschnitt für einen Defekt hält, **verbietet das Ablegen genau der Belege**, die eine einzelne Reparatur zeigen. Gemessen wird jetzt am neuesten Mitschnitt, **der Sage trägt** — und dass es überhaupt einen gibt, ist eine eigene Prüfung |
+| die Signatur-Wächter lasen **nur den neuesten** | jeder ältere Beleg blieb ungeprüft. Ein Mitschnitt, den niemand nachrechnet, ist eine Behauptung mit Dateinamen. Jetzt: **29 Sporen über 5 Mitschnitte**, alle geprüft |
+
+Gefunden hat das zweite nicht das Nachdenken, sondern **vier Gegenprobe-Fälle,
+die plötzlich durchrutschten**, weil ihre Sabotage in einem anderen Mitschnitt
+landete als der, den der Wächter ansah.
+
+**Proben:** `npm test` → **99 grün, 0 rot**. Gegenprobe → **8 gefangen, 0
+durchgerutscht**, jeder Fall von Hand nachgestellt.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · ⚠ MIXARIUMS ZAHL KOMMT AUS DEN DRINKS
 
 **Was getan.** Klaus hat Mixariums Siegel fotografiert: im Feld stand der
