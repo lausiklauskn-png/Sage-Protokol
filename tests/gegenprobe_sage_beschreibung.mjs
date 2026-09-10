@@ -22,6 +22,10 @@ import { tmpdir } from "node:os";
 
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ZIEL = "assets/siegel-inhalt.js";
+/* ⚠ DREI WEGE ZUR SPORE, also drei Dateien in der Kopie. Bis zum 2026-09-10
+   kopierte diese Gegenprobe nur den ersten — und der Wächter, der die anderen
+   zwei misst, hätte in der Kopie gar nichts vorgefunden. */
+const MIT = ["index.html", "sbkim-init.js"];
 
 const FAELLE = [
   { was: "der Name des Knotens verschwindet aus der Beschreibung",
@@ -57,6 +61,19 @@ const FAELLE = [
     alt: "          if (!abweichend) return;", neu: "          if (false) return;" },
   { was: "die Herkunfts-Zeile wird gebaut, aber nie eingehaengt",
     alt: "wrap.appendChild(herkunft); ", neu: "" },
+  /* ── Die zwei Wege, die beim ersten Bau ungeprüft danebenlagen ────────── */
+  { was: "die Seite selbst faellt auf ihren alten Kurztext zurueck",
+    datei: "index.html",
+    regex: /    defaultDomainDescription: "(?:[^"\\]|\\.)*",/,
+    ersatz: `    defaultDomainDescription: "Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten 00-15, PULS, die Karte, die sich selbst kennt.",` },
+  { was: "die stille Erst-Anmeldung faellt auf ihren alten Kurztext zurueck",
+    datei: "sbkim-init.js",
+    regex: /      defaultDomainDescription: "(?:[^"\\]|\\.)*",/,
+    ersatz: `      defaultDomainDescription: "Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten, PULS.",` },
+  { was: "das Semantik-Feld der SEITE laesst die Spore wieder gewinnen",
+    datei: "index.html",
+    alt: "    apply(fallback);",
+    neu: "    window.SbkimSpore.getOwnSpore().then(function (sp) { apply(sp.domainDescription); });" },
 ];
 
 let gefangen = 0, durch = 0;
@@ -67,6 +84,7 @@ try {
   mkdirSync(join(kopie, "assets"), { recursive: true });
   mkdirSync(join(kopie, "tests"), { recursive: true });
   cpSync(join(WURZEL, ZIEL), join(kopie, ZIEL));
+  for (const f of MIT) cpSync(join(WURZEL, f), join(kopie, f));
   cpSync(join(WURZEL, "tests/smoke_sage_beschreibung.mjs"), join(kopie, "tests/smoke_sage_beschreibung.mjs"));
 
   const laeuft = () => {
@@ -84,19 +102,26 @@ try {
   }
   console.log("  ✓ unveraendert ist die Probe gruen\n");
 
+  const roh = {};
+  roh[ZIEL] = rein;
+  for (const f of MIT) roh[f] = readFileSync(join(WURZEL, f), "utf8");
+
   for (const f of FAELLE) {
+    const datei = f.datei || ZIEL;
+    const basis = roh[datei];
     let neu;
     if (f.regex) {
-      if (!f.regex.test(rein)) { console.log("  ⚠ ANKER NICHT GEFUNDEN — misst nichts: " + f.was); durch++; continue; }
-      neu = rein.replace(f.regex, f.ersatz);
+      if (!f.regex.test(basis)) { console.log("  ⚠ ANKER NICHT GEFUNDEN — misst nichts: " + f.was); durch++; continue; }
+      neu = basis.replace(f.regex, f.ersatz);
     } else {
-      if (!rein.includes(f.alt)) { console.log("  ⚠ ANKER NICHT GEFUNDEN — misst nichts: " + f.was); durch++; continue; }
-      neu = rein.replace(f.alt, f.neu);
+      if (!basis.includes(f.alt)) { console.log("  ⚠ ANKER NICHT GEFUNDEN — misst nichts: " + f.was); durch++; continue; }
+      neu = basis.replace(f.alt, f.neu);
     }
-    if (neu === rein) { console.log("  ⚠ OHNE WIRKUNG — misst nichts: " + f.was); durch++; continue; }
-    writeFileSync(join(kopie, ZIEL), neu, "utf8");
+    if (neu === basis) { console.log("  ⚠ OHNE WIRKUNG — misst nichts: " + f.was); durch++; continue; }
+    writeFileSync(join(kopie, datei), neu, "utf8");
     if (laeuft()) { console.log("  ✗ NICHT GEFANGEN: " + f.was); durch++; }
     else { console.log("  ✓ gefangen: " + f.was); gefangen++; }
+    writeFileSync(join(kopie, datei), basis, "utf8");   // sonst reicht ein Fall in den nächsten
   }
 } finally { rmSync(kopie, { recursive: true, force: true }); }
 

@@ -4278,7 +4278,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     domainKeywords: ['SBKIM-Glossar', 'Mycel-Vokabular', 'Protokoll-Doku', 'Heilige Tafeln', 'Karten', 'Schwesternetz-Beobachtungen'],
     stammCategories: ['Protokoll-Doku', 'Mycel-Vokabular', 'Heilige Tafeln', 'Karten', 'INTERFACES', 'ARCHITEKTUR'],
     guestCategories: ['Glossar-Wartung', 'Schwesternetz-Beobachtungen', 'Sitzungs-Briefe', 'Übergabeprotokolle'],
-    defaultDomainDescription: 'Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten 00-15, PULS, die Karte, die sich selbst kennt.',
+    defaultDomainDescription: "Sage-Protokol ist der Spezifikations- und Bau-Hub des SBKIM-Protokolls und zugleich ein eigener Endknoten im Mycel — Hub und Knoten in einem. ZWECK: die Quelle der Wahrheit für ein server-loses, dezentrales Netz bereitzustellen, in dem kleine Web-Apps einander nach Bedeutung finden, ohne zentralen Vermittler und ohne Cloud-Server — damit jeder, der eine eigene App baut, sie als Endknoten anschließen kann, ohne um Erlaubnis zu fragen und ohne seine Daten aus der Hand zu geben. FORSCHUNG: SBKIM steht für Semantisch Bidirektionales KI-Matching. Untersucht wird, ob Bedeutung sich zwischen unabhängigen Systemen in Übereinstimmung bringen lässt — Mensch zu Mensch, Mensch zu Agent und ausdrücklich Agent zu Agent. Bidirektional heißt: beide Seiten äußern sich, und ein dritter Bewerter urteilt über die Passung, sodass aus einer rohen Zahl eine begründbare Übereinstimmung wird. Untersucht wird ebenso, wie Regeln und Grundsätze eine Arbeit steuern — die Arbeitsweise selbst ist der Gegenstand. Jede Sitzung wird gemessen und dokumentiert, auch die misslungene; die Messungen sind offen einsehbar. DOMÄNE: die Mycel-Bibliothek — das lebendige SBKIM-Vokabular, das Glossar, die Protokoll-Dokumentation, die verbindlichen Schnittstellen-Verträge zwischen den Modulen, die Gesamt-Architektur, die Modul-Karten von der Speicherung bis zur Suche, die Lehren aus echtem Schaden und das lebende Statusblatt PULS. WIE ES ARBEITET: Ein Embedding-Modell wandelt Texte in Bedeutungs-Vektoren; über den Cosinus-Abstand finden sich fachverwandte Knoten. Es zählt die Bedeutung hinter den Worten, nicht das Stichwort. Jeder Knoten trägt eine eigene kryptografische Identität (Ed25519) und eine signierte Spore mit Domänen-Vektor, die andere reziprok prüfen. Ein Handshake über ein geteiltes Relais verbindet, wenn die Ähnlichkeit reicht; darauf bauen Anastomose als Verbindung, Heterokaryose als geteilter Anker-Vorrat, Apoptose als selbstbestimmtes Vergessen, die Membran als Außenhülle und das selbst-ausgestellte SBKIM-Siegel. Der Knoten bleibt im Empfangsmodus mit Antwortrecht: kein Crawler, keine ungefragten Anfragen ins offene Netz — er antwortet nur auf bewusste Nutzer-Aktion. Alles läuft offline-first im Browser, ohne externe Abhängigkeiten, und legt sich beim ersten Öffnen als installierbare App ab. Dokumentiert sind außerdem das Rendezvous im gemeinsamen Raum, der verschlüsselte Schlüssel-Safe, Sprach- und Bild-Eingabe per OCR und das semantische Such-Werkzeug. FÜR WEN: für alle, die kleine installierbare Web-Apps bauen, für Forker und Mit-Bauer, die ihre App ans Mycel anschließen wollen, und für die Schwester-Knoten des Netzes — Rezeptbuch, Mixarium, die Werkstatt Kim Hub Company, der Auslieferungsprüfer, der offene Marktplatz PWA Toolpoint, Buchhaltung, Auftragsabwicklung, Pinnwand, Tresore und Bedeutungs-Suche. Wer wissen will, was das Protokoll ist, wie die Module zusammenspielen, wie man andockt oder wie ein Knoten sich selbst schützt, findet hier die Quelle der Wahrheit — die Karte, die sich selbst kennt.",
     placeholder: 'Beschreibe deine App neu oder kopiere die Beschreibung / README hier hinein.',
     hint: 'Je konkreter, desto besser findet dich das Mycel. Beschreibe in eigenen Worten: was die App/Seite ist, wofür man sie nutzt, welche Themen/Stichworte sie abdeckt, für wen sie gedacht ist. Ein gut gefüllter Absatz (ca. 3–8 Sätze) ist ideal, gern auch die README hineinkopieren, sie beschreibt das Projekt meist am treffendsten. Vermeide reine Schlagwort-Listen ohne Kontext.',
     // Skin (Sage-Lila/Gold) — pro Knoten anpassbar.
@@ -4458,14 +4458,14 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   // damit Klaus die bestehende Beschreibung verbessern statt neu tippen kann.
   function prefillSemantik(ta) {
     var fallback = SBKIM_SEMANTIK_CONFIG.defaultDomainDescription;
+    /* ⚠ DER GEPFLEGTE VORSCHLAG GEWINNT (2026-09-10). Bis dahin holte diese
+       Stelle die gespeicherte Spore und setzte deren Text ins Feld — dieselbe
+       Fassung, die Klaus in Kim Hub Company zweimal beanstandet hat, und bei
+       Sage die Ursache dafür, dass der Hub mit 160 Zeichen im Raum stand und
+       neun von einundzwanzig Knoten unter den Handshake-Boden fielen.
+       Nichts geht verloren: der zuletzt signierte Text bleibt in der Spore. */
     function apply(v) { if (!ta.value) { ta.value = v || fallback; autoGrowSemantik(ta); } }
-    try {
-      if (window.SbkimSpore && typeof window.SbkimSpore.getOwnSpore === 'function') {
-        window.SbkimSpore.getOwnSpore()
-          .then(function (sp) { apply(sp && typeof sp.domainDescription === 'string' && sp.domainDescription.length ? sp.domainDescription : fallback); })
-          .catch(function () { apply(fallback); });
-      } else { apply(fallback); }
-    } catch (_e) { apply(fallback); }
+    apply(fallback);
   }
 
   function buildSemantikBlock() {
