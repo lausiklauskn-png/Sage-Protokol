@@ -59,6 +59,123 @@ Andock-Konventionen: INTERFACES §11
 
 ---
 
+## 🔬 DER ZWEITE MITSCHNITT — 18 Knoten live gemessen (2026-09-10, 14:02–14:33)
+
+Beleg: [`sbkim/mitschnitte/2026-09-10T1433_mycel-karte-analyse.json`](mitschnitte/2026-09-10T1433_mycel-karte-analyse.json)
+(154 Ereignisse, Rekorder v1.3). Klaus hat zwischen 14:04 und 14:21 **zwölf Apps
+nacheinander geöffnet und neu signiert**; damit liegen erstmals **live gemessene**
+Sporen von 18 Knoten nebeneinander statt einer.
+
+**Alle 18 Raum-Sporen sind kryptografisch gültig** — VALID, `id == base64url(SHA256(rawPub))`,
+kein `d` im JWK, `key_ops` nur `["verify"]`, L2 = 1 bei allen 18 (nachgerechnet).
+
+### ✅ Der Vorbehalt über Sage ist eingelöst — Raum und Depot sind DIESELBE Spore
+
+Bis zum 2026-09-10 stand über jeder Zahl dieses Registers der Satz, sie messe gegen
+die **Depot**-Spore und nicht gegen den Knoten, dem eine App im Raum wirklich
+begegnet. Das ist jetzt gemessen und **hinfällig**:
+
+| | Depot (`sbkim/spore.json`) | Raum (Mitschnitt) |
+|---|---|---|
+| Kennung | `BgjXhSApoOrJ…` | `BgjXhSApoOrJ…` |
+| signiert | 2026-09-10T13:20:21.535Z | 2026-09-10T13:20:21.535Z |
+| Text | 3028 Zeichen · 50 Stichworte | 3028 Zeichen · 50 Stichworte |
+| **`domainVector`** | **byte-gleich** — cos = 1.0 | |
+
+**Der Maßstab, gegen den alle zwanzig `matchScore` gerechnet sind, ist damit
+bestätigt.** Sage im Raum IST Sage im Depot.
+
+### ⚠ DREIZEHN VON FÜNFZEHN KNOTEN TRAGEN IM RAUM EINE ANDERE KENNUNG
+
+Der Stufe-0e-Befund vom 2026-07-29, zum zweiten Mal und im großen Maßstab. Nur
+**Perfect Skin Beauty** und **Kim Hub Company** trugen dieselbe Kennung wie im
+Depot — beide, weil ihre Spore heute nicht neu erzeugt wurde.
+
+Das ist **kein Fehler der Apps**: der Browser-Speicher einer nur im Tab geöffneten
+github.io-Seite ist „best effort". Wird er geräumt, legt die App beim nächsten
+Öffnen ein neues Schlüsselpaar an. **Die `nodeId`-Spalte unten bleibt deshalb die
+COMMITTETE Identität** — sie soll die abgelegte Spore beschreiben, nicht den
+Tagesstand eines Browsers.
+
+### ⚠ DERSELBE TEXT ERGIBT NICHT IMMER DENSELBEN VEKTOR — und das ist je App stabil
+
+Gemessen wurde `cos(Depot-Vektor, Raum-Vektor)` bei byte-gleichem
+`domainDescription`, byte-gleichen `domainKeywords`, byte-gleicher `domain` und
+demselben `embeddingModel` (`Xenova/multilingual-e5-small`):
+
+| Knoten | cos(Depot, Raum) | |
+|---|---|---|
+| family-project · WorkFloh · Muster Werbetechnik · Perfect Skin Fashion · Tomys Hub · Perfect Skin Beauty · Kim Hub Company | **1.000000** | kein Unterschied |
+| Alis Moderaum | 0.995264 | |
+| Jasons-Tresor | 0.994307 | |
+| Mein-Tresor | 0.990437 | |
+| Kimseek | 0.989639 | |
+| Kimboard | 0.987958 | |
+
+Bei Kimseek weichen **alle 384 Dimensionen** ab, die größte Einzelabweichung ist
+0.024; beide Vektoren sind sauber normiert (L2 = 1.000000053 bzw. 0.999999768).
+Es ist also kein Rundungsfehler und kein Normierungsfehler.
+
+**Es ist auch nicht zufällig.** Der Mitschnitt vom 2026-07-29 nennt für Kimboard
+**0.9880** und für Family Projekt **1.0000** — sechs Wochen und zwei
+Schlüsselwechsel später stehen dort **0.987958** und **1.000000**. Der Unterschied
+gehört zur App, nicht zum Lauf.
+
+⚠ **DIE URSACHE IST NICHT GEMESSEN.** Ein naheliegender Kandidat: die Depot-Sporen
+der betroffenen Knoten stammen aus der Neu-Signier-Welle vom 18.–19.07. und wurden
+mit `tools/resign_spore_v02.mjs` + `tools/embed_helper.html` gerechnet, also in
+einer **anderen Umgebung** als der App. Das ist eine **Vermutung, kein Befund** —
+eine geratene Ursache klingt genau wie eine gemessene. Wer sie prüfen will,
+rechnet denselben Text einmal im Helfer und einmal in der App und vergleicht.
+
+**Nicht betroffen sind die beiden Fälle, auf die es heute ankam:** Sage (cos = 1.0)
+und Kim Hub Company (cos = 1.0).
+
+### Register gegen Raum — und was daran hängt
+
+| Knoten | Register | Raum | Δ |
+|---|---|---|---|
+| SB-KIMTool-Point | 0.893026 | 0.865795 | −0.027231 |
+| Auslieferungsprüfer | 0.836978 | 0.865385 | +0.028407 |
+| Kimboard | 0.818961 | 0.847287 | +0.028326 |
+| BookLedgerPro | 0.855505 | 0.826818 | −0.028687 |
+| Private Brain | 0.811482 | 0.800773 | −0.010709 |
+| Kimseek | 0.861596 | 0.871142 | +0.009546 |
+| Mein-Tresor | 0.866101 | 0.871942 | +0.005841 |
+| Alis Moderaum | 0.795460 | 0.793347 | −0.002113 |
+| Jasons-Tresor | 0.872405 | 0.874249 | +0.001844 |
+| Kim-Bell | 0.873750 | 0.874864 | +0.001114 |
+| Family Projekt · WorkFloh · Tomys Hub · Perfect Skin Fashion · Muster Werbetechnik · Perfect Skin Beauty · Kim Hub Company | | | **±0.000000** |
+
+**KEIN EINZIGER KNOTEN WECHSELT DIE SEITE DES HANDSHAKE-BODENS** (`PROVIDER_MIN_MATCH = 0.80`).
+Die Zahlen bewegen sich, die Andock-Entscheidungen nicht. Private Brain liegt mit
+0.800773 allerdings nur noch **acht Zehntausendstel** darüber.
+
+**⚠ VIER KNOTEN WAREN NICHT IM RAUM** und tragen deshalb weiter ihre Zahl gegen die
+abgelegte Spore: **Rezeptbuch** (0.874048) · **Mixarium** (0.817718) ·
+**Muttis-Rezeptbuch** (0.870249) · **PWA Toolpoint** (0.811202). Klaus hat sie an
+diesem Nachmittag nicht geöffnet.
+
+**Das Register ist deshalb NICHT auf den Raum-Maßstab umgestellt.** Eine halb
+umgestellte Tabelle wäre schlimmer als eine, die ihren Maßstab nennt — sie sähe
+einheitlich aus und wäre es nicht. Die Entscheidung liegt bei Klaus und ist ihm
+vorgelegt.
+
+### Was der Mitschnitt sonst noch zeigt: fünf sehr dünne Beschreibungen
+
+| Knoten | Zeichen | |
+|---|---|---|
+| SB-KIMTool-Point | **61** | dünnster Knoten im Netz |
+| Kim-Bell | 82 | |
+| BookLedgerPro | 83 | |
+| Private Brain | 171 | steht 0.0008 über dem Boden |
+| Kimboard | 238 | |
+
+Zum Vergleich: Sage 3028, Kim Hub Company 2602, WorkFloh 1025. **Bei allen fünf ist
+die eigene Bedeutungs-Beschreibung der nächste Hebel**, nicht Sage.
+
+---
+
 ## Stufen-Legende
 
 | Stufe | Bedeutung |
