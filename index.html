@@ -398,6 +398,51 @@
   .mod-row.nextup { box-shadow: inset 0 0 0 1px var(--gold), 0 0 22px rgba(244,180,53,0.06); }
   .module-list-divider { grid-column: 1 / -1; font-family: "Geist Mono", monospace; font-size: 0.72rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin: 0.6rem 0 0.2rem; padding: 0.7rem 0 0.2rem; border-top: 1px dashed var(--line); }
   .endknoten-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-top: 0.8rem; }
+  /* ⚠ ZWEISPALTIG ERST, WENN DIE SPALTE WIRKLICH PLATZ HAT (Klaus 2026-09-10:
+     „es muss nur zu viel gescrollt werden, und es werden mit der Zeit zu viele
+     Apps"). Die Karte ist `span-5` eines 12er-Rasters, hat also rund 5/12 der
+     Seitenbreite. Die Schwelle ist AUSGEMESSEN, nicht geraten:
+
+         Fenster   Spaltenbreite   Ueberstand
+          1180 px       201 px         14 px
+          1200 px       205 px         10 px
+          1220 px       209 px          6 px
+          1240 px       213 px          2 px
+          1260 px       218 px          0
+          1920 px       222 px          0
+
+     ⚠ Diese Reihe wurde mit der Schwelle PROBEHALBER auf 1180 gemessen, sonst
+     gaebe es unter 1260 gar keine zwei Spalten zu messen. Wer sie mit der
+     jetzigen Schwelle nachfaehrt, sieht bei 1180 und 1240 eine Spalte — das ist
+     kein Widerspruch, sondern der Zweck der Zahl.
+
+     Der `Ueberstand` ist `scrollWidth - clientWidth` des Rasters. Er faellt
+     stetig und ist erst ab 218 px Spaltenbreite null — es ist also KEIN
+     Rundungsrest, sondern der echte Mindestbedarf des Karteninhalts. Darum
+     1260 und nicht 1180: bei 1180 stuenden zwar zwei Spalten da, aber die
+     Karten waeren zu eng fuer ihren eigenen Inhalt.
+
+     Mit der jetzigen Schwelle gemessen (22 Knoten):
+          380 · 900 · 1240 px → eine Spalte,  Ueberstand 0
+          1260 · 1400 · 1920 px → zwei Spalten, Ueberstand 0
+     und die Seite laeuft in keiner Breite quer.
+     Der Gewinn, an zwei benachbarten Breiten gemessen (22 Knoten):
+     bei 1240 px eine Spalte und 3222 px hoch, bei 1260 px zwei Spalten und
+     2038 px — gut ein Drittel weniger Scrollen. (Die 3239 px weiter oben sind
+     dieselbe Liste bei 1100 px; sie waechst leicht, je schmaler die Spalte wird.)
+
+     ⚠ UND `1fr 1fr` WAERE FALSCH GEWESEN, obwohl es „zwei gleiche Haelften"
+     heisst. `1fr` ist die Kurzform von `minmax(auto, 1fr)`, und der auto-Boden
+     ist die MINDESTBREITE DES INHALTS. Gemessen mit `1fr 1fr`: die Spalten
+     wurden 264 px und 231 px — ungleich —, und die rechte stand 52 bis 94 px
+     UEBER den rechten Kartenrand hinaus. `minmax(0, 1fr)` setzt den Boden auf
+     Null; dann sind beide Spalten gleich breit und nichts laeuft hinaus.
+
+     ⚠ Und BEWUSST kein `auto-fill`: das gaebe auf einem breiten Schirm drei
+     oder vier Spalten, und dann stuende neben jedem Namen mehr Rand als Inhalt.
+     Klaus' Wort ist „erst einmal zweispaltig" — mehr wird gemessen, nicht
+     geraten. */
+  @media (min-width: 1260px) { .endknoten-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .endknoten { padding: 0.85rem 0.95rem; background: rgba(0,0,0,0.32); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); transition: border-color .2s, background .2s; }
   .endknoten.live { border-style: solid; border-color: var(--accent); }
   .endknoten .name { font-weight: 500; font-size: 1.0rem; letter-spacing: -0.01em; }
