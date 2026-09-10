@@ -147,6 +147,31 @@ ok("Probe 6: Multi-Query A5b (expandQuery + bestRelevance über Frage-Varianten)
   ok("Probe 7: die Seite hat einen <main>-Bereich", /<main>/.test(html) && /<\/main>/.test(html));
 }
 
+/* ── Probe 8: die zweite eigene Tür (Klaus 2026-09-10) ──────────────────────
+ *
+ * `relay.pwa-toolpoint.de` liegt seit dem 2026-08-11 als zweiter Caddy-Block
+ * auf DEMSELBEN Relais-Container wie relay.family-projekt.de. Es gehört in die
+ * Liste — aber NICHT in den Default-Aktiv-Satz: der zählt fünf VERSCHIEDENE
+ * Speicher, und daraus vier zu machen und weiter „fünf gestreut" zu schreiben
+ * wäre eine Zahl, die etwas anderes verspricht, als sie hält. */
+{
+  const poolRoh = /const RELAY_POOL = \[([\s\S]*?)\];/.exec(html);
+  const pool = poolRoh ? Array.from(poolRoh[1].matchAll(/'(wss:\/\/[^']+)'/g)).map((m) => m[1]) : [];
+  const sliceRoh = /activeRelais|activeRelays = RELAY_POOL\.slice\(0,\s*(\d+)\)/.exec(html);
+  const anZahl = sliceRoh && sliceRoh[1] ? Number(sliceRoh[1]) : null;
+  const tp = "wss://relay.pwa-toolpoint.de";
+  ok("Probe 8: das Toolpoint-Relais steht in der Liste", pool.includes(tp));
+  ok("Probe 8: es ist NICHT voreingestellt an — zwei Namen sind keine zweite Poststelle",
+    anZahl !== null && pool.indexOf(tp) >= anZahl);
+  /* Der Grund muss DASTEHEN. Ohne ihn zieht die nächste Sitzung es nach vorn,
+     weil „Klaus' eigenes gehört zuerst" — und der Default-Satz schrumpft
+     still von fünf Speichern auf vier. */
+  ok("Probe 8: und der Grund steht daneben (zwei Namen, ein Speicher)",
+    /ZWEI NAMEN SIND KEINE ZWEITE POSTSTELLE/.test(html));
+  ok("Probe 8: die überholte Toolpoint-Behauptung im Kopf ist weg",
+    !/Erster Eintrag: Klaus' EIGENES, log-freies, neutrales Toolpoint-Relay/.test(html));
+}
+
 // ---- Auswertung ----
 let pass = 0;
 for (const r of results) { console.log(`[${r.ok ? "OK " : "FAIL"}] ${r.probe}`); if (r.ok) pass++; }

@@ -31,6 +31,45 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung, Abend) · ✅ DIE ZWEITE EIGENE TÜR IST IN DER LISTE
+
+Klaus: *„In Kimboard fehlt ein Relais und auch in der Pinnwand … das von PWA
+Toolpoint. Da müsste noch das private Relais rein."*
+
+Er hat recht: `wss://relay.pwa-toolpoint.de` fehlte in **Kimboard** und in
+**`pinnwand/`**, obwohl die Mycel-Karte und PWA Toolpoint es längst führen.
+Nachgetragen, in beiden.
+
+⚠ **ES IST KEINE ZWEITE POSTSTELLE, SONDERN EINE ZWEITE TÜR.** Belegt in
+`family-project/Caddyfile.example`: seit dem 2026-08-11 liegt der Name als
+zweiter Caddy-Block auf **demselben** Relais-Container (Klaus hat es an der
+Server-Konsole gemessen — Zertifikat, HTTP 200, NIP-11-Name „Toolpoint-Relay").
+Beide Türen führen in denselben Nachrichten-Speicher.
+
+**Daraus folgt, wo es NICHT hingehört:** in den Default-Aktiv-Satz. Der zählt
+fünf **verschiedene** Speicher (`RELAY_POOL.slice(0, 5)`); mit der zweiten Tür
+darin wären es vier, und die Oberfläche schriebe weiter „fünf gestreut" — eine
+Zahl, die etwas anderes verspricht, als sie hält. Es steht deshalb als
+**wählbare** Tür in der Liste, und der Grund steht im Code daneben, damit die
+nächste Sitzung es nicht „nach vorn korrigiert".
+
+Doppelt ankommende Zettel sind unkritisch: Kimboard verwirft sie über
+`seen.has(ev.id)` (nachgesehen, nicht angenommen).
+
+**Nebenbei berichtigt:** der Kopf-Kommentar über `RELAY_POOL` behauptete in
+beiden Apps, der **erste** Eintrag sei das „Toolpoint-Relay", und verwies auf
+eine Notiz, die es in keinem der Depots gibt. Der erste Eintrag ist
+`relay.family-projekt.de`.
+
+**Gemessen:** Sage `node tests/run_alle.mjs` **99 grün · 0 rot**,
+`pinnwand/_smoke.mjs` **71 grün** (vorher 67) · Kimboard
+`smoke_vorgezeichnet` **18 grün** (vorher 11). Vier neue Wächter je App, jeder
+von Hand gegengeprüft: Relais entfernt · nach vorn geschoben · Grund gestrichen
+· „(eigenes)" nur am Heim-Relais — jedes Mal fällt genau die Zusicherung um,
+die es betrifft.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DIE MYCEL-KARTE SPIELT DEN ECHTEN LAUF NACH
 
 Klaus: *„könnte man die 235 Ereignisse in der Mycelkarte mit den entsprechenden

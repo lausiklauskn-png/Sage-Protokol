@@ -379,6 +379,7 @@
       <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ nostr.mom</span>
       <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ offchain.pub</span>
       <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ relay.mostr.pub</span>
+      <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ relay.pwa-toolpoint.de</span>
     </div>
     <div class="row" style="margin-top: 10px; gap: 8px;">
       <input id="boardkey" aria-label="Passwort für ein privates Brett (leer lassen = offenes Brett)" type="password" placeholder="🔒 Privates Brett: Passwort (leer = offen)" autocomplete="off" style="flex:1; min-width:200px;">
@@ -601,14 +602,33 @@ async function sha256Hex(str) {
 const TAG = 'sbkim-frage-antwort-test';
 // Breit gestreute öffentliche Relays (verschiedene Betreiber/Regionen). Wählbar.
 // Fällt eins aus, tragen die anderen weiter — kein Umschalten, alle parallel.
-// Erster Eintrag: Klaus' EIGENES, log-freies, neutrales Toolpoint-Relay
-// (föderiert neben den öffentlichen, steht im Default-Aktiv-Satz). Live seit
-// 2026-06-25, betrieben auf eigenem VPS. Siehe docs/discovery/notiz-toolpoint-relay.md.
+//
+// DIE ERSTEN ZWEI SIND KLAUS' EIGENE — und zwar DIESELBE Poststelle unter zwei
+// Namen (Klaus 2026-09-10). `relay.pwa-toolpoint.de` ist am 2026-08-11 als
+// zweiter Caddy-Block auf denselben Container gelegt worden; belegt an Klaus'
+// Server-Konsole (Zertifikat CN=relay.pwa-toolpoint.de, HTTP 200, NIP-11-Name
+// „Toolpoint-Relay"). Steht so in `family-project/Caddyfile.example`.
+//
+// ⚠ ZWEI NAMEN SIND KEINE ZWEITE POSTSTELLE. Beide Türen führen in denselben
+// Nachrichten-Speicher — anzuhaken bringt also KEINE zusätzliche Reichweite und
+// keine zusätzliche Ausfallsicherheit. Deshalb steht Toolpoint NICHT im
+// Default-Aktiv-Satz: der zählt fünf VERSCHIEDENE Speicher, und daraus vier zu
+// machen und weiter „fünf gestreut" zu schreiben wäre eine Zahl, die etwas
+// anderes verspricht, als sie hält.
+//
+// WOFÜR ES DANN DA IST: als WÄHLBARE Tür. Wer über PWA Toolpoint kommt, will
+// unter dem Namen senden, den er kennt; und fällt ein Name einmal weg (DNS,
+// Zertifikat), trägt der andere.
+//
+// (Hier stand bis zum 2026-09-10, der erste Eintrag sei das „Toolpoint-Relay"
+//  und verwies auf `docs/discovery/notiz-toolpoint-relay.md`. Der erste Eintrag
+//  ist relay.family-projekt.de, und die Notiz gibt es in diesem Depot nicht.)
 const RELAY_POOL = [
   'wss://relay.family-projekt.de',
   'wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.nostr.band',
   'wss://relay.primal.net', 'wss://relay.snort.social', 'wss://nostr.mom',
   'wss://offchain.pub', 'wss://relay.mostr.pub',
+  'wss://relay.pwa-toolpoint.de',
 ];
 const LS_RELAYS = 'sbkim_pinnwand_relays';
 let activeRelays;
