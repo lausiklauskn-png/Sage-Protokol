@@ -31,6 +31,63 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DRITTER MITSCHNITT — das Netz ist vollständig gemessen
+
+**Was getan.** Klaus hat die vier Knoten geöffnet, die im zweiten Mitschnitt
+gefehlt hatten. **Für alle 21 Gegenstellen liegen jetzt live gemessene Sporen
+vor.** Sage tritt zum zweiten Mal mit `cos = 1.0` gegen die abgelegte Spore an —
+der Maßstab hält. Beleg abgelegt unter
+[`sbkim/mitschnitte/2026-09-10T1516_mycel-karte-analyse.json`](../sbkim/mitschnitte/2026-09-10T1516_mycel-karte-analyse.json).
+
+**⚠ MEINE ERKLÄRUNG VON HEUTE NACHMITTAG IST WIDERLEGT.** Ich hatte als Kandidat
+für den Vektor-Unterschied genannt, die Depot-Sporen stammten aus der
+Neu-Signier-Welle und seien mit `tools/resign_spore_v02.mjs` in einer anderen
+Umgebung gerechnet worden. **PWA Toolpoint widerlegt das:**
+
+| | Depot | Raum |
+|---|---|---|
+| Kennung | `WJ14jzCKnqlz…` | `WJ14jzCKnqlz…` — **dieselbe** |
+| signiert | 08:11:**25**.674Z | 08:11:**39**.000Z |
+| Text · Stichworte | 283 Zeichen · 8 | **byte-gleich** |
+| `cos(Depot, Raum)` | **0.992957** | |
+
+Zwei Sporen, derselbe Schlüssel, derselbe Text, **vierzehn Sekunden**
+auseinander — und ein anderer Vektor. Dieselbe App, derselbe Browser. Das
+Embedding ist unter denselben Eingaben nicht deterministisch. **Die Ursache
+bleibt ungemessen**; widerlegt ist nur die eine Vermutung, und sie wird nicht
+durch die nächste plausible Geschichte ersetzt.
+
+> Eine Vermutung, die man nicht als solche kennzeichnet, wird beim nächsten
+> Lesen zum Befund. Diese war gekennzeichnet — deshalb ließ sie sich mit einer
+> Messung wieder einkassieren.
+
+**⚠ Mein Mixarium sagt im Raum etwas anderes an, als im Depot liegt:** **88
+Zeichen** gegen **1476**. Wer dort neu signiert, bekommt den Zweizeiler — dieselbe
+Vorrang-Falle, die Sage und Kim Hub Company heute abgestellt haben und die in
+Mein-Mixarium **nicht** abgestellt ist.
+
+**📏 Länge entscheidet nicht, der Inhalt tut es** — gemessen über alle 21:
+
+| Knoten | Zeichen | gegen Sage | nennt SBKIM/Mycel? |
+|---|---|---|---|
+| Kim-Bell | **82** | **0.874864** | ja |
+| SB-KIMTool-Point | **61** | **0.865795** | ja |
+| Muster Werbetechnik | 421 | 0.793613 | nein |
+| Perfect Skin Beauty | 265 | 0.783216 | nein |
+
+Für die fünf Knoten unter dem Handshake-Boden ist der Hebel damit **nicht mehr
+Text**, sondern der Satz, dass sie zum SBKIM-Mycel gehören. Klaus hat das am
+selben Tag von sich aus benannt: *„dass sie im Sage Protokoll mit sind, das wird
+nämlich bedeuten, dass sie leichter gefunden würden innerhalb des Mycels."*
+
+**Was offen ist.** Der Grund, aus dem das Register noch nicht auf den
+Raum-Maßstab umgestellt ist, ist **weggefallen** — er war „für vier Knoten liegt
+kein Mitschnitt vor". Die Entscheidung liegt bei Klaus.
+
+**Proben:** `npm test` → **99 grün, 0 rot, 0 nicht lauffähig**.
+
+---
+
 ## Stand 2026-09-10 (Haupt-Sitzung) · ✅ ZWEITER MITSCHNITT — 18 KNOTEN LIVE GEMESSEN
 
 **Was getan.** Klaus hat einen zweiten Mitschnitt der Mycel-Karte geschickt
