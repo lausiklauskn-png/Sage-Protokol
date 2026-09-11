@@ -204,8 +204,16 @@ gibt nichts, was die Datei anders zeigen könnte als vorher.
 ## Stundennachweis
 
 **Gemessen als Spanne vom ersten bis zum letzten Commit dieser Sitzung**, über
-alle acht Depots. Die genauen Zeitstempel stehen in der Git-Historie und sind
-dort nachprüfbar.
+alle acht Depots:
+
+| | |
+|---|---|
+| erster Commit | **2026-09-11 10:26:40 UTC** (Sage, PULS-Auslagerung) |
+| letzter Commit | **2026-09-11 11:15:17 UTC** (Sage, Protokoll und Brief) |
+| **Spanne** | **48 Minuten 37 Sekunden** |
+
+Die Zeitstempel stehen in der Git-Historie und sind dort nachprüfbar
+(`git log --format='%aI'` über die acht Zweige).
 
 ⚠ **WAS DIESE SPANNE NICHT ENTHÄLT:** die Zeit **vor** dem ersten Commit — das
 Lesen der Pflichtlektüre, das Einrichten der Zweige, das Installieren der Pakete
