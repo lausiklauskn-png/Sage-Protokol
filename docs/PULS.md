@@ -31,6 +31,166 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-11 (Haupt-Sitzung, später) · ✅ DIE FRIST, DER SPRUNG UND DIE FÜNF UNTER 0,80
+
+**Rolle:** Haupt-Sitzung. Vier Aufgaben aus dem Brief, alle vier bearbeitet.
+Kein Modul-Code in Sage angefasst, kein `status.json`, keine Spec.
+
+### 1 · PULS ausgelagert, nicht gekürzt
+
+Die Datei stand bei **exakt 3.000 von 3.000 Zeilen** — die Grenze, nicht knapp
+davor. Zwei Einträge (2026-09-07 und 2026-09-04, zusammen 178 Zeilen) stehen
+jetzt in [`sessions/archiv/2026-09-11_puls-auslagerung.md`](sessions/archiv/2026-09-11_puls-auslagerung.md).
+Gemessen: **3.000 → 2.839**. Der ausgelagerte Text ist byte-gleich (`diff` gegen
+die Originalzeilen, leer); der Name wurde vorher mit `ls` geprüft und trägt das
+Datum der **Auslagerung**, nicht das der Einträge.
+
+### 2 · `smoke_pruefer.mjs` hat eine eigene Frist — und einen dritten Ausgang
+
+`PWA-Toolpoint/tests/smoke.mjs` startete ihn **ohne Frist** und meldete rot,
+sobald er mit einem Fehler endete. Stirbt er an seiner eigenen 30-s-Uhr, stand
+dort „eigene Probe grün: nein" — eine Zeile, die nach einem Befund aussieht und
+eine Zeitüberschreitung ist. Gemessen am 2026-09-10: derselbe Baum, dreimal
+`node tests/smoke.mjs` → 737 · 737 · 738.
+
+`tests/kindprozess.mjs` trägt die Frist und drei Ausgänge: **grün** · **ROT**
+(Befund *oder* anderer Wurf) · **⊘ nicht abgeschlossen** (ungeprüft, nicht grün).
+Ein Befund gilt **vor** allem anderen — auch wenn das Kind danach hängt und auch
+wenn „Timeout" in seinem Befundtext steht.
+
+**Gemessen, nicht geraten:** zwei Läufe des Prüfers 10 969 ms und 8 016 ms →
+Frist 180 s, rund das Sechzehnfache. Die gemessene Dauer steht bei jedem Lauf
+daneben (`8.1 s von 180 s`), damit ein Heranwachsen sichtbar wird, bevor sie
+fällt.
+
+**Die Reparatur hat ihre eigene Messung** — am *echten* Prüfer mit auf 1 ms
+gekürzter innerer Uhr, in einer Wegwerf-Kopie, derselbe Baum:
+
+| | alt (`origin/main`) | neu |
+|---|---|---|
+| Zeile | `✗ eigene Probe grün` — **ohne jeden Hinweis** | `⊘ … NICHT ABGESCHLOSSEN → das Kind ist an seiner eigenen Uhr gestorben` |
+| Schlusszeile | `769/770 bestanden` | `775/775 bestanden · 1 nicht abgeschlossen` |
+| Rückgabewert | **1** | **0** |
+
+⚠ **Der Rückgabewert ist die Entscheidung daran, und sie ist eine Abwägung.**
+Ein falsches Rot ist hier teuer, weil die Gegenprobe bei roter Ausgangslage
+abbricht; dagegen steht das Risiko, dass ein wirklich hängender Prüfer unbemerkt
+bleibt. Deshalb steht die dritte Spalte **immer** in der Schlusszeile, auch als
+Null. **Klaus kann das überstimmen** — es ist eine Abwägung, keine Tatsache.
+
+⚠ **Ein eigener Gegenprobe-Fall hat dabei einen blinden eigenen Wächter
+entlarvt.** „Der echte Befund wird nicht mehr ZUERST gelesen" rutschte durch,
+obwohl der Anker saß: das Kind, an dem gemessen wurde, war von selbst gestorben,
+und dann landet es auch **ohne** die Reihenfolge-Regel bei rot, nur über einen
+anderen Zweig. Die Regel wirkt erst bei einem Kind, das **findet und danach
+hängt** — und diesen Wächter gab es nicht.
+
+⚠ **Die Gegenprobe hat seitdem selbst eine Frist** (`FRIST=300`). Ohne sie
+brächte ausgerechnet der Fall, der die Kind-Frist ausbaut, den ganzen Lauf zum
+Stehen — Kimhubs **sechste Art**, und sie wäre beim ersten Lauf zugeschnappt.
+
+Gemessen: **772 → 784 grün, 0 ROT, 0 nicht abgeschlossen.**
+
+### 3 · Die Knoten unter 0,80 — sechs Depots, und der Hebel allein hätte nicht gereicht
+
+Fünf standen unter der Handshake-Schwelle, Private Brain siebentausendstel
+darüber. **Keiner von ihnen nannte SBKIM, Mycel oder Knoten in der
+Beschreibung** — Private Brain nur in den Stichworten, und genau er liegt als
+einziger knapp darüber. Das ist kein Beweis, aber es zeigt in dieselbe Richtung
+wie die Messung vom 2026-09-10.
+
+| Depot | Register | Beschreibung nannte das Protokoll |
+|---|---|---|
+| Perfect Skin Beauty | 0.783216 | nein |
+| Tomys Hub | 0.786371 | nein |
+| Perfect Skin Fashion | 0.79303 | nein |
+| Alis Moderaum | 0.793347 | nein |
+| Muster Werbetechnik | 0.793613 | nein |
+| Private Brain | 0.800773 | nur in den **Stichworten** |
+
+Alle sechs tragen jetzt einen eigenen Protokoll-Absatz, **die Domäne bleibt
+vorn** (Modul 03 schneidet bei 512 Tokens ab — was hinten steht, fällt zuerst
+weg), und beide Wege zur Spore tragen ihn **wortgleich**.
+
+⚠ **UND DAS ALLEIN HÄTTE NICHTS BEWIRKT.** In allen sechs überschrieb die
+gespeicherte Spore den Vorschlag der App im Siegel **still** — wer neu
+signierte, bekam den alten Text zurück, ohne dass irgendwo etwas dazu dastand.
+Genau die Fassung, die Klaus in Kim Hub Company zweimal beanstandet hat. Der
+Block war in allen sechs Depots **byte-identisch** (`md5`), also eine
+Ersetzung für alle. Jetzt gewinnt der Vorschlag der App; der zuletzt signierte
+bleibt in der Spore, ein Knopf holt ihn zurück, und eine Zeile nennt jedes Mal,
+welcher der beiden im Feld steht.
+
+Je Depot **13 Wächter** (jede Sache einzeln — eine Zahl misst Umfang und keinen
+Inhalt) und **9 Gegenprobe-Fälle** mit `trifft`-Muster: **9 gefangen · 0
+durchgerutscht · 0 aus dem falschen Grund · 0 tote Anker** in allen sechs. Einer
+war beim ersten Lauf blind, und zwar der **Fall**: er ersetzte nur
+„SBKIM-Mycel", und das Wort steht in der Schlagwort-Zeile ein zweites Mal.
+
+⚠ **WAS DAS NICHT TUT: die Zahlen im Register bewegen sich erst, wenn über das
+SIEGEL neu signiert wird** — und das kann nur Klaus, im Browser. Wer die Datei
+ändert und auf eine steigende Zahl wartet, wartet vergeblich.
+
+### 4 · Der Fall der PWA-Toolpoint-Startseite — zwei verschiedene Dinge
+
+**Die CLS 0,062 war echt und hatte genau eine Ursache.** `#sucheMicLang` steht
+**leer** in der Seite; `app.js` füllt ihn erst nach dem Laden. `.mic-lang` trug
+`max-width: 11rem` und **keine** Breite — leer 36 px, gefüllt 176 px, und in der
+umbrechenden Suchzeile rutschte „Suchen" auf eine eigene Zeile. Im Trace:
+`alt[356,399,36,40] → neu[20,462,176,40]`, Δx −336, Δy 63.
+
+⚠ **Der Kommentar drei Zeilen darüber warnt seit jeher genau davor** — er steht
+über dem Mikrofon, das dagegen geschützt wurde. Der Sprach-Wähler kam am
+**2026-08-17** daneben, acht Tage nach der 100·100·100-Messung, und brachte den
+Sprung zurück, **eine Stelle weiter rechts**. *Ein Wächter am Einzelfall ist
+morgen am Nachbarn blind.*
+
+| | vorher | nachher (3 Läufe Handy) |
+|---|---|---|
+| Leistung | 99 | **100 · 100 · 100** |
+| CLS | 0,062 | **0 · 0 · 0** (Computer ebenfalls 0) |
+| TBT | 80 ms | 20 · 40 · 40 ms |
+
+**Die „Gute Praxis 96" ist dagegen KEIN Befund über die Seite, sondern ein
+Artefakt der Messumgebung.** Der einzige Abzug ist `errors-in-console`, und die
+Fehler sind durchweg `ERR_TUNNEL_CONNECTION_FAILED` für die App-Symbole von
+`github.io`. **Nachgemessen statt angenommen:** ein `curl` auf genau eine dieser
+Adressen antwortet aus diesem Behälter mit **HTTP 000** (curl-Fehler 56).
+
+⚠ **Der Eintrag vom 2026-09-08 hat diese 96 notiert, als wäre sie eine Aussage
+über die Seite.** Sie ist eine über die Leitung. Damit war die Gegenüberstellung
+„100·100·100 gegen 99·100·96·100" in **einer** Spalte gar kein Vergleich.
+**Eine Zahl trägt ihre Messbedingung mit, oder sie trägt gar nichts.**
+
+### Was offen ist
+
+- **Klaus' Browser-Sichttest für alles davon.** Er ist nicht ersetzbar. Und die
+  Register-Zahlen der sechs Knoten bewegen sich erst nach dem Neu-Signieren.
+- **`Tomys-Hub/tests/smoke-spore-download.cjs` ist rot** — auf `origin/main`
+  ebenso, also nicht von dieser Arbeit. Sie wartet auf `[data-ty-spore-tool]`,
+  und **diese Marke gibt es im ganzen Depot nicht** (`grep`: null Treffer
+  außerhalb der Probe). Ursache nicht weiter untersucht; benannt statt umfahren.
+- **`Tomys-Hub/tests/smoke-verbund.cjs` ist rot** aus demselben Grund wie die
+  96 oben: der Ausgangs-Proxy sperrt `wss://relay.family-projekt.de`. 15/16 grün.
+- **Acht Draft-PRs** stehen offen und warten auf Klaus.
+
+### Und der PULS wurde ZWEIMAL ausgelagert
+
+Nach dem Eintrag oben stand die Datei bei **2.991 von 3.000** — neun Zeilen Luft
+sind keine Luft, die nächste Sitzung stünde sofort wieder an der Grenze. Der
+Eintrag vom 2026-09-09 (57 Zeilen) ist deshalb in einem zweiten Griff nach
+[`sessions/archiv/2026-09-11_puls-auslagerung-2.md`](sessions/archiv/2026-09-11_puls-auslagerung-2.md)
+gegangen. Gemessen: **3.000 → 2.839 → 2.991 (nach dem Eintrag) → 2.944**.
+Beide Auslagerungen sind mit `diff` als byte-gleich belegt.
+
+**Proben:** Sage **100/100 grün** · Toolpoint **784 grün, 0 ROT, 0 nicht
+abgeschlossen** · Alis 54/54 · Perfect Skin Fashion 64 · Muster Werbetechnik 82
+· Perfect Skin Beauty 25 · Private Brain grün · Tomys alle außer den zwei oben.
+
+**Übergabeprotokoll:** [`sessions/archiv/2026-09-11_frist-sprung-und-die-fuenf.md`](sessions/archiv/2026-09-11_frist-sprung-und-die-fuenf.md)
+
+---
+
 ## Stand 2026-09-11 (Haupt-Sitzung) · ✅ KEIN LINK FÜHRT MEHR NIRGENDWOHIN
 
 Klaus hat drei Berichte seines **Auslieferungsprüfers** geschickt und die
@@ -748,63 +908,17 @@ Sitzung ersetzen.
 
 ---
 
-## Stand 2026-09-09 (Haupt-Sitzung, spät) · ✅ ZWEI KNOTEN AUF EINER ADRESSE HABEN JETZT ZWEI KENNUNGEN
+## Eine Sitzung vom 2026-09-09 — ausgelagert am 2026-09-11
 
-**Was getan.**
+> Dieser Eintrag stand bis heute hier in voller Länge (57 Zeilen). Die Datei
+> stand nach dem Eintrag von heute bei **2.991 von 3.000**; **ausgelagert, nicht
+> gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-09-11_puls-auslagerung-2.md`](sessions/archiv/2026-09-11_puls-auslagerung-2.md).
 
-- **Die Spore des Auslieferungsprüfers ist abgelegt und verifiziert.** Klaus hat
-  sie in dessen Browser erzeugt; headless reziprok geprüft mit Sages
-  Modul-02-Pfad (**deep**-kanonisches JSON, nicht nur oben sortiert — mein
-  erster Anlauf sortierte nur die obersten Schlüssel und meldete „ungültig",
-  während die Signatur einwandfrei war). ✔ VALID, Kennung
-  `yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM` = SHA-256 des rohen
-  öffentlichen Schlüssels. Sage-Cosinus **offline nachgerechnet 0.840471**,
-  Marktplatz⟷Prüfer 0.817974, L2 = 1, 384 Zahlen.
-  Sie liegt als `PWA-Toolpoint/sbkim/pruefer-spore.json` — byte-gleich wie
-  Klaus sie geschickt hat. `sbkim/spore.json` gehört dem Marktplatz, weil
-  Modul 15 die Adresse aus dem Endpunkt ableitet.
-- **Ein Wächter besteht darauf, dass es zwei Knoten sind**, nicht zwei Dateien:
-  verschiedene Kennung **und** verschiedener Schlüssel. Zwei Dateien, die
-  dalägen, sähen auch dann nach zwei Knoten aus, wenn beide aus demselben
-  Browser-Zustand stammten.
-- **Kim Hub Companys Siegel wird gebaut wie bei PWA Toolpoint** (Klaus:
-  *„Also genauso wie bei Tool PWA Toolpoint machen."*). Die **Seite** bringt die
-  Lampen-Leiste mit, Modul 16 hängt sein Wappen dort hinein, Modul 17 wird gar
-  nicht mehr geladen.
-- **`kim-hub-company/tools/aus-kimhub-holen.mjs`** holt alle gepinnten Kopien
-  auf einmal.
+| Sitzung | Wortlaut | Übergabeprotokoll |
+|---|---|---|
+| 2026-09-09 (Haupt-Sitzung, spät) — ✅ Zwei Knoten auf einer Adresse haben jetzt zwei Kennungen | [→ Archiv](sessions/archiv/2026-09-11_puls-auslagerung-2.md) | [→ Protokoll](sessions/archiv/2026-09-09_zwei-knoten-sporen-abschluss.md) |
 
-**Zwei Befunde, die es aufzuschreiben lohnt.**
-
-1. ⚠ **Ein Endpunkt, der auf eine SEITE zeigt, hat keinen Sporen-Ort.** Modul 15
-   baut die Adresse als `endpoint + "/sbkim/spore.json"`. Für den Prüfer ergibt
-   das `…/auslieferungspruefer.html/sbkim/spore.json` — **diese Adresse liefert
-   nichts aus**, und auf GitHub Pages kann sie es nicht. Die abgelegte Spore ist
-   damit **Beleg, nicht Sender**. Das schärft die Lehre vom 2026-09-02, statt
-   ihr zu widersprechen: neu ist, dass ein Knoten hier **gar keinen** abholbaren
-   Ort hat, und das gilt für jeden Knoten mit einem Seiten-Endpunkt.
-   **Vorschlag:** ein optionales `sporePath` neben dem Endpunkt im Kanon,
-   Vorgabe unverändert — **kein** Eingriff in eine Kopie, der ergäbe eine dritte
-   Modul-Generation. *Offen, Klaus entscheidet.*
-2. ⚠ **„Ein Drift-Guard sagt unverändert, nicht aktuell" — zum dritten Mal in
-   einer Woche.** Klaus hat denselben Befund zweimal geschickt („die
-   Agentenpillen sind immer noch nicht in der Startposition"); die Arbeit war in
-   Kimhub getan, hierher kopiert war nur `index.html`. Beim dritten Mal ist es
-   keine Unachtsamkeit mehr, sondern ein fehlendes Werkzeug — deshalb der
-   Nachzieh-Holer, der seine **Liste** aus dem Drift-Guard liest statt einer
-   zweiten.
-
-**Was offen ist.**
-
-- Der **Live-Handshake** beider Toolpoint-Knoten — den sieht nur Klaus' Browser.
-- Der Kanon-Vorschlag `sporePath` (Punkt 1 oben).
-- Die **45 abweichenden Modul-Kopien** netzweit aus dem Lauf vom 2026-09-09.
-- Warum die **Lighthouse-Zahlen der PWA-Toolpoint-Startseite** gefallen sind
-  (99·100·96·100, CLS 0,062 gegen die dokumentierten 100·100·100, CLS 0).
-  **Nicht untersucht** — die Messung fiel nebenbei an.
-
-**Was NICHT gemessen ist:** wie es am Tablet aussieht. Klaus' Sichttest ist
-nicht ersetzbar.
 
 ---
 
@@ -823,183 +937,22 @@ nicht ersetzbar.
 ---
 
 
-## Stand 2026-09-07 (Brief aus Kimhub) · NETZWEIT § 3a — ein Cache-Bump ist kein „+1"
+## Zwei Sitzungen vom 2026-09-07 und 2026-09-04 — ausgelagert am 2026-09-11
 
-**Rolle:** Fremd-Sitzung aus **Kimhub**, mit einer netzweiten Tafel-Ergänzung.
-Kein Modul-Code angefasst, kein `status.json`, keine Spec.
+Die Datei stand bei **exakt 3.000 von 3.000 Zeilen** — die Grenze, nicht knapp
+davor. Die Schutz-Klausel im Kopf verlangt **auslagern statt kürzen**; der volle
+Wortlaut beider Einträge (178 Zeilen) steht unverändert in
+[`sessions/archiv/2026-09-11_puls-auslagerung.md`](sessions/archiv/2026-09-11_puls-auslagerung.md).
 
-**Was getan.** `docs/NETZWEIT.md` bekommt **§ 3a**, direkt hinter § 3 — dort
-gehört es hin, weil es derselbe Kern ist: *eine Zahl aus der eigenen Kopie ist
-eine Aussage über die eigene Kopie.*
+| Sitzung | Wortlaut | Übergabeprotokoll |
+|---|---|---|
+| 2026-09-07 (Brief aus Kimhub) — NETZWEIT § 3a, ein Cache-Bump ist kein „+1" | [→ Archiv](sessions/archiv/2026-09-11_puls-auslagerung.md) | — (Brief aus einem anderen Depot) |
+| 2026-09-04 (Bau) — 🔍 Paper A englisch gegengelesen, 19 Funde, nichts geändert | [→ Archiv](sessions/archiv/2026-09-11_puls-auslagerung.md) | [→ Protokoll](sessions/archiv/2026-09-04_paper-a-englisch-gegengelesen.md) |
 
-**Der Anlass, gemessen am 2026-09-07 in `kim-hub-company`:** zwei Sitzungen
-arbeiteten am selben Tag am selben Depot. Beide sahen `v25`, beide setzten
-`v26`, beide hatten recht — und der Inhalt war ein anderer. Die zweite Fassung
-wäre für jeden Browser, der die App dazwischen geöffnet hatte, **dieselbe**
-gewesen: der Vorrat hält sich an den Namen, nicht an den Inhalt. Aufgefallen ist
-es beim Zusammenführen, nicht durch eine Probe — **eine doppelt vergebene Nummer
-wirft keinen Fehler, und keine Probe fällt um.**
-
-Die Regel „wer eine Datei aus dem Vorrat ändert, erhöht `CACHE_VERSION`" steht
-in fast jedem Repo und ist richtig. Sie sagt nur **dass** hochgezählt wird,
-nicht **wogegen**. § 3a ergänzt das Wogegen: gegen `origin/main`, nicht gegen
-die eigene Datei.
-
-**Was offen ist.** Die Repo-Verfassungen tragen die Cache-Regel weiterhin
-einzeln; keine verweist bisher auf § 3a. Das ist kein Widerspruch (§ 3a
-ergänzt, es ersetzt nichts), aber wer die Repo-Regel liest, findet die
-Ergänzung nicht von allein. **In Kimhub konnte ich den Verweis nicht mehr
-setzen** — dort lief zu diesem Zeitpunkt ein voller Gegenprobe-Lauf, und am
-Arbeitsbaum zu bauen hätte ihn entwertet.
-
-**Nächster sinnvoller Schritt.** Beim nächsten Anfassen einer Repo-Verfassung
-den Verweis auf § 3a nachziehen, statt dafür 21 Depots aufzumachen — dieselbe
-Zurückhaltung, aus der NETZWEIT.md überhaupt entstanden ist.
-
-**Proben:** `npm test` — **92 grün, 0 rot, 0 nicht lauffähig.**
-
----
-
-## Stand 2026-09-04 (Bau) · 🔍 Paper A englisch gegengelesen — 19 Funde, nichts geändert
-
-**Übergabeprotokoll:** [`sessions/archiv/2026-09-04_paper-a-englisch-gegengelesen.md`](sessions/archiv/2026-09-04_paper-a-englisch-gegengelesen.md)
-**Fundliste:** [`papers/GEGENLESEN_EN_2026-09-04.md`](papers/GEGENLESEN_EN_2026-09-04.md)
-
-**Rolle:** Bausitzung. Auftrag: die englische Fassung von Paper A gegen die
-deutsche lesen. Sie war von niemandem außer der Sitzung vom 2026-09-03 gesehen
-worden und trägt bereits den DOI 10.5281/zenodo.22286072.
-
-**An den beiden Paper-Dateien wurde nichts geändert.** Das war die Vorgabe: eine
-Änderung an einer veröffentlichten Datei ist bei Zenodo eine neue Version, und
-das entscheidet Klaus.
-
-### Gemessen
-
-| | |
-|---|---|
-| DE / EN | **1.834** / **1.775** Zeilen |
-| Überschriften | **90 : 90**, gleiche Reihenfolge, 0 Abweichung |
-| Abschnitte mit abweichender Absatz-Blockzahl | **0 von 90** |
-| Tabellenzeilen und Listenpunkte je Abschnitt | in allen 90 gleich |
-| interne Querverweise | **25 verschiedene**, jeder gleich oft |
-| ISO-Daten | **16 : 16**, deckungsgleich |
-| `npm test` | **93 Proben — 93 grün, 0 rot, 0 nicht lauffähig** |
-| `gegenprobe_paper_a_parallel.mjs` | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
-
-Alle Rückgabewerte ohne Pipe abgefragt. Die Rechnungen in 3.9 sind nachgerechnet
-und gehen auf (45,4 % · 4.900 · 3.060 · 41 · 4 · 327 · 109).
-
-### Die 19 Funde in drei Gruppen
-
-- **A · 6 Punkte, die englische Fassung weicht ab:** Literaturverzeichnis anders
-  sortiert (DE nicht alphabetisch, EN schon) · der vierte Arm heißt `R+G+F` statt
-  `R+G+Rück`, während `R` und `G` unübersetzt blieben · „nachziehen" als „bring
-  along" (heißt mitnehmen, gemeint ist anpassen) · „Zuschnitt" an drei Stellen
-  drei verschiedene Wörter · „vorzeigen" als „produced on demand" · ein
-  „therefore" in der Zusammenfassung, das im Deutschen fehlt.
-- **B · 8 Punkte, Fehler in der DEUTSCHEN Fassung**, die die englische nicht hat:
-  sieben Satzzeichen- und Numerusfehler (Zeilen 812, 890, 907, 1510, 1639, 1773,
-  1793) und ein Grundsatz, der zweimal verschieden zitiert wird (`darf` / `muss`).
-- **C · 4 Punkte in BEIDEN Fassungen:** die Korrektur 47 % → 45 % ist in der
-  Tabelle „Die Rechnung von der richtigen Seite" nicht nachgezogen (DE 974,
-  EN 946) · „Zwei Dinge bleiben trotzdem stehen", und es folgen drei · Abschnitt
-  4.4 steht im Präsens und meint den Zustand vor dem 2026-08-23 · das
-  durchgerechnete Beispiel nennt die Regel bei ihrem zurückgezogenen Wortlaut.
-
-### Ein Wächter dazu, und er misst die Gestalt statt der Wörter
-
-`tests/smoke_paper_a_parallel.mjs` hält die beiden Sprachfassungen in derselben
-Gestalt: Zahl und Ebenen-Folge der Überschriften · je Abschnitt Absatz-Blöcke,
-Tabellenzeilen, Listenpunkte · Querverweise · ISO-Daten · derselbe DOI in beiden
-HTML-Fassungen.
-
-⚠ **Wortlaut wäre hier der falsche Anker.** Ein übersetzter Text muss andere
-Wörter haben; ein Wächter auf Wörter verböte die Übersetzung und jede spätere
-Berichtigung. Genau dieser Fehler steht in Paper A selbst als Befund (3.2) — der
-Kimhub-Wächter verlangte `KEINE WERKZEUGE` und hielt elf Tage die falsch
-gewordene Regel am Leben, grün die ganze Zeit.
-
-**Die Gegenprobe ist selbst gegengeprüft:** eine Zusicherung des Wächters von
-Hand blind gemacht, worauf die Gegenprobe genau ihren Fall als NICHT GEFANGEN
-meldete (Rückgabewert 1). Danach byte-gleich zurückgeschrieben. Ohne diesen
-Handgriff wäre „9 gefangen" nur ein grüner Haken.
-
-### Nebenbei
-
-- **Kimhub PR #75** (Regel 6) auf Klaus' Wort gemergt (Squash, `d5e1314`).
-- **Zenodo laut Klaus aktualisiert:** Version `1.0`, Titel einsprachig.
-  ⚠ **Nicht nachgeprüft** — zenodo.org und doi.org antworten hier mit 403.
-
-### Offen
-
-- **Die 19 Funde sind unentschieden.** Klaus entscheidet, was in eine
-  Berichtigung geht und ob daraus eine neue Zenodo-Version wird. Beide
-  Sprachfassungen liegen unter demselben DOI.
-- **Der Wächter fängt A1 nicht.** Eine Prüfung auf die Reihenfolge des
-  Literaturverzeichnisses wäre heute rot, weil die Abweichung besteht. Sie gehört
-  nachgetragen, sobald A1 entschieden ist.
-- **Nicht geprüft:** kein Browser-Sichttest, keine PDFs (liegen nicht im Depot),
-  kein Abgleich mit dem Zenodo-Eintrag, die Sachaussagen nicht gegen die Quellen.
-
-### Ein Fund am Rande, der eine eigene Lehre trägt
-
-Beim `git add -A` kamen vier `docs/lesen/*.html` mit, die diese Sitzung nie
-angefasst hat — je eine Zeile, der Tagesstempel aus `tools/lesefassung-bauen.mjs`.
-
-**Ursache:** der Rumpf des Erzeugers stand auf **oberster Ebene**. Ein blosser
-`import` löschte damit `docs/lesen/` und baute es neu — und importiert wird er
-von `tests/smoke_werkzeuge_lauffaehig.mjs`, deren eigener Kopf sagt *„Ausführen
-schriebe Dateien … ein Import führt den Modulkopf aus"*. Bei diesem Werkzeug
-**war** der Modulkopf das ganze Programm. Die Positivliste `NUR_SYNTAX` dort
-kannte es nicht. Zweite Hälfte: `if (fehlend) process.exit(1)` ganz unten hätte
-die importierende Probe beendet und alles danach verschluckt.
-
-⚠ **Und die Zwischendiagnose war falsch, gemessen gegen eine verunreinigte
-Ausgangslage.** Ich hatte notiert, `npm test` schreibe nicht — geprüft nach einem
-`git checkout HEAD`, während HEAD den bereits gestempelten Stand trug. Der
-Vergleich konnte gar keinen Unterschied zeigen. **Dieselbe Falle, die die
-Verfassung als „miss auf einem frischen Klon" führt, nur von innen.** Erst der
-Abgleich gegen `origin/main` legte es offen.
-
-**Behoben:** Direkt-Riegel im Werkzeug (`const DIREKT = …`), Definitionen bleiben
-importierbar. Dazu ein Wächter, der **nicht** den einen Namen nachträgt, sondern
-misst: `smoke_werkzeuge_lauffaehig.mjs` tastet `docs/` vor und nach dem Laden ab
-und fällt um, sobald **irgendein** Werkzeug beim Import schreibt. Die Liste zu
-ergänzen hätte diesen Fall geschlossen und den nächsten nicht.
-`tests/gegenprobe_werkzeuge_schreiben.mjs`: **1 gefangen · 0 durchgerutscht ·
-0 tote Anker.**
-
-### Eine Parallel-Sitzung hat unterwegs `main` bewegt
-
-Nach dem Push zeigte `git diff --stat origin/main <zweig>` eine Datei mehr als
-erwartet. Der Zweig hätte **fremde Arbeit zurückgedreht**: PR #947 (`d24fec5`,
-08:00 Uhr) hatte in `sessions/archiv/2026-09-03_paper-a-veroeffentlicht.md`
-nachgetragen, dass Kimhub #75 gemergt ist. Mein Zweig stand auf der älteren
-Basis, der Diff zeigte deren Zeilen als Löschung. `origin/main` hereingenommen.
-
-> Der Fall, den `veroeffentlichung-pruefen` benennt. Aufgefallen nur, weil nach
-> dem Push nachgesehen wurde. **Der Diff gegen `origin/main` beantwortet zwei
-> Fragen — „trägt der PR etwas?" und „nimmt er etwas weg?".** Die zweite stellt
-> sich niemand von selbst.
-
-**Nächster sinnvoller Schritt: keiner an diesem Papier.** Klaus hat am
-2026-09-04 nachgefragt, ob die Datei dafür wirklich umgeschrieben werden muss.
-Nachgesehen: **von den 19 Funden ist einer sachlich** — C1, die Tabelle trägt
-47 %, während der Kasten drei Abschnitte höher 45 % als berichtigten Wert nennt.
-Er ändert an keiner Schlussfolgerung etwas; der Eurobetrag daneben ist über
-Token gerechnet, nicht über den Prozentsatz. Die übrigen 18 sind Kommafehler,
-eine nicht alphabetische Literaturliste und Übersetzungs-Nuancen.
-
-**Eine neue Zenodo-Version dafür wäre schlechter als die Fehler** — sie spaltet
-den Zitier-Nachweis für nichts. Die Funde bleiben dokumentiert liegen und werden
-mitgenommen, falls aus einem anderen Grund einmal eine Version 2 entsteht.
-
-⚠ **Hier stand zuerst „Klaus entscheidet, danach eine Berichtigungs-Sitzung".**
-Das war der Anfang einer Schleife: eine Sitzung liest den Auftrag, arbeitet 19
-Kleinigkeiten ab und schreibt den nächsten. **Wer einen nächsten Schritt
-aufschreibt, prüft vorher, ob er nötig ist** — sonst erzeugt die Übergabe
-selbst die Arbeit, die sie zu übergeben vorgibt.
-
+⚠ **Geprüft, dass der Name noch frei war** — mit `ls`, vor dem Schreiben, und
+danach mit `diff`, dass die ausgelagerten 178 Zeilen byte-gleich sind. Beides
+wegen des Vorfalls vom 2026-09-10, bei dem eine gleichnamige Neuschrift eine
+vorhandene Archiv-Datei mit 228 Zeilen ersetzt hat.
 
 ---
 
