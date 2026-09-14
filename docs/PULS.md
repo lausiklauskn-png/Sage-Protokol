@@ -31,6 +31,33 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, A18, Nachtrag) · ⚠ EINE SABOTAGE GING IN EINEN COMMIT
+
+**Rolle:** Haupt-Sitzung, unmittelbar nach dem A18-Rollout.
+
+PWA Toolpoints Gegenprobe sabotiert den **echten** Arbeitsbaum. Sie lief im
+Hintergrund, während parallel `git add -A && git commit` lief — und
+**`assets/karte.js` ging mit einer Sabotage in den Commit und auf den Zweig**
+(`if (g[k] !== true)` → `if (g[k] === undefined)`).
+
+⚠ **DER LAUF KONNTE ES NICHT MELDEN.** Die Gegenprobe legt die Datei nach jedem
+Fall zurück; `npm test` danach war grün (863/863). Im **Commit** stand sie
+trotzdem — ein Zustand, den es im Arbeitsbaum nur für Sekunden gab.
+
+**Gefunden hat es die DATEILISTE des Commits**, nicht eine Probe: dort stand ein
+Name, der mit der Änderung nichts zu tun hatte.
+
+**Behoben:** `git checkout origin/main -- …`, `--amend`, `--force-with-lease`.
+Der PR war gepusht, aber **nicht gemergt** — sonst stünde die Sabotage auf
+`main`. Danach 863/863 grün, und der Zweig trägt genau die sieben Dateien, die
+zu A18 gehören.
+
+**Aufgeschrieben** als [`docs/LEHREN.md` § 10](LEHREN.md) und in PWA Toolpoints
+eigener Verfassung. Die bekannte Falle war bisher nur die **liegengebliebene**
+Sabotage nach einem Abbruch; der Weg in einen Commit stand nirgends.
+
+**Nächster sinnvoller Schritt:** unverändert — Klaus' Sichttest, dann `TEXTE.en`.
+
 ## Stand 2026-09-14 (Haupt-Sitzung, A18) · ✅ EIN WIZARD STATT ZWÖLF — UND DER AUTOMAT TRÄGT IHN
 
 **Rolle:** Haupt-Sitzung. **Auftrag:** A18, den Andock-Wizard zusammenführen.

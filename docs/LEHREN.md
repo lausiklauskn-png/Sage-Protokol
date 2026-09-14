@@ -764,3 +764,51 @@ eine Voreinstellung der App — und ob dieses Feld selbst eine Längengrenze hat
 Beide Mitschnitte zeigen das Ergebnis, nicht den Weg dorthin. Ebenso offen: ob
 die anderen 16 Knoten sich genauso verhalten; gemessen sind zwei.
 
+
+---
+
+# 10. Eine Sabotage der Gegenprobe kann in einen Commit wandern (2026-09-14)
+
+Manche Gegenproben sabotieren den **echten** Arbeitsbaum und legen die Datei
+danach zurück (PWA Toolpoint tut das; Sage und Kimhub arbeiten in einer
+Wegwerf-Kopie). Die bekannte Falle dabei war bisher der **Abbruch**: dann bleibt
+der Eingriff liegen, und die nächste Prüfung meldet rote Proben, die niemandem
+gehören.
+
+**Es gibt einen zweiten Weg, und der ist stiller.**
+
+Am 2026-09-14 lief PWA Toolpoints Gegenprobe im Hintergrund, während parallel
+`git add -A && git commit` lief. **`assets/karte.js` ging mit einer Sabotage in
+den Commit und auf den Zweig:**
+
+```
+-      if (g[k] !== true) return;
++      if (g[k] === undefined) return;
+```
+
+Das ist der Fall „ein Eintrag ohne Wert gilt als erfüllt" — also genau die Sorte
+Fehler, gegen die der Wächter dort gebaut ist.
+
+**Der Lauf hat es nicht gemeldet, und er konnte es nicht.** Die Gegenprobe legt
+die Datei nach jedem Fall zurück; ein `npm test` danach war grün. Im **Commit**
+stand sie trotzdem — ein Zustand, den es im Arbeitsbaum nur für Sekunden gab.
+
+**Gefunden hat es die DATEILISTE des Commits**, nicht eine Probe: dort stand ein
+Name, der mit der Änderung nichts zu tun hatte.
+
+## Was daraus folgt
+
+- **Während eines Gegenprobe-Laufs wird nicht committet.** Wer es tut,
+  committet, was gerade sabotiert ist — und `git add -A` fragt nicht nach.
+- **Vor jedem Commit die Dateiliste ansehen**, nicht nur den Diff der Dateien,
+  an denen man gearbeitet hat. Ein fremder Name ist das Warnsignal; der Diff
+  einer einzelnen Zeile sieht harmlos aus.
+- **Eine Gegenprobe gehört in eine Kopie.** Sage und Kimhub machen das; wer eine
+  schreibt, die den echten Baum anfasst, baut diese Falle mit ein.
+- **Und die Rettung war billig, weil vorher gepusht, aber nicht gemergt war:**
+  `git checkout origin/main -- <datei>`, `--amend`, `--force-with-lease`. Wäre
+  der PR schon gemergt gewesen, stünde die Sabotage auf `main`.
+
+> **Der allgemeine Satz:** ein Werkzeug, das den Arbeitsbaum verändert, ist für
+> jeden anderen Vorgang im selben Baum eine Nebenwirkung — auch für einen, der
+> gar nichts mit Proben zu tun hat.
