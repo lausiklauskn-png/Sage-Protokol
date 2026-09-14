@@ -31,6 +31,71 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, Abend) · ✅ MODUL 23 UI SPRICHT ENGLISCH — 195 TEXTE
+
+**Rolle:** Haupt-Sitzung, Bau. PR #986 gemergt (`8de9cf5`). Anlass war Klaus'
+Befund am Tablet: die Seite stand auf Englisch, die SBKIM-Fenster darin blieben
+deutsch. Umfang auf seine ausdrückliche Wahl **„gestuft: erst Sage, dann
+netzweit"**.
+
+**Was gebaut wurde.** Ein schlüsselloser Sprach-Haken in
+`src/modules/23_rendezvous_ui.js` — **der deutsche Satz IST der Schlüssel**,
+`TEXTE.en` trägt die Übersetzungen, `T(de)` fällt bei fehlendem Eintrag auf
+Deutsch zurück. `sprache()` nimmt zuerst `cfg.lang` (was die App über
+`init({lang})` sagt), sonst `<html lang>`, sonst Deutsch. `_meta` nennt `lang`
+und `langKeys`. Die beiden byte-gepinnten Bauvorlagen (`sbkim-bundle/`,
+`sbkim-bundle-voll/`) wurden in derselben Bewegung nachgezogen — ohne das wären
+`smoke_bauvorlagen` und `smoke_bundle_connect` zu Recht rot geworden.
+
+**Gemessen.**
+
+| | |
+|---|---|
+| `tests/smoke_bau23_sprache.mjs` (neu) | **16 bestanden, 0 fehlgeschlagen** |
+| `node tests/run_alle.mjs` | **101 Proben — 101 grün, 0 rot, 0 nicht lauffähig** |
+| `tests/gegenprobe_bau23_sprache.sh` (neu, 7 Fälle) | **7 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| Aufrufstellen · Schlüssel | 210 `T("…")` · **195** eindeutig, alle übersetzt |
+
+Der Rückgabewert stammt jeweils aus der Prüfung selbst, nicht aus einer Pipe.
+Die Gegenprobe läuft je Fall an einer **Wegwerf-Kopie** (`mktemp -d`); ein
+abgebrochener Lauf hinterlässt damit kein sabotiertes Modul im Depot.
+`git status` war vor und nach dem Lauf unverändert.
+
+**⚠ Der Preis des schlüssellosen Verfahrens ist benannt:** wer einen deutschen
+Satz ändert, verliert still seine Übersetzung. Dagegen steht der Wächter, der
+**in beide Richtungen** misst — jeder Schlüssel muss als `T("…")` im Code
+vorkommen und jedes `T("…")` einen Schlüssel haben.
+
+**⚠ Drei eigene Fehler, alle von der Gegenprobe entlarvt.**
+
+1. **Zwei Fälle fingen aus dem falschen Grund.** „Ein `T()`-Aufruf ohne
+   englische Fassung" **änderte** einen bestehenden Aufruf und tötete damit
+   zugleich dessen Schlüssel — der Nachbar-Wächter feuerte zuerst, der gemeinte
+   blieb ungemessen. Jetzt wird hinzugefügt statt geändert. Der zweite nahm
+   einen Text, den auch der Laufzeit-Teil prüft.
+2. **Ein Wächter war zu eng.** „Keine Übersetzung ist nur eine Kopie" verlangte
+   Umlaute oder eines von sechs Stoppwörtern; „Ziehen zum Verschieben" hat
+   beides nicht und rutschte durch. **Gemessen statt geraten:** von 195 Paaren
+   ist genau **eines** legitim wortgleich — das Auslassungszeichen. Neue
+   Bedingung: wortgleich **und** enthält einen Buchstaben (`/\p{L}/u`).
+3. **Ein Wächter fand seinen Fund im eigenen Erklär-Kommentar** (Zeichenfenster
+   statt Block). Gemessen wird jetzt der Block, Kommentare abgezogen.
+
+**Was offen ist.**
+
+- **Das Ausrollen in die 16 Apps** — Klaus' zweite Stufe, eigene Sitzung. Im
+  Netz stehen **drei Modul-Generationen** (2249 · 2279 · 2424 Zeilen); nur
+  PWA-Toolpoint und kim-hub-company entsprechen Sage. **Ein Drift-Guard sagt
+  „unverändert", nicht „aktuell".** Skill: `netzweiter-modul-rollout`.
+- **`16_siegel.js` (47 Texte)** und **`17_floating_widget.js` (19 Texte)**
+  bleiben deutsch — das Siegel-Fenster und die LEBT/VERKEHR/FREMD/SIEGEL-Lampen.
+- **Klaus' Browser-Sichttest steht aus.** Dass die englischen Texte im Fenster
+  wirklich so stehen, sieht nur ein Browser.
+
+**Nächster sinnvoller Schritt:** das Ausrollen in die 16 Apps, nach Klaus'
+Sichttest an einer Seite.
+
+
 ## Stand 2026-09-14 (Haupt-Sitzung) · ✅ SECHS KNOTEN NEU SIGNIERT — ALLE ÜBER 0,80
 
 **Rolle:** Haupt-Sitzung. Acht PRs gemergt, sechs Sporen geprüft, Register
@@ -834,88 +899,19 @@ Gegenprobe → **7 gefangen, 0 durchgerutscht**.
 
 ---
 
-## Stand 2026-09-10 (Haupt-Sitzung, Abschluss) · ✅ SAGE NEU SIGNIERT — VIER KNOTEN SIND ZURÜCK
+## Eine weitere Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
-**Was getan.** Klaus hat um 13:20 UTC im Sage-Siegel neu signiert. Die Spore
-trägt **beides** richtig: die geltende Kennung `BgjXhSApoOrJ…` und den
-gepflegten Text (3028 Zeichen, 50 Stichworte, 17 Schnipsel). Verifiziert: VALID,
-L2 = 0.999999927, wortgleich mit **allen drei** Wegen zur Spore.
+> 2026-09-10 (Haupt-Sitzung, Abschluss) · ✅ SAGE NEU SIGNIERT — VIER KNOTEN SIND ZURÜCK
+> stand bis heute hier in voller Laenge (38 Zeilen). **Ausgelagert, nicht
+> gekuerzt** — der Wortlaut steht vollstaendig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-2.md`](sessions/archiv/2026-09-14_puls-auslagerung-2.md).
+## Eine Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
-**Alle zwanzig `matchScore` neu gerechnet** — gegen die Spore, die wirklich im
-Raum steht. Von den neun Knoten unter dem Boden 0.80 sind **vier zurück**:
-
-| | vorher | jetzt |
-|---|---|---|
-| Auslieferungsprüfer | 0.7944 | **0.836978** |
-| Mixarium | 0.7909 | **0.817718** |
-| Private Brain | 0.7868 | **0.811482** |
-| PWA Toolpoint | 0.7961 | **0.811202** |
-| Kim Hub Company | 0.8636 | **0.917107** ← höchster Wert im Netz |
-
-**Was offen ist.**
-
-- **Fünf liegen weiter unter 0.80**, und Sage ist nicht mehr ihr Hebel — vier
-  von ihnen sind mit dem neuen Hub sogar gestiegen. Was fehlt, ist die **eigene**
-  Beschreibung: Alis Moderaum 0.795460 · Muster Werbetechnik 0.793613 · Perfect
-  Skin Fashion 0.793030 · Tomys Hub 0.786371 · Perfect Skin Beauty 0.783216.
-- **BookLedgerPro** steht weiter mit 0.855505 gegen die ALTE Sage — keine
-  erreichbare Spore in dieser Umgebung. Benannte Lücke, keine geschätzte Zahl.
-- **Die Gegenseite ist ungemessen:** gerechnet ist gegen die *abgelegten* Sporen.
-  Ob die den Live-Fassungen entsprechen, ist für achtzehn von zwanzig offen.
-- **Die Adresskarten** in fünf Schwester-Repos (`sbkim/sage_inbox.json`) zeigen
-  noch auf die alte Kennung.
-
-**Nächster sinnvoller Schritt.** Die Adresskarten nachziehen (die
-`*.verify.md`-Prüfprotokolle bleiben unangetastet — sie belegen, was am
-jeweiligen Datum galt). Danach: die fünf Knoten unter dem Boden, einer nach dem
-anderen.
-
----
-
-## Stand 2026-09-10 (Haupt-Sitzung, später) · 🔴 NEUN VON 21 KNOTEN FALLEN UNTER DEN HANDSHAKE-BODEN
-
-**Was getan.** Klaus' Mycel-Mitschnitt hat gezeigt, dass Sage im Raum mit einer
-**160-Zeichen-Beschreibung** steht. Nachgemessen gegen den Boden
-`PROVIDER_MIN_MATCH = 0.80`: **neun von einundzwanzig** Knoten kämen damit nicht
-durch, **vier allein deswegen** — PWA Toolpoint 0.8112 → 0.7961 ·
-Auslieferungsprüfer 0.8405 → 0.7944 · Mixarium 0.8223 → 0.7909 · Private Brain
-0.8104 → 0.7868. Kimboard hängt mit 0.8014 um 14 Tausendstel über der Kante.
-
-⚠ **Gefunden haben es zwei eigene Proben**, die beim Umstellen der abgelegten
-Spore zu Recht rot wurden (`smoke_bau04e_relatedness`,
-`smoke_bau23_rendezvous`). Sie messen seit jeher die richtige Zusicherung — sie
-hatten nur nie die Spore vor sich, die wirklich im Raum steht. **Eine Probe, die
-die falsche Ausgangslage bekommt, misst zuverlässig das Falsche.**
-
-**Ursache und Abhilfe.** Sages `assets/siegel-inhalt.js` brachte selbst nur die
-160 Zeichen mit und ließ die gespeicherte Spore das Feld still überschreiben —
-dieselbe Fassung, die Klaus in Kim Hub Company zweimal beanstandet hat. Jetzt
-gewinnt der gepflegte Text (**3028 Zeichen, 50 Stichworte**, nennt Name, Zweck,
-Forschung, Protokoll), der zuletzt signierte bleibt hinter einem Knopf.
-**14 Wächter, 11 Gegenproben**, jede von Hand nachgestellt — jede rote Zeile
-trägt den Namen ihrer eigenen Zusicherung.
-
-**Nebenbefund:** Sages Spore löste ihren **eigenen Namen falsch** auf —
-*„Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel"* statt *„Semantisch
-Bidirektionales KI-Matching"*, wie das Gutachten es seit jeher sagt.
-
-**Klaus hat entschieden:** *„die Neuere ist die Richtige, auch bei der Kennung"*
-— Sages geltende Kennung ist `BgjXhSApoOrJ…`. Ausgeführt wird sie **mit dem
-nächsten Signieren**: die Raum-Fassung trägt die richtige Kennung **und** den
-dünnen Text; sie jetzt abzulegen hieße, den kaputten Stand festzuschreiben.
-
-**Was offen ist.** Klaus signiert im Sage-Siegel neu → dann einmal tauschen
-(Kennung **und** Text), alle zwanzig `matchScore` neu rechnen, und die sechs
-`sage_inbox.json` in den Schwester-Repos nachziehen. Die fünf Knoten, die schon
-**vorher** unter 0.80 lagen (Tomys Hub, Alis Moderaum, beide Perfect Skin,
-Muster Werbetechnik), sind eine eigene Aufgabe.
-
-**Nächster sinnvoller Schritt.** Klaus: Sage-Siegel öffnen, den Text im Feld
-stehen lassen, „Beschreibung übernehmen → Vektor & Spore neu signieren", Spore
-schicken.
-
----
-
+> Dieser Eintrag (🔴 neun von 21 Knoten unter dem Handshake-Boden) stand bis
+> heute hier in voller Laenge (44 Zeilen). Die Datei stand vor dem Eintrag von
+> heute bei **2.976 von 3.000**; **ausgelagert, nicht gekuerzt** — der Wortlaut
+> steht vollstaendig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-2.md`](sessions/archiv/2026-09-14_puls-auslagerung-2.md).
 ## Eine Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
 > Dieser Eintrag stand bis heute hier in voller Länge (90 Zeilen). Die Datei
@@ -925,6 +921,8 @@ schicken.
 
 | Sitzung | Wortlaut | Übergabeprotokoll |
 |---|---|---|
+| 2026-09-10 (Haupt-Sitzung, später) — 🔴 Neun von 21 Knoten unter dem Handshake-Boden | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung, Abschluss) — ✅ Sage neu signiert, vier Knoten sind zurück | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung) — ✅ KIM HUB COMPANY IST NEU SIGNIERT, 0.910528 | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung.md) | [→ Protokoll](sessions/archiv/2026-09-10_khc-neu-signiert.md) |
 
 
