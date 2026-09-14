@@ -6605,7 +6605,7 @@
         var ts = Math.floor(Date.now() / 1000);
         sharedRelay.publish({ kind: 1, created_at: ts, tags: [["t", "sbkim-rdv"]],
           content: JSON.stringify({ kind: "sbkim-presence", nodeId: id, nodeName: "Demo-Peer", spore: sp(id, "peer"), ts: ts }) });
-        return { gelegt: id, hinweis: "Jetzt „👥 discover" drücken." };
+        return { gelegt: id, hinweis: "Jetzt „👥 discover“ drücken." };
       });
 
       SbkimUI.addButton(mod, "👥 discover (Wer ist im Raum?)", async function () {
@@ -6616,7 +6616,7 @@
 
       SbkimUI.addButton(mod, "🤝 handshakeCard (an lebende ID)", async function () {
         var r = await SbkimRendezvous.discover({ listenMs: 400 });
-        if (!r.cards.length) return { hinweis: "Keine Karte im Raum — erst „Fremde Karte ins Mock-Relais legen"." };
+        if (!r.cards.length) return { hinweis: "Keine Karte im Raum — erst „Fremde Karte ins Mock-Relais legen“." };
         var res = await SbkimRendezvous.handshakeCard(r.cards[0]);
         SbkimUI.setStatus(mod, res.outcome === "established" ? "ok" : "err", res.outcome);
         return { ziel: r.cards[0].nodeName, ergebnis: res };
