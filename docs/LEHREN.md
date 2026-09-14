@@ -812,3 +812,45 @@ Name, der mit der Änderung nichts zu tun hatte.
 > **Der allgemeine Satz:** ein Werkzeug, das den Arbeitsbaum verändert, ist für
 > jeden anderen Vorgang im selben Baum eine Nebenwirkung — auch für einen, der
 > gar nichts mit Proben zu tun hat.
+
+---
+
+# 11. Ein toter Anker ist kein blinder Wächter (2026-09-14)
+
+Eine Gegenprobe baut einen Fehler ein und fragt danach die Probe. Bleibt sie
+grün, liegt das an **einer von zwei Ursachen**, und sie verlangen das Gegenteil
+voneinander:
+
+| | Was los ist | Was zu tun ist |
+|---|---|---|
+| **blinder Wächter** | der Fehler ist drin, keine Prüfung sieht ihn | **bau einen Wächter** |
+| **toter Anker** | der Eingriff hat gar nichts geändert | **zieh den Fall nach** |
+
+**Wer beides „BLIND" nennt, glaubt an eine Deckung, die es nie gab.** Der Fall
+misst nichts, der Wächter ist möglicherweise tadellos, und man sucht am falschen
+Ende.
+
+## Gemessen
+
+PWA Toolpoints `probe()` hat seit dem 2026-09-14 drei Ausgänge; `probe_befehl()`
+hatte weiter zwei. Der Python-Block darin wirft zwar „ANKER NICHT GEFUNDEN",
+aber **`eval` schluckt den Rückgabewert**, und die Probe lief danach trotzdem.
+**Fünf Fälle meldeten sich dadurch als blind**, obwohl ihre Wächter in Ordnung
+waren — ihr Anker zeigte auf `assets/siegel-inhalt.js`, wo der Wizard-Code bis
+A18 lag.
+
+## ⚠ Und derselbe Fehler ist im BERICHT noch einmal passiert
+
+Im Text von PR #113 stand: *„Sechs davon habe ich einzeln gegen `origin/main`
+nachgestellt — alle sechs waren dort ebenso blind, also nicht von A18
+verursacht."* Mit der berichtigten Probe gemessen waren sie es nicht alle: ein
+Teil waren tote Anker.
+
+**Das ist die gefährlichere Hälfte.** „Blind auch auf origin/main" klingt wie
+eine Entlastung und ist eine Ablage: der Fall wird als fremdes Problem verbucht
+und nie wieder angesehen. Ein toter Anker dagegen ist Arbeit von einer Minute —
+er zeigt nur auf eine Zeile, die umgezogen ist.
+
+> **Der allgemeine Satz:** eine Prüfung hat drei Ausgänge, nicht zwei — gefangen,
+> blind, **und hat gar nicht stattgefunden**. Wer die dritte Spalte weglässt,
+> verteilt sie auf die anderen beiden, und beide werden dadurch unwahr.

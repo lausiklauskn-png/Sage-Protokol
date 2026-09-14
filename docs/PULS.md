@@ -31,6 +31,49 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, A18, Abschluss) · ⚠ TOTER ANKER ALS BLINDER WÄCHTER GELESEN
+
+**Rolle:** Haupt-Sitzung, Abschluss von A18.
+
+**Getan.** PWA Toolpoints `probe_befehl()` kannte weiter nur zwei Ausgänge,
+während `probe()` seit demselben Tag drei hat. Der Python-Block darin wirft zwar
+„ANKER NICHT GEFUNDEN", aber `eval` schluckt den Rückgabewert, und der Smoke lief
+danach trotzdem. **Fünf Fälle meldeten sich dadurch als „BLIND", obwohl ihre
+Wächter tadellos sind** — ihr Anker zeigte auf `assets/siegel-inhalt.js`, wo der
+Wizard-Code bis A18 lag. Alle fünf auf `assets/sbkim-andock-wizard.js`
+nachgezogen (die Konfiguration heißt dort `c` statt `WIZ`) und einzeln von Hand
+nachgestellt.
+
+**⚠ Und ich habe denselben Fehler gemacht wie das Werkzeug.** Im Text von PR #113
+stand „sechs Fälle einzeln gegen `origin/main` nachgestellt — alle sechs waren
+dort ebenso blind". Mit der berichtigten Probe gemessen waren sie es nicht alle:
+ein Teil waren **tote Anker**. Berichtigt in PR #113 und im Brief
+`docs/sessions/BRIEF_uebersetzung-wizard.md`, der zwei falsche Namen trug.
+
+**Gemessen.**
+
+| | |
+|---|---|
+| `node tests/run_alle.mjs` (Sage) | **105 grün · 0 rot · 0 nicht lauffähig**, echter exit 0 |
+| `npm test` (PWA Toolpoint) | **863/863 · 0 nicht abgeschlossen**, echter exit 0 |
+| Gegenprobe PWA Toolpoint (voller Lauf) | **414 gefangen · 45 blind · 3 tote Anker**, echter exit 1 |
+| `node tools/kanon-verteilen.mjs --nur 16b` | **19 Kopien, alle gleich, 0 hängen zurück** |
+
+Von den 45 blinden liegen **sieben** in A18-Dateien: fünf waren die toten Anker
+oben, **zwei sind auch auf `origin/main` blind** (beide sabotieren
+`assets/pruefer-sbkim-init.js`) und damit nicht von A18 verursacht.
+
+**Offen.** Die übrigen **38 blinden Fälle** in PWA Toolpoint — eigene Aufgabe,
+außerhalb dieses Umbaus. Die **44 netzweit zurückhängenden Kanon-Dateien**
+weiterhin gemeldet, nicht nachgezogen.
+
+**Nächster Schritt.** Die Übersetzung (`TEXTE.en` in
+`src/modules/16b_andock_wizard.js`) — Brief liegt bereit.
+
+**Alle 20 A18-PRs sind gemergt.**
+
+---
+
 ## Stand 2026-09-14 (Haupt-Sitzung, A18, Nachtrag) · ⚠ EINE SABOTAGE GING IN EINEN COMMIT
 
 **Rolle:** Haupt-Sitzung, unmittelbar nach dem A18-Rollout.
@@ -671,93 +714,12 @@ stellen und nachsehen, ob die Lampen mitziehen.
 
 ---
 
-## Stand 2026-09-14 (Haupt-Sitzung, Sichttest) · ⚠ DAS FENSTER WAR DEUTSCH — UND DER CODE WAR RICHTIG
+## Eine Sitzung vom 2026-09-14 (Sichttest) — ausgelagert am 2026-09-14 (A18, Abschluss)
 
-**Rolle:** Haupt-Sitzung, Nachtrag zum Rollout. Klaus hat vom Tablet
-Bildschirmfotos geschickt: `family-projekt.de` stand auf Englisch, das
-Verbinden-Fenster darin **deutsch**. Genau der Befund, gegen den der Sprach-Haken
-gebaut wurde — nach dem Rollout.
-
-### Der Code ist es nicht. Gemessen im echten Browser.
-
-`origin/main` lokal ausgeliefert, Chromium, Panel geöffnet:
-
-| `fp_lang` | `<html lang>` | Seite | `_meta` | Panel-Kopf |
-|---|---|---|---|---|
-| `de` | `de` | deutsch | `{lang:"de", langKeys:237}` | „Mit dem Knotennetz verbinden" |
-| `en` | `en` | **englisch** | `{lang:"en", langKeys:237}` | **„Connect to the node network"** |
-
-Der Haken greift. Also ist es die **Auslieferung**, nicht der Bau.
-
-### ⚠ EIN LADEN ZU FRÜH — und der Cache-Bump hätte NICHT geholfen
-
-`sw.js` bedient das Modul über den letzten Zweig: `hit || net`. Gemessen am
-echten Service-Worker (Wegwerf-Kopie, Modul nach dem Aufwärmen ausgetauscht):
-
-| | 1. Laden danach | 2. Laden |
-|---|---|---|
-| **ohne** `CACHE_VERSION`-Bump | **altes Modul** | neues |
-| **mit** Bump | **altes Modul** | neues |
-
-**Beide Spalten sind gleich.** Der Bump wirkt hier nicht, weil das Modul gar
-nicht im Installations-Vorrat steht: der neue Worker startet zwar mit leerem
-Vorrat, übernimmt aber erst, wenn die letzte Seite unter dem alten zu ist.
-
-> **Damit ist die Rollout-Entscheidung „hier kein Bump" bestätigt** — und zwar
-> gemessen, nicht begründet. Ich hatte sie nach Klaus' Bild selbst für meinen
-> Fehler gehalten; sie war keiner. **Ein Verdacht gegen die eigene Arbeit ist so
-> lange eine Vermutung wie jeder andere.**
-
-### ⚠ VIER ANLÄUFE, VIER BLINDE HARNISCHE — alle an derselben Probe
-
-Keiner der vier war ein Befund über den Code; jeder sah wie einer aus:
-
-| # | Was gemessen wurde | Warum es nichts sagte |
-|---|---|---|
-| 1 | `typeof NEUE_FASSUNG_MARKE` | die Marke stand **in der Modul-Kapsel** — global nie sichtbar, also immer „alt" |
-| 2 | dasselbe, mit Warten auf den Worker-Wechsel | derselbe Fehler, nur langsamer |
-| 3 | `fetch()` der Datei aus der Seite | las den Vorrat **nach** der Hintergrund-Auffrischung — nicht, was die Seite **ausgeführt** hat |
-| 4 | ausgeführtes Modul, aber ohne Aufwärmen | beim **ersten** Laden beherrscht ein frischer Worker die Seite nicht; die Anfrage geht am fetch-Zweig vorbei und landet **nie** im Vorrat — die Schublade war leer, also kam zwangsläufig „neu" |
-
-**Der vierte ist der lehrreichste:** die Probe maß eine Lage, die es bei Klaus
-gar nicht gibt. Sein Worker läuft seit Wochen. *Eine Probe, deren Ausgangslage
-die des Nutzers nicht trifft, misst etwas anderes, als sie zu messen glaubt.*
-
-### 🔴 „Gerätename" bleibt deutsch — netzweit, und der Rollout konnte es nicht fassen
-
-Im englischen Panel steht mitten zwischen englischen Zeilen **„🏷️ Gerätename:"**.
-Gemessen: **0 Treffer** im Kanon-Modul, **3–4 Treffer** im app-eigenen Glue
-**jedes** Trägers (`sbkim-init.js` / `rendezvous-init.js`).
-
-Das ist kein Versäumnis des Rollouts, sondern Bauart: NETZWEIT § 2 legt den
-Gerätenamen ausdrücklich in den app-eigenen Klebstoff, **nie** in die
-byte-kopierte Panel-Datei. Er ist damit von einem Modul-Rollout grundsätzlich
-nicht erreichbar.
-
-**Offen, Entscheidung von Klaus** (unten eingereiht): das Etikett in 18 Repos
-einzeln übersetzen — oder es in den Kanon ziehen und die Bauart ändern.
-
-### Was die übrigen Bilder zeigen — und was davon SBKIM ist
-
-- **Muttis Rezeptbuch auf EN:** die App selbst ist übersetzt („Save progress",
-  „RATE YOUR PROGRESS"). Deutsch bleiben **ihre eigenen** Werkzeuge
-  („Übersetzen", „ZIELSPRACHE WÄHLEN (MAX. 2)", „API-Key fehlt", „+ Menu",
-  „einklappen") — **Muttis i18n-Bestand, nicht SBKIM.**
-- **„SIEGEL"** ist Modul 16/17 und bleibt deutsch — seit dem Rollout benannt.
-- **„🌐 Mycel"** ist in beiden Sprachen gleich: ein Eigenname, kein fehlender Text.
-- **Kimboard:** der Wähler oben rechts ist der **Mikrofon-Sprachwähler**
-  (Spracheingabe), kein UI-Umschalter — deshalb ändert „English"/„Українська"
-  am Text nichts. Gemessen beim Rollout (`index.html:4179` setzt `lang` am
-  Eingabefeld, nicht am Dokument). **Für den Nutzer sieht er aus wie ein
-  Sprachumschalter der App** — Bedien-Befund, keine Fehlfunktion.
-
-**Was NICHT geprüft werden konnte:** ob `family-projekt.de` den neuen Stand schon
-ausliefert. Der Ausgangs-Proxy dieser Sitzung sperrt die Domäne (`HTTP 000`,
-gemessen). Zwischen „ein Laden zu früh" und „noch nicht deployt" kann von hier
-aus **niemand** unterscheiden — beide enden im selben Bild.
-
-**Nächster sinnvoller Schritt:** Klaus lädt die Seite ein zweites Mal. Bleibt das
-Fenster deutsch, ist es der Deploy und nicht der Vorrat.
+> **↓ Ausgelagert.** Der Eintrag „DAS FENSTER WAR DEUTSCH — UND DER CODE WAR
+> RICHTIG" steht **wortwörtlich** in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-5.md`](sessions/archiv/2026-09-14_puls-auslagerung-5.md).
+> Die Datei stand bei 3.024 von 3.000 Zeilen; **ausgelagert, nicht gekürzt.**
 
 ## Eine Sitzung vom 2026-09-14 (Rollout) — ausgelagert am 2026-09-14 (A18)
 

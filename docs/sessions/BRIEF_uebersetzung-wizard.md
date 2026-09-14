@@ -80,6 +80,10 @@ toter Text; ein fehlender ist ein deutscher Satz mitten im Englischen.
   `function refreshWizardIdentities`). Wortgrenze.
 - **Und einmal andersherum:** ein **Erklär-Kommentar** hat einen tadellosen Code
   angeklagt. Gezählt wird im Code, nicht in der Datei.
+- **Ein toter Anker ist kein blinder Wächter** (`docs/LEHREN.md` § 11). Bleibt
+  die Probe grün, sind das ZWEI verschiedene Ursachen mit entgegengesetzter
+  Abhilfe — „bau einen Wächter" gegen „zieh den Fall nach". Wer beides „blind"
+  nennt, glaubt an eine Deckung, die es nie gab. Eine Prüfung hat drei Ausgänge.
 - ⚠ **`docs/LEHREN.md` § 10:** eine Gegenprobe, die den **echten** Baum
   sabotiert, kann ihre Sabotage in einen **Commit** schieben, wenn parallel
   committet wird. Während eines Laufs nicht committen; vor jedem Commit die
@@ -104,9 +108,21 @@ node tools/wizard-trennen.mjs ../<repo>              # nur noch für NEUE Apps
   bewiesen, nicht das Gefühl.
 - Der Egress-Proxy sperrt `family-projekt.de` und `pwa-toolpoint.de` (HTTP 000).
   Lokal servieren und headless messen, nicht live abrufen.
-- **Zwei Wächter in PWA Toolpoint sind blind** („Preis auf der Seite (Stufe 1
-  verletzt)" und „Platzreserve der Lampen entfernt") — **schon auf `origin/main`
-  gemessen**, also nicht von A18 verursacht. Eigene Aufgabe.
+- **In PWA Toolpoint sind 45 Gegenprobe-Fälle blind** (voller Lauf am
+  2026-09-14, berichtigtes `probe()`: **414 gefangen · 45 blind · 3 tote
+  Anker**, echter Rückgabewert 1). Sieben davon liegen in Dateien, die A18
+  angefasst hat, und sind eingeordnet: **fünf waren tote Anker** (die
+  `probe_befehl`-Fälle zum Semantik-Feld, auf `assets/sbkim-andock-wizard.js`
+  nachgezogen und von Hand nachgestellt), **zwei sind auch auf `origin/main`
+  blind** („die Kette laedt gar nichts mehr" und „das Verbinden-Fenster wird nie
+  gemountet", beide sabotieren `assets/pruefer-sbkim-init.js`) — also nicht von
+  A18 verursacht. Die übrigen 38 sind eine eigene Aufgabe.
+
+  ⚠ **Hier stand zuerst „zwei Wächter sind blind" mit zwei ANDEREN Namen.** Das
+  war dieselbe Verwechslung, die das Werkzeug gemacht hat: tote Anker als blinde
+  Wächter gelesen. Ein toter Anker heißt „zieh den Fall nach", ein blinder
+  Wächter „bau einen Wächter" — wer das eine für das andere hält, glaubt an eine
+  Deckung, die es nie gab.
 - Die **44 netzweit zurückhängenden Kanon-Dateien** sind weiterhin gemeldet und
   nicht nachgezogen; je Generationen-Sprung ein Probenlauf im Ziel-Repo.
 
@@ -117,7 +133,8 @@ node tools/wizard-trennen.mjs ../<repo>              # nur noch für NEUE Apps
 1. `CLAUDE.md`
 2. `docs/PULS.md` (Kopf)
 3. `docs/INTERFACES.md` **§11.9** — die Trennlinie
-4. `docs/LEHREN.md` **§ 10** — die Gegenprobe-Falle
+4. `docs/LEHREN.md` **§ 10 und § 11** — die Gegenprobe-Falle und der Unterschied
+   zwischen einem toten Anker und einem blinden Wächter
 5. `docs/sessions/archiv/2026-09-14_andock-wizard-kanon.md` — warum es so gebaut ist
 6. `src/modules/16b_andock_wizard.js`
 

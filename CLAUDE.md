@@ -370,6 +370,13 @@ zurücklegt. Während eines Laufs wird nicht committet, und vor jedem Commit wir
 die **Dateiliste** angesehen, nicht nur der Diff: ein fremder Name ist das
 Warnsignal. [`docs/LEHREN.md` § 10](docs/LEHREN.md).
 
+⚠ **Und eine grün gebliebene Gegenprobe hat ZWEI mögliche Ursachen**, die das
+Gegenteil voneinander verlangen: ein **blinder Wächter** („bau einen Wächter")
+oder ein **toter Anker** („zieh den Fall nach" — der Eingriff hat nichts
+geändert). Wer beides „blind" nennt, verbucht Arbeit von einer Minute als
+fremdes Problem. Eine Prüfung hat drei Ausgänge, nicht zwei.
+[`docs/LEHREN.md` § 11](docs/LEHREN.md).
+
 ## Eine Kanon-Änderung in alle Träger tragen
 
 ```bash
