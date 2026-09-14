@@ -160,3 +160,133 @@ Pipe.
    Nicht angefasst.
 4. **Der Sichttest selbst.** Durch nichts zu ersetzen — diese Sitzung hat nur
    dafür gesorgt, dass er nicht aus dem falschen Grund scheitert.
+
+---
+
+# Teil 2 — nach Klaus' Entscheidungen (2026-09-14, Nacht)
+
+Klaus hat alle drei Fragen beantwortet. Zwei davon sind in derselben Sitzung
+gebaut und ausgerollt; die dritte ist eine eigene Sitzung wert.
+
+| Frage | Entscheidung | Stand |
+|---|---|---|
+| Das Wappen | **mitsprechen lassen (DE/EN)** | gebaut, in **20 Trägern** ausgerollt |
+| Aufgabe 2 · Andock-Werkzeug | **erst zusammenführen, dann übersetzen** | **unberührt** — eigene Sitzung |
+| Die Lampen der Marktplätze | **ja, beide** | gebaut, beide gemergt |
+
+---
+
+## 1 · Das Wappen — neuer Kanon `d84fa539e76e`
+
+| | |
+|---|---|
+| `OFFIZIELLE BESTÄTIGUNG` | → `OFFICIAL ATTESTATION` |
+| `SIEGEL` | → `SEAL` — abgestimmt mit Modul 17 |
+| `SBKIM` | bleibt — Eigenname |
+| `ribbonText` | bleibt — den graviert der Host |
+
+**Die Tafel zuerst, dann der Code** — wie beim Rollout am selben Tag.
+
+`renderWappenSvg()` ist die einzige Ausgabestelle und führt die zwei Texte
+durch `T()`. **Auf Deutsch gibt `T()` den Satz unverändert zurück, die
+Ersetzung entfällt, das SVG bleibt byte-identisch** — dieselbe Bauart, die der
+`ribbonText` seit jeher hat.
+
+⚠ **Gesucht wird `>TEXT<`, nicht der Text allein.** Beide Wörter kommen im SVG
+ein zweites Mal außerhalb eines Textknotens vor.
+
+### Der Rollout — 20 Träger, und warum es nicht 19 sind
+
+**BookLedgerPro kam dazu.** Es hing schon vorher **eine Generation zurück**
+(kein Sprach-Haken) und fiel deshalb aus dem Raster, das nach der *erwarteten*
+Vorgänger-Fassung suchte. Gemessen: seine 35 abweichenden Zeilen waren genau
+die, die der Kanon durch `T()` ersetzt — **kein repo-eigener Code**.
+
+> **Ein Rollout, der nur die zählt, die die erwartete Vorgänger-Fassung tragen,
+> übersieht die, die noch weiter zurückhängen.**
+
+⚠ **Und BookLedgerPro pinnte seinen EIGENEN sha** (`3e17f6474fc7f96f`), nicht
+den von Sage. Die Pin-Suche lief über alle drei Längen des **Sage**-sha und
+konnte ihn nicht finden. Gefunden hat ihn die Probe des Repos selbst:
+**2181/1, `✗ 16_siegel.js unverändert`.** Der Drift-Guard hat getan, wofür er
+da ist.
+
+⚠ **11 von 20 brauchten einen `CACHE_VERSION`-Bump**, gemessen statt geraten,
+jeder **+1 gegen `origin/main`** geprüft — nicht gegen die eigene Datei (die
+Kollisionsfalle vom 2026-09-07). Beim ersten Messversuch hatte `head -1` in
+zwei Repos den **falschen** Service-Worker erwischt; neu gemessen über alle.
+
+---
+
+## 2 · Die Lampen der zwei Marktplätze
+
+| Repo | wo | wie |
+|---|---|---|
+| family-project | `assets/status-widget.js` | eigenes schlüsselloses `T()`, Rangfolge nur `<html lang>` |
+| PWA-Toolpoint | `index.html` + `assets/sprache.js` | über das **vorhandene** `data-i18n`-System |
+
+Gemessen, beide Richtungen:
+
+| | `lang=en` | `lang=de` |
+|---|---|---|
+| family-projekt.de | **ALIVE · TRAFFIC · FOREIGN · SEAL** | LEBT · VERKEHR · FREMD · SIEGEL |
+| pwa-toolpoint.de | **alive · traffic · foreign** | lebt · verkehr · fremd |
+| …/auslieferungspruefer | ALIVE · TRAFFIC · FOREIGN · SEAL | LEBT · VERKEHR · FREMD · SIEGEL |
+
+⚠ **Und Toolpoints Wächter schrieb das Wörterbuch ab, statt es abzulesen.**
+Eine fest verdrahtete Liste von neun BASIS-Schlüsseln in `tests/smoke.mjs` —
+eine zweite Fassung dessen, was in `assets/sprache.js` steht. Sie lief prompt
+auseinander (**860/861**). Die Lehre stand in dessen **eigener** Verfassung
+schon, an einer anderen Tür. Behoben wurde die **Ursache**.
+
+---
+
+## 3 · Die Wächter
+
+| | vorher | nachher |
+|---|---|---|
+| `smoke_bau1617_sprache.mjs` | 64 | **83 grün** |
+| `gegenprobe_bau1617_sprache.sh` | 25 | **30 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| voller Sage-Lauf | 103 | **103 grün, 0 rot** |
+
+**Abschnitt 4** gleicht das Wappen gegen die Tafel ab. **Abschnitt 4b ist neu**
+und misst das *wirklich gerenderte* Badge — 4 liest nur den Quelltext und
+fände die Zeilen auch dann tadellos, wenn `renderWappenSvg()` gar nicht mehr
+gerufen würde. *Ein Wächter, der eine Datei liest, misst nicht, ob sie läuft.*
+
+⚠ **Zwei Gegenprobe-Fälle fingen aus dem falschen Grund.** Beide benannten
+einen Wörterbuch-Schlüssel um; damit fiel er zugleich aus Abschnitt 1, und der
+**Nachbar-Wächter feuerte zuerst**. Geschärft über `SBKIM` (im Wappen, mit
+Absicht ohne Eintrag) und `Pflicht-Module` (Eintrag, nicht im Wappen).
+
+⚠ **Kein Fall zur Abbruch-Bedingung** — benannte Grenze statt Lücke: ohne sie
+läuft auf Deutsch ein `replace(">X<", ">X<")`, byte-genau dasselbe. Der Fall
+wäre **immer** „nicht gefangen". *Ein Fall, der nichts messen kann, sieht aus
+wie Deckung.*
+
+---
+
+## 4 · Eigene Fehler dieser Sitzung
+
+- **Ein `exit=0` kam vom `echo`, nicht vom `node`** — die `| tail`-Falle in
+  neuem Kostüm. family-project meldete „grün", während die Probe mit
+  `ERR_MODULE_NOT_FOUND` abbrach: **nicht lauffähig, nicht grün.**
+- **Eine These wurde von der Messung widerlegt:** „das Wappen erscheint nur in
+  Gold-Stufe" — nachgemessen stehen alle drei auf Bronze und zeigen dasselbe
+  Wappen. Der Unterschied waren zwei verschiedene Elemente.
+- **Die Wegwerf-Kopie der Gegenprobe kannte `docs/` nicht** — alle 25 Fälle
+  maßen nichts. Die Ausgangslage-Prüfung hat es gefangen.
+- **Der Escape-Filter ließ `\n` durch** — im Quelltext zwei Zeichen, das
+  zweite ein „n".
+
+---
+
+## Was offen bleibt
+
+1. **Aufgabe 2** — das Andock-Werkzeug im Siegel. Klaus' Weg steht fest:
+   **erst zusammenführen, dann übersetzen.** 20 Dateien, 407–540 Zeilen, davon
+   272 gemeinsam. Unberührt.
+2. **Der Sichttest** — durch nichts zu ersetzen. Der Ort, an dem er sich lohnt,
+   ist jetzt **jede** der drei Seiten.
+3. **`docs/PULS.md`** steht bei ~2.970 Zeilen. Die nächste Sitzung lagert aus,
+   **bevor** sie schreibt.
