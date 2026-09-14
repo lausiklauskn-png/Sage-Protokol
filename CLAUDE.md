@@ -388,7 +388,19 @@ Kopie trägt die Marke, der Loader und die Fassung des Modells nicht.
 App-Identität (Name, Beschreibung, Stichworte, Backup-Präfix) — ein
 Überschreiben gäbe jeder App Sages Bedeutungs-Vektor. Beim Bauen stand sie
 zuerst in der Liste; gefunden hat es der Diff zweier Repos, nicht das
-Nachdenken. Die 272 gemeinsamen Zeilen daraus zu lösen ist **A18**.
+Nachdenken.
+
+✅ **Der gemeinsame Rumpf ist seit dem 2026-09-14 herausgelöst (A18).** Er heißt
+`src/modules/16b_andock_wizard.js` und wird vom Automaten getragen; in den Apps
+liegt er als `sbkim-andock-wizard.js` daneben. `siegel-inhalt.js` trägt nur noch
+`window.SBKIM_SIEGEL_WIZ` und bleibt gesperrt. Tafel:
+[`docs/INTERFACES.md` §11.9](docs/INTERFACES.md).
+**Der Befund, der es nötig machte:** über die 20 Kopien standen **zwölf**
+verschiedene Code-Fassungen im Netz. Danach: **19 Kopien, alle gleich.**
+Werkzeuge für den einmaligen Umbau: `tools/wizard-trennen.mjs` (trennt in einem
+Nachbar-Klon) und `tools/wizard-trennung-pruefen.mjs` (misst das Ergebnis im
+echten Browser). **Die Übersetzung steht noch aus** — der Rahmen (`T()`,
+`TEXTE_DE`) ist gebaut und ändert ohne Tabelle nichts.
 
 **Gemessen beim ersten Lauf: 44 Kanon-Dateien im Netz hängen zurück**, einzelne
 um über 300 Zeilen. Ein Generationen-Sprung wird als solcher benannt — er

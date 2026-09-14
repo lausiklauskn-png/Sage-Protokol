@@ -4967,11 +4967,16 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="src/modules/08_ui_demo.js"></script>
   <script src="src/modules/15_membran.js"></script>
   <script src="src/modules/16_siegel.js"></script>
-  <!-- A18 (2026-07-23): kanonischer Andock-Wizard IM Siegel-Modal (byte-1:1
-       mit allen Endknoten). Ersetzt Sages alte Inline-Injektion ins Siegel
-       (injectIdentityLinkIntoSiegel ist dafür stillgelegt). Modul 16 bleibt
-       unangetastet; die Datei self-mountet via MutationObserver. -->
+  <!-- A18 (2026-09-14): die Trennlinie. siegel-inhalt.js trägt nur noch die
+       IDENTITÄT dieses Knotens (window.SBKIM_SIEGEL_WIZ) und wird nie
+       verteilt; sbkim-andock-wizard.js ist der netzweit byte-gleiche KANON
+       (Quelle src/modules/16b_andock_wizard.js). Reihenfolge: erst die
+       Konfiguration, dann der Kanon — er liest sie ohnehin erst beim
+       Injizieren, aber wer sie danebenlegt, soll sie auch davor sehen.
+       Modul 16 bleibt unangetastet; der Kanon self-mountet via
+       MutationObserver. Vertrag: docs/INTERFACES.md 11.9. -->
   <script src="assets/siegel-inhalt.js"></script>
+  <script src="assets/sbkim-andock-wizard.js"></script>
   <script src="src/modules/18_tool_pwa.js"></script>
   <script src="src/modules/20_schluessel_safe.js"></script>
   <script src="src/modules/21_spracheingabe.js"></script>

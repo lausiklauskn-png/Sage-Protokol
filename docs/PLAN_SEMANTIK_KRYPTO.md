@@ -435,7 +435,7 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **Selbst-Hosten des Modells (Flaschenhals/Offline, `/models/…`-Pfad existiert schon) ist ein SEPARATER, optionaler
   Hebel** — löst NICHT das Einfrieren; auf Klaus' Zuruf. **Browser-Sichttest (kein Einfrieren mehr) wartet auf Klaus.**
 
-- [ ] **A18 — Kanonischen Siegel-Andock-Wizard (`assets/siegel-inhalt.js`) netzweit ausrollen** · `Bau` · ⏱ ~1 Sitzung/Repo · **neu 2026-07-15**
+- [x] **A18 — Kanonischen Siegel-Andock-Wizard netzweit ausrollen** · **abgehakt 2026-09-14** · `Bau` · ⏱ ~1 Sitzung/Repo · **neu 2026-07-15**
   Neuer Baustein (2026-07-15): EINE 1:1-kopierbare Datei `Sage-Protokol/assets/siegel-inhalt.js` trägt den **vollen
   Andock-Wizard** im Siegel-Modal — 5 Bausteine (Identität erzeugen · Spore signieren+⬇ · verschl. Backup ·
   Wiederherstellen · **Identitäts-Wechsler mit aktiver-nodeId-Anzeige**) als natives `<dialog>` (Top-Layer, liegt
@@ -473,6 +473,23 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _erledigt: 2026-07-16 (Kim-Bell · Point · Tomys · Rezeptbuch · Mixarium · family-project · per-Slot-nodeId · Tresor-Befund)_
 
 ## B) Verschlüsselung
+
+  **✅ ABGESCHLOSSEN 2026-09-14 (A18-Sitzung).** Der Wizard ist **Kanon**, nicht
+  mehr Klebstoff: `src/modules/16b_andock_wizard.js` (Marke `SBKIM — Modul 16b —`)
+  trägt Ablauf, Texte und Prüfungen; `siegel-inhalt.js` trägt nur noch
+  `window.SBKIM_SIEGEL_WIZ` — die Identität — und bleibt in `NIE_VERTEILEN`.
+  Tafel: `docs/INTERFACES.md` §11.9.
+  **Der Befund, der das nötig machte:** gemessen über alle 20 Kopien standen
+  **zwölf** verschiedene Code-Fassungen im Netz; sieben mit eigenem ID-Präfix,
+  zwei ohne Baustein 5, neun ohne „der Vorschlag der App gewinnt", sechs mit
+  hart eingetipptem Backup-Namen.
+  **Gemessen nach dem Rollout:** `kanon-verteilen.mjs --nur 16b` meldet
+  **19 Kopien, alle gleich, 0 hängen zurück**; jeder der 19 Knoten ist im echten
+  Browser geprüft (Konfiguration + Kanon = vollständiges Werkzeug mit der
+  eigenen Beschreibung). Sage: 105 Proben grün · `smoke_kanon_wizard` 46 grün ·
+  Gegenprobe 24 gefangen, 0 durchgerutscht, 0 tote Anker.
+  **Was NICHT erledigt ist:** die Übersetzung (`TEXTE.en`) — der Rahmen steht,
+  der Inhalt fehlt. Und Klaus' Browser-Sichttest am Gerät.
 
 - [x] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · **✅ grün 2026-07-17 (nach Bug-Fix)**
   Real gebaut (AES-GCM-256, PBKDF2 600k, Shamir 2/3, headless 19/19). Einrichten/entsperren/Recovery prüfen.
