@@ -20,8 +20,12 @@
  *     //           andere Wert (ru/zh/fr/…) faellt ebenfalls auf Deutsch.
  *     //           Setz es, wenn deine App die Sprache umschaltet, OHNE dabei
  *     //           <html lang> mitzuziehen — sonst genuegt das Attribut.
- *     //           ⚠ Noch deutsch bleiben das Siegel (16) und die Lampen (17);
- *     //           ein Voll-Knoten ist auf Englisch heute gemischtsprachig.
+ *     //           ⚠ SEIT 2026-09-14 SPRECHEN AUCH DAS SIEGEL (16) UND DIE
+ *     //           LAMPEN (17) Englisch. Diese init() reicht lang aber nur an
+ *     //           das Verbinden-Fenster durch — 16 und 17 startest du selbst
+ *     //           (siehe beispiel-voll.html, Schritte b und c), und dort
+ *     //           nimmt init({lang}) denselben Wert. Ueber <html lang> ist
+ *     //           gar nichts zu tun: alle drei lesen es selbst.
  *     // optional: sampleContent: async () => [ "Inhalt 1", {label, text}, … ]
  *     //           — liefert echte lokale Inhalts-Schnipsel; der domainVector
  *     //           entsteht dann INHALTS-TREU (Modul 03 embedContentVector)

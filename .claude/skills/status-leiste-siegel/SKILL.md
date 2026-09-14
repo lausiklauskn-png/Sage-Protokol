@@ -288,6 +288,93 @@ Modal, bevor es fertig geladen hat.**
   nie ins Repo. **Ehrliche Lampen**, kein Siegel ohne erfüllte Selbst-Prüfung.
 - Wer Modul 15/16 berührt: `ZERTIFIKAT_ASPEKTE`-Eintrag nachziehen.
 
+---
+
+## Die Sprache — Deutsch und Englisch, mehr nicht (Klaus 2026-09-14)
+
+**Entschieden: ZWEI Sprachen, fest im Modul.** Kein Sprach-Register, kein
+`init({texte})`, keine acht Wörterbücher. Begründung von Klaus: sonst schleppen
+alle neunzehn Apps alle Sprachen mit, auch die einsprachigen — und wer mehr
+braucht, lässt im Browser übersetzen.
+
+Drei Module tragen es, nach demselben Verfahren:
+
+| Modul | was spricht | Einträge |
+|---|---|---|
+| **23 UI** — Verbinden-Fenster | der ganze Fenster-Inhalt | 237 |
+| **16** — Siegel | Modal, Aspekte, Badge-Etiketten | 55 |
+| **17** — Lampen | Etiketten, Tooltips, beide Fenster | 28 |
+
+### So funktioniert es
+
+**Schlüssellos: der deutsche Satz IST der Schlüssel.** `T("Pflicht-Module")`
+gibt die englische Fassung, wenn es eine gibt, und sonst den deutschen Satz
+zurück. Kein Schlüssel-System — ein Schlüssel und sein Text laufen auseinander,
+sobald einer von beiden sich bewegt, und dann steht im Fenster ein Schlüssel.
+
+**Rangfolge:** `init({lang})` · sonst `<html lang>` (erste zwei Zeichen) · sonst
+Deutsch. Jeder andere Wert (`ru`, `zh`, `fr` …) fällt fail-soft auf Deutsch.
+
+> **OHNE EINSTELLUNG ÄNDERT SICH NICHTS.** Das ist die tragende Zusicherung —
+> sie hat den Rollout in neunzehn Apps rückwirkungsfrei gemacht. Wer nichts tut,
+> bekommt Deutsch wie bisher.
+
+⚠ **`lang` geht an DREI Aufrufe, nicht an einen.** `SbkimConnect.init({lang})`
+reicht ihn nur an das Verbinden-Fenster durch; 16 und 17 startet die App selbst.
+**Über `<html lang>` entfällt das** — alle drei lesen das Attribut selbst, und
+das ist der Weg, der in den meisten Apps schon da ist.
+
+⚠ **Die Sprache kommt in den Apps NICHT von selbst.** Gemessen am 2026-09-14 an
+allen 18 Trägern: **9 ziehen `<html lang>` beim Sprachwechsel mit, 9 nicht.** Wo
+nicht, bleibt das Fenster deutsch. Wer eine App auf Englisch anbietet, sieht dort
+nach — sonst heißt es „kann Englisch" und ändert für den Nutzer nichts.
+
+⚠ **`T()` liest die Sprache bei JEDEM Aufruf.** Was schon im DOM steht, wechselt
+nicht mit. Die Modals zeichnen bei jedem Öffnen neu und folgen sofort; die
+**Lampen-Pille wird einmal gebaut** und folgt erst beim nächsten Laden. Benannte
+Grenze, kein Fehler.
+
+### Der Preis, und was dagegen steht
+
+Wer einen deutschen Satz ändert, verliert **still** seine Übersetzung. Dagegen
+stehen Wächter, die in beide Richtungen messen —
+`tests/smoke_bau23_sprache.mjs` und `tests/smoke_bau1617_sprache.mjs`.
+
+**Drei Abschnitte, und der dritte ist der wichtigste:** (1) Wörterbuch gegen
+Code in beide Richtungen · (2) die **Daten-Tabellen** (`ZERTIFIKAT_ASPEKTE`,
+`SLOT_TOOLTIPS`) — ein NEU angehängter Aspekt ohne Übersetzung fällt dort auf,
+und das wird passieren, weil jede Schutz-Modul-Sitzung einen anhängen muss ·
+(3) **geht JEDER Anzeigetext überhaupt durch `T()`?** Der dritte hat beim
+23er-Bau **52 Stellen** gefunden, die die beiden anderen nicht sehen konnten —
+ein Text, der gar nicht durch `T()` geht, kommt in keiner ihrer Mengen vor. Ohne
+ihn stand im fertigen Fenster „Speicher dauerhaft: unbekannt" zwischen
+englischen Zeilen.
+
+### ⚠ Die Browser-Übersetzung wird NICHT pauschal gesperrt
+
+Gemessen an `family-project` und `PWA-Toolpoint`, nachdem eine erste Lesart das
+Gegenteil behauptet hatte. Gesperrt wird in **drei Fällen getrennt**:
+
+| Lage | was geschieht |
+|---|---|
+| **niemand hat gewählt** | Google **darf** übersetzen — der Fall, für den der Übersetzer anblieb: zwölf Mikrofon-Sprachen, Paschtu und Dari |
+| **der Nutzer hat gewählt** | die App gewinnt, in **beiden** Richtungen |
+| **Google war schneller** | die Seite sagt es (`beobachteUebersetzer`) |
+
+**Und es gibt einen Weg zurück:** ein **1,5 s langer Druck** auf den Sprachknopf
+löscht die Wahl und lädt neu (`family-project/assets/app.js`,
+`PWA-Toolpoint/assets/sprache.js` — dieselbe Funktion). Ohne ihn wäre ein
+einziger Klick eine Einbahnstraße, und das träfe ausgerechnet die Besucher, für
+die der Übersetzer angelassen wurde.
+
+⚠ **Der lange Druck ist VERSTECKT.** Er steht nur im Vorlese-Namen des Knopfes —
+als benannte Grenze im Code selbst. Wer ihn nicht kennt, findet ihn nicht; Klaus
+selbst war sich unsicher, ob es ihn gibt. Keine Lösung für alle, aber besser als
+kein Weg.
+
+**Verträge:** [`INTERFACES.md`](../../../docs/INTERFACES.md) § Modul 23 UI ·
+§ Modul 16 SPRACHE · § Modul 17 SPRACHE.
+
 ## Kurz-Merksatz
 
 **Erst Widget (17), dann Membran (15) + Siegel (16).** Sieben Pflicht-Module → Bronze;

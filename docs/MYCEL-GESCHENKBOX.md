@@ -75,9 +75,9 @@ abgewandelt.
 |---|---|---|
 | `modules/07_apoptose.js` | **sauberer Rückzug — und Siegel-Pflicht** (siehe Kasten unten) |
 | `modules/15_membran.js` | Außenhülle: Fremdzugriff-Detektor | `fbf9f42d8a27` |
-| `modules/16_siegel.js` | SBKIM-Siegel (Bronze→Gold), Aspekte-Liste | `4e11ef0d0390` |
+| `modules/16_siegel.js` | SBKIM-Siegel (Bronze→Gold), Aspekte-Liste, DE/EN | `7589f18d59dc` |
 | `modules/siegel-inhalt.js` | Inhalt des Siegel-Modals (Andock-Werkzeug) | (Kanon prüfen) |
-| `modules/17_floating_widget.js` | Status-Lampen LEBT/VERKEHR/FREMD/SIEGEL | (Kanon prüfen) |
+| `modules/17_floating_widget.js` | Status-Lampen LEBT/VERKEHR/FREMD/SIEGEL, DE/EN | `3f757b35cea5` |
 | `modules/19_andock_wizard.js` | Andock-Assistent (Identität/Spore/Backup) | `976c4ba35…` |
 | `modules/20_schluessel_safe.js` | verschlüsselter Schlüssel-Safe (BYOK) | `e7e25c907…` |
 | `modules/21_spracheingabe.js` | Spracheingabe (Mikro → Text, EU-Politik, 12 Sprachen) | `020ca26ff…` |
@@ -117,8 +117,9 @@ bevor Membran/Siegel sie bedienen. `19/20/21/22/24` sind additiv, fail-soft
 
 - ✅ **Stufe 1 „Verbinden"** ist fertig und aktuell (`sbkim-bundle/`), inkl.
   Kartenechtheit (Modul 23 sha `3caa0bb1`).
-- ✅ **Das Verbinden-Fenster spricht Deutsch UND Englisch** (seit 2026-09-14,
-  Modul 23 UI sha `709c4364026e`) — siehe den Abschnitt „Die Sprache der Kiste"
+- ✅ **Verbinden-Fenster, Siegel und Lampen sprechen Deutsch UND Englisch**
+  (23 UI seit 2026-09-14, sha `709c4364026e`; 16 und 17 seit demselben Tag)
+  — siehe den Abschnitt „Die Sprache der Kiste"
   weiter unten. Der Fremde bekommt das **ohne Zutun**; wer nichts einstellt,
   bekommt Deutsch wie bisher.
 - ✅ **Marktplatz-Einreichung** steht (`family-project/markt.html`, „Zur Prüfung
@@ -170,21 +171,35 @@ dasteht") würde `<html lang>` überstimmen — dann wäre eine englische Seite,
 das Attribut korrekt mitzieht, plötzlich wieder deutsch, **und zwar wegen der
 Kiste**. Ein Wächter nur auf „durchgereicht" wäre dafür blind.
 
-### ⚠ Eine Voll-Kiste ist auf Englisch heute GEMISCHTSPRACHIG
-
-Das gehört hierher, weil ein Fremder es sonst erst im eigenen Browser merkt:
+### ✅ Eine Voll-Kiste spricht durchgehend zwei Sprachen (seit 2026-09-14)
 
 | Modul | Stand |
 |---|---|
 | `23_rendezvous_ui.js` — das Verbinden-Fenster | ✅ Deutsch + Englisch (237 Texte) |
-| `16_siegel.js` — das Siegel-Fenster | ⚠ **nur Deutsch** (47 Texte) |
-| `17_floating_widget.js` — LEBT/VERKEHR/FREMD/SIEGEL | ⚠ **nur Deutsch** (19 Texte) |
+| `16_siegel.js` — das Siegel-Fenster | ✅ Deutsch + Englisch (55 Texte) |
+| `17_floating_widget.js` — LEBT/VERKEHR/FREMD/SIEGEL | ✅ Deutsch + Englisch (28 Texte) |
 
-Wer eine **Stufe-1**-Kiste auspackt, merkt davon nichts — sie trägt 16/17 gar
-nicht. Wer die **Voll-Kiste** nimmt und auf Englisch stellt, bekommt ein
-englisches Verbinden-Fenster neben deutschen Lampen. **Eine benannte Lücke ist
-Arbeit, eine verschwiegene ist Schaden** — deshalb steht sie hier und nicht nur
-im PULS.
+> **Bis zum 2026-09-14 stand hier: „Eine Voll-Kiste ist auf Englisch heute
+> GEMISCHTSPRACHIG"** — englisches Verbinden-Fenster neben deutschen Lampen,
+> 16 und 17 nur Deutsch. Der Satz galt fünf Tage. Er bleibt hier stehen, weil er
+> beschreibt, was ein Fremder in einer **älteren Kopie** der Kiste wirklich
+> vorfindet; maßgeblich sind die sha-Werte in der Tabelle oben.
+
+⚠ **`lang` GEHT AN DREI AUFRUFE, NICHT AN EINEN.** `SbkimConnect.init({lang})`
+reicht den Wert nur an das Verbinden-Fenster durch. Lampen und Siegel startet
+die App selbst, und dort nimmt `init({lang})` denselben Wert:
+
+```js
+await SbkimConnect.init({ …, lang: "en" });               // Verbinden-Fenster
+await SbkimWidget.init({ lang: "en" });                   // die Lampen
+await SbkimSiegel.init({ ribbonText: "…", lang: "en" });  // das Siegel
+```
+
+**Über `<html lang="en">` entfällt das alles** — alle drei Module lesen das
+Attribut selbst. Das ist der Weg, der in den meisten Apps schon da ist.
+
+Wer eine **Stufe-1**-Kiste auspackt, merkt von 16/17 ohnehin nichts — sie trägt
+sie gar nicht.
 
 ⚠ **Die Sprache kommt in den Apps NICHT von selbst.** Gemessen am 2026-09-14 an
 allen 18 Trägern im Netz: **9 ziehen `<html lang>` beim Sprachwechsel mit, 9

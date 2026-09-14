@@ -184,26 +184,42 @@ sichtbar) bleibt bei dir — headless ersetzt ihn nicht.
 
 ## Deutsch oder Englisch
 
-Das **Verbinden-Fenster** (Modul 23 UI) trägt **237 englische Texte**. Zwei Wege,
-keiner ist Pflicht:
+Das **Verbinden-Fenster** (Modul 23 UI, 237 englische Texte), das **Siegel**
+(Modul 16, 55) und die **Lampen** (Modul 17, 28) sprechen Deutsch und Englisch.
+Zwei Wege, keiner ist Pflicht:
 
 | Weg | wann |
 |---|---|
-| `lang: "en"` im `SbkimConnect.init()` | wenn deine App die Sprache umschaltet, **ohne** `<html lang>` mitzuziehen |
-| `<html lang="en">` am Dokument | wenn deine App das Attribut ohnehin pflegt — dann ist **nichts** zu tun |
+| `<html lang="en">` am Dokument | wenn deine App das Attribut ohnehin pflegt — dann ist **nichts** zu tun, alle drei Module lesen es selbst |
+| `lang: "en"` beim Starten | wenn deine App die Sprache umschaltet, **ohne** `<html lang>` mitzuziehen |
 
 **Ohne Einstellung ändert sich nichts.** Jeder andere Wert (`ru`, `zh`, `fr` …)
 fällt auf Deutsch zurück. Fehlt eine Übersetzung, bleibt dieser eine Satz
 deutsch — nie leer, nie ein Platzhalter.
 
-### ⚠ Auf Englisch ist diese Kiste heute GEMISCHTSPRACHIG
+### ⚠ `lang` geht an DREI Stellen, nicht an eine
+
+`SbkimConnect.init({ lang })` reicht den Wert **nur an das Verbinden-Fenster**
+durch. Siegel und Lampen startest du selbst (`beispiel-voll.html`, Schritte b
+und c) — und dort nimmt `init({lang})` denselben Wert:
+
+```js
+await SbkimConnect.init({ …, lang: "en" });          // Verbinden-Fenster
+await SbkimWidget.init({ lang: "en" });              // die Lampen
+await SbkimSiegel.init({ ribbonText: "…", lang: "en" }); // das Siegel
+```
+
+**Über `<html lang="en">` entfällt das alles** — dann brauchst du keine der
+drei Zeilen. Das ist der Weg, der in den meisten Apps schon da ist.
 
 | Modul | Stand |
 |---|---|
-| `23_rendezvous_ui.js` — Verbinden-Fenster | ✅ Deutsch + Englisch |
-| `16_siegel.js` — Siegel-Fenster | ⚠ **nur Deutsch** (47 Texte) |
-| `17_floating_widget.js` — die Lampen | ⚠ **nur Deutsch** (19 Texte) |
+| `23_rendezvous_ui.js` — Verbinden-Fenster | ✅ Deutsch + Englisch (237 Texte) |
+| `16_siegel.js` — Siegel-Fenster | ✅ Deutsch + Englisch (55 Texte) |
+| `17_floating_widget.js` — die Lampen | ✅ Deutsch + Englisch (28 Texte) |
 
-Wer auf Englisch stellt, bekommt also ein englisches Verbinden-Fenster neben
-deutschen Lampen. Das steht hier, damit du es **vor** dem Einbau weißt und nicht
-erst im eigenen Browser. Stand 2026-09-14.
+> **Bis zum 2026-09-14 stand hier, dass diese Kiste auf Englisch
+> GEMISCHTSPRACHIG sei** — englisches Verbinden-Fenster neben deutschen Lampen.
+> Das stimmte fünf Tage lang und ist seit dem Sprach-Haken für 16 und 17
+> erledigt. Der alte Satz bleibt hier stehen, weil er beschreibt, was ein
+> Forker in einer älteren Kopie der Kiste wirklich vorfindet.
