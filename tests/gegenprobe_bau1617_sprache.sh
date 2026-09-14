@@ -21,11 +21,16 @@ WURZEL="$(cd "$HIER/.." && pwd)"
 KOPIE="$(mktemp -d)"
 trap 'rm -rf "$KOPIE"' EXIT
 
-mkdir -p "$KOPIE/src/modules" "$KOPIE/tests"
+mkdir -p "$KOPIE/src/modules" "$KOPIE/tests" "$KOPIE/docs"
+# ⚠ DIE AUSGANGSLAGE IST AUCH EINE POSITIVLISTE. Abschnitt 4 der Probe liest
+# seit dem 2026-09-14 (spaet) `docs/INTERFACES.md` — ohne diese Zeile ist die
+# Kopie SCHON OHNE EINGRIFF rot, und dann misst die ganze Gegenprobe nichts.
+# Genau so beim ersten Lauf passiert; die Ausgangslage-Pruefung hat es gefangen.
 frisch() {
   cp "$WURZEL/src/modules/16_siegel.js"          "$KOPIE/src/modules/"
   cp "$WURZEL/src/modules/17_floating_widget.js" "$KOPIE/src/modules/"
   cp "$WURZEL/tests/smoke_bau1617_sprache.mjs"   "$KOPIE/tests/"
+  cp "$WURZEL/docs/INTERFACES.md"                "$KOPIE/docs/"
 }
 
 gefangen=0; durch=0; tot=0
@@ -184,6 +189,25 @@ saboten "$PROBE" "der Vorfilter faellt weg — der Waechter verbietet das Richti
 # Genau das war beim ersten Lauf dieser Probe der Fall.
 saboten "$PROBE" "das Modal wird nicht mehr geoeffnet — alles darunter misst nichts" \
   '  if (badge) badge.click();' '  if (badge && false) badge.click();'
+
+echo
+echo "═══ F · das Wappen gegen die Tafel (Abschnitt 4) ═══"
+# ⚠ HINZUFUEGEN STATT AENDERN. Wer einen vorhandenen Wappen-Text UMBENENNT,
+# faellt zugleich aus der Tafel — dann feuert derselbe Waechter, aber aus dem
+# anderen Grund, und man weiss nicht, welche Haelfte gemessen wurde. Ein NEU
+# eingehaengter <text> ist der Fall, um den es wirklich geht: genau so kommt
+# ein deutscher Satz kuenftig ins Wappen.
+saboten "src/modules/16_siegel.js" \
+  "ein NEUER deutscher Text kommt ins Wappen, ohne in der Tafel zu stehen" \
+  '>SBKIM<' '>SBKIM</text><text>GEPRUEFTE URKUNDE<'
+
+# Die Gegenrichtung: das Wappen bleibt, die Tafel verliert ihren Eintrag. Ohne
+# diesen Fall waere nicht gemessen, dass der Waechter die TAFEL wirklich liest —
+# er koennte gegen eine fest verdrahtete Liste pruefen und saehe gleich aus.
+saboten "docs/INTERFACES.md" \
+  "die Tafel verliert einen Wappen-Text — der Abgleich muss ihn vermissen" \
+  'OFFIZIELLE BESTÄTIGUNG   ← Anzeigetext, beschreibend' \
+  'OFFIZIELLE BESTAETIGUNG  ← hier stand er einmal'
 
 frisch
 echo

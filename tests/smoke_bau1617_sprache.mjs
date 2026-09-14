@@ -478,5 +478,59 @@ for (const mod of MODULE) {
      offen.slice(0, 3).join(" | "));
 }
 
+/* ══ 4. Das WAPPEN-SVG gegen die Tafel ═══════════════════════════════════
+ *
+ * ⚠ DRITTE BENANNTE GRENZE VON ABSCHNITT 3, gefunden 2026-09-14 spät beim
+ * Sichttest-Vorlauf: er misst ZEILENWEISE und nur Zeilen mit einer
+ * Anzeige-Zuweisung. `WAPPEN_SVG` ist eine `var`-Zuweisung mit Markup, und
+ * eingesetzt wird sie später über eine VARIABLE — auf deren Zeile steht keine
+ * Zeichenkette. Für beide Filter unsichtbar.
+ *
+ * Gemessen headless an drei echten Seiten mit <html lang="en">: im Wappen
+ * standen „OFFIZIELLE BESTÄTIGUNG" und „SIEGEL" auf Deutsch, während alles
+ * andere Englisch sprach. Genau das Muster, das diese Probe verhindern soll.
+ *
+ * ⚠ DIESER WÄCHTER ENTSCHEIDET NICHT, OB DAS FALSCH IST. Ob ein Wappen als
+ * Emblem deutsch bleibt (wie die ZERTIFIKAT_ASPEKTE-Urkunde) oder mitspricht,
+ * ist Klaus' Entscheidung. Gemessen wird nur, dass KEIN Text im Wappen
+ * UNBENANNT bleibt: jeder muss in INTERFACES § Modul 16 SPRACHE stehen. Wer
+ * einen hinzufügt, zieht die Tafel nach — und dann wird die Frage gestellt,
+ * statt übersehen zu werden.
+ *
+ * Bauart bewusst „hinzufügen statt ändern": ein Wächter, der einen festen
+ * Wortlaut festnagelt, verböte das nächste Richtigstellen.
+ */
+console.log("\nDas Wappen-SVG gegen die Tafel:");
+{
+  const src = readFileSync(resolve(wurzel, "src/modules/16_siegel.js"), "utf8");
+  const a = src.indexOf("var WAPPEN_SVG = '");
+  ok(a >= 0, "WAPPEN_SVG ist im Modul zu finden");
+  const e = src.indexOf("\n", a);
+  const svg = src.slice(a, e > a ? e : undefined);
+
+  /* Texte aus <text>/<textPath> — genau das, was ein Mensch im Wappen liest. */
+  const texte = [...new Set(
+    [...svg.matchAll(/>([^<>]*\p{L}[^<>]*)</gu)]
+      .map(m => m[1].replace(/\\n/g, " ").trim())
+      /* ⚠ ERST die \n-FOLGEN WEG, DANN auf Buchstaben pruefen: der Quelltext
+       * traegt sie als ZWEI Zeichen, und das zweite ist ein „n". Ein Filter
+       * auf \p{L} laesst sie sonst durch und meldet Zeilenumbrueche als
+       * unbenannten Wappen-Text. Beim ersten Lauf genau so passiert. */
+      .filter(t => t && /\p{L}/u.test(t))
+  )];
+  ok(texte.length > 0, `im Wappen stehen Texte (${texte.length} gefunden)`);
+
+  const tafel = readFileSync(resolve(wurzel, "docs/INTERFACES.md"), "utf8");
+  const tVon = tafel.indexOf("SPRACHE (2026-09-14, nach dem Modul-23-UI-Rollout). Modul 16");
+  const tBis = tafel.indexOf("ExplanationSnapshot (Karte 16", tVon);
+  ok(tVon >= 0 && tBis > tVon, "der SPRACHE-Abschnitt von Modul 16 ist auffindbar");
+  const abschnitt = tafel.slice(tVon, tBis);
+
+  const unbenannt = texte.filter(t => !abschnitt.includes(t));
+  ok(unbenannt.length === 0,
+     `jeder Wappen-Text ist in INTERFACES § Modul 16 SPRACHE benannt (${unbenannt.length} nicht)`,
+     unbenannt.slice(0, 3).join(" | "));
+}
+
 console.log(`\nErgebnis: ${pass} bestanden, ${fail} fehlgeschlagen`);
 process.exit(fail ? 1 : 0);
