@@ -470,6 +470,94 @@
         "🪪 Please decide once — see “Secure the identifier” above.",
       "🪪 Kennung sichern":
         "🪪 Secure the identifier",
+
+      // ── Nachgetragen 2026-09-14: Texte, die NICHT durch T() gingen.
+      // Gefunden nicht vom Woerterbuch-Waechter (der misst Woerterbuch↔T()),
+      // sondern von einem zweiten, der jede ANZEIGE-Stelle prueft.
+      "📬 Antworten abholen":
+        "📬 Fetch replies",
+      "🔁 Stelle ":
+        "🔁 Asking ",
+      "Eintrag entfernen":
+        "Remove entry",
+      "ja":
+        "yes",
+      "nein":
+        "no",
+      "unbekannt":
+        "unknown",
+      "Abbrechen":
+        "Cancel",
+      "📥 Ja, ersetzen":
+        "📥 Yes, replace",
+      "📥 Einspielen":
+        "📥 Play in",
+      "\nSprach-Modell geladen ✓":
+        "\nLanguage model loaded ✓",
+      "Tipps ausschalten":
+        "Turn tips off",
+      "Tipps einschalten":
+        "Turn tips on",
+      "🙋 Nur neu anmelden":
+        "🙋 Just re-announce",
+      "Antworten abholen":
+        "Fetch replies",
+      "🔁 offene nochmal fragen":
+        "🔁 ask the open ones again",
+      "Offene Fragen neu stellen":
+        "Ask the open questions again",
+      "🗑 leeren":
+        "🗑 empty",
+      "Briefkasten leeren":
+        "Empty the mailbox",
+      "🧬 nur verwandte: aus":
+        "🧬 related only: off",
+      "💬 Antworten: aus":
+        "💬 Replies: off",
+      "🧠 KI-Richter: aus":
+        "🧠 AI judge: off",
+      "🔒 im Tresor merken":
+        "🔒 keep in the vault",
+      "🔓 Tresor entsperren":
+        "🔓 Unlock the vault",
+      "🧬 nur verwandte: ":
+        "🧬 related only: ",
+      "an":
+        "on",
+      "aus":
+        "off",
+      "✗ Verbinden fehlgeschlagen: ":
+        "✗ Connecting failed: ",
+      "✗ Anmelden fehlgeschlagen: ":
+        "✗ Announcing failed: ",
+      "(unbekannt)":
+        "(unknown)",
+      "Knoten":
+        "node",
+      "angemeldet ":
+        "announced ",
+      "🤝 Andocken":
+        "🤝 Connect",
+      "❓ gezielt fragen":
+        "❓ ask directly",
+      "🧠 KI-Richter: ":
+        "🧠 AI judge: ",
+      "\n\n🧠 KI-Richter beurteilt nach Bedeutung …":
+        "\n\n🧠 The AI judge is ranking by meaning …",
+      " — rohe Reihenfolge bleibt.":
+        " — the raw order stays.",
+      "\n\n🧠 KI-Richter-Fehler: ":
+        "\n\n🧠 AI judge error: ",
+      "> an ":
+        "> to ",
+      "✗ Fehler: ":
+        "✗ Error: ",
+      "💬 Antworten ausgeschaltet.":
+        "💬 Replies turned off.",
+      " (lebende ID, max ~12 s) …":
+        " (live ID, max ~12 s) …",
+      "\n✗ Fehler: ":
+        "\n✗ Error: ",
   } };
 
   function sprache() {
@@ -641,7 +729,7 @@
   function updateMailBadge() {
     var n = mailUnreadCount();
     if (btnEl) btnEl.textContent = RDV_BUBBLE_BASE + (n ? "  📬" + n : "");
-    if (mailBtn) mailBtn.textContent = "📬 Antworten abholen" + (n ? " (" + n + ")" : "");
+    if (mailBtn) mailBtn.textContent = T("📬 Antworten abholen") + (n ? " (" + n + ")" : "");
   }
   // Nachlesen über Modul 23 fetchAnswers (Lookback). silent → nur Badge updaten;
   // sonst zusätzlich die Briefkasten-Ansicht zeigen. Fail-soft.
@@ -677,7 +765,7 @@
     if (!r || typeof r.askNode !== "function") { setOut(T("Modul 23 mit Bau 23.B (askNode) nicht geladen.")); return; }
     var toAsk = pruneMail().filter(function (e) { return e.status === "offen" || e.status === "abgelaufen"; });
     if (!toAsk.length) { renderMail(); return; }
-    if (outEl) outEl.textContent = "🔁 Stelle " + toAsk.length + T(" offene Frage(n) erneut …");
+    if (outEl) outEl.textContent = T("🔁 Stelle ") + toAsk.length + T(" offene Frage(n) erneut …");
     Promise.all(toAsk.map(function (e) {
       if (!e.toNodeId) return Promise.resolve();
       return Promise.resolve(r.askNode(e.toNodeId, e.text)).then(function (res) {
@@ -781,7 +869,7 @@
       }
       // 🗑 nur diese Gruppe entfernen.
       var del = el("button", bs, "🗑"); del.type = "button";
-      del.title = "Eintrag entfernen";
+      del.title = T("Eintrag entfernen");
       (function (qid) { del.addEventListener("click", function () { deleteMailEntry(qid); }); })(e.qid);
       rowEl.appendChild(del);
       cardsEl.appendChild(rowEl);
@@ -856,16 +944,16 @@
       var p = null;
       try { var st = global.SbkimStorage; p = (st && st._meta) ? st._meta.storagePersisted : null; } catch (_e) { p = null; }
       if (p === true) {
-        persistValEl.textContent = "ja"; persistValEl.style.color = "#8fe0b0";
+        persistValEl.textContent = T("ja"); persistValEl.style.color = "#8fe0b0";
         if (persistHintEl) persistHintEl.style.display = "none";
       } else if (p === false) {
-        persistValEl.textContent = "nein"; persistValEl.style.color = "#e6b980";
+        persistValEl.textContent = T("nein"); persistValEl.style.color = "#e6b980";
         if (persistHintEl) {
           persistHintEl.textContent = T("→ Der Browser darf diesen Speicher später aufräumen — dann wäre deine Kennung weg. Am sichersten: die App auf den Startbildschirm legen (installieren). Eine Sicherung deiner Identität schützt zusätzlich.");
           persistHintEl.style.display = "block";
         }
       } else {
-        persistValEl.textContent = "unbekannt"; persistValEl.style.color = "#9aa7b6";
+        persistValEl.textContent = T("unbekannt"); persistValEl.style.color = "#9aa7b6";
         if (persistHintEl) persistHintEl.style.display = "none";
       }
     }
@@ -1017,7 +1105,7 @@
     }
   }
   function idCancelBtn() {
-    var b = el("button", idBtnCss(false), "Abbrechen");
+    var b = el("button", idBtnCss(false), T("Abbrechen"));
     b.type = "button";
     b.addEventListener("click", function () { setIdForm(null); });
     return b;
@@ -1116,7 +1204,7 @@
         var box = el("div", "");
         box.appendChild(idNote(T("In diesem Browser liegt schon eine Kennung. Einspielen ERSETZT sie durch die aus der Datei.\nDie jetzige Kennung ist danach weg — andere Knoten kennen wieder die alte."), true));
         var row = el("div", "display:flex;gap:6px;flex-wrap:wrap;margin-top:6px");
-        var yes = el("button", idBtnCss(true), "📥 Ja, ersetzen"); yes.type = "button";
+        var yes = el("button", idBtnCss(true), T("📥 Ja, ersetzen")); yes.type = "button";
         yes.addEventListener("click", function () { runImport(blob, pw, true); });
         row.appendChild(yes); row.appendChild(idCancelBtn());
         box.appendChild(row);
@@ -1143,7 +1231,7 @@
     prow.appendChild(pw);
     box.appendChild(prow);
     var row2 = el("div", "display:flex;gap:6px;flex-wrap:wrap;margin-top:6px");
-    var go = el("button", idBtnCss(true), "📥 Einspielen"); go.type = "button";
+    var go = el("button", idBtnCss(true), T("📥 Einspielen")); go.type = "button";
     row2.appendChild(go); row2.appendChild(idCancelBtn());
     box.appendChild(row2);
     go.addEventListener("click", function () {
@@ -1407,7 +1495,7 @@
         outEl.textContent = _progBase + T("\nSprach-Modell lädt  ") + bar + "  " + pct + " %" +
           "\n(einmalig ~30 MB — kann am Tablet 1–2 Min dauern, bitte offen lassen)";
       } else if (dd.status === "done" || dd.status === "ready") {
-        outEl.textContent = _progBase + "\nSprach-Modell geladen ✓";
+        outEl.textContent = _progBase + T("\nSprach-Modell geladen ✓");
       }
     };
     try { global.addEventListener("sbkim:embedding-progress", _progHandler); } catch (_e) {}
@@ -1693,7 +1781,7 @@
       tipBtn.style.opacity = on ? "1" : ".38";
       tipBtn.setAttribute("data-sbtip", on ? "Tipps ausschalten" : "Tipps einschalten");
     }
-    tipBtn.title = tipsEnabled() ? "Tipps ausschalten" : "Tipps einschalten";  // adoptTips verdrahtet den Hover
+    tipBtn.title = tipsEnabled() ? T("Tipps ausschalten") : T("Tipps einschalten");  // adoptTips verdrahtet den Hover
     tipBtn.style.opacity = tipsEnabled() ? "1" : ".38";
     tipBtn.addEventListener("click", function () {
       setTipsOff(tipsEnabled());   // an → aus, aus → an
@@ -1838,13 +1926,13 @@
     var row = el("div", "display:flex;gap:8px;flex-wrap:wrap");
     var connectBtn = el("button", bs, T("🌐 Mit dem Knotennetz verbinden")); connectBtn.type = "button";
     var discoverBtn = el("button", bsGhost, T("👥 Wer ist im Raum?")); discoverBtn.type = "button";
-    var announceBtn = el("button", bsGhost, "🙋 Nur neu anmelden"); announceBtn.type = "button";
-    mailBtn = el("button", bsGhost, "📬 Antworten abholen"); mailBtn.type = "button";
-    mailBtn.title = "Antworten abholen";
-    reAskBtn = el("button", bsGhost + ";font-size:.74rem", "🔁 offene nochmal fragen"); reAskBtn.type = "button";
-    reAskBtn.title = "Offene Fragen neu stellen";
-    clearMailBtn = el("button", bsGhost + ";font-size:.74rem", "🗑 leeren"); clearMailBtn.type = "button";
-    clearMailBtn.title = "Briefkasten leeren";
+    var announceBtn = el("button", bsGhost, T("🙋 Nur neu anmelden")); announceBtn.type = "button";
+    mailBtn = el("button", bsGhost, T("📬 Antworten abholen")); mailBtn.type = "button";
+    mailBtn.title = T("Antworten abholen");
+    reAskBtn = el("button", bsGhost + ";font-size:.74rem", T("🔁 offene nochmal fragen")); reAskBtn.type = "button";
+    reAskBtn.title = T("Offene Fragen neu stellen");
+    clearMailBtn = el("button", bsGhost + ";font-size:.74rem", T("🗑 leeren")); clearMailBtn.type = "button";
+    clearMailBtn.title = T("Briefkasten leeren");
     row.appendChild(connectBtn); row.appendChild(discoverBtn); row.appendChild(announceBtn); row.appendChild(mailBtn);
     row.appendChild(reAskBtn); row.appendChild(clearMailBtn);
     panelEl.appendChild(row);
@@ -1853,7 +1941,7 @@
     // Verwandte (zentrierter Score, Modul 04 via Modul 23). Gatet NICHTS, der
     // 0.80-Andock-Riegel bleibt unberührt. Default aus.
     var filterRow = el("div", "margin-top:8px");
-    relOnlyBtn = el("button", bsGhost + ";font-size:.74rem;padding:5px 10px", "🧬 nur verwandte: aus");
+    relOnlyBtn = el("button", bsGhost + ";font-size:.74rem;padding:5px 10px", T("🧬 nur verwandte: aus"));
     relOnlyBtn.type = "button";
     relOnlyBtn.title = T("Nur verwandte Knoten zeigen");
     filterRow.appendChild(relOnlyBtn);
@@ -1917,7 +2005,7 @@
     voiceBtnEl.type = "button";
     voiceBtnEl.title = T("Frage einsprechen");
     voiceLangEl = buildVoiceLangPicker();
-    answerBtn = el("button", bsGhost + ";font-size:.74rem;padding:5px 10px", "💬 Antworten: aus");
+    answerBtn = el("button", bsGhost + ";font-size:.74rem;padding:5px 10px", T("💬 Antworten: aus"));
     answerBtn.type = "button";
     answerBtn.title = T("Anderen Knoten antworten");
     // A11 — Primär-Knopf „🔎 Antwort holen": rankt alle Raum-Knoten nach Passung
@@ -1944,7 +2032,7 @@
     // kostet (eigener Schlüssel), Schlüssel bleibt NUR im Browser, und die
     // Antwort-TITEL gehen an den gewählten KI-Anbieter (Daten-Abfluss benannt).
     var kiRow = el("div", "margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center");
-    kiToggleEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 9px", "🧠 KI-Richter: aus");
+    kiToggleEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 9px", T("🧠 KI-Richter: aus"));
     kiToggleEl.type = "button";
     kiToggleEl.title = T("KI bewertet die Antworten (eigener Schlüssel)");
     kiProvSelEl = doc().createElement("select");
@@ -1974,11 +2062,11 @@
     // 🔒 im Tresor merken / 🔓 entsperren (Modul 20 Safe). Nur sichtbar, wenn
     // der Safe geladen ist (fail-soft für Forker ohne Modul 20). Sicher: der
     // Schlüssel wird verschlüsselt abgelegt (PBKDF2+AES-GCM), nie im Klartext.
-    kiSaveBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", "🔒 im Tresor merken");
+    kiSaveBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", T("🔒 im Tresor merken"));
     kiSaveBtnEl.type = "button";
     kiSaveBtnEl.title = T("Schlüssel sicher merken");
     kiSaveBtnEl.style.display = "none";
-    kiUnlockBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", "🔓 Tresor entsperren");
+    kiUnlockBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", T("🔓 Tresor entsperren"));
     kiUnlockBtnEl.type = "button";
     kiUnlockBtnEl.title = T("Gemerkten Schlüssel holen");
     kiUnlockBtnEl.style.display = "none";
@@ -2026,7 +2114,7 @@
     clearMailBtn.addEventListener("click", function () { clearMail(); });
     relOnlyBtn.addEventListener("click", function () {
       relatedOnly = !relatedOnly;
-      relOnlyBtn.textContent = "🧬 nur verwandte: " + (relatedOnly ? "an" : "aus");
+      relOnlyBtn.textContent = T("🧬 nur verwandte: ") + (relatedOnly ? T("an") : T("aus"));
       renderCards(lastCards); // ohne Neu-Lesen umsortieren/filtern
     });
     answerBtn.addEventListener("click", function () { onToggleAnswering(); });
@@ -2156,7 +2244,7 @@
         appendOut("✗ " + (res.reason || "Verbinden fehlgeschlagen.") +
           (cfg.createIdentity ? T("\n(Bei Netz-/Modell-Fehler: Verbindung prüfen und nochmal.)") : ""));
       }
-    }).catch(function (e) { stopModelProgress(); setOut("✗ Verbinden fehlgeschlagen: " + (e && e.message ? e.message : e)); });
+    }).catch(function (e) { stopModelProgress(); setOut(T("✗ Verbinden fehlgeschlagen: ") + (e && e.message ? e.message : e)); });
   }
 
   function onAnnounce() {
@@ -2170,7 +2258,7 @@
       refreshIdentityBox();   // Stufe 0b
       if (res.ok) appendOut(T("✓ Du bist im Raum (nodeId ") + res.nodeId + T("). Fenster darf zu — nur die App-Seite offen lassen."));
       else appendOut("✗ " + (res.reason || "Anmelden fehlgeschlagen."));
-    }).catch(function (e) { stopModelProgress(); setOut("✗ Anmelden fehlgeschlagen: " + (e && e.message ? e.message : e)); });
+    }).catch(function (e) { stopModelProgress(); setOut(T("✗ Anmelden fehlgeschlagen: ") + (e && e.message ? e.message : e)); });
   }
 
   function onDiscover() {
@@ -2180,7 +2268,7 @@
     startModelProgress(T("👥 Lese den gemeinsamen Raum …"));
     r.discover().then(function (res) {
       stopModelProgress();
-      if (!res.ok) { setOut(T("✗ Raum-Lesen fehlgeschlagen: ") + (res.reason || "(unbekannt)")); return; }
+      if (!res.ok) { setOut(T("✗ Raum-Lesen fehlgeschlagen: ") + (res.reason || T("(unbekannt)"))); return; }
       renderCards(res.cards);
     }).catch(function (e) { stopModelProgress(); setOut(T("✗ Raum-Lesen fehlgeschlagen: ") + (e && e.message ? e.message : e)); });
   }
@@ -2218,7 +2306,7 @@
     qvP.then(function (qv) {
       return r.discover().then(function (res) {
         stopModelProgress();
-        if (!res || !res.ok) { setOut(T("✗ Raum-Lesen fehlgeschlagen: ") + ((res && res.reason) || "(unbekannt)")); return; }
+        if (!res || !res.ok) { setOut(T("✗ Raum-Lesen fehlgeschlagen: ") + ((res && res.reason) || T("(unbekannt)"))); return; }
         var cards = Array.isArray(res.cards) ? res.cards : [];
         if (cards.length === 0) { renderCards(cards); return; }   // „niemand im Raum"-Notiz
         var ranked = canRank ? r.rankCardsByQuery(cards, qv) : cards;
@@ -2268,11 +2356,11 @@
       var rowEl = el("div", "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;padding:6px 8px;" +
         "border:1px solid var(--line,#2a3340);border-radius:8px");
       var info = el("span", "flex:1;min-width:150px");
-      info.appendChild(el("b", null, c.nodeName || "Knoten"));
+      info.appendChild(el("b", null, c.nodeName || T("Knoten")));
       info.appendChild(el("br"));
       info.appendChild(el("span", "font:.66rem/1.3 var(--mono,monospace);color:#9aa7b6;word-break:break-all", c.nodeId));
       info.appendChild(el("br"));
-      info.appendChild(el("span", "font-size:.7rem;color:#9aa7b6", "angemeldet " + ageTxt));
+      info.appendChild(el("span", "font-size:.7rem;color:#9aa7b6", T("angemeldet ") + ageTxt));
       // Verwandtschafts-Badge (reine Anzeige; nur wenn Modul 04 einen Score lieferte).
       if (typeof c.relatedness === "number" && isFinite(c.relatedness)) {
         info.appendChild(el("br"));
@@ -2295,10 +2383,10 @@
         info.appendChild(qBadge);
       }
       rowEl.appendChild(info);
-      var b = el("button", bs, "🤝 Andocken"); b.type = "button";
+      var b = el("button", bs, T("🤝 Andocken")); b.type = "button";
       b.addEventListener("click", function () { onHandshake(c); });
       rowEl.appendChild(b);
-      var qb = el("button", bs + ";margin-left:6px;opacity:.72;font-size:.72rem", "❓ gezielt fragen"); qb.type = "button";
+      var qb = el("button", bs + ";margin-left:6px;opacity:.72;font-size:.72rem", T("❓ gezielt fragen")); qb.type = "button";
       qb.title = T("Gezielt diesen Knoten fragen");
       qb.addEventListener("click", function () { onAsk(c); });
       rowEl.appendChild(qb);
@@ -2425,7 +2513,7 @@
     var show = kiOn ? "" : "none";
     if (kiProvSelEl) kiProvSelEl.style.display = show;
     if (kiKeyEl) kiKeyEl.style.display = show;
-    if (kiToggleEl) kiToggleEl.textContent = "🧠 KI-Richter: " + (kiOn ? "an" : "aus");
+    if (kiToggleEl) kiToggleEl.textContent = T("🧠 KI-Richter: ") + (kiOn ? T("an") : T("aus"));
     updateKiKeyLink();
     updateKiVaultButtons();
     renderAnswer();   // vorhandene Antwort sofort neu beurteilen/zurückstufen
@@ -2459,7 +2547,7 @@
     // KI-Richter-Pfad (opt-in, BYOK). Erst Cosinus zeigen + „urteilt …", dann
     // ersetzen, wenn das Urteil da ist. Race-Schutz über answerSeq.
     var seq = ++answerSeq;
-    outEl.textContent = cosineLines() + "\n\n🧠 KI-Richter beurteilt nach Bedeutung …";
+    outEl.textContent = cosineLines() + T("\n\n🧠 KI-Richter beurteilt nach Bedeutung …");
     // Cross-Knoten-Antworten tragen nur TITEL (keine Inhalte, Datenschutz) — der
     // Richter (Modul 04 hybridMatch) verlangt aber pro Kandidat einen nicht-leeren
     // `text`. Also den Titel als Bedeutungs-Text durchreichen; leere überspringen.
@@ -2478,7 +2566,7 @@
         if (seq !== answerSeq) return;            // veraltet — neue Frage/Antwort
         if (!v || v.available === false || !Array.isArray(v.verdicts)) {
           var why = (v && v.reason) ? " (" + v.reason + ")" : "";
-          outEl.textContent = cosineLines() + T("\n\n🧠 KI-Richter: kein Urteil") + why + " — rohe Reihenfolge bleibt.";
+          outEl.textContent = cosineLines() + T("\n\n🧠 KI-Richter: kein Urteil") + why + T(" — rohe Reihenfolge bleibt.");
           return;
         }
         // Nach KI-Score absteigend sortieren (Bedeutungs-Urteil), stabil.
@@ -2497,7 +2585,7 @@
       })
       .catch(function (e) {
         if (seq !== answerSeq) return;
-        outEl.textContent = cosineLines() + "\n\n🧠 KI-Richter-Fehler: " + (e && e.message ? e.message : e) + " — rohe Reihenfolge bleibt.";
+        outEl.textContent = cosineLines() + T("\n\n🧠 KI-Richter-Fehler: ") + (e && e.message ? e.message : e) + T(" — rohe Reihenfolge bleibt.");
       });
   }
 
@@ -2641,7 +2729,7 @@
       if (rest[i] && (rest[i].nodeId || "") !== (card.nodeId || "")) { next = rest[i]; tail = rest.slice(i + 1); break; }
     }
     if (next) {
-      outEl.textContent = "… " + (card.nodeName || "Knoten") + T(" hat nicht geantwortet — ich frage den nächstbesten passenden Knoten (") +
+      outEl.textContent = "… " + (card.nodeName || T("Knoten")) + T(" hat nicht geantwortet — ich frage den nächstbesten passenden Knoten (") +
         (next.nodeName || "Knoten") + ") …";
       askWithRetry(r, next, text, true, tail);
       return;
@@ -2655,7 +2743,7 @@
   }
 
   function askWithRetry(r, card, text, allowRetry, fallbackCards) {
-    if (outEl) outEl.textContent = T("❓ Frage <") + text + "> an " + (card.nodeName || "Knoten") + T(" — warte auf Antwort …");
+    if (outEl) outEl.textContent = T("❓ Frage <") + text + T("> an ") + (card.nodeName || T("Knoten")) + T(" — warte auf Antwort …");
     r.askNode(card, text).then(function (res) {
       if (!outEl) return;
       if (res && res.ok) { renderAskSuccess(card, res, text); return; }
@@ -2679,7 +2767,7 @@
         return;
       }
       giveUpOrFallback(r, res, card, text, fallbackCards);   // A11: nächstbester Knoten, sonst A12-Briefkasten
-    }).catch(function (e) { if (outEl) outEl.textContent = "✗ Fehler: " + (e && e.message ? e.message : e); });
+    }).catch(function (e) { if (outEl) outEl.textContent = T("✗ Fehler: ") + (e && e.message ? e.message : e); });
   }
 
   // Bau 23.B — Antwortrecht bewusst an/aus (Default aus, nicht persistiert).
@@ -2688,8 +2776,8 @@
     if (!r || typeof r.enableAnswering !== "function") { setOut(T("Modul 23 mit Bau 23.B (enableAnswering) nicht geladen.")); return; }
     if (r._meta && r._meta.answering) {
       try { r.disableAnswering(); } catch (_e) {}
-      if (answerBtn) answerBtn.textContent = "💬 Antworten: aus";
-      if (outEl) outEl.textContent = "💬 Antworten ausgeschaltet.";
+      if (answerBtn) answerBtn.textContent = T("💬 Antworten: aus");
+      if (outEl) outEl.textContent = T("💬 Antworten ausgeschaltet.");
       return;
     }
     r.enableAnswering().then(function (res) {
@@ -2699,13 +2787,13 @@
       } else {
         if (outEl) outEl.textContent = "✗ " + (res && res.reason ? res.reason : T("Antworten konnte nicht eingeschaltet werden."));
       }
-    }).catch(function (e) { if (outEl) outEl.textContent = "✗ Fehler: " + (e && e.message ? e.message : e); });
+    }).catch(function (e) { if (outEl) outEl.textContent = T("✗ Fehler: ") + (e && e.message ? e.message : e); });
   }
 
   function onHandshake(card) {
     var r = rdv();
     if (!r) { setOut(T("Modul 23 (SbkimRendezvous) nicht geladen.")); return; }
-    if (outEl) outEl.textContent = T("🤝 Handshake an ") + (card.nodeName || "Knoten") + " (lebende ID, max ~12 s) …";
+    if (outEl) outEl.textContent = T("🤝 Handshake an ") + (card.nodeName || T("Knoten")) + T(" (lebende ID, max ~12 s) …");
     r.handshakeCard(card).then(function (res) {
       var oc = res && res.outcome;
       function line(s) { if (outEl) outEl.textContent += "\n" + s; }
@@ -2721,7 +2809,7 @@
       } else {
         line("✗ Fehler: " + (res && res.reason ? res.reason : JSON.stringify(res)));
       }
-    }).catch(function (e) { if (outEl) outEl.textContent += "\n✗ Fehler: " + (e && e.message ? e.message : e); });
+    }).catch(function (e) { if (outEl) outEl.textContent += T("\n✗ Fehler: ") + (e && e.message ? e.message : e); });
   }
 
   function show() {

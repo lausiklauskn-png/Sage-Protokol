@@ -44,6 +44,29 @@ PY
   fi
 }
 
+# saboten_probe <beschreibung> <alt> <neu> — greift die PROBE an, nicht das
+# Modul. Gebraucht fuer die Gegenrichtung eines Waechters: schlaegt er auch
+# dann noch an, wenn er gar nicht mehr unterscheiden kann? Ein Waechter, der
+# ueberschiesst, verbietet das Richtige — genau das ist am 2026-09-14 mit dem
+# CSS-Filter passiert, und ohne diesen Fall waere es niemandem aufgefallen.
+saboten_probe() {
+  local was="$1" alt="$2" neu="$3"
+  frisch
+  if ! python3 - "$KOPIE/tests/smoke_bau23_sprache.mjs" "$alt" "$neu" <<'PY'
+import sys, io
+d, a, n = sys.argv[1], sys.argv[2], sys.argv[3]
+s = io.open(d, encoding="utf-8").read()
+if a not in s: raise SystemExit(3)
+io.open(d, "w", encoding="utf-8").write(s.replace(a, n, 1))
+PY
+  then echo "  ✗ $was → ANKER NICHT GEFUNDEN (misst nichts)"; tot=$((tot+1)); return; fi
+  if (cd "$KOPIE" && node tests/smoke_bau23_sprache.mjs > /tmp/gp23.txt 2>&1); then
+    echo "  ✗ $was → gruen geblieben, NICHT GEFANGEN"; durch=$((durch+1))
+  else
+    echo "  ✓ $was → rot: $(grep -m1 '✗' /tmp/gp23.txt | sed 's/^ *//' | cut -c1-88)"; gefangen=$((gefangen+1))
+  fi
+}
+
 echo "═══ Ausgangslage ═══"
 frisch
 if (cd "$KOPIE" && node tests/smoke_bau23_sprache.mjs > /tmp/gp23_0.txt 2>&1); then
@@ -87,6 +110,28 @@ saboten "es wird IMMER uebersetzt, auch ohne Einstellung" \
   '    return "de";
   }' '    return "en";
   }'
+
+echo; echo "═══ C · geht jeder Anzeigetext durch T()? ═══"
+# ⚠ DIESER BLOCK MISST DIE BLINDSTELLE, die die Waechter A hatten. Ein Text,
+# der GAR NICHT durch T() geht, kommt weder im Woerterbuch noch unter den
+# T()-Aufrufen vor — fuer A ist er unsichtbar. Genau so blieben am 2026-09-14
+# 52 Stellen deutsch, waehrend A gruen meldete.
+#
+# ⚠ ES WIRD HINZUGEFUEGT, NICHT GEAENDERT — und das ist beim ersten Lauf
+# wirklich schiefgegangen. Nimmt man einer Zeile ihr T() weg, verliert damit
+# zugleich ihr Schluessel seine Fundstelle: „jeder Eintrag hat eine Fundstelle
+# im Code" faellt zuerst, und der gemeinte Waechter bleibt ungemessen. Der
+# Fall galt als gefangen und bewies nichts. Derselbe Fehler wie in A2.
+saboten "ein Anzeigetext geht wieder an T() vorbei" \
+  'del.title = T("Eintrag entfernen");' \
+  'del.title = T("Eintrag entfernen"); del.title = "Ein Anzeigetext ohne Haken";'
+
+# Die Gegenrichtung: der Waechter darf nicht bei JEDEM Doppelpunkt anschlagen.
+# Sein erster Filter hielt „🧠 KI-Richter: " fuer CSS und verbot damit das
+# Richtige. Faellt der CSS-Filter ganz weg, meldet er CSS-Zeilen als Fehler.
+saboten_probe "der CSS-Filter faellt weg — der Waechter verbietet das Richtige" \
+  '  const istCss = (s) => /^[a-z-]{3,}:$/.test(s) || /;/.test(s)' \
+  '  const istCss = (s) => false && /;/.test(s)'
 
 frisch
 echo

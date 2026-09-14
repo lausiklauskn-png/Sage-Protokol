@@ -157,5 +157,72 @@ function texte(el, aus = []) {
   ok(!/undefined|\[object/.test(t), "kein „undefined“ im Fenster — fehlende Einträge fallen auf Deutsch zurück", t.slice(0, 80));
 }
 
+/* ── 3. Geht JEDER Anzeigetext ueberhaupt durch T()? ──────────────────────
+ *
+ * ⚠ DIESER WAECHTER SCHLIESST EINE BLINDSTELLE DER BEIDEN OBEN, und sie hat
+ * am 2026-09-14 wirklich zugeschnappt. Abschnitt 1 misst Woerterbuch gegen
+ * T()-Aufrufe — in beide Richtungen, tadellos. Aber ein Text, der GAR NICHT
+ * durch T() geht, kommt in keiner der beiden Mengen vor: er ist fuer diesen
+ * Waechter unsichtbar und bleibt auf Englisch trotzdem deutsch stehen.
+ *
+ * Gefunden hat es nicht diese Datei, sondern ein Blick ins echte Fenster:
+ * unter lauter englischen Zeilen stand „Speicher dauerhaft: unbekannt“.
+ * Nachgemessen waren es 52 Stellen — Knoepfe („Abbrechen“, „🤝 Andocken“,
+ * „📥 Einspielen“), Kurzinfos („ja“/„nein“/„unbekannt“, „an“/„aus“) und
+ * Fehlerzeilen („✗ Fehler: “).
+ *
+ * Gemessen werden ANZEIGE-STELLEN, nicht Zeichenketten schlechthin: eine
+ * Suche nach „jedem Literal mit einem Buchstaben“ fand 627 Treffer, fast
+ * alle CSS, Tag-Namen und Ereignis-Namen. Ein Waechter, den man nicht mehr
+ * los wird, ist keiner.
+ *
+ * ⚠ UND DER ERSTE FILTER VERBOT DAS RICHTIGE. Er hielt jedes Literal mit
+ * einem Doppelpunkt fuer CSS — und warf damit „🧠 KI-Richter: “ und
+ * „✗ Fehler: “ heraus, also ausgerechnet echte Anzeigetexte. CSS erkennt man
+ * an „;“ oder an „eigenschaft: wert“, nicht am blossen Doppelpunkt.
+ *
+ * ⚠ BENANNTE GRENZE: er sieht die klaren Muster (Zuweisung an textContent /
+ * title / placeholder / alt und das dritte Argument von el()). Ein Text, der
+ * ueber einen selbstgebauten Umweg in den DOM kommt, faellt nicht auf. Er ist
+ * eine zweite Verteidigungslinie, keine Vollstaendigkeits-Garantie.
+ */
+{
+  const TECHNISCH = new Set(["none","block","flex","inline","inline-block","button","div","span",
+    "input","a","p","h1","h2","h3","label","select","option","textarea","img","br","hr","ul","li",
+    "strong","pre","b","i","em","small","code",
+    "click","change","submit","keydown","pointerdown","text","password","file","checkbox",
+    "new-password","nearest","center","start","end","function","string","object","number","boolean",
+    "use strict","application/json","true","false","null","undefined","auto","hidden","visible",
+    "pre-wrap","nowrap","absolute","relative","fixed","static","bl","default","knoten","heute"]);
+  const istCss = (s) => /^[a-z-]{3,}:$/.test(s) || /;/.test(s) || /^[a-z-]{3,}\s*:\s*\S/.test(s)
+    || /^#[0-9a-f]{3,8}$/i.test(s) || /^(rgba?|var)\(/.test(s) || /^\d/.test(s) || /^[.#][a-z-]+$/i.test(s);
+
+  const wbVon = src.slice(0, a).split("\n").length;
+  const wbBis = src.slice(0, e).split("\n").length;
+  const zeilen = src.split("\n");
+  let imBlock = false;
+  const offen = [];
+  zeilen.forEach((z, i) => {
+    const nr = i + 1;
+    if (nr > wbVon && nr <= wbBis) return;          // das Woerterbuch selbst ist deutsch, zu Recht
+    let s = z;
+    if (imBlock) { const k = s.indexOf("*/"); if (k < 0) return; s = s.slice(k + 2); imBlock = false; }
+    const o = s.indexOf("/*");
+    if (o >= 0) { const k = s.indexOf("*/", o); if (k < 0) { s = s.slice(0, o); imBlock = true; } else s = s.slice(0, o) + s.slice(k + 2); }
+    if (/^\s*\*/.test(z)) return;
+    const kom = s.search(/(^|[^:"'\\])\/\//); if (kom >= 0) s = s.slice(0, kom + 1);
+    if (!/(textContent|innerText|\.title\s*=|\.placeholder\s*=|\.alt\s*=|\bel\(|setOut\()/.test(s)) return;
+    for (const m of s.matchAll(/"((?:[^"\\]|\\.)*)"/g)) {
+      const w = m[1];
+      if (!/\p{L}/u.test(w)) continue;
+      if (/^(\\n)+$/.test(w)) continue;
+      if (TECHNISCH.has(w) || istCss(w)) continue;
+      if (s.slice(Math.max(0, m.index - 2), m.index).endsWith("T(")) continue;
+      offen.push(nr + ": " + w);
+    }
+  });
+  ok(offen.length === 0, `jeder Anzeigetext geht durch T() (${offen.length} nicht)`, offen.slice(0, 2).join(" | "));
+}
+
 console.log(`\nErgebnis: ${pass} bestanden, ${fail} fehlgeschlagen`);
 process.exit(fail ? 1 : 0);
