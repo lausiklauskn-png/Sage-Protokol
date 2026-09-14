@@ -138,6 +138,27 @@ Voll-Kiste, `PFLICHT_MODULE.md`, `MYCEL-GESCHENKBOX.md` und beide
 `sbkim-connect.js` sagen nicht mehr „gemischtsprachig" — überall mit dem alten
 Satz daneben, weil er beschreibt, was ein Forker in einer älteren Kopie findet.
 
+### ⚠ NEBENBEFUND: zwei Panels in `manual_check.html` liefen seit ELF TAGEN NICHT
+
+Gefunden beim Abarbeiten von CLAUDE.md § Pflicht am Sitzungsende Punkt 3 — die
+Pflicht hat gearbeitet, wofür sie da ist.
+
+In zwei Zeichenketten stand hinten ein **gerades** Anführungszeichen statt des
+schließenden deutschen: `"Jetzt „👥 discover" drücken."`. Das gerade `"` beendet
+die JS-Zeichenkette, und der Rest des Blocks ist Syntaxfehler. Betroffen war ein
+ganzer `<script>`-Block (Panel 23); im Browser stand das Panel **tot** da. Seit
+Commit `6015af1` vom **2026-09-03**.
+
+**Dasselbe Muster wie `\n` statt einer echten Zeile und wie `$` mit m-Flag:** ein
+Zeichen, das der Schreibende als Text meint und der Parser als Syntax liest. Man
+sieht es nicht — man misst es.
+
+Dagegen steht jetzt `tests/smoke_manual_check_syntax.mjs` (`node --check` über
+jeden Inline-Block, mit Zeilennummer in der roten Zeile). Er trägt seine
+Gegenrichtung selbst und nagelt das Zeichen fest. **Benannte Grenze:** er prüft
+die Syntax, nicht ob die Panels das Richtige tun. Voller Lauf danach: **103
+Proben grün.**
+
 ### 🔴 NEU AUFGEMACHT, Entscheidung von Klaus
 
 **Das Andock-Werkzeug IM Siegel ist app-eigener Klebstoff und vom Rollout nicht
