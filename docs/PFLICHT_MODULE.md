@@ -50,18 +50,28 @@ unlesbar war. Es steht jetzt in Liste A; hier bleibt der Rest:
 **Zusammen: 13 Dateien.** Weniger ist kein Knoten, sondern eine App mit
 Modulen darin.
 
-> **⚠ Wer andockt, entscheidet nebenbei über die SPRACHE des Fensters**
-> (seit 2026-09-14). **23-UI** spricht Deutsch und Englisch; **16** und **17**
-> nur Deutsch. Ein englischsprachiger Knoten ist damit heute
-> **gemischtsprachig** — englisches Verbinden-Fenster, deutsche Lampen und
-> deutsches Siegel.
+> **⚠ Wer andockt, entscheidet nebenbei über die SPRACHE** (seit 2026-09-14).
+> **23-UI** (Verbinden-Fenster, 237 Texte), **16** (Siegel, 55) und **17**
+> (Lampen, 28) sprechen Deutsch und Englisch. Ein Voll-Knoten ist damit
+> durchgehend zweisprachig.
 >
 > Ausgelöst wird Englisch durch `init({lang:"en"})` **oder** durch `<html lang>`;
 > ohne beides bleibt alles deutsch, und das ist die Rückfalllinie, kein Fehler.
+> ⚠ **`lang` geht an DREI Aufrufe** — 23-UI, 16 und 17 starten getrennt, und
+> keiner reicht ihn an die anderen weiter. Über `<html lang>` entfällt das:
+> alle drei lesen das Attribut selbst.
+>
 > **Gemessen am 2026-09-14 an allen 18 Trägern: 9 ziehen `<html lang>` beim
 > Sprachwechsel mit, 9 nicht.** Wer eine App andockt und sie auf Englisch
 > anbietet, sieht dort nach — sonst heißt es „kann Englisch" und ändert für den
-> Nutzer nichts. Vertrag: [`INTERFACES.md`](INTERFACES.md) § Modul 23 UI.
+> Nutzer nichts. Verträge: [`INTERFACES.md`](INTERFACES.md) § Modul 23 UI ·
+> § Modul 16 SPRACHE · § Modul 17 SPRACHE.
+>
+> > **Bis zum 2026-09-14 stand hier, ein englischsprachiger Knoten sei
+> > „gemischtsprachig"** — englisches Fenster, deutsche Lampen, deutsches
+> > Siegel. Das galt fünf Tage und ist mit dem Sprach-Haken für 16/17 erledigt.
+> > Wer eine ältere Kopie der Module trägt, findet den alten Zustand aber
+> > weiterhin vor.
 
 > **05b ist am 2026-08-16 in Liste A gewandert** — Klaus' Entscheidung, am Tag
 > des Befundes. Die Sorge davor war, das würde in den Repos, denen 05b fehlt,

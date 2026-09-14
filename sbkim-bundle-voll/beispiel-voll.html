@@ -68,6 +68,13 @@
     } catch (e) { console.warn("SbkimConnect.init:", e); }
 
     // (b) Status-Lampen ZUERST — legt die Proxy-Slots für Membran/Siegel an.
+    //
+    // SPRACHE: Lampen und Siegel lesen <html lang> selbst (oben steht hier
+    // lang="de"). Wer die Sprache umschaltet, OHNE das Attribut mitzuziehen,
+    // gibt sie ausdrücklich mit: SbkimWidget.init({ lang: "en" }) und
+    // SbkimSiegel.init({ ribbonText: "…", lang: "en" }). SbkimConnect.init()
+    // oben reicht lang NUR an das Verbinden-Fenster durch — drei Module, drei
+    // Aufrufe. Ohne Angabe ändert sich nichts.
     if (window.SbkimWidget)   { try { await SbkimWidget.init(); }   catch (e) { console.warn("SbkimWidget.init:", e); } }
     // (c) dann Schutz-Hülle + Siegel.
     if (window.SbkimMembrane) { try { await SbkimMembrane.init(); } catch (e) { console.warn("SbkimMembrane.init:", e); } }

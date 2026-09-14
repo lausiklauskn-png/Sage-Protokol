@@ -3178,6 +3178,10 @@ Bietet (öffentlich):
       // trugen statisch "MEIN-TRESOR"). Sage setzt explizit "SAGE OBSERVATORIUM".
       ribbonText?: string,
 
+      // Sprache des Siegel-Modals + der Badge-Beschriftung. Default: die
+      // Rangfolge unten (cfg.lang → <html lang> → "de"). Siehe § SPRACHE.
+      lang?: "de" | "en",
+
       // Default false. true → optionaler "Fremden Knoten andocken"-Knopf
       // im Modal (KI-unabhängiger Handshake): öffnet den Modul-18-Wizard
       // SbkimToolPwa.openAndockTab() (Repo-URL → Spore holen →
@@ -3189,6 +3193,56 @@ Bietet (öffentlich):
       // [data-siegel-andock-tool] — Default-Render trägt es nicht.
       andockTool?: boolean,
     }
+
+  SPRACHE (2026-09-14, nach dem Modul-23-UI-Rollout). Modul 16 spricht Deutsch
+        und Englisch. Das Verfahren ist SCHLÜSSELLOS und byte-gleich mit dem von
+        Modul 23 UI — der deutsche Satz IST der Schlüssel, `TEXTE.en` trägt die
+        Übersetzungen, `T(de)` fällt bei fehlendem Eintrag auf Deutsch zurück.
+        Rangfolge: `cfg.lang`, sonst `<html lang>` (erste zwei Zeichen), sonst
+        "de". Jeder andere Wert (ru/zh/fr/…) fällt fail-soft auf Deutsch zurück.
+        `_meta` zusätzlich: `lang` (die gerade geltende) + `langKeys`.
+
+        DIE VERBINDLICHE ZUSICHERUNG: OHNE EINSTELLUNG ÄNDERT SICH NICHTS. Wer
+        weder `lang` übergibt noch `<html lang>` setzt, bekommt Deutsch wie
+        bisher. Ein Rollout in eine App ist damit rückwirkungsfrei — dieselbe
+        Zusicherung, die den 23er-Rollout in 18 Apps folgenlos gemacht hat.
+
+        WAS ÜBERSETZT WIRD, und was ausdrücklich NICHT: übersetzt werden alle
+        Anzeigetexte des Modals (Titel, „Pflicht-Module", Aspekte-Kopf und
+        -Vorspann, Bronze-Hinweis, Bezeugt-Zeile, Status-Etiketten, Aussteller-
+        Klärung, Andock-Block) sowie die aria-Etiketten des Badges. NICHT
+        übersetzt werden: die `ZERTIFIKAT_ASPEKTE`-DATEN selbst (sie bleiben
+        deutsch im Code — übersetzt wird erst an der ANZEIGE-Stelle, über
+        `T(a.aspect)` / `T(a.description)`; die Liste ist netzweiter
+        Protokoll-Bestand und ihr deutscher Wortlaut die Urkunde), der
+        `ribbonText` im Wappen (den graviert der Host, § ribbonText) und die
+        `since`-Daten.
+
+        ⚠ DER PREIS DES SCHLÜSSELLOSEN VERFAHRENS ist derselbe wie bei 23: wer
+        einen deutschen Satz ändert, verliert STILL seine Übersetzung. Dagegen
+        steht ein Wächter, der in BEIDE Richtungen misst (jeder Schlüssel hat
+        eine Fundstelle im Code, jedes `T()` eine englische Fassung) —
+        `tests/smoke_bau1617_sprache.mjs`. Ein ERGÄNZTER Aspekt-Eintrag ohne
+        englische Fassung fällt dort ebenfalls auf: wer einen
+        `ZERTIFIKAT_ASPEKTE`-Eintrag nachträgt (CLAUDE.md § Sicherheits-Module
+        pflegen Aspekte), trägt seine Übersetzung mit ein.
+
+        ⚠ `T()` liest die Sprache bei JEDEM Aufruf, nicht einmal beim Laden. Was
+        schon im DOM steht, wechselt also nicht mit; das Modal rendert seinen
+        Inhalt bei jedem Öffnen neu (`renderModalContents`), ein Sprachwechsel
+        wirkt dort also ab dem nächsten Öffnen. Die aria-Etiketten am Badge
+        stehen bis zum nächsten Stufenwechsel. Benannte Grenze, kein Fehler.
+
+        ⚠ KEIN ZERTIFIKAT_ASPEKTE-EINTRAG für diese Änderung, und der Grund
+        steht hier, weil Modul 16 ein SCHUTZ-Modul ist und die Konvention
+        (CLAUDE.md § Sicherheits-Module pflegen Aspekte) sonst greift: eine
+        Übersetzung ist Render-Schicht. Sie ändert nichts an der Selbst-Prüfung,
+        an der Anti-Greenwashing-Klausel, an der Bronze/Gold-Stufung. Ein
+        Aspekt-Eintrag „spricht jetzt Englisch" behauptete einen
+        Sicherheits-Fortschritt, den es nicht gibt — und verwässerte damit
+        genau die Liste, die Sicherheits-Updates sichtbar machen soll. Dieselbe
+        Begründung wie beim 23er-Rollout, nur diesmal an dem Modul, an dem die
+        Frage wirklich gestellt werden musste.
 
   ExplanationSnapshot (Karte 16 § Schnittstelle, verbindlich):
     {
@@ -3669,7 +3723,35 @@ Bietet (öffentlich):
       zIndex?:         number,     // Default 9990 (unter Modal-Layer 9999,
                                    // weit unter Eruda 9999999).
       theme?:          "auto" | "dark" | "light",  // Default "auto".
+
+      // Sprache der Lampen-Etiketten, Tooltips und der zwei Widget-Modals
+      // (LEBT / VERKEHR). Default: die Rangfolge unten. Siehe § SPRACHE.
+      lang?:           "de" | "en",
     }
+
+  SPRACHE (2026-09-14, nach dem Modul-23-UI-Rollout). Modul 17 spricht Deutsch
+    und Englisch, nach demselben schlüssellosen Verfahren wie Modul 23 UI und
+    Modul 16: der deutsche Satz IST der Schlüssel, `TEXTE.en` trägt die
+    Übersetzungen, `T(de)` fällt bei fehlendem Eintrag auf Deutsch zurück.
+    Rangfolge: `cfg.lang`, sonst `<html lang>` (erste zwei Zeichen), sonst "de".
+    Jeder andere Wert fällt fail-soft auf Deutsch zurück. `_meta` zusätzlich:
+    `lang` + `langKeys`.
+
+    DIE VERBINDLICHE ZUSICHERUNG: OHNE EINSTELLUNG ÄNDERT SICH NICHTS.
+
+    Übersetzt werden die vier Lampen-Etiketten (lebt/verkehr/fremd/siegel), ihre
+    vier Tooltips, die aria-Etiketten von Widget/Minimieren/Schließen und die
+    beiden Modals samt Tabellen-Köpfen und Zeilen-Beschriftungen.
+
+    ⚠ DIE LAMPEN-ETIKETTEN SIND DIE SICHTBARSTE STELLE DES GANZEN NETZES — sie
+    stehen auf jeder Seite dauerhaft da, auch wenn niemand ein Fenster öffnet.
+    Genau deshalb fiel Klaus am 2026-09-14 „SIEGEL" zwischen englischen Zeilen
+    auf, bevor irgendein Modal geöffnet war.
+
+    ⚠ `T()` liest die Sprache bei JEDEM Aufruf. Die Pille wird beim `init()`
+    EINMAL gebaut; ein Sprachwechsel danach erreicht die Etiketten also erst
+    beim nächsten Laden. Die beiden Modals rendern ihren Inhalt bei jedem Öffnen
+    neu und folgen sofort. Benannte Grenze, kein Fehler.
 
   PositionSnapshot (Karte 17 § Schnittstelle):
     {
@@ -4881,8 +4963,15 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
         ziehen 9 der 18 Träger <html lang> beim Sprachwechsel mit, 9 nicht. Wo
         nicht, bleibt das Fenster deutsch — das ist die Rückfalllinie, kein Fehler.
 
-        NOCH DEUTSCH: 16_siegel.js (47 Texte) und 17_floating_widget.js (19).
-        Ein Voll-Knoten ist damit heute gemischtsprachig. createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
+        SEIT 2026-09-14 SPRECHEN AUCH 16 (Siegel, 55 Texte) und 17 (Lampen,
+        28) Englisch, nach demselben schlüssellosen Verfahren — § Modul 16
+        SPRACHE und § Modul 17 SPRACHE. Ein Voll-Knoten ist damit durchgehend
+        zweisprachig. ⚠ `lang` muss an ALLE DREI init() gehen; keiner reicht
+        ihn an die anderen weiter. Über `<html lang>` entfällt das.
+        (Bis dahin stand hier „NOCH DEUTSCH: 16_siegel.js (47 Texte) und
+        17_floating_widget.js (19). Ein Voll-Knoten ist damit heute
+        gemischtsprachig." — fünf Tage lang richtig.)
+        createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
         Pro Karte zeigt das Panel ein Verwandtschafts-Badge („🧬 verwandt 0.72"
         vs „· verbunden …") + einen „🧬 nur verwandte"-Schalter (Default aus) —
         REINE ANZEIGE über discover()'s relatedness/isRelated; gatet NICHTS, der
