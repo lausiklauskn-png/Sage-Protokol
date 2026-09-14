@@ -206,8 +206,48 @@ saboten "src/modules/16_siegel.js" \
 # er koennte gegen eine fest verdrahtete Liste pruefen und saehe gleich aus.
 saboten "docs/INTERFACES.md" \
   "die Tafel verliert einen Wappen-Text — der Abgleich muss ihn vermissen" \
-  'OFFIZIELLE BESTÄTIGUNG   ← Anzeigetext, beschreibend' \
-  'OFFIZIELLE BESTAETIGUNG  ← hier stand er einmal'
+  'OFFIZIELLE BESTÄTIGUNG → OFFICIAL ATTESTATION' \
+  'OFFIZIELLE BESTAETIGUNG -> hier stand er einmal'
+
+# ══ Seit das Wappen mitspricht (Klaus 2026-09-14) ═══════════════════════════
+# Ein Eintrag OHNE englische Fassung bleibt auf Englisch STILL deutsch stehen:
+# T() gibt ihn unveraendert zurueck, die Ersetzung entfaellt, nichts faellt auf.
+# ⚠ BEIDE FOLGENDEN FAELLE MUSSTEN GESCHAERFT WERDEN. Die erste Fassung
+# benannte den Woerterbuch-Schluessel um — damit verlor er zugleich seine
+# Fundstelle im Code, und ABSCHNITT 1 feuerte zuerst („1 tot"). Gefangen war
+# der Fall, gemessen hatte er den Nachbarn. Dieselbe Falle wie oben im Kopf
+# beschrieben, beim ersten Lauf prompt zugeschnappt.
+#
+# Geschaerft ueber "SBKIM": es steht wirklich im Wappen und hat mit Absicht
+# KEINEN Woerterbuch-Eintrag — also faellt genau der gemeinte Waechter.
+saboten "src/modules/16_siegel.js" \
+  "ein WAPPEN_TEXTE-Eintrag ohne englische Fassung (der Eigenname)" \
+  'var WAPPEN_TEXTE = ["OFFIZIELLE BESTÄTIGUNG", "SIEGEL"];' \
+  'var WAPPEN_TEXTE = ["OFFIZIELLE BESTÄTIGUNG", "SIEGEL", "SBKIM"];'
+
+# Der Waechter von Abschnitt 4 LIEST nur; dieser hier faellt nur, wenn das
+# gerenderte Wappen wirklich gemessen wird (4b).
+saboten "src/modules/16_siegel.js" \
+  "renderWappenSvg() fuehrt die Texte nicht mehr durch T() — auf Englisch bleibt es deutsch" \
+  '      svg = svg.replace(">" + de + "<", ">" + escapeXmlText(uebersetzt) + "<");' \
+  '      svg = svg;'
+
+# Ein Eintrag, der im Wappen gar nicht vorkommt, ist tot — er wuerde nie
+# ersetzt, und niemand saehe es.
+# Und die Gegenrichtung, ebenfalls geschaerft: „Pflicht-Module" HAT eine
+# englische Fassung, steht aber nicht im Wappen. Damit kann nur noch der
+# GENAU-EINMAL-Waechter fallen — ein frei erfundenes Wort haette zuerst den
+# Woerterbuch-Waechter umgeworfen und nichts ueber diesen hier gesagt.
+saboten "src/modules/16_siegel.js" \
+  "ein WAPPEN_TEXTE-Eintrag steht gar nicht im Wappen (ist also tot)" \
+  'var WAPPEN_TEXTE = ["OFFIZIELLE BESTÄTIGUNG", "SIEGEL"];' \
+  'var WAPPEN_TEXTE = ["OFFIZIELLE BESTÄTIGUNG", "SIEGEL", "Pflicht-Module"];'
+
+# ⚠ KEIN FALL zur Abbruch-Bedingung `if (uebersetzt === de) continue;`, und
+# das ist eine BENANNTE GRENZE statt einer Luecke: nimmt man sie weg, laeuft
+# auf Deutsch ein replace(">X<", ">X<") — dasselbe Ergebnis, byte-genau. Der
+# Fall waere IMMER „nicht gefangen", ohne dass der Waechter etwas falsch
+# macht. Ein Fall, der nichts messen kann, sieht aus wie Deckung.
 
 frisch
 echo

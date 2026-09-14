@@ -75,7 +75,7 @@ abgewandelt.
 |---|---|---|
 | `modules/07_apoptose.js` | **sauberer Rückzug — und Siegel-Pflicht** (siehe Kasten unten) |
 | `modules/15_membran.js` | Außenhülle: Fremdzugriff-Detektor | `fbf9f42d8a27` |
-| `modules/16_siegel.js` | SBKIM-Siegel (Bronze→Gold), Aspekte-Liste, DE/EN | `7589f18d59dc` |
+| `modules/16_siegel.js` | SBKIM-Siegel (Bronze→Gold), Aspekte-Liste, DE/EN | `d84fa539e76e` |
 | `modules/siegel-inhalt.js` | Inhalt des Siegel-Modals (Andock-Werkzeug) | (Kanon prüfen) |
 | `modules/17_floating_widget.js` | Status-Lampen LEBT/VERKEHR/FREMD/SIEGEL, DE/EN | `3f757b35cea5` |
 | `modules/19_andock_wizard.js` | Andock-Assistent (Identität/Spore/Backup) | `976c4ba35…` |
