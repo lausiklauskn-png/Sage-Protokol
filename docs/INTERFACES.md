@@ -6974,3 +6974,121 @@ Layout-Frage:
 4. **ohne Platz**: alles wie bisher — und die Blase liegt dann wirklich über
    dem Namen. Ohne diese Gegenrichtung könnte ein Wächter behaupten, es habe
    den Befund nie gegeben.
+
+---
+
+### 11.9 Der Andock-Wizard ist Kanon — die Identität der App ist es nicht (A18, 2026-09-14)
+
+**Verbindlich.** Wer das Andock-Werkzeug im Siegel anfasst, arbeitet nach dieser
+Tafel. Sie zieht die Linie zwischen dem, was in **allen** Knoten gleich ist, und
+dem, was in **jedem** Knoten anders sein muss.
+
+#### Der Befund, der sie nötig gemacht hat
+
+Gemessen am 2026-09-14 über **20 Dateien** (`siegel-inhalt.js` und
+`pruefer-siegel-inhalt.js`, jeweils auf `origin/main`):
+
+| | |
+|---|---|
+| Dateien | **20** · 407–589 Zeilen |
+| verschiedene Fassungen des **Rumpfs** (Kopf samt Konfiguration abgezogen) | **15** |
+| verschiedene Fassungen **ohne Kommentare und ohne ID-Präfix** | **12** |
+| verschiedene Fassungen **nur Code** | **12** |
+| größte Gruppe, die byte-gleich ist | **6** |
+
+Zwölf Fassungen eines Werkzeugs, das eine einzige sein sollte. Jede
+Verbesserung kostete bis heute Handarbeit mal zwanzig — und wurde deshalb
+meistens nicht überall gemacht.
+
+#### Die Trennlinie
+
+| | |
+|---|---|
+| **Kanon** — `src/modules/16b_andock_wizard.js`, Marke `SBKIM — Modul 16b —` | der Wizard-Ablauf, **alle** Anzeigetexte, die Prüfungen |
+| **App-eigen** — `siegel-inhalt.js`, `pruefer-siegel-inhalt.js` | `window.SBKIM_SIEGEL_WIZ` mit `domain` · `endpoint` · `nodeType` · `nodeName` · `domainDescription` · `domainKeywords` · `stammCategories` · `guestCategories` · `backupPrefix` |
+
+⚠ **Die beiden Konfigurations-Dateien bleiben in `NIE_VERTEILEN`.** Sie tragen
+die **Bedeutung** des Knotens; ein Überschreiben gäbe jeder App Sages Vektor —
+der Schaden vom 2026-08-16 in Alis Moderaum, zwanzigfach. Der Kanon-Rumpf liegt
+deshalb in einer **eigenen** Datei und nicht als Block in derselben.
+
+#### Der Vertrag
+
+```js
+window.SBKIM_SIEGEL_WIZ = { domain, endpoint, nodeType, nodeName,
+  domainDescription, domainKeywords, stammCategories, guestCategories,
+  backupPrefix, lang };          // lang ist optional
+```
+
+⚠ **Die Konfiguration wird SPÄT gelesen, nicht beim Laden.** Gemessen am
+2026-09-14: in Sages `index.html` steht `assets/siegel-inhalt.js` in Zeile 4974
+und `sbkim-init.js` in Zeile 4987 — der Klebstoff kommt **danach**. Wer den Wert
+beim Laden in eine Variable fängt, hat in Sage `undefined` gefangen. Gelesen wird
+erst beim Injizieren, und das geschieht, wenn Modul 16 sein Modal hängt.
+
+⚠ **Ohne Konfiguration wird KEIN Knopf gebaut.** Statt des Werkzeugs steht eine
+Zeile da, die den fehlenden Namen nennt. Ein Knopf, hinter dem nichts liegt, ist
+schlimmer als ein fehlender — und einer mit Erklärung ist die schlimmste Sorte.
+
+#### Die Texte
+
+**Schlüssellos: der deutsche Satz IST der Schlüssel.** `TEXTE.<sprache>` trägt
+die Übersetzung, `T(de)` fällt **fail-soft auf Deutsch** zurück. Rangfolge der
+Sprache: `SBKIM_SIEGEL_WIZ.lang` → `<html lang>` → `de`.
+
+⚠ **Tragende Zusicherung: OHNE EINSTELLUNG ÄNDERT SICH NICHTS.** Solange keine
+Übersetzungstabelle vorliegt, gibt `T()` den deutschen Satz zurück, Zeichen für
+Zeichen. Eine Übersetzung, die sich ungefragt einschaltet, wäre ein
+Sprachwechsel, den niemand bestellt hat.
+
+`TEXTE_DE` ist die **Daten-Tafel**: jeder Anzeigetext steht dort genau einmal.
+Drei Wächter halten sie zusammen, und **der dritte ist der wichtigste**:
+
+1. jedes `T("…")`-Argument steht in `TEXTE_DE` — prüft, was da ist
+2. jeder Eintrag aus `TEXTE_DE` wird benutzt — fängt toten Text
+3. **geht JEDER Anzeigetext durch `T()`?** — prüft, was **fehlt**
+
+Die ersten beiden können grün sein, während die Hälfte der Oberfläche an der
+Tabelle vorbeiläuft. Nur der dritte misst das.
+
+#### Was beim Zusammenführen entschieden wurde — und warum
+
+| Abweichung | in wie vielen | Entscheidung |
+|---|---|---|
+| eigenes ID-Präfix (`almwiz-`, `kbdwiz-`, `kswiz-`, `mwpwiz-`, `psbwiz-`, `psfwiz-`, `pbwiz-`) | 7 von 20 | **vereinheitlicht auf `sbwiz-` / `sbkim-si-`** |
+| Baustein 5 (Identitäts-Wechsler) fehlt ganz | 2 (Kimseek, Privat-Brain) | **Kanon hat ihn** |
+| „der Vorschlag der App gewinnt" fehlt | 9 von 20 | **Kanon hat ihn** |
+| `backupPrefix` hart eingetippt statt aus der Konfiguration | 6 von 20 | **aus der Konfiguration** |
+| Wizard-Init-Heilung fehlt | 1 (family-project) | **Kanon hat sie** |
+| Herkunfts-Zeile **unter** statt **über** dem Feld | 19 von 20 | **über** — kim-hub-companys Fassung gewinnt |
+| Satz über die Membran im Schutz-Block | 1 (Privat-Brain) | **bedingt übernommen** |
+
+⚠ **Das eigene ID-Präfix war keine Absicht.** Gemessen: außerhalb der Datei
+selbst zeigt in keinem Repo etwas darauf — mit zwei Ausnahmen, und beide belegen
+die Entscheidung statt sie zu widerlegen. `kim-hub-company/tests/smoke_knoten.mjs`
+nagelt bereits `sbwiz-` fest; `Privat-Brain/tools/e2e-siegel.mjs` nagelt `pbwiz-`
+und wird beim Umstellen nachgezogen. **Der stärkste Beleg ist PWA Toolpoint:**
+dort stehen **zwei** Knoten auf derselben Adresse, also der einzige Fall, in dem
+ein eigenes Präfix je einen Zusammenstoß verhindert hätte — und beide Dateien
+benutzen dasselbe `sbwiz-`.
+
+⚠ **Die Herkunfts-Zeile steht ÜBER dem Feld**, obwohl neunzehn von zwanzig
+Fassungen sie darunter haben. Das Feld wächst mit seinem Inhalt (`autoGrow`), und
+die Beschreibungen sind zweieinhalb- bis viertausend Zeichen lang. Eine Zeile
+darunter liegt damit **unterhalb eines bildschirmhohen Feldes** — man findet sie
+nur, wenn man ohnehin schon sucht. Gemessen hat es kim-hub-company am 2026-09-10
+an Klaus' Schirm; hier wird die **bessere** Fassung übernommen, statt die Mehrheit
+zu zählen.
+
+⚠ **Der Membran-Satz wird NICHT allen in den Mund gelegt.** Privat-Brain sagt im
+Schutz-Block zusätzlich, die Membran zeige fremde KI-Zugriffe. Das ist wahr — aber
+nur dort, wo **Modul 15 wirklich geladen ist**. Der Kanon hängt den Satz deshalb
+an `window.SbkimMembrane` und behauptet ihn sonst nicht. Ein Schutz, den man
+zusichert, ohne ihn zu haben, ist schlimmer als keiner: er beruhigt.
+
+#### Was zu prüfen ist
+
+`tests/smoke_kanon_wizard.mjs` — Vertrag, Fail-soft, die drei Text-Wächter, die
+Merkmale aus der Tabelle oben. `tests/gegenprobe_kanon_wizard.sh` baut zu jedem
+Wächter einen Fehler ein; jeder **muss** genau die Probe mit dem Namen seiner
+Zusicherung umwerfen.

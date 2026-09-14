@@ -26,6 +26,12 @@ import { dirname, join } from "node:path";
 
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), "..");
 const sieg = readFileSync(join(WURZEL, "assets/siegel-inhalt.js"), "utf8");
+/* ⚠ SEIT A18 (2026-09-14) LIEGT DER WIZARD-CODE NICHT MEHR IN siegel-inhalt.js.
+   Die fünf Wächter weiter unten messen den ABLAUF, nicht die Identität — sie
+   sind deshalb MITGEZOGEN worden statt gelöscht. Die Zusicherung ist dieselbe
+   geblieben; nur ihr Wohnort hat sich geändert (INTERFACES §11.9). Ein Wächter,
+   den man beim Umzug wegwirft, nimmt seine Zusicherung mit. */
+const wiz = readFileSync(join(WURZEL, "assets/sbkim-andock-wizard.js"), "utf8");
 
 /* ⚠ SAGE HAT DREI WEGE ZUR SPORE, NICHT EINEN — und beim ersten Bau dieser
    Probe am 2026-09-10 hat sie nur den ersten gemessen. Gefunden hat es Klaus'
@@ -107,18 +113,18 @@ console.log("\nWer im Feld gewinnt\n");
    steht zweimal — als Vorbelegung und im Knopf. Ein Wächter, der frei in der
    Datei sucht, findet die falsche Stelle und bleibt grün, wenn die Vorbelegung
    ausgebaut wird. Genau so ist es in Kim Hub Company passiert. */
-const iFeld = sieg.indexOf('ta.id = "sbkim-si-semantik-text"');
-const iHerk = sieg.indexOf("var herkunft = document.createElement");
-const vorbelegung = iFeld >= 0 && iHerk > iFeld ? sieg.slice(iFeld, iHerk) : "";
+const iFeld = wiz.indexOf('ta.id = "sbkim-si-semantik-text"');
+const iHerk = wiz.indexOf("var herkunft = document.createElement");
+const vorbelegung = iFeld >= 0 && iHerk > iFeld ? wiz.slice(iFeld, iHerk) : "";
 ok("das Feld zeigt den Vorschlag der App",
-  vorbelegung.length > 0 && /ta\.value\s*=\s*WIZ\.domainDescription\s*;/.test(vorbelegung));
+  vorbelegung.length > 0 && /ta\.value\s*=\s*c\.domainDescription\b/.test(vorbelegung));
 
 /* Die andere Hälfte, und sie ist die eigentliche Zusicherung: im Lade-Pfad
    darf NUR EINE Zuweisung an `ta.value` stehen — die im Knopf. Gezählt statt
    gesucht: „steht irgendwo" ist hier keine Frage, die etwas beantwortet. */
-const iLade = sieg.indexOf("getOwnSpore()");
-const iEnde = sieg.indexOf('ta.addEventListener("input"', iLade);
-const ladePfad = iLade >= 0 && iEnde > iLade ? sieg.slice(iLade, iEnde) : "";
+const iLade = wiz.indexOf("getOwnSpore()");
+const iEnde = wiz.indexOf('ta.addEventListener("input"', iLade);
+const ladePfad = iLade >= 0 && iEnde > iLade ? wiz.slice(iLade, iEnde) : "";
 const imKnopf = /zurueck\.addEventListener[\s\S]{0,240}?ta\.value\s*=\s*eigener\s*;/.test(ladePfad);
 const stilleZuweisungen = (ladePfad.match(/ta\.value\s*=/g) || []).length;
 ok("… und die gespeicherte Spore überschreibt ihn NICHT mehr von selbst",
@@ -126,23 +132,31 @@ ok("… und die gespeicherte Spore überschreibt ihn NICHT mehr von selbst",
 
 /* ⚠ AN DER MARKE, NICHT AM SATZ. */
 ok("eine Zeile nennt, WELCHER der beiden Texte im Feld steht",
-  /data-woher/.test(sieg)
-  && /setAttribute\("data-woher",\s*"app"\)/.test(sieg)
-  && /setAttribute\("data-woher",\s*"spore"\)/.test(sieg));
+  /data-woher/.test(wiz)
+  && /setAttribute\("data-woher",\s*"app"\)/.test(wiz)
+  && /setAttribute\("data-woher",\s*"spore"\)/.test(wiz));
+
+/* ⚠ GEMESSEN WIRD DER BLOCK, NICHT EIN ZEICHENFENSTER. Hier stand
+   `[\s\S]{0,140}?` — das misst den ABSTAND zweier Stellen: kommt eine Zeile
+   dazwischen, wird die Prüfung rot, ohne dass eine Zusicherung gefallen wäre.
+   Beim Umzug in den Kanon wäre sie genau daran gescheitert. */
+const iAbw = wiz.indexOf("var abweichend");
+const iAbwEnde = wiz.indexOf("if (!abweichend)", iAbw);
+const vergleichsBlock = iAbw >= 0 && iAbwEnde > iAbw ? wiz.slice(iAbw, iAbwEnde) : "";
 
 /* Der Knopf erscheint nur bei Abweichung — einer, der immer dasteht, ist bald
    einer, den niemand mehr liest. Gemessen wird der Vergleich der TEXTE. */
 ok("der Knopf holt den eigenen Text zurück und zeigt sich nur bei Abweichung",
-  /id\s*=\s*"sbkim-si-semantik-eigener-text"/.test(sieg)
-  && /zurueck\.hidden\s*=\s*true\s*;/.test(sieg)
-  && /abweichend\s*=[\s\S]{0,140}?eigener\.trim\(\)\s*!==/.test(sieg)
-  && /if\s*\(!abweichend\)\s*return\s*;/.test(sieg)
-  && /zurueck\.hidden\s*=\s*false\s*;/.test(sieg));
+  /id\s*=\s*"sbkim-si-semantik-eigener-text"/.test(wiz)
+  && /zurueck\.hidden\s*=\s*true\s*;/.test(wiz)
+  && vergleichsBlock.includes("eigener.trim() !==")
+  && /if\s*\(!abweichend\)\s*return\s*;/.test(wiz)
+  && /zurueck\.hidden\s*=\s*false\s*;/.test(wiz));
 
 /* Ein Element, das gebaut, aber nie eingehängt wird, ist von einem fehlenden
    nicht zu unterscheiden — außer für den Nutzer, der es nicht sieht. */
 ok("… und beide hängen wirklich im Block",
-  /wrap\.appendChild\(herkunft\)/.test(sieg) && /wrap\.appendChild\(zurueck\)/.test(sieg));
+  /wrap\.appendChild\(herkunft\)/.test(wiz) && /wrap\.appendChild\(zurueck\)/.test(wiz));
 
 /* Und dasselbe im Semantik-Feld der SEITE. Dort stand bis zum 2026-09-10
    `apply(sp.domainDescription ? … : fallback)` — die gespeicherte Spore

@@ -25,7 +25,11 @@ const ZIEL = "assets/siegel-inhalt.js";
 /* ⚠ DREI WEGE ZUR SPORE, also drei Dateien in der Kopie. Bis zum 2026-09-10
    kopierte diese Gegenprobe nur den ersten — und der Wächter, der die anderen
    zwei misst, hätte in der Kopie gar nichts vorgefunden. */
-const MIT = ["index.html", "sbkim-init.js"];
+/* ⚠ SEIT A18 (2026-09-14) LIEGT DER WIZARD-CODE IN EINER VIERTEN DATEI.
+   Fünf Fälle darunter zielen dorthin. Wer sie nicht mitkopiert, bekommt einen
+   TOTEN ANKER — der Fall meldet sich als „nicht gefangen", obwohl der Wächter
+   tadellos ist, und man sucht am falschen Ende. */
+const MIT = ["index.html", "sbkim-init.js", "assets/sbkim-andock-wizard.js"];
 
 const FAELLE = [
   { was: "der Name des Knotens verschwindet aus der Beschreibung",
@@ -48,18 +52,23 @@ const FAELLE = [
      VORBELEGUNG heraus, findet ein Waechter, der frei in der Datei sucht,
      dieselbe Zeile im Knopf und bleibt gruen. */
   { was: "das Feld zeigt nicht mehr den Vorschlag der App",
-    alt: "    ta.value = WIZ.domainDescription;\n    /* ⚠ WELCHER TEXT",
-    neu: "    /* ⚠ WELCHER TEXT" },
+    datei: "assets/sbkim-andock-wizard.js",
+    alt: "    ta.value = c.domainDescription || \"\";\n",
+    neu: "" },
 
   { was: "die gespeicherte Spore ueberschreibt den Vorschlag wieder von selbst",
+    datei: "assets/sbkim-andock-wizard.js",
     alt: "          if (!abweichend) return;",
     neu: "          ta.value = eigener; autoGrow(ta);\n          if (!abweichend) return;" },
   { was: "die Zeile sagt nicht mehr, WELCHER Text im Feld steht",
+    datei: "assets/sbkim-andock-wizard.js",
     alt: 'herkunft.setAttribute("data-woher", "spore");',
     neu: 'herkunft.setAttribute("data-herkunft", "spore");' },
   { was: "der Knopf steht auch dann da, wenn die Texte gleich sind",
+    datei: "assets/sbkim-andock-wizard.js",
     alt: "          if (!abweichend) return;", neu: "          if (false) return;" },
   { was: "die Herkunfts-Zeile wird gebaut, aber nie eingehaengt",
+    datei: "assets/sbkim-andock-wizard.js",
     alt: "wrap.appendChild(herkunft); ", neu: "" },
   /* ── Die zwei Wege, die beim ersten Bau ungeprüft danebenlagen ────────── */
   { was: "die Seite selbst faellt auf ihren alten Kurztext zurueck",
