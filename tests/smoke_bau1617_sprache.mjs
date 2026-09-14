@@ -500,6 +500,7 @@ for (const mod of MODULE) {
  * Bauart bewusst „hinzufügen statt ändern": ein Wächter, der einen festen
  * Wortlaut festnagelt, verböte das nächste Richtigstellen.
  */
+let wt, gefuehrt, wb;
 console.log("\nDas Wappen-SVG gegen die Tafel:");
 {
   const src = readFileSync(resolve(wurzel, "src/modules/16_siegel.js"), "utf8");
@@ -530,6 +531,83 @@ console.log("\nDas Wappen-SVG gegen die Tafel:");
   ok(unbenannt.length === 0,
      `jeder Wappen-Text ist in INTERFACES § Modul 16 SPRACHE benannt (${unbenannt.length} nicht)`,
      unbenannt.slice(0, 3).join(" | "));
+
+  /* ══ Die Gegenrichtung (Klaus 2026-09-14: das Wappen spricht mit) ══
+   * Ein Text in WAPPEN_TEXTE ohne Woerterbuch-Eintrag bleibt auf Englisch
+   * still deutsch stehen — T() gibt ihn dann unveraendert zurueck, die
+   * Ersetzung entfaellt, und NICHTS faellt auf. Genau der Fehler, den diese
+   * Probe verhindern soll, nur eine Ebene tiefer. */
+  wt = src.match(/var WAPPEN_TEXTE = \[([^\]]*)\]/);
+  ok(!!wt, "WAPPEN_TEXTE ist im Modul zu finden");
+  gefuehrt = wt ? [...wt[1].matchAll(/"((?:[^"\\]|\\.)*)"/g)].map(m => m[1]) : [];
+  ok(gefuehrt.length > 0, `WAPPEN_TEXTE fuehrt Texte (${gefuehrt.length})`);
+
+  const wbA = src.indexOf("var TEXTE = { en: {");
+  const wbE = src.indexOf("\n  } };", wbA);
+  wb = src.slice(wbA, wbE);
+  const ohneEintrag = gefuehrt.filter(t => !wb.includes('"' + t + '"'));
+  ok(ohneEintrag.length === 0,
+     `jeder WAPPEN_TEXTE-Eintrag hat eine englische Fassung (${ohneEintrag.length} nicht)`,
+     ohneEintrag.join(" | "));
+
+  /* Und sie muessen wirklich IM WAPPEN stehen — als ">TEXT<", denn genau so
+   * ersetzt renderWappenSvg(). Ein Eintrag, der dort nicht vorkommt, ist tot;
+   * einer, der zweimal vorkommt, wuerde nur beim ersten Mal ersetzt. */
+  for (const t of gefuehrt) {
+    const n = svg.split(">" + t + "<").length - 1;
+    ok(n === 1, `„${t}" steht GENAU EINMAL als >Text< im Wappen (${n})`);
+  }
+
+  ok(src.slice(src.indexOf("function renderWappenSvg()")).slice(0, 900).includes("WAPPEN_TEXTE"),
+     "renderWappenSvg() fuehrt die Wappen-Texte wirklich durch T()");
+}
+
+/* ══ 4b. …und dasselbe am WIRKLICH GERENDERTEN Wappen ════════════════════
+ *
+ * ⚠ ABSCHNITT 4 OBEN LIEST NUR DEN QUELLTEXT. Er faende die Zeilen auch dann
+ * tadellos, wenn renderWappenSvg() gar nicht mehr gerufen wuerde — „ein
+ * Waechter, der eine Datei LIEST, misst nicht, ob sie LAEUFT" (Kimhub, an
+ * einer anderen Tuer). Hier wird das Badge gebaut und sein innerHTML gemessen.
+ *
+ * DIE TRAGENDE ZUSICHERUNG IST DIE ERSTE: auf Deutsch byte-identisch. Faellt
+ * die Abbruch-Bedingung weg, liefe jede deutsche Seite durch ein
+ * String-replace — und die Zusicherung „OHNE EINSTELLUNG AENDERT SICH NICHTS"
+ * waere nur noch zufaellig wahr.
+ */
+console.log("\nDas gerenderte Wappen:");
+{
+  const roh = readFileSync(resolve(wurzel, "src/modules/16_siegel.js"), "utf8");
+  const wa = roh.indexOf("var WAPPEN_SVG = '");
+  const rohSvg = roh.slice(wa, roh.indexOf("\n", wa));
+
+  /* Mit dem eingebackenen Band-Text: dann ersetzt renderWappenSvg() auch das
+   * Ribbon nicht, und uebrig bleibt genau die Frage nach den zwei Texten. */
+  const gDe = await siegelOeffnen("de", { ribbonText: "SAGE OBSERVATORIUM" });
+  const gEn = await siegelOeffnen("en", { ribbonText: "SAGE OBSERVATORIUM" });
+  const svgDe = gDe._badge ? gDe._badge.innerHTML : "";
+  const svgEn = gEn._badge ? gEn._badge.innerHTML : "";
+
+  ok(svgDe.length > 500, `das Badge traegt auf Deutsch ein Wappen (${svgDe.length} Zeichen)`);
+
+  /* Der Vergleich gegen die Konstante: im Quelltext steht sie als
+   * JS-Literal mit \n-Folgen, gerendert sind es echte Umbrueche. Verglichen
+   * wird deshalb ueber die Anzeigetexte, die drinstehen — genau das, was die
+   * Zusicherung meint. */
+  for (const t of gefuehrt) {
+    ok(svgDe.includes(">" + t + "<"),
+       `auf Deutsch steht „${t}" unveraendert im Wappen`);
+    ok(!svgEn.includes(">" + t + "<"),
+       `auf Englisch steht „${t}" NICHT mehr da`);
+    const en = (wb.match(new RegExp('"' + t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '"\\s*:\\s*"([^"]*)"')) || [])[1];
+    ok(!!en && svgEn.includes(">" + en + "<"),
+       `auf Englisch steht stattdessen „${en}" im Wappen`);
+  }
+
+  /* Der Eigenname darf NICHT mitwandern — sonst uebersetzt der naechste
+   * Eintrag still das Protokoll selbst. */
+  ok(svgDe.includes(">SBKIM<") && svgEn.includes(">SBKIM<"),
+     "der Eigenname SBKIM steht in BEIDEN Sprachen unveraendert da");
+  ok(rohSvg.includes(">SBKIM<"), "…und zwar unveraendert aus der Konstante");
 }
 
 console.log(`\nErgebnis: ${pass} bestanden, ${fail} fehlgeschlagen`);

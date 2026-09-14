@@ -3244,33 +3244,43 @@ Bietet (öffentlich):
         Begründung wie beim 23er-Rollout, nur diesmal an dem Modul, an dem die
         Frage wirklich gestellt werden musste.
 
-        ⚠ DAS WAPPEN-SVG TRÄGT ZWEI DEUTSCHE ANZEIGETEXTE, und sie stehen auf
-        Englisch weiterhin deutsch da (gemessen 2026-09-14 spät, headless an
-        drei echten Seiten — family-projekt.de, pwa-toolpoint.de und dessen
-        Auslieferungsprüfer, alle mit <html lang="en">):
+        DAS WAPPEN SPRICHT MIT (Klaus 2026-09-14, entschieden). Es trug zwei
+        deutsche ANZEIGETEXTE, die auf Englisch deutsch stehen blieben —
+        gemessen headless an drei echten Seiten mit <html lang="en">:
 
-          OFFIZIELLE BESTÄTIGUNG   ← Anzeigetext, beschreibend
-          SIEGEL                   ← Anzeigetext
-          SBKIM                    ← Eigenname, bleibt
-          SAGE OBSERVATORIUM       ← der eingebackene ribbonText-Platzhalter;
-                                     ersetzt der Host, s. o. § ribbonText
+          OFFIZIELLE BESTÄTIGUNG → OFFICIAL ATTESTATION   übersetzt
+          SIEGEL                 → SEAL                   übersetzt
+          SBKIM                                            Eigenname, bleibt
+          SAGE OBSERVATORIUM                               ribbonText-Platzhalter,
+                                                           ersetzt der Host (s. o.)
 
-        Sie stecken als Markup in der Konstante `WAPPEN_SVG`, gehen also nicht
-        durch `T()`. DIESE ZWEI SIND NICHT DIESELBE FRAGE wie die
-        ZERTIFIKAT_ASPEKTE: dort ist der deutsche Wortlaut die Urkunde und
-        steht nur im CODE, übersetzt wird an der Anzeige-Stelle. Hier steht er
-        IN DER ANZEIGE. Ob ein Wappen als Emblem deutsch bleibt oder mitspricht,
-        ist eine Entscheidung von Klaus und HIER NICHT GETROFFEN — benannt
-        statt stillschweigend umfahren (Tafel-Evolutions-Klausel).
+        DIE ENTSCHEIDUNG, und warum sie anders ausfällt als bei den ASPEKTEN:
+        deren deutscher Wortlaut ist die Urkunde und steht nur im CODE —
+        übersetzt wird an der Anzeige-Stelle. Diese zwei standen IN DER ANZEIGE.
+        Klaus' Befund vom selben Tag war genau dieses Muster: ein deutsches Wort
+        zwischen englischen Zeilen.
+
+        WIE: `renderWappenSvg()` ist die EINZIGE Ausgabestelle des SVG und
+        ersetzt die zwei Texte über `WAPPEN_TEXTE`, bevor der Band-Text gesetzt
+        wird. Auf Deutsch gibt `T()` den Satz unverändert zurück, die Ersetzung
+        entfällt und das SVG bleibt BYTE-IDENTISCH — dieselbe Bauart, die der
+        `ribbonText` seit jeher hat, und damit bleibt OHNE EINSTELLUNG ÄNDERT
+        SICH NICHTS auch hier gewahrt. `SBKIM` steht nicht in `WAPPEN_TEXTE`:
+        ein Eigenname wird nicht übersetzt.
 
         ⚠ WARUM ES KEIN WÄCHTER GEFANGEN HAT, und das ist die übertragbare
         Hälfte: Abschnitt 3 von `tests/smoke_bau1617_sprache.mjs` misst
         ZEILENWEISE und nur Zeilen mit einer Anzeige-Zuweisung. `WAPPEN_SVG`
-        ist eine `var`-Zuweisung mit Markup; eingesetzt wird sie später über
-        eine VARIABLE, auf deren Zeile keine Zeichenkette steht. Für beide
-        Filter unsichtbar. Dagegen steht seit heute ein Abgleich: jeder Text im
-        Wappen muss in DIESER Tafel benannt sein — wer einen hinzufügt, muss
-        die Tafel nachziehen, und die Frage wird dann gestellt statt übersehen.
+        ist eine `var`-Zuweisung mit Markup; eingesetzt wird sie über eine
+        VARIABLE, auf deren Zeile keine Zeichenkette steht. Für beide Filter
+        unsichtbar — die dritte benannte Grenze dieses Wächters.
+
+        ⚠ DAGEGEN STEHT ABSCHNITT 4, und er misst BEIDE Richtungen: jeder Text
+        im Wappen ist hier benannt UND jeder, der hier als „übersetzt" steht,
+        hat einen Wörterbuch-Eintrag. Wer einen Text ins Wappen hängt, muss
+        diese Tafel nachziehen — und dann wird die Frage gestellt statt
+        übersehen. Er nagelt KEINEN Wortlaut fest: das verböte das nächste
+        Richtigstellen.
 
   ExplanationSnapshot (Karte 16 § Schnittstelle, verbindlich):
     {
