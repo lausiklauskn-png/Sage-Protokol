@@ -3244,6 +3244,34 @@ Bietet (öffentlich):
         Begründung wie beim 23er-Rollout, nur diesmal an dem Modul, an dem die
         Frage wirklich gestellt werden musste.
 
+        ⚠ DAS WAPPEN-SVG TRÄGT ZWEI DEUTSCHE ANZEIGETEXTE, und sie stehen auf
+        Englisch weiterhin deutsch da (gemessen 2026-09-14 spät, headless an
+        drei echten Seiten — family-projekt.de, pwa-toolpoint.de und dessen
+        Auslieferungsprüfer, alle mit <html lang="en">):
+
+          OFFIZIELLE BESTÄTIGUNG   ← Anzeigetext, beschreibend
+          SIEGEL                   ← Anzeigetext
+          SBKIM                    ← Eigenname, bleibt
+          SAGE OBSERVATORIUM       ← der eingebackene ribbonText-Platzhalter;
+                                     ersetzt der Host, s. o. § ribbonText
+
+        Sie stecken als Markup in der Konstante `WAPPEN_SVG`, gehen also nicht
+        durch `T()`. DIESE ZWEI SIND NICHT DIESELBE FRAGE wie die
+        ZERTIFIKAT_ASPEKTE: dort ist der deutsche Wortlaut die Urkunde und
+        steht nur im CODE, übersetzt wird an der Anzeige-Stelle. Hier steht er
+        IN DER ANZEIGE. Ob ein Wappen als Emblem deutsch bleibt oder mitspricht,
+        ist eine Entscheidung von Klaus und HIER NICHT GETROFFEN — benannt
+        statt stillschweigend umfahren (Tafel-Evolutions-Klausel).
+
+        ⚠ WARUM ES KEIN WÄCHTER GEFANGEN HAT, und das ist die übertragbare
+        Hälfte: Abschnitt 3 von `tests/smoke_bau1617_sprache.mjs` misst
+        ZEILENWEISE und nur Zeilen mit einer Anzeige-Zuweisung. `WAPPEN_SVG`
+        ist eine `var`-Zuweisung mit Markup; eingesetzt wird sie später über
+        eine VARIABLE, auf deren Zeile keine Zeichenkette steht. Für beide
+        Filter unsichtbar. Dagegen steht seit heute ein Abgleich: jeder Text im
+        Wappen muss in DIESER Tafel benannt sein — wer einen hinzufügt, muss
+        die Tafel nachziehen, und die Frage wird dann gestellt statt übersehen.
+
   ExplanationSnapshot (Karte 16 § Schnittstelle, verbindlich):
     {
       certifiedAt:      <ISO-8601 string | null>,
@@ -3752,6 +3780,29 @@ Bietet (öffentlich):
     EINMAL gebaut; ein Sprachwechsel danach erreicht die Etiketten also erst
     beim nächsten Laden. Die beiden Modals rendern ihren Inhalt bei jedem Öffnen
     neu und folgen sofort. Benannte Grenze, kein Fehler.
+
+    ⚠ DIE APP KANN DIE PILLE ERSETZEN ODER GAR NICHT LADEN — dann wirkt dieser
+    Sprach-Haken an der SICHTBAREN Leiste NICHT. Gemessen 2026-09-14 spät,
+    headless, mit <html lang="en"> an den zwei Seiten, die für den Sichttest
+    vorgesehen waren:
+
+      family-projekt.de      Modul 17 geladen, `_meta.lang === "en"` — aber
+                             `sbkim/sbkim-init.js` ruft `SbkimWidget.hide()`.
+                             Sichtbar ist `assets/status-widget.js` mit fest
+                             verdrahteten Etiketten (LEBT/VERKEHR/FREMD/SIEGEL,
+                             0 Treffer auf lang/T/TEXTE). → deutsch.
+      pwa-toolpoint.de       Startseite lädt Modul 17 ÜBERHAUPT NICHT (bewusst:
+                             sie hat ihre eigene `.lamps`-Leiste im Markup,
+                             lebt/verkehr/fremd + deutsche Tooltips). → deutsch.
+      …/auslieferungspruefer Modul 17 geladen, keine eigene Leiste.
+                             → ALIVE · TRAFFIC · FOREIGN · SEAL ✓
+
+    DER HAKEN IST ALSO IN ORDNUNG — gemessen am Prüfer arbeitet er. Was fehlt,
+    ist die Übersetzung des APP-EIGENEN Klebstoffs, und der ist vom
+    Modul-Rollout grundsätzlich nicht erreichbar. Dieselbe Lage wie beim
+    Gerätenamen (NETZWEIT §2) und beim Andock-Werkzeug im Siegel. Wer eine App
+    auf Englisch anbietet, prüft deshalb ZUERST, WER ihre Lampen malt — eine
+    Kette mit `lang:"en"` beweist nicht, dass der Nutzer Englisch sieht.
 
   PositionSnapshot (Karte 17 § Schnittstelle):
     {

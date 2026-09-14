@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-14",
-  "seq": 77,
-  "headline": "SIEGEL (16) UND LAMPEN (17) SPRECHEN JETZT ENGLISCH - byte-1:1 in 19 Traegern (Privat-Brain kommt dazu, es trug kein 23-UI). Kanon 16=7589f18d59dc, 17=3f757b35cea5. Verfahren wie 23 UI: schluessellos, OHNE EINSTELLUNG AENDERT SICH NICHTS. ACHTUNG FUER GEGENSTELLEN: lang geht an DREI init() (23-UI, 16, 17) - keiner reicht ihn weiter; ueber <html lang> entfaellt das, alle drei lesen es selbst. Offen und neu aufgemacht: das Andock-Werkzeug IM Siegel ist app-eigener Klebstoff (20 Dateien, je 41-52 deutsche Texte) und vom Rollout nicht erreichbar - wie der Geraetename.",
+  "seq": 78,
+  "headline": "SICHTTEST-NACHLESE, GEMESSEN STATT ANGENOMMEN: der Sprach-Haken von Modul 17 ARBEITET (am Auslieferungspruefer von PWA-Toolpoint headless belegt: ALIVE/TRAFFIC/FOREIGN/SEAL). ABER auf family-projekt.de und der Startseite von pwa-toolpoint.de sieht der Nutzer die Lampen NICHT aus Modul 17: family-project ruft SbkimWidget.hide() und zeigt assets/status-widget.js mit fest verdrahteten Etiketten (0 Treffer auf lang/T/TEXTE); Toolpoints Startseite laedt Modul 17 gar nicht und traegt ihre Lampen als Markup. APP-EIGENER KLEBSTOFF, vom Rollout nicht erreichbar - wie der Geraetename. FUER ALLE GEGENSTELLEN: eine Kette mit lang=en beweist NICHT, dass der Nutzer Englisch sieht - prueft zuerst, WER eure Lampen malt. ZWEITER BEFUND, betrifft alle 19 Traeger: das WAPPEN_SVG in Modul 16 traegt zwei deutsche Anzeigetexte (OFFIZIELLE BESTAETIGUNG, SIEGEL), die nicht durch T() gehen. NICHT dieselbe Frage wie die ZERTIFIKAT_ASPEKTE (deren Wortlaut steht nur im CODE, dieser steht in der ANZEIGE). NICHT entschieden - Frage an Klaus, Lage in INTERFACES benannt. Kanon UNVERAENDERT: 16=7589f18d59dc, 17=3f757b35cea5 - kein Rollout noetig, nichts nachzuziehen.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 78,
+      "date": "2026-09-14",
+      "what": "SICHTTEST-NACHLESE, GEMESSEN STATT ANGENOMMEN: der Sprach-Haken von Modul 17 ARBEITET (am Auslieferungspruefer von PWA-Toolpoint headless belegt: ALIVE/TRAFFIC/FOREIGN/SEAL). ABER auf family-projekt.de und der Startseite von pwa-toolpoint.de sieht der Nutzer die Lampen NICHT aus Modul 17: family-project ruft SbkimWidget.hide() und zeigt assets/status-widget.js mit fest verdrahteten Etiketten (0 Treffer auf lang/T/TEXTE); Toolpoints Startseite laedt Modul 17 gar nicht und traegt ihre Lampen als Markup. APP-EIGENER KLEBSTOFF, vom Rollout nicht erreichbar - wie der Geraetename. FUER ALLE GEGENSTELLEN: eine Kette mit lang=en beweist NICHT, dass der Nutzer Englisch sieht - prueft zuerst, WER eure Lampen malt. ZWEITER BEFUND, betrifft alle 19 Traeger: das WAPPEN_SVG in Modul 16 traegt zwei deutsche Anzeigetexte (OFFIZIELLE BESTAETIGUNG, SIEGEL), die nicht durch T() gehen. NICHT dieselbe Frage wie die ZERTIFIKAT_ASPEKTE (deren Wortlaut steht nur im CODE, dieser steht in der ANZEIGE). NICHT entschieden - Frage an Klaus, Lage in INTERFACES benannt. Kanon UNVERAENDERT: 16=7589f18d59dc, 17=3f757b35cea5 - kein Rollout noetig, nichts nachzuziehen. Gemessen: smoke_bau1617_sprache 68 gruen (vorher 64), Abschnitt 4 neu (gleicht das Wappen gegen die Tafel ab, entscheidet NICHTS ueber die Uebersetzung); gegenprobe 27 gefangen, 0 durchgerutscht, 0 tote Anker; voller Lauf 103 gruen, 0 rot. Die Wegwerf-Kopie der Gegenprobe kannte docs/ nicht - alle 25 Faelle massen nichts, die Ausgangslage-Pruefung hat es gefangen (Positivlisten-Falle)."
+    },
     {
       "seq": 77,
       "date": "2026-09-14",
