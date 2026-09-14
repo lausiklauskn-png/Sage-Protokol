@@ -363,6 +363,13 @@ stilles Grün). **Wer eine Probe schreibt oder repariert:
 **Ein Wächter ohne Gegenprobe ist nur ein grüner Haken.** Wer eine Prüfung ergänzt,
 ergänzt die passende Gegenprobe — und sieht nach, ob sie dabei wirklich umfällt.
 
+⚠ **Und eine Gegenprobe, die den ECHTEN Baum sabotiert, ist für jeden anderen
+Vorgang im selben Baum eine Nebenwirkung.** Am 2026-09-14 ging so eine Sabotage
+in einen **Commit** — der Lauf konnte es nicht melden, weil er die Datei danach
+zurücklegt. Während eines Laufs wird nicht committet, und vor jedem Commit wird
+die **Dateiliste** angesehen, nicht nur der Diff: ein fremder Name ist das
+Warnsignal. [`docs/LEHREN.md` § 10](docs/LEHREN.md).
+
 ## Eine Kanon-Änderung in alle Träger tragen
 
 ```bash
