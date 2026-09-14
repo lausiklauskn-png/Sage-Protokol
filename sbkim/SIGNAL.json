@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-09-10",
-  "seq": 74,
-  "headline": "SAGE HAT EINE NEUE KENNUNG UND EINEN NEUEN VEKTOR - vier Knoten sind zurueck ueber dem Handshake-Boden, alle 20 Register-Zahlen neu gerechnet. Wer Sage als Peer fuehrt, zieht die Kennung nach.",
+  "lastBuild": "2026-09-14",
+  "seq": 75,
+  "headline": "MODUL 23 UI IST NETZWEIT AUSGEROLLT - das Verbinden-Fenster spricht Deutsch UND Englisch, 18/18 Knoten tragen den Kanon 709c4364026e. Drei Modul-Generationen sind eine geworden. Ohne Einstellung aendert sich nichts: wer weder init({lang}) uebergibt noch <html lang> setzt, bekommt Deutsch wie bisher. Siegel (16) und Lampen (17) bleiben vorerst deutsch - ein Voll-Knoten ist auf Englisch gemischtsprachig.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,21 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 75,
+      "date": "2026-09-14",
+      "what": "Modul 23 UI (sha 709c4364026e, 2960 Zeilen) byte-1:1 in alle 18 Traeger kopiert, 11 sha-Pins und 9 CACHE_VERSION nachgezogen. Gemessen je Kopie: <html lang=de> -> de, <html lang=en> -> en, 237 Schluessel, 18/18. Gemessen an den Apps: 9 von 18 ziehen <html lang> beim Sprachwechsel mit, 9 nicht - dort bleibt das Fenster deutsch (Rueckfalllinie, kein Fehler). Dazu in der Geschenkbox: SbkimConnect.init({lang}) wurde bis heute STILL verschluckt, jetzt durchgereicht (4 Waechter + Gegenprobe 4/4). INTERFACES.md kannte den Sprach-Haken nicht und ist nachgetragen.",
+      "forNodes": [
+        "rezeptbuch",
+        "mixarium",
+        "family",
+        "tomyhub",
+        "bookledgerpro",
+        "jasonstresor",
+        "meintresor",
+        "sbkimtoolpoint"
+      ]
+    },
     {
       "seq": 74,
       "date": "2026-09-10",

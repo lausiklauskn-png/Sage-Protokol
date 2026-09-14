@@ -117,6 +117,10 @@ bevor Membran/Siegel sie bedienen. `19/20/21/22/24` sind additiv, fail-soft
 
 - ✅ **Stufe 1 „Verbinden"** ist fertig und aktuell (`sbkim-bundle/`), inkl.
   Kartenechtheit (Modul 23 sha `3caa0bb1`).
+- ✅ **Das Verbinden-Fenster spricht Deutsch UND Englisch** (seit 2026-09-14,
+  Modul 23 UI sha `709c4364026e`) — siehe den Abschnitt „Die Sprache der Kiste"
+  weiter unten. Der Fremde bekommt das **ohne Zutun**; wer nichts einstellt,
+  bekommt Deutsch wie bisher.
 - ✅ **Marktplatz-Einreichung** steht (`family-project/markt.html`, „Zur Prüfung
   einreichen") + die Werkzeug-Seiten `family-project/werkzeuge/andock-werkzeug.html`,
   `knoten-werkzeug.html`, `such-werkzeug.html`.
@@ -127,6 +131,66 @@ bevor Membran/Siegel sie bedienen. `19/20/21/22/24` sind additiv, fail-soft
   `README.md` (Einbau in 3 Schritten, Ladereihenfolge 17→15→16),
   `beispiel-voll.html` (lauffähiges Vorbild) und ein Drift-Guard
   (`tests/smoke_vollbundle.mjs`, 42/42 grün). Gebaut 2026-07-30.
+
+---
+
+## Die Sprache der Kiste (2026-09-14)
+
+**Anlass:** Klaus hatte `family-projekt.de` am Tablet auf Englisch gestellt — und
+die SBKIM-Fenster darin blieben deutsch. Für eine Kiste, die an **Fremde** geht,
+wiegt das doppelt: ein deutsches Fenster mitten in einer englischen Seite sieht
+nicht nach „noch nicht übersetzt" aus, sondern nach kaputt.
+
+**Was drin ist.** `modules/23_rendezvous_ui.js` trägt **237 englische Texte**. Das
+Verfahren ist **schlüssellos**: der deutsche Satz IST der Schlüssel, fehlt eine
+Übersetzung, bleibt der Satz deutsch — nie leer, nie ein Platzhalter.
+
+**Wie ein Fremder die Sprache setzt** — beides geht, keins ist Pflicht:
+
+| Weg | wann |
+|---|---|
+| `SbkimConnect.init({ …, lang: "en" })` | wenn die App die Sprache umschaltet, **ohne** `<html lang>` mitzuziehen |
+| `<html lang="en">` am Dokument | wenn die App das Attribut ohnehin pflegt — dann ist **nichts** zu tun |
+
+> **OHNE EINSTELLUNG ÄNDERT SICH NICHTS.** Wer weder das eine noch das andere
+> tut, bekommt Deutsch wie bisher. Jeder andere Wert (`ru`, `zh`, `fr` …) fällt
+> fail-soft auf Deutsch zurück — das ist die Rückfalllinie, kein Fehler.
+
+⚠ **`SbkimConnect.init({lang})` hat das Feld bis zum 2026-09-14 STILL
+VERSCHLUCKT.** Die Kiste verspricht einem Fremden genau EIN `init()` — und
+ausgerechnet darüber war die Sprache nicht erreichbar. Kein Fehler, keine
+Warnung, nur ein deutsches Fenster. Aufgefallen ist es nicht beim Bauen des
+Sprach-Hakens, sondern weil Klaus danach ausdrücklich nach der Geschenkbox
+gefragt hat. Vier Wächter in `tests/smoke_bundle_connect.mjs` stehen seitdem
+dagegen, mit Gegenprobe (`tests/gegenprobe_bundle_sprache.mjs`, 4/4 gefangen).
+
+⚠ **Der zweitwichtigste Wächter misst das GEGENTEIL:** ohne Angabe darf die
+Kiste `lang` **nicht** setzen. Ein hier erfundener Standard („`de`, wenn nichts
+dasteht") würde `<html lang>` überstimmen — dann wäre eine englische Seite, die
+das Attribut korrekt mitzieht, plötzlich wieder deutsch, **und zwar wegen der
+Kiste**. Ein Wächter nur auf „durchgereicht" wäre dafür blind.
+
+### ⚠ Eine Voll-Kiste ist auf Englisch heute GEMISCHTSPRACHIG
+
+Das gehört hierher, weil ein Fremder es sonst erst im eigenen Browser merkt:
+
+| Modul | Stand |
+|---|---|
+| `23_rendezvous_ui.js` — das Verbinden-Fenster | ✅ Deutsch + Englisch (237 Texte) |
+| `16_siegel.js` — das Siegel-Fenster | ⚠ **nur Deutsch** (47 Texte) |
+| `17_floating_widget.js` — LEBT/VERKEHR/FREMD/SIEGEL | ⚠ **nur Deutsch** (19 Texte) |
+
+Wer eine **Stufe-1**-Kiste auspackt, merkt davon nichts — sie trägt 16/17 gar
+nicht. Wer die **Voll-Kiste** nimmt und auf Englisch stellt, bekommt ein
+englisches Verbinden-Fenster neben deutschen Lampen. **Eine benannte Lücke ist
+Arbeit, eine verschwiegene ist Schaden** — deshalb steht sie hier und nicht nur
+im PULS.
+
+⚠ **Die Sprache kommt in den Apps NICHT von selbst.** Gemessen am 2026-09-14 an
+allen 18 Trägern im Netz: **9 ziehen `<html lang>` beim Sprachwechsel mit, 9
+nicht.** Bei den neun anderen bleibt das Fenster deutsch, bis die App entweder
+das Attribut mitzieht oder `lang` übergibt. Wer eine Kiste weitergibt, sagt das
+dazu — sonst heißt es „kann Englisch" und ändert für den Nutzer nichts.
 
 ---
 
