@@ -363,6 +363,37 @@ stilles Grün). **Wer eine Probe schreibt oder repariert:
 **Ein Wächter ohne Gegenprobe ist nur ein grüner Haken.** Wer eine Prüfung ergänzt,
 ergänzt die passende Gegenprobe — und sieht nach, ob sie dabei wirklich umfällt.
 
+## Eine Kanon-Änderung in alle Träger tragen
+
+```bash
+node tools/kanon-verteilen.mjs              # nur nachsehen  (Vorgabe)
+node tools/kanon-verteilen.mjs --schreiben  # kopieren + Pins + Cache-Bump
+node tools/kanon-verteilen.mjs --nur 16_siegel
+```
+
+Bis zum 2026-09-14 kostete jede Kanon-Änderung **Handarbeit mal zwanzig** — an
+dem Tag 23 Pull Requests für zwei übersetzte Wörter im Wappen.
+
+⚠ **Die Liste wird GEFUNDEN, nicht gepflegt.** Wer eine neue App baut, trägt
+sie nirgends ein: sie ist dabei, sobald sie ein Modul trägt. Das folgt aus einem
+Schaden desselben Tages — **BookLedgerPro fiel aus dem Rollout**, weil nach der
+*erwarteten* Vorgänger-Fassung gesucht wurde und es eine Generation weiter
+zurückhing. Eine gepflegte Liste hätte denselben Fehler gemacht, nur dauerhaft.
+
+⚠ **Erkannt wird am INHALT** (`SBKIM — Modul NN` im Kopf), nicht am Dateinamen.
+Nur so bleiben die drei Siegel-Dateien von SB-KIMTool-Point auseinander: die
+Kopie trägt die Marke, der Loader und die Fassung des Modells nicht.
+
+⚠ **`siegel-inhalt.js` wird NIE verteilt.** Sie trägt die komplette
+App-Identität (Name, Beschreibung, Stichworte, Backup-Präfix) — ein
+Überschreiben gäbe jeder App Sages Bedeutungs-Vektor. Beim Bauen stand sie
+zuerst in der Liste; gefunden hat es der Diff zweier Repos, nicht das
+Nachdenken. Die 272 gemeinsamen Zeilen daraus zu lösen ist **A18**.
+
+**Gemessen beim ersten Lauf: 44 Kanon-Dateien im Netz hängen zurück**, einzelne
+um über 300 Zeilen. Ein Generationen-Sprung wird als solcher benannt — er
+braucht einen Probenlauf im Ziel-Repo, ein Zwei-Zeilen-Nachtrag nicht.
+
 ## Aufräumen, ohne Arbeit zu verlieren
 
 ```bash
