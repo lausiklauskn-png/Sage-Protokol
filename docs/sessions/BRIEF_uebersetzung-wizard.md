@@ -141,7 +141,7 @@ node tools/wizard-trennen.mjs ../<repo>              # nur noch für NEUE Apps
 ## ABSCHLUSS
 
 `docs/PULS.md` fortschreiben (Grenze 3000, **auslagern** statt kürzen — sie steht
-bei 2.981) · Übergabeprotokoll · `sbkim/SIGNAL.json` `seq`+1 (steht bei **82**),
+bei 2.943) · Übergabeprotokoll · `sbkim/SIGNAL.json` `seq`+1 (steht bei **82**),
 danach das JSON auf Heilheit prüfen · vollen Lauf fahren und den **echten**
 Rückgabewert nennen (`| tail` ist zum Lesen da, nicht zum Urteilen) · nächsten
 Brief als Codeblock im Chat · Klaus die Adresse für den Sichttest hinlegen.
