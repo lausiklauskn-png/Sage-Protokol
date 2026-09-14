@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-14",
-  "seq": 79,
-  "headline": "DAS WAPPEN IM SIEGEL SPRICHT JETZT MIT (Klaus 2026-09-14 entschieden, gebaut und ausgerollt). Es trug zwei deutsche ANZEIGETEXTE, die auf englischen Seiten deutsch stehen blieben: OFFIZIELLE BESTAETIGUNG -> OFFICIAL ATTESTATION, SIEGEL -> SEAL. SBKIM bleibt (Eigenname), der ribbonText bleibt (graviert der Host). NEUER KANON 16 = d84fa539e76e (17 unveraendert 3f757b35cea5). WIE: renderWappenSvg() fuehrt sie durch T(); auf Deutsch gibt T() den Satz unveraendert zurueck, die Ersetzung entfaellt und das SVG bleibt BYTE-IDENTISCH - OHNE EINSTELLUNG AENDERT SICH NICHTS gilt weiter. AUSGEROLLT IN 20 TRAEGER, nicht 19: BookLedgerPro kam dazu. Es hing schon vor diesem Rollout eine Generation zurueck (kein Sprach-Haken) und fiel deshalb aus dem Raster, das nach der erwarteten Vorgaenger-Fassung suchte. Gemessen: seine 35 abweichenden Zeilen waren genau die, die der Kanon durch T() ersetzt - kein repo-eigener Code. ACHTUNG FUER GEGENSTELLEN MIT EIGENEM DRIFT-GUARD: BookLedgerPro pinnte seine EIGENE alte Fassung (3e17f6474fc7f96f), nicht den Sage-sha - eine Pin-Suche nach dem Kanon-sha findet so einen Pin NICHT. Wer einen eigenen Pin fuehrt, zieht ihn selbst nach. ZWEITER BEFUND, unveraendert offen: auf family-projekt.de und der Startseite von pwa-toolpoint.de malt NICHT Modul 17 die Lampen, sondern app-eigener Klebstoff - eine Kette mit lang=en beweist nicht, dass der Nutzer Englisch sieht.",
+  "seq": 80,
+  "headline": "DIE LAMPEN DER ZWEI MARKTPLAETZE SPRECHEN MIT — und der Befund dahinter geht ALLE Gegenstellen an: EINE KETTE MIT lang=en BEWEIST NICHT, DASS DER NUTZER ENGLISCH SIEHT. Gemessen headless: family-projekt.de versteckt die Modul-17-Pille (SbkimWidget.hide()) und zeigt eigenen Klebstoff; pwa-toolpoint.de laedt Modul 17 auf der Startseite gar nicht und traegt seine Lampen als Markup. Beide sprachen weiter Deutsch, obwohl das Modul auf en stand. WER EINE APP AUF ENGLISCH ANBIETET, PRUEFT ZUERST, WER SEINE LAMPEN MALT. Beide sind nachgezogen, mit dem, was das jeweilige Repo schon hat, und die Begriffe sind mit Modul 17 abgestimmt (alive/traffic/foreign/seal) — zwei Fassungen desselben Wortes liefen auseinander. AUF DEUTSCH AENDERT SICH NIRGENDS ETWAS, in beide Richtungen gemessen. Kanon unveraendert seit seq 79: 16 = d84fa539e76e, 17 = 3f757b35cea5.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 80,
+      "date": "2026-09-14",
+      "what": "DIE LAMPEN DER ZWEI MARKTPLAETZE SPRECHEN MIT — und der Befund dahinter geht ALLE Gegenstellen an: EINE KETTE MIT lang=en BEWEIST NICHT, DASS DER NUTZER ENGLISCH SIEHT. Gemessen headless: family-projekt.de versteckt die Modul-17-Pille (SbkimWidget.hide()) und zeigt eigenen Klebstoff; pwa-toolpoint.de laedt Modul 17 auf der Startseite gar nicht und traegt seine Lampen als Markup. Beide sprachen weiter Deutsch, obwohl das Modul auf en stand. WER EINE APP AUF ENGLISCH ANBIETET, PRUEFT ZUERST, WER SEINE LAMPEN MALT. Beide sind nachgezogen, mit dem, was das jeweilige Repo schon hat, und die Begriffe sind mit Modul 17 abgestimmt (alive/traffic/foreign/seal) — zwei Fassungen desselben Wortes liefen auseinander. AUF DEUTSCH AENDERT SICH NIRGENDS ETWAS, in beide Richtungen gemessen. Kanon unveraendert seit seq 79: 16 = d84fa539e76e, 17 = 3f757b35cea5. ⚠ UND EIN WAECHTER SCHRIEB DAS WOERTERBUCH AB, STATT ES ABZULESEN: in PWA-Toolpoints tests/smoke.mjs stand eine fest verdrahtete Liste der BASIS-Schluessel, eine zweite Fassung dessen, was in assets/sprache.js steht. Sie lief prompt auseinander (860/861: die neuen Schluessel standen im Woerterbuch und galten trotzdem als fehlend). Die Lehre stand in dessen eigener Verfassung schon, an einer anderen Tuer. Behoben wurde die URSACHE: der Waechter liest die Liste jetzt ab und hat einen eigenen Riegel, der meldet, wenn das Ablesen selbst bricht. Gemessen: Toolpoint 862/862, family-project 110/110, beide Gegenprobe-Faelle von Hand nachgestellt."
+    },
     {
       "seq": 79,
       "date": "2026-09-14",

@@ -31,6 +31,79 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, Nacht, Abschluss) · ✅ DIE LAMPEN DER ZWEI MARKTPLÄTZE SPRECHEN MIT
+
+**Rolle:** Haupt-Sitzung, dritte und letzte Entscheidung aus der Nachlese.
+Klaus: *„Ja, beide — klein und sichtbar."*
+
+### Was gebaut wurde
+
+Der Befund der Nachlese war: auf den zwei Seiten, die Klaus ansehen wollte,
+malt **nicht Modul 17** die Lampen, sondern app-eigener Klebstoff. Beide sind
+jetzt nachgezogen — mit dem, was jedes Repo **schon hat**, statt mit einem
+zweiten System:
+
+| Repo | wo | wie |
+|---|---|---|
+| **family-project** | `assets/status-widget.js` | eigenes schlüsselloses `T()`, Rangfolge nur `<html lang>` (dieses Widget hat kein `init({lang})`) |
+| **PWA-Toolpoint** | `index.html` + `assets/sprache.js` | über das **vorhandene** `data-i18n`-System |
+
+⚠ **Die Begriffe sind mit Modul 17 abgestimmt** (`alive`/`traffic`/`foreign`/
+`seal`). Zwei Fassungen desselben Wortes liefen auseinander — und dann hieße
+dieselbe Lampe im Widget anders als im Modul-Fenster daneben.
+
+**Gemessen, beide Richtungen, headless an drei Seiten:**
+
+| | `lang=en` | `lang=de` |
+|---|---|---|
+| family-projekt.de | **ALIVE · TRAFFIC · FOREIGN · SEAL** | LEBT · VERKEHR · FREMD · SIEGEL |
+| pwa-toolpoint.de | **alive · traffic · foreign** | lebt · verkehr · fremd |
+| …/auslieferungspruefer | ALIVE · TRAFFIC · FOREIGN · SEAL | LEBT · VERKEHR · FREMD · SIEGEL |
+
+Dazu im Wappen: `OFFICIAL ATTESTATION` / `SEAL` gegen `OFFIZIELLE BESTÄTIGUNG`
+/ `SIEGEL`. **Auf Deutsch ändert sich nirgends etwas** — die tragende
+Zusicherung gilt in beide Richtungen, und sie ist gemessen, nicht behauptet.
+
+### ⚠ UND TOOLPOINTS WÄCHTER SCHRIEB DAS WÖRTERBUCH AB, STATT ES ABZULESEN
+
+In `tests/smoke.mjs` stand eine **fest verdrahtete Liste** von neun
+BASIS-Schlüsseln — eine zweite Fassung dessen, was in `assets/sprache.js`
+steht. Sie ist prompt auseinandergelaufen: die sechs neuen Lampen-Schlüssel
+standen im Wörterbuch, und der Wächter meldete sie trotzdem als fehlend
+(**860/861**).
+
+**Die Lehre stand in Toolpoints eigener Verfassung schon** — *„die Relais
+werden ABGELESEN, NICHT ABGESCHRIEBEN: zwei Listen derselben Poststellen
+laufen auseinander"* —, nur an einer anderen Tür. Behoben wurde die
+**Ursache**, nicht der Einzelfall: der Wächter liest die Liste jetzt aus
+`sprache.js`.
+
+⚠ **Er wird dadurch nicht schwächer** — er fragt „steht der benutzte Schlüssel
+im Wörterbuch?", und BASIS *ist* das Wörterbuch. Und er hat einen **eigenen
+Riegel**, der meldet, wenn das Ablesen selbst bricht: von Hand nachgestellt
+meldet er `nur 0 gefunden`, **bevor** die Folgemeldungen kommen. Ohne ihn wäre
+ein gebrochener Ableser still zu streng oder still zu lasch.
+
+**Gemessen:** Toolpoint `npm test` **862/862** · family-project
+`tests/smoke_all.mjs` **110/110** · zwei Gegenprobe-Fälle ergänzt, **beide von
+Hand in einer Wegwerf-Kopie nachgestellt** (der Arbeitsbaum bleibt unberührt,
+wie die dortige Verfassung es verlangt).
+
+### Was diese Sitzung insgesamt hinterlässt
+
+| | |
+|---|---|
+| **Aufgabe 1** (Nachlese) | erledigt — drei Befunde, alle gemessen |
+| **Wappen** | entschieden, gebaut, in **20 Trägern** ausgerollt |
+| **Lampen** | entschieden, gebaut, in beiden Marktplätzen |
+| **Aufgabe 2** (Andock-Werkzeug) | **unberührt** — Klaus' Weg steht fest: *erst zusammenführen, dann übersetzen* |
+
+⚠ **`docs/PULS.md` steht bei rund 2.980 Zeilen.** Die nächste Sitzung lagert
+aus, **bevor** sie schreibt — auslagern statt kürzen, die Schutz-Klausel oben
+gilt.
+
+---
+
 ## Stand 2026-09-14 (Haupt-Sitzung, Nacht) · ✅ DAS WAPPEN SPRICHT MIT — 20 TRÄGER, NICHT 19
 
 **Rolle:** Haupt-Sitzung, Fortsetzung. Klaus hat die Frage aus der Nachlese
@@ -693,103 +766,13 @@ vorkommen und jedes `T("…")` einen Schlüssel haben.
 Sichttest an einer Seite.
 
 
-## Stand 2026-09-14 (Haupt-Sitzung) · ✅ SECHS KNOTEN NEU SIGNIERT — ALLE ÜBER 0,80
+## Eine Sitzung vom 2026-09-14 (früh) — ausgelagert am 2026-09-14 (Nacht)
 
-**Rolle:** Haupt-Sitzung. Acht PRs gemergt, sechs Sporen geprüft, Register
-nachgetragen. Kein Modul-Code angefasst.
-
-### 1 · Die acht PRs sind drin
-
-Squash-Merge, in der mit Klaus abgesprochenen Reihenfolge — erst Sage und die
-sechs Beschreibungen, PWA Toolpoint zuletzt und allein, damit die eine sichtbare
-Layout-Änderung isoliert zu begutachten ist. Die Cache-Nummern wurden vorher
-gegen **alle** Remote-Zweige der fünf bumpenden Depots geprüft (NETZWEIT §3a):
-jede lag genau eins über der höchsten anderswo, keine Kollision.
-
-### 2 · Klaus hat die sechs Knoten neu signiert — gemessen
-
-| Knoten | Zeichen alt → neu | Raum 2026-09-10 | Depot 2026-09-14 |
-|---|---|---|---|
-| Alis Moderaum | 270 → 713 | 0,793347 | **0,898099** |
-| Perfect Skin Beauty | 265 → 775 | 0,783216 | **0,864960** |
-| Perfect Skin Fashion | 273 → 716 | 0,793030 | **0,893998** |
-| Muster Werbetechnik | 421 → 864 | 0,793613 | **0,908765** |
-| Tomys Hub | 300 → 811 | 0,786371 | **0,893661** |
-| Private Brain | 322 → 813 | 0,800773 | **0,908875** |
-
-Jede Spore einzeln geprüft: Signatur gültig · Kennung == `base64url(SHA256(rawPub))`
-· kein privater Teil `d` · `key_ops` nur `["verify"]` · Vektorlänge 1.000000 ·
-Text byte-gleich mit **beiden** Glue-Dateien auf `main`.
-
-⚠ **DIE ZWEI ZAHLEN HABEN VERSCHIEDENE MESSBEDINGUNGEN, und sie stehen deshalb
-in getrennten Feldern.** `matchScore` ist der Raum-Mitschnitt vom 2026-09-10,
-`matchScoreDepot` eine Rechnung aus zwei abgelegten Vektoren — kein Handschlag,
-kein Mitschnitt. Kalibriert an den alten Sporen trifft die Depot-Rechnung bei
-vier Knoten die Raum-Messung auf sechs Stellen; bei **Alis Moderaum**
-(0,795460 gegen 0,793347) und **Private Brain** (0,811482 gegen 0,800773) weicht
-sie ab — dort ist die im Depot liegende Spore nicht dieselbe, die im Raum stand.
-Die neue Zahl ersetzt die alte nicht; sie steht daneben, bis ein Mitschnitt sie
-bestätigt.
-
-### 3 · Muster Werbetechnik war das eigene Gegenbeispiel
-
-In `tests/sbkim-beschreibung.smoke.mjs` der Apps steht die These mit Zahlen:
-Kim-Bell kommt mit **82** Zeichen auf 0,874864, Muster Werbetechnik mit **421**
-auf 0,793613 — weil die 82 das Protokoll nennen und die 421 nicht. Derselbe
-Knoten, jetzt mit 864 Zeichen, die SBKIM, Mycel und Sage-Protokol nennen:
-**0,908765**. Die These ist damit an ihrem eigenen Gegenbeispiel gemessen, nicht
-nur behauptet.
-
-### 4 · Fünf Kennungen waren im Register veraltet
-
-Bei allen ausser Perfect Skin Beauty zeigte `nodeId` auf eine Identität, die die
-App nicht mehr hat. Nachgetragen als `previousNodeIds`, damit im Netz
-nachvollziehbar bleibt, dass es dieselbe App ist und nicht ein zweiter Knoten.
-
-⚠ **DER BROWSER WAR NICHT DIE URSACHE**, obwohl es so aussah. Klaus meldete, die
-erste Runde sei aus dem falschen Browser gekommen; die zweite aus DeX trug bei
-Alis Moderaum und Perfect Skin Beauty jedoch **denselben Schlüssel**. DeX-Chrome
-und Tablet-Chrome haben also dieselbe Identität — das Register hinkt schlicht
-hinterher. Auffällig bleibt, dass der einzige Knoten mit **eigener Domain**
-(Perfect Skin Beauty, `perfectskinbeauty.de`) seine Kennung behalten hat und
-alle fünf auf der geteilten `github.io`-Adresse nicht. **Die Ursache ist damit
-nicht bewiesen**, nur die Korrelation benannt.
-
-### 5 · Ein Befund an Tomys Hub, gefunden an der Spore (behoben, Tomys-Hub#165)
-
-Im Feld `domain` stand `lausiklauskn-png.github.io` — der **Server-Name** statt
-des Fachgebiets — und beide Kategorie-Listen waren leer. Älter als die Arbeit
-dieses Tages (im Eltern-Commit unverändert).
-
-⚠ **DIE ZAHL WAR NICHT BETROFFEN, und genau deshalb brauchte es Wächter.** Der
-Vektor kommt aus der Beschreibung; `domain` und die Kategorien gehen nicht ein.
-Belegt durch die Gegenprobe an der Wirklichkeit: nach der Reparatur hat Klaus
-neu signiert, drei Felder änderten sich, und der **Vektor blieb byte-gleich**.
-Ein Fehler, den keine Messung meldet, fällt ohne Wächter beim nächsten Mal
-wieder niemandem auf — sechs Wächter, fünf Gegenprobe-Fälle ergänzt.
-
-### Was offen bleibt
-
-- **Die sechs frischen Sporen liegen noch nicht in den Depots.** `sporeUrl` im
-  Register zeigt weiter auf die alten — also auf Dateien mit der alten Kennung.
-- **Kein Mitschnitt seit dem 2026-09-10.** Erst ein neuer Raum-Lauf bestätigt die
-  Depot-Zahlen; bis dahin stehen sie als das da, was sie sind.
-- **Warum die Depot-Rechnung bei Alis Moderaum und Private Brain abweicht** —
-  gemessen, nicht erklärt.
-- **Perfect Skin Fashion hat zweimal verschieden viele Schnipsel** (6 um 08:25,
-  5 um 10:22, Text byte-gleich, Cosinus zueinander 0,994296). Sieht aus wie der
-  512-Token-Schnitt, passt aber nicht: Perfect Skin Beauty hat mehr Text und
-  mehr Stichworte und behielt seine Liste. Ungeklärt, ohne Folge für die Zahl.
-- `Tomys-Hub/tests/smoke-spore-download.cjs` und `smoke-verbund.cjs` bleiben rot
-  — auf `main` genauso, je dreimal gemessen.
-
-### Nächster Schritt
-
-Die sechs Sporen in ihre Depots legen (alte als `spore-vorgaenger-2026-09-14.json`
-daneben, nie überschreiben), dann einen Mycel-Mitschnitt fahren und die
-Raum-Zahlen gegen die Depot-Zahlen halten.
-
----
+> **↓ Ausgelagert.** Der Eintrag „SECHS KNOTEN NEU SIGNIERT — ALLE ÜBER 0,80"
+> steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-09_puls-auslagerung-9.md`](sessions/archiv/2026-09_puls-auslagerung-9.md)
+> (98 Zeilen). Nichts gekürzt — die Schutz-Klausel oben verlangt auslagern
+> statt kürzen, und die Git-Historie trägt es ohnehin.
 
 ## Eine Sitzung vom 2026-09-11 — ausgelagert am 2026-09-14
 
