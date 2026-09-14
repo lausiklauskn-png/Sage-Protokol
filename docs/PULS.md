@@ -31,6 +31,67 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, Nachtrag) · ⚠ DER SPRACH-WÄCHTER WAR BLIND FÜR 52 TEXTE
+
+**Rolle:** Haupt-Sitzung, Bau. PR #988 gemergt (`d71a678`). **Die Zahlen im
+Eintrag darunter sind damit überholt** — dort stehen 195 Schlüssel und 16/16;
+gültig sind **237** und **17/17**.
+
+**Der Befund.** Im echten Fenster stand unter lauter englischen Zeilen
+**„Speicher dauerhaft: unbekannt"**. Die beiden Wächter von heute früh waren
+dabei grün — und zu Recht: sie messen das Wörterbuch gegen die `T()`-Aufrufe,
+in beide Richtungen. **Ein Text, der gar nicht durch `T()` geht, kommt in
+keiner der beiden Mengen vor.** Er war für sie unsichtbar.
+
+Gemessen: **52 Stellen.** Knöpfe („Abbrechen", „🤝 Andocken", „📥 Einspielen",
+„🔒 im Tresor merken"), Kurzinfos („ja"/„nein"/„unbekannt", „an"/„aus") und
+Fehlerzeilen („✗ Fehler: ", „✗ Verbinden fehlgeschlagen: "). Alle umhüllt,
+**42 neue Wörterbuch-Einträge**.
+
+**Gefunden hat es kein Wächter, sondern ein Blick ins Fenster** — ein
+Browser-Lauf, der das Modul allein lud und den sichtbaren Text auslas.
+
+**Der neue Wächter** misst **Anzeige-Stellen**, nicht Zeichenketten schlechthin:
+eine Suche nach „jedem Literal mit einem Buchstaben" fand **627** Treffer, fast
+alle CSS, Tag- und Ereignis-Namen. Gemessen werden Zuweisungen an
+`textContent`/`title`/`placeholder`/`alt` und das dritte Argument von `el()`.
+
+**⚠ Benannte Grenze:** ein Text, der über einen selbstgebauten Umweg in den DOM
+kommt, fällt nicht auf. Zweite Verteidigungslinie, keine
+Vollständigkeits-Garantie.
+
+**⚠ Drei eigene Fehler beim Bauen des Wächters.**
+
+1. **Sein erster Filter verbot das Richtige.** Er hielt jedes Literal mit einem
+   Doppelpunkt für CSS — und warf `"🧠 KI-Richter: "` und `"✗ Fehler: "` heraus,
+   also echte Anzeigetexte. CSS erkennt man an `;` oder an `eigenschaft: wert`.
+   Ein Gegenprobe-Fall nagelt jetzt die **Gegenrichtung** fest.
+2. **Der Scanner nahm die Wörterbuch-Grenze falsch** (`\n  };` statt
+   `\n  } };`) und übersprang **360 Zeilen echten Code**. Drei Stellen blieben
+   im ersten Durchgang unentdeckt.
+3. **Fall C1 fing aus dem falschen Grund.** Er nahm einer Zeile ihr `T()` —
+   damit verlor ihr Schlüssel seine Fundstelle, der Nachbar-Wächter fiel zuerst.
+   Jetzt wird **hinzugefügt**. Derselbe Fehler wie in A2, **zum zweiten Mal an
+   einem Tag**.
+
+**Gemessen.**
+
+| | |
+|---|---|
+| `tests/smoke_bau23_sprache.mjs` | **17 bestanden, 0 fehlgeschlagen** |
+| `node tests/run_alle.mjs` | **101 Proben — 101 grün, 0 rot, 0 nicht lauffähig** |
+| Gegenprobe (jetzt 9 Fälle) | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| Wörterbuch | 195 → **237** Schlüssel |
+| Bauvorlagen | **ein** md5 für alle drei Kopien |
+
+**Im Browser belegt** (Chromium, Modul allein geladen, `lang="en"`): statt
+„Speicher dauerhaft: unbekannt" steht **„Storage permanent: unknown"**; auf
+Deutsch unverändert; keine Seitenfehler.
+
+**Nächster sinnvoller Schritt:** unverändert das Ausrollen in die 16 Apps —
+jetzt mit dem vollständigen Wörterbuch.
+
+
 ## Stand 2026-09-14 (Haupt-Sitzung, Abend) · ✅ MODUL 23 UI SPRICHT ENGLISCH — 195 TEXTE
 
 **Rolle:** Haupt-Sitzung, Bau. PR #986 gemergt (`8de9cf5`). Anlass war Klaus'
@@ -847,58 +908,12 @@ Gegenprobe → **8 gefangen, 0 durchgerutscht**.
 
 ---
 
-## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · SBKIM WIRD WIEDER ÜBERALL GLEICH AUFGELÖST
+## Noch eine Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
-**Was getan.** `status.json` trug im Feld `fullName` eine **dritte** Auflösung
-von SBKIM — übernommen aus dem Abstract von
-[`docs/PAPER_NUTZEN_UND_INTEGRATION.md`](PAPER_NUTZEN_UND_INTEGRATION.md).
-Verbindlich ist seit dem 2026-09-03 die Lesart, die
-[`docs/papers/README.md`](papers/README.md) ausdrücklich als gültig nennt:
-**„Semantisches Bidirektionales KI-Matching"**. Sie steht im Netz 35 Mal.
-Register und Begleit-Dokument tragen sie jetzt; Klaus hat es so entschieden.
-
-**Damit standen drei Namen für dasselbe Protokoll im selben Depot**, und der
-eine davon, den die meisten lesen, war der falsche: das Register ist die Datei,
-aus der zwanzig Geschwister-Apps ihre Angaben ziehen.
-
-**Neu: `tests/smoke_sbkim_name.mjs`** (7 Prüfungen) + `gegenprobe_sbkim_name.mjs`
-(7 Fälle, jeder von Hand nachgestellt). Der Maßstab wird aus `docs/papers/README.md`
-**gelesen, nicht abgeschrieben** — stünde er in der Probe noch einmal, wäre das
-die vierte Stelle, an der er auseinanderlaufen kann.
-
-**Drei eigene Fehler, alle von der Gegenprobe gefunden:**
-
-| Was | Warum es nichts maß |
-|---|---|
-| meine Notiz im Register **zitierte** die falsche Auflösung im Wortlaut | eine Prüfung kann ein Zitat nicht von einer Behauptung unterscheiden |
-| die Probe war grün, weil sie **noch nicht eingecheckt** war | `git ls-files` führte sie nicht, also sah sie sich selbst nicht |
-| „mehr als 50 geführte Dateien" | in diesem Depot **nicht isoliert zu unterlaufen** — nimmt man `docs`, `assets` und `src` aus dem Index, bleiben 285. Der Fall dazu fiel einem Nachbar-Wächter zur Last und bewies über diesen Wächter nichts: **gefangen aus dem falschen Grund** |
-
-Gemessen wird seitdem, ob die Suche die zwei **Herkunfts-Dateien** wirklich in
-der Hand hatte. Ein Fall, der genau eine davon aus dem Index nimmt, trifft ihn
-allein.
-
-**Was offen ist.** `sbkim/spore.json` und die drei Wege zur Spore tragen die
-Form **ohne Endung** („Semantisch Bidirektionales …") als Stichwort und im
-Schnipsel. **Nicht angefasst, und das ist Absicht:** jedes Feld einer Spore
-steht unter der Signatur — eine Berichtigung dort kostet ein neues Signieren
-durch Klaus und rechnet alle zwanzig `matchScore` neu. Das ist seine
-Entscheidung, nicht die einer Sitzung. Die Probe jagt deshalb **nur** die dritte
-Auflösung, nicht die verkürzte.
-
-`docs/sessions/archiv/` und diese Datei tragen die dritte Auflösung weiter, und
-sie sollen es: die Einträge halten fest, **dass** es sie gab. Ein eigener
-Wächter besteht darauf — eine Probe, die sie tilgt, verlangt
-Geschichtsfälschung.
-
-**Nächster Schritt.** Perfect Skin Beauty (0.783216), der tiefste der fünf
-Knoten unter dem Handshake-Boden.
-
-**Proben:** `npm test` → **98 grün, 0 rot, 0 nicht lauffähig**.
-Gegenprobe → **7 gefangen, 0 durchgerutscht**.
-
----
-
+> 2026-09-10 (Haupt-Sitzung, Nachtrag) · SBKIM WIRD WIEDER ÜBERALL GLEICH AUFGELÖST
+> stand bis heute hier in voller Laenge (52 Zeilen). **Ausgelagert, nicht
+> gekuerzt** — der Wortlaut steht vollstaendig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-2.md`](sessions/archiv/2026-09-14_puls-auslagerung-2.md).
 ## Eine weitere Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
 > 2026-09-10 (Haupt-Sitzung, Abschluss) · ✅ SAGE NEU SIGNIERT — VIER KNOTEN SIND ZURÜCK
@@ -923,6 +938,7 @@ Gegenprobe → **7 gefangen, 0 durchgerutscht**.
 |---|---|---|
 | 2026-09-10 (Haupt-Sitzung, später) — 🔴 Neun von 21 Knoten unter dem Handshake-Boden | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung, Abschluss) — ✅ Sage neu signiert, vier Knoten sind zurück | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung, Nachtrag) — SBKIM wird wieder überall gleich aufgelöst | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung) — ✅ KIM HUB COMPANY IST NEU SIGNIERT, 0.910528 | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung.md) | [→ Protokoll](sessions/archiv/2026-09-10_khc-neu-signiert.md) |
 
 

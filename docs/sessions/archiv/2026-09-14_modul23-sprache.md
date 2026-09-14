@@ -129,3 +129,80 @@ misst nichts.*
 Beim Ausrollen ist **vor** dem Kopieren je App zu messen, welche Generation dort
 liegt — eine Kopie über eine ältere Generation nimmt deren Stand mit, ohne dass
 der Drift-Guard etwas dazu sagt.
+
+---
+
+# ⚠ NACHTRAG desselben Tages — der Wächter war blind für 52 Anzeigetexte
+
+**PR [#988](https://github.com/lausiklauskn-png/Sage-Protokol/pull/988), gemergt als `d71a678`.**
+**Die Zahlen oben sind damit überholt:** dort stehen 195 Schlüssel und 16/16;
+gültig sind **237** und **17/17**.
+
+## Der Befund, und wie er gefunden wurde
+
+Im echten Fenster stand unter lauter englischen Zeilen **„Speicher dauerhaft:
+unbekannt"**. Gefunden hat es **kein Wächter**, sondern ein Browser-Lauf, der
+das Modul allein lud und den sichtbaren Text auslas.
+
+Die beiden Wächter aus dem Hauptteil waren dabei **grün — und zu Recht.** Sie
+messen das Wörterbuch gegen die `T()`-Aufrufe, in beide Richtungen, lückenlos.
+**Ein Text, der gar nicht durch `T()` geht, kommt in keiner der beiden Mengen
+vor.** Er war für sie unsichtbar.
+
+> **Ein Wächter misst, was er misst — nicht, was man von ihm erwartet.**
+> Die Blindstelle lag nicht in der Ausführung, sondern in der Frage.
+
+Nachgemessen: **52 Stellen.** Knöpfe (`Abbrechen`, `🤝 Andocken`,
+`📥 Einspielen`, `🔒 im Tresor merken`), Kurzinfos (`ja`/`nein`/`unbekannt`,
+`an`/`aus`) und Fehlerzeilen (`✗ Fehler: `, `✗ Verbinden fehlgeschlagen: `).
+Alle umhüllt, **42 neue Wörterbuch-Einträge**.
+
+## Der neue Wächter misst Anzeige-Stellen
+
+Eine Suche nach „jedem Literal mit einem Buchstaben" fand **627 Treffer**, fast
+alle CSS, Tag- und Ereignis-Namen. **Eine Warnung, die man nicht mehr los wird,
+ist keine Warnung.** Gemessen werden deshalb Zuweisungen an
+`textContent`/`title`/`placeholder`/`alt` und das dritte Argument von `el()`.
+
+**⚠ Benannte Grenze:** ein Text, der über einen selbstgebauten Umweg in den DOM
+kommt, fällt nicht auf. Zweite Verteidigungslinie, keine
+Vollständigkeits-Garantie.
+
+## ⚠ Drei eigene Fehler beim Bauen des Wächters
+
+**1 · Sein erster Filter verbot das Richtige.** Er hielt jedes Literal mit einem
+Doppelpunkt für CSS — und warf damit `"🧠 KI-Richter: "` und `"✗ Fehler: "`
+heraus, also ausgerechnet echte Anzeigetexte. CSS erkennt man an `;` oder an
+`eigenschaft: wert`, nicht am blossen Doppelpunkt. Ein Gegenprobe-Fall nagelt
+seitdem die **Gegenrichtung** fest: fällt der Filter ganz weg, meldet der
+Wächter CSS-Zeilen als Fehler.
+
+**2 · Der Scanner nahm die Wörterbuch-Grenze falsch.** Er suchte `\n  };`,
+das Wörterbuch endet auf `\n  } };` — dadurch übersprang er **360 Zeilen echten
+Code**, und drei Stellen blieben im ersten Durchgang unentdeckt.
+
+**3 · Fall C1 fing aus dem falschen Grund.** Er nahm einer Zeile ihr `T()` —
+damit verlor zugleich ihr Schlüssel seine Fundstelle, „jeder Eintrag hat eine
+Fundstelle im Code" fiel zuerst, und der gemeinte Wächter blieb ungemessen.
+Jetzt wird **hinzugefügt** statt geändert. **Derselbe Fehler wie in A2, zum
+zweiten Mal an einem Tag.**
+
+## Gemessen
+
+| | |
+|---|---|
+| `tests/smoke_bau23_sprache.mjs` | **17 bestanden, 0 fehlgeschlagen** |
+| `node tests/run_alle.mjs` | **101 Proben — 101 grün, 0 rot, 0 nicht lauffähig** |
+| Gegenprobe (9 Fälle) | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| Wörterbuch | 195 → **237** Schlüssel |
+| Bauvorlagen | **ein** md5 für alle drei Kopien |
+
+**Im Browser belegt** (Chromium, Modul allein geladen, `lang="en"`): statt
+„Speicher dauerhaft: unbekannt" steht **„Storage permanent: unknown"**; auf
+Deutsch unverändert; keine Seitenfehler.
+
+## Was das für das Ausrollen heisst
+
+Die 16 Apps bekommen damit **237** Texte statt 195. Wer die Fassung aus dem
+Hauptteil dieses Protokolls kopiert hätte, hätte ein Fenster ausgerollt, das an
+52 Stellen weiter deutsch spricht.

@@ -5,12 +5,13 @@ zum Sprach-Haken in Modul 23 sonst ueber **3.000** Zeilen gestiegen waere.
 **Ausgelagert, nicht gekuerzt** — der Wortlaut steht hier byte-gleich, wie er in
 PULS.md stand.
 
-**Zwei** Eintraege, 44 + 38 Zeilen. Gemessen: 2.976 vor dem neuen Eintrag,
-3.005 danach — also ueber der Grenze; nach beiden Auslagerungen **2.973**.
+**Drei** Eintraege, 44 + 38 + 52 Zeilen. Gemessen: 2.976 vor dem ersten
+neuen Eintrag, 3.005 danach — also ueber der Grenze; nach den ersten beiden
+Auslagerungen 2.973. Der Nachtrag desselben Tages hob sie auf 3.036, nach der
+dritten Auslagerung **2.990**.
 
-Der zweite wurde erst noetig, weil die erste Auslagerung nicht reichte. Beide
-stehen hier byte-gleich untereinander, in der Reihenfolge, in der sie in
-PULS.md standen.
+Jede weitere wurde noetig, weil die vorige nicht reichte. Alle drei stehen hier
+byte-gleich untereinander, in der Reihenfolge, in der sie in PULS.md standen.
 
 ---
 
@@ -96,6 +97,61 @@ Raum steht. Von den neun Knoten unter dem Boden 0.80 sind **vier zurück**:
 `*.verify.md`-Prüfprotokolle bleiben unangetastet — sie belegen, was am
 jeweiligen Datum galt). Danach: die fünf Knoten unter dem Boden, einer nach dem
 anderen.
+
+---
+
+
+---
+
+## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · SBKIM WIRD WIEDER ÜBERALL GLEICH AUFGELÖST
+
+**Was getan.** `status.json` trug im Feld `fullName` eine **dritte** Auflösung
+von SBKIM — übernommen aus dem Abstract von
+[`docs/PAPER_NUTZEN_UND_INTEGRATION.md`](PAPER_NUTZEN_UND_INTEGRATION.md).
+Verbindlich ist seit dem 2026-09-03 die Lesart, die
+[`docs/papers/README.md`](papers/README.md) ausdrücklich als gültig nennt:
+**„Semantisches Bidirektionales KI-Matching"**. Sie steht im Netz 35 Mal.
+Register und Begleit-Dokument tragen sie jetzt; Klaus hat es so entschieden.
+
+**Damit standen drei Namen für dasselbe Protokoll im selben Depot**, und der
+eine davon, den die meisten lesen, war der falsche: das Register ist die Datei,
+aus der zwanzig Geschwister-Apps ihre Angaben ziehen.
+
+**Neu: `tests/smoke_sbkim_name.mjs`** (7 Prüfungen) + `gegenprobe_sbkim_name.mjs`
+(7 Fälle, jeder von Hand nachgestellt). Der Maßstab wird aus `docs/papers/README.md`
+**gelesen, nicht abgeschrieben** — stünde er in der Probe noch einmal, wäre das
+die vierte Stelle, an der er auseinanderlaufen kann.
+
+**Drei eigene Fehler, alle von der Gegenprobe gefunden:**
+
+| Was | Warum es nichts maß |
+|---|---|
+| meine Notiz im Register **zitierte** die falsche Auflösung im Wortlaut | eine Prüfung kann ein Zitat nicht von einer Behauptung unterscheiden |
+| die Probe war grün, weil sie **noch nicht eingecheckt** war | `git ls-files` führte sie nicht, also sah sie sich selbst nicht |
+| „mehr als 50 geführte Dateien" | in diesem Depot **nicht isoliert zu unterlaufen** — nimmt man `docs`, `assets` und `src` aus dem Index, bleiben 285. Der Fall dazu fiel einem Nachbar-Wächter zur Last und bewies über diesen Wächter nichts: **gefangen aus dem falschen Grund** |
+
+Gemessen wird seitdem, ob die Suche die zwei **Herkunfts-Dateien** wirklich in
+der Hand hatte. Ein Fall, der genau eine davon aus dem Index nimmt, trifft ihn
+allein.
+
+**Was offen ist.** `sbkim/spore.json` und die drei Wege zur Spore tragen die
+Form **ohne Endung** („Semantisch Bidirektionales …") als Stichwort und im
+Schnipsel. **Nicht angefasst, und das ist Absicht:** jedes Feld einer Spore
+steht unter der Signatur — eine Berichtigung dort kostet ein neues Signieren
+durch Klaus und rechnet alle zwanzig `matchScore` neu. Das ist seine
+Entscheidung, nicht die einer Sitzung. Die Probe jagt deshalb **nur** die dritte
+Auflösung, nicht die verkürzte.
+
+`docs/sessions/archiv/` und diese Datei tragen die dritte Auflösung weiter, und
+sie sollen es: die Einträge halten fest, **dass** es sie gab. Ein eigener
+Wächter besteht darauf — eine Probe, die sie tilgt, verlangt
+Geschichtsfälschung.
+
+**Nächster Schritt.** Perfect Skin Beauty (0.783216), der tiefste der fünf
+Knoten unter dem Handshake-Boden.
+
+**Proben:** `npm test` → **98 grün, 0 rot, 0 nicht lauffähig**.
+Gegenprobe → **7 gefangen, 0 durchgerutscht**.
 
 ---
 
