@@ -31,6 +31,107 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, Nacht) · ✅ DER ROLLOUT VERTEILT SICH SELBST — UND 44 DATEIEN HÄNGEN ZURÜCK
+
+**Rolle:** Haupt-Sitzung. Klaus hat nach dem Ziel gefragt, gemerkt, dass sich
+die Sitzungen aneinanderreihen, und daraufhin **den automatischen Rollout
+beauftragt** — statt der nächsten Übersetzung.
+
+**Der Anlass, in einer Zahl:** am selben Tag kostete eine Kanon-Änderung
+**23 Pull Requests für zwei übersetzte Wörter**. Nicht die Änderung war teuer,
+sondern das Verteilen — und der Preis fiel bei jeder weiteren wieder an.
+
+### Was gebaut wurde
+
+`tools/kanon-verteilen.mjs` — findet die Träger selbst, vergleicht Prüfsummen,
+zieht nach, was zurückhängt, samt sha-Pins (alle drei Längen) und
+`CACHE_VERSION` nur dort, wo das Modul wirklich im Vorrat steht.
+
+⚠ **DIE LISTE WIRD GEFUNDEN, NICHT GEPFLEGT.** Das ist die eine Entscheidung,
+an der alles hängt, und sie folgt aus dem Schaden vom selben Tag:
+**BookLedgerPro fiel aus dem Rollout**, weil nach der *erwarteten*
+Vorgänger-Fassung gesucht wurde. Eine gepflegte Liste hätte denselben Fehler
+gemacht, nur dauerhaft. Eine neue App ist dabei, **sobald sie ein Modul trägt**
+— Apps und Internetseiten gleichermaßen (gemessen: Mein-Workfloh-Page trägt 13
+Kanon-Dateien und ist damit genauso betroffen wie eine App).
+
+⚠ **ERKANNT WIRD AM INHALT.** Jedes Modul trägt `SBKIM — Modul NN` im Kopf.
+Damit lösen sich die drei Siegel-Dateien von SB-KIMTool-Point von selbst
+auseinander — die Kopie trägt die Marke, der Loader und die Fassung des Modells
+nicht. Eine Namens-Suche hätte alle drei getroffen. **Der Automat wäre heute
+nicht in die Falle gelaufen, in die ich fast gelaufen wäre.**
+
+### ⚠ Der gefährlichste Fund kam beim Bauen
+
+Die erste Fassung verteilte **`siegel-inhalt.js` mit** — und die trägt die
+**komplette App-Identität**: `nodeName`, `domainDescription`, `domainKeywords`,
+`stammCategories`, `backupPrefix`. Ein Überschreiben hätte **jeder App Sages
+Namen und Sages Bedeutungs-Vektor gegeben** — der Schaden vom 2026-08-16 in
+Alis Moderaum, nur zwanzigfach und ohne dass jemand hinsieht.
+
+Gefunden hat es nicht das Nachdenken, sondern **ein Diff zweier Repos**, bevor
+das Werkzeug zum ersten Mal schreiben durfte. Sie steht jetzt in `NIE_VERTEILEN`
+und ist durch zwei Riegel gedeckt.
+
+### Der Befund: 44 Dateien im Netz hängen zurück
+
+| | |
+|---|---|
+| Repos mit Kanon-Dateien | **22** |
+| Kopien schon gleich | **282** |
+| **hängen zurück** | **44** |
+
+Einzelne um über 300 Zeilen (`15_membran.js` in Tomys-Hub und Privat-Brain:
+361 · `03_embedding.js` in SB-KIMTool-Point: 367). **Das hat vorher niemand
+gesehen** — der Drift-Guard sagt „unverändert", nicht „aktuell".
+
+⚠ Ein Generationen-Sprung wird deshalb **als solcher benannt** (ab 50 Zeilen).
+Eine Meldung, die zwei und zweihundert Zeilen gleich schreibt, lädt dazu ein,
+beides gleich zu behandeln — und ein Sprung braucht einen Probenlauf im
+Ziel-Repo.
+
+### ⚠ VIER VON FÜNF GEGENPROBE-FÄLLEN RUTSCHTEN BEIM ERSTEN LAUF DURCH
+
+Und keiner davon war ein Fehler im Werkzeug — **alle vier waren Lücken im
+Wegwerf-Netz der Probe**:
+
+| Fall | warum er nichts maß |
+|---|---|
+| Sperrliste ausgebaut | die Identitäts-Datei lag außerhalb des Kanon-Pfades — der Riegel kam nie dran |
+| zweiter Riegel ausgebaut | der erste deckte ihn |
+| Doppelpunkt-Marke verengt | im Test-Netz gab es kein Modul mit `:` (Modul 20 hat eins) |
+| Vorrat-Prüfung ausgebaut | es gab nur **einen** Worker, und die Datei stand drin |
+
+Das Netz trägt jetzt ein Modul mit Doppelpunkt, eine Ziel-Datei **mit** Marke,
+die Identitäts-Datei **im** Kanon-Pfad und einen zweiten Worker **ohne** die
+Datei im Vorrat. Danach fangen alle.
+
+⚠ **Und ein Fall ist ersatzlos entfallen, als benannte Grenze:** beide Riegel
+lesen dieselbe Liste, der erste Fall nimmt sie weg und fängt damit beide. Ein
+Fall nur für den zweiten blieb zu Recht grün — *er hätte bewiesen, was er nicht
+misst.* Dieselbe Lehre wie bei `umask` + `chmod` im Schlüssel-Ablagefach.
+
+⚠ **Ein gerades Anführungszeichen hat die Probe zerlegt** — dieselbe Falle wie
+in `manual_check.html`, wo zwei Panels elf Tage lang tot dastanden.
+
+**Gemessen:** `smoke_kanon_verteilen.mjs` **20 grün** (fährt das echte Werkzeug
+an einem Wegwerf-Netz, liest es nicht) · `gegenprobe_kanon_verteilen.sh`
+**4 gefangen, 0 durchgerutscht, 0 tote Anker** · voller Lauf **104 Proben grün,
+0 rot, 0 nicht lauffähig**.
+
+### Was offen bleibt
+
+- **Die 44 Rückstände sind nicht nachgezogen.** Das Werkzeug meldet sie; das
+  Nachziehen ist eine bewusste Entscheidung mit Probenlauf je Repo — besonders
+  bei den Generationen-Sprüngen.
+- **Der Automat öffnet keine PRs.** Er tut die Datei-Arbeit; Branch, Commit und
+  PR bleiben ein eigener Schritt. Eine GitHub Action, die ihn zeitgesteuert
+  ruft, bräuchte ein Token mit Schreibrecht auf alle Repos — **Klaus'
+  Entscheidung, nicht meine.**
+- **A18** (Wizard zusammenführen, dann übersetzen) unberührt.
+
+---
+
 ## Stand 2026-09-14 (Haupt-Sitzung, Nacht, Abschluss) · ✅ DIE LAMPEN DER ZWEI MARKTPLÄTZE SPRECHEN MIT
 
 **Rolle:** Haupt-Sitzung, dritte und letzte Entscheidung aus der Nachlese.
@@ -640,131 +741,20 @@ und `17_floating_widget.js` (19) bleiben deutsch.
 Englisch; danach Modul 16 und 17 nach demselben Muster.
 
 
-## Stand 2026-09-14 (Haupt-Sitzung, Nachtrag) · ⚠ DER SPRACH-WÄCHTER WAR BLIND FÜR 52 TEXTE
+## Eine Sitzung vom 2026-09-14 (Nachtrag) — ausgelagert am 2026-09-14 (Nacht)
 
-**Rolle:** Haupt-Sitzung, Bau. PR #988 gemergt (`d71a678`). **Die Zahlen im
-Eintrag darunter sind damit überholt** — dort stehen 195 Schlüssel und 16/16;
-gültig sind **237** und **17/17**.
+> **↓ Ausgelagert.** Der Eintrag „DER SPRACH-WÄCHTER WAR BLIND FÜR 52 TEXTE"
+> steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-09_puls-auslagerung-11.md`](sessions/archiv/2026-09_puls-auslagerung-11.md)
+> (61 Zeilen). Nichts gekürzt — auslagern statt kürzen.
 
-**Der Befund.** Im echten Fenster stand unter lauter englischen Zeilen
-**„Speicher dauerhaft: unbekannt"**. Die beiden Wächter von heute früh waren
-dabei grün — und zu Recht: sie messen das Wörterbuch gegen die `T()`-Aufrufe,
-in beide Richtungen. **Ein Text, der gar nicht durch `T()` geht, kommt in
-keiner der beiden Mengen vor.** Er war für sie unsichtbar.
+## Eine Sitzung vom 2026-09-14 (Abend) — ausgelagert am 2026-09-14 (Nacht)
 
-Gemessen: **52 Stellen.** Knöpfe („Abbrechen", „🤝 Andocken", „📥 Einspielen",
-„🔒 im Tresor merken"), Kurzinfos („ja"/„nein"/„unbekannt", „an"/„aus") und
-Fehlerzeilen („✗ Fehler: ", „✗ Verbinden fehlgeschlagen: "). Alle umhüllt,
-**42 neue Wörterbuch-Einträge**.
-
-**Gefunden hat es kein Wächter, sondern ein Blick ins Fenster** — ein
-Browser-Lauf, der das Modul allein lud und den sichtbaren Text auslas.
-
-**Der neue Wächter** misst **Anzeige-Stellen**, nicht Zeichenketten schlechthin:
-eine Suche nach „jedem Literal mit einem Buchstaben" fand **627** Treffer, fast
-alle CSS, Tag- und Ereignis-Namen. Gemessen werden Zuweisungen an
-`textContent`/`title`/`placeholder`/`alt` und das dritte Argument von `el()`.
-
-**⚠ Benannte Grenze:** ein Text, der über einen selbstgebauten Umweg in den DOM
-kommt, fällt nicht auf. Zweite Verteidigungslinie, keine
-Vollständigkeits-Garantie.
-
-**⚠ Drei eigene Fehler beim Bauen des Wächters.**
-
-1. **Sein erster Filter verbot das Richtige.** Er hielt jedes Literal mit einem
-   Doppelpunkt für CSS — und warf `"🧠 KI-Richter: "` und `"✗ Fehler: "` heraus,
-   also echte Anzeigetexte. CSS erkennt man an `;` oder an `eigenschaft: wert`.
-   Ein Gegenprobe-Fall nagelt jetzt die **Gegenrichtung** fest.
-2. **Der Scanner nahm die Wörterbuch-Grenze falsch** (`\n  };` statt
-   `\n  } };`) und übersprang **360 Zeilen echten Code**. Drei Stellen blieben
-   im ersten Durchgang unentdeckt.
-3. **Fall C1 fing aus dem falschen Grund.** Er nahm einer Zeile ihr `T()` —
-   damit verlor ihr Schlüssel seine Fundstelle, der Nachbar-Wächter fiel zuerst.
-   Jetzt wird **hinzugefügt**. Derselbe Fehler wie in A2, **zum zweiten Mal an
-   einem Tag**.
-
-**Gemessen.**
-
-| | |
-|---|---|
-| `tests/smoke_bau23_sprache.mjs` | **17 bestanden, 0 fehlgeschlagen** |
-| `node tests/run_alle.mjs` | **101 Proben — 101 grün, 0 rot, 0 nicht lauffähig** |
-| Gegenprobe (jetzt 9 Fälle) | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
-| Wörterbuch | 195 → **237** Schlüssel |
-| Bauvorlagen | **ein** md5 für alle drei Kopien |
-
-**Im Browser belegt** (Chromium, Modul allein geladen, `lang="en"`): statt
-„Speicher dauerhaft: unbekannt" steht **„Storage permanent: unknown"**; auf
-Deutsch unverändert; keine Seitenfehler.
-
-**Nächster sinnvoller Schritt:** unverändert das Ausrollen in die 16 Apps —
-jetzt mit dem vollständigen Wörterbuch.
-
-
-## Stand 2026-09-14 (Haupt-Sitzung, Abend) · ✅ MODUL 23 UI SPRICHT ENGLISCH — 195 TEXTE
-
-**Rolle:** Haupt-Sitzung, Bau. PR #986 gemergt (`8de9cf5`). Anlass war Klaus'
-Befund am Tablet: die Seite stand auf Englisch, die SBKIM-Fenster darin blieben
-deutsch. Umfang auf seine ausdrückliche Wahl **„gestuft: erst Sage, dann
-netzweit"**.
-
-**Was gebaut wurde.** Ein schlüsselloser Sprach-Haken in
-`src/modules/23_rendezvous_ui.js` — **der deutsche Satz IST der Schlüssel**,
-`TEXTE.en` trägt die Übersetzungen, `T(de)` fällt bei fehlendem Eintrag auf
-Deutsch zurück. `sprache()` nimmt zuerst `cfg.lang` (was die App über
-`init({lang})` sagt), sonst `<html lang>`, sonst Deutsch. `_meta` nennt `lang`
-und `langKeys`. Die beiden byte-gepinnten Bauvorlagen (`sbkim-bundle/`,
-`sbkim-bundle-voll/`) wurden in derselben Bewegung nachgezogen — ohne das wären
-`smoke_bauvorlagen` und `smoke_bundle_connect` zu Recht rot geworden.
-
-**Gemessen.**
-
-| | |
-|---|---|
-| `tests/smoke_bau23_sprache.mjs` (neu) | **16 bestanden, 0 fehlgeschlagen** |
-| `node tests/run_alle.mjs` | **101 Proben — 101 grün, 0 rot, 0 nicht lauffähig** |
-| `tests/gegenprobe_bau23_sprache.sh` (neu, 7 Fälle) | **7 gefangen · 0 durchgerutscht · 0 tote Anker** |
-| Aufrufstellen · Schlüssel | 210 `T("…")` · **195** eindeutig, alle übersetzt |
-
-Der Rückgabewert stammt jeweils aus der Prüfung selbst, nicht aus einer Pipe.
-Die Gegenprobe läuft je Fall an einer **Wegwerf-Kopie** (`mktemp -d`); ein
-abgebrochener Lauf hinterlässt damit kein sabotiertes Modul im Depot.
-`git status` war vor und nach dem Lauf unverändert.
-
-**⚠ Der Preis des schlüssellosen Verfahrens ist benannt:** wer einen deutschen
-Satz ändert, verliert still seine Übersetzung. Dagegen steht der Wächter, der
-**in beide Richtungen** misst — jeder Schlüssel muss als `T("…")` im Code
-vorkommen und jedes `T("…")` einen Schlüssel haben.
-
-**⚠ Drei eigene Fehler, alle von der Gegenprobe entlarvt.**
-
-1. **Zwei Fälle fingen aus dem falschen Grund.** „Ein `T()`-Aufruf ohne
-   englische Fassung" **änderte** einen bestehenden Aufruf und tötete damit
-   zugleich dessen Schlüssel — der Nachbar-Wächter feuerte zuerst, der gemeinte
-   blieb ungemessen. Jetzt wird hinzugefügt statt geändert. Der zweite nahm
-   einen Text, den auch der Laufzeit-Teil prüft.
-2. **Ein Wächter war zu eng.** „Keine Übersetzung ist nur eine Kopie" verlangte
-   Umlaute oder eines von sechs Stoppwörtern; „Ziehen zum Verschieben" hat
-   beides nicht und rutschte durch. **Gemessen statt geraten:** von 195 Paaren
-   ist genau **eines** legitim wortgleich — das Auslassungszeichen. Neue
-   Bedingung: wortgleich **und** enthält einen Buchstaben (`/\p{L}/u`).
-3. **Ein Wächter fand seinen Fund im eigenen Erklär-Kommentar** (Zeichenfenster
-   statt Block). Gemessen wird jetzt der Block, Kommentare abgezogen.
-
-**Was offen ist.**
-
-- **Das Ausrollen in die 16 Apps** — Klaus' zweite Stufe, eigene Sitzung. Im
-  Netz stehen **drei Modul-Generationen** (2249 · 2279 · 2424 Zeilen); nur
-  PWA-Toolpoint und kim-hub-company entsprechen Sage. **Ein Drift-Guard sagt
-  „unverändert", nicht „aktuell".** Skill: `netzweiter-modul-rollout`.
-- **`16_siegel.js` (47 Texte)** und **`17_floating_widget.js` (19 Texte)**
-  bleiben deutsch — das Siegel-Fenster und die LEBT/VERKEHR/FREMD/SIEGEL-Lampen.
-- **Klaus' Browser-Sichttest steht aus.** Dass die englischen Texte im Fenster
-  wirklich so stehen, sieht nur ein Browser.
-
-**Nächster sinnvoller Schritt:** das Ausrollen in die 16 Apps, nach Klaus'
-Sichttest an einer Seite.
-
+> **↓ Ausgelagert.** Der Eintrag „MODUL 23 UI SPRICHT ENGLISCH — 195 TEXTE"
+> steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-09_puls-auslagerung-10.md`](sessions/archiv/2026-09_puls-auslagerung-10.md)
+> (65 Zeilen). Nichts gekürzt — die Schutz-Klausel oben verlangt auslagern
+> statt kürzen, und die Git-Historie trägt es ohnehin.
 
 ## Eine Sitzung vom 2026-09-14 (früh) — ausgelagert am 2026-09-14 (Nacht)
 
