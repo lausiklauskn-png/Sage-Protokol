@@ -47,14 +47,21 @@ const ohne = benutzt.filter((k) => !schluessel.includes(k));
 ok(ohne.length === 0,
    `jeder T()-Aufruf hat eine englische Fassung (${ohne.length} ohne)`,
    ohne.slice(0, 2).map((k) => k.slice(0, 50)).join(" | "));
-// Und die Gegenrichtung zur Gegenrichtung: eine Übersetzung, die wortgleich
-// mit dem Deutschen ist, ist keine.
-const gleich = schluessel.filter((k) => {
-  const m = block.match(new RegExp('"' + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '":\\s*\\n?\\s*"((?:[^"\\\\]|\\\\.)*)"'));
-  return m && m[1] === k && /[äöüß]|\b(der|die|das|und|nicht|ist)\b/i.test(k);
-});
+/* Und die Gegenrichtung zur Gegenrichtung: eine „Übersetzung“, die wortgleich
+ * mit dem Deutschen ist, ist keine.
+ *
+ * ⚠ DIE REGEL WAR ZUERST ZU ENG. Sie verlangte Umlaute oder eines von sechs
+ * Stoppwörtern — „Ziehen zum Verschieben“ hat beides nicht und rutschte durch
+ * (Gegenprobe 2026-09-14). Gemessen statt geraten: von 195 Paaren ist genau
+ * EINES legitim wortgleich, nämlich „…“. Drei Punkte sind in beiden Sprachen
+ * dieselben. Also braucht es keine Wortliste, sondern eine Bedingung, die das
+ * trifft: wortgleich UND enthält einen Buchstaben. */
+const paare = [...block.matchAll(/^ {6}"((?:[^"\\]|\\.)*)":\n {8}"((?:[^"\\]|\\.)*)",$/gm)];
+ok(paare.length === schluessel.length,
+   `jeder Eintrag ist als Paar lesbar (${paare.length} von ${schluessel.length})`);
+const gleich = paare.filter((m) => m[1] === m[2] && /\p{L}/u.test(m[1])).map((m) => m[1]);
 ok(gleich.length === 0, `keine „Übersetzung“ ist nur eine Kopie des Deutschen (${gleich.length})`,
-   gleich.slice(0, 2).join(" | "));
+   gleich.slice(0, 2).map((k) => k.slice(0, 40)).join(" | "));
 
 /* ── 2. Zur Laufzeit: was ein Nutzer wirklich sieht ───────────────────────── */
 function stubBauen(htmlLang) {
