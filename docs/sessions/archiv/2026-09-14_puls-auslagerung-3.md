@@ -183,3 +183,175 @@ Rückhol-Knopf. Dieselbe Vorrang-Falle, dort noch offen.
 
 ---
 
+
+---
+
+## Stand 2026-09-10 (Haupt-Sitzung) · ✅ MIXARIUM NACHGEZOGEN — 0.826040 → 0.883142
+
+**Was getan.** Klaus hat über das **Siegel** neu signiert. Der Mitschnitt von
+16:29 zeigt Mixarium mit **2141 Zeichen** im Raum statt 88, und der Wert steigt
+auf **0.883142**. Die Spore liegt jetzt in Mein-Mixarium (PR #199), die alte als
+Vorgänger daneben; Sages Register führt Zahl und `nodeId` nach, die alte Kennung
+steht unter `previousNodeIds`.
+
+**Geprüft vor dem Ablegen:** VALID · `id == base64url(SHA256(rawPub))` · kein `d`
+· `key_ops` nur `["verify"]` · L2 = 1.000000103 · kanonisch byte-gleich mit der
+Spore im Raum · Text byte-gleich mit dem Depot. **Die Kennung ist dieselbe** —
+die Identität hat den Text-Wechsel überlebt.
+
+**⚠ Benannt: das ist eine andere MESSGRUNDLAGE, nicht nur ein besserer Text.**
+Vorher rechnete die Zahl aus den Getränke-Namen (`embeddingSource: "content"`),
+jetzt aus der Selbstbeschreibung (Siegel-Weg, 14 Schnipsel). Beide Wege sind
+gewollt. **Und es gab keinen Handshake** — Sage war nicht im Raum, die 0.883142
+ist nachgerechnet und **nicht** von Modul 05 bestätigt.
+
+**Zwei eigene Wächter waren zu streng oder zu eng:**
+
+| Was | Warum es falsch war |
+|---|---|
+| „Sage tritt im **neuesten** Mitschnitt auf" | der Mitschnitt von 16:30 ist ein 76-Sekunden-Lauf mit nur Mixarium. Ein Wächter, der einen Ein-Knoten-Mitschnitt für einen Defekt hält, **verbietet das Ablegen genau der Belege**, die eine einzelne Reparatur zeigen. Gemessen wird jetzt am neuesten Mitschnitt, **der Sage trägt** — und dass es überhaupt einen gibt, ist eine eigene Prüfung |
+| die Signatur-Wächter lasen **nur den neuesten** | jeder ältere Beleg blieb ungeprüft. Ein Mitschnitt, den niemand nachrechnet, ist eine Behauptung mit Dateinamen. Jetzt: **29 Sporen über 5 Mitschnitte**, alle geprüft |
+
+Gefunden hat das zweite nicht das Nachdenken, sondern **vier Gegenprobe-Fälle,
+die plötzlich durchrutschten**, weil ihre Sabotage in einem anderen Mitschnitt
+landete als der, den der Wächter ansah.
+
+**Proben:** `npm test` → **99 grün, 0 rot**. Gegenprobe → **8 gefangen, 0
+durchgerutscht**, jeder Fall von Hand nachgestellt.
+
+---
+
+## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · ⚠ MIXARIUMS ZAHL KOMMT AUS DEN DRINKS
+
+**Was getan.** Klaus hat Mixariums Siegel fotografiert: im Feld stand der
+88-Zeichen-Zweizeiler, ohne Herkunfts-Zeile und ohne Rückhol-Knopf. Behoben in
+Mein-Mixarium PR #198 — beide Wege zur Spore tragen jetzt denselben Text (2141
+Zeichen, 22 Stichworte, mit Protokoll-Absatz), und der Vorschlag der App gewinnt.
+
+**⚠ Und dabei ist eine eigene Folgerung von heute Nachmittag präzisiert worden.**
+Ich hatte geschrieben, *„wer dort neu signiert, bekommt den Zweizeiler"* — und
+das im Register so vermerkt. Der Text-Teil stimmt. Die Folgerung über die **Zahl**
+war zu kurz gegriffen:
+
+| Weg zur Spore | was eingebettet wird |
+|---|---|
+| **Siegel** | `embedPassage(beschreibung)` — der Text |
+| **stille Erst-Anmeldung** | `embedContentVector(samples)` — die **Getränke-Namen** |
+
+Gemessen an der Raum-Spore vom 2026-09-02: `embeddingSource: "content"`.
+**Mixariums 0.826040 stammt aus seinen Drinks.** Das ist die Entscheidung vom
+2026-06-28 und bleibt so — sie ist die ehrlichere Messung. Eine bessere
+Beschreibung wirkt dort erst beim Signieren **über das Siegel**.
+
+> **Eine Folgerung ist keine Messung.** Der Text im Raum war gemessen; dass er
+> auch den Vektor bestimmt, war angenommen. Das eine stimmte, das andere nicht.
+
+**Proben:** `npm test` → **99 grün, 0 rot**. Mixarium: 15 Wächter grün,
+Gegenprobe 10 gefangen / 0 durchgerutscht.
+
+---
+
+---
+
+## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DIE MYCEL-KARTE SPIELT DEN ECHTEN LAUF NACH
+
+Klaus: *„könnte man die 235 Ereignisse in der Mycelkarte mit den entsprechenden
+Knoten als Probelauf im Regler starten lassen, so dass man aus dem realen
+bereits Gelaufenen eine Demo macht … das natürlich langsamer abgespielt, in
+ungefähr 235 Sekunden?"*
+
+Gebaut in **mycel-karte** (PR #21, gemergt): ein Knopf **▶ Mitschnitt
+abspielen** im Regler spielt **191 echte Ereignisse** aus den fünf hier
+abgelegten Aufzeichnungen des 10.09.2026 ab, ein Ereignis je Sekunde — rund
+drei Minuten statt der vier Stunden des Originals.
+
+**Gemessen** (2026-09-10):
+
+| | |
+|---|---|
+| abgespielte Ereignisse | **191** aus 5 Mitschnitten (136 · 20 · 25 · 2 · 8) |
+| davon Anwesenheit / Anfrage / Handshake | 42 · 125 · 24 |
+| Takt | 1 000 ms je Ereignis |
+| statische Wächter | 34 grün · 0 ROT |
+| Gegenprobe | 18 gefangen · 0 durchgerutscht · 0 aus dem falschen Grund · 0 tote Anker |
+| im echten Chromium | 14 grün · 0 ROT |
+
+**Die Wiedergabe nimmt denselben Weg wie echter Verkehr** — sie gibt jedes
+Ereignis an `handleRelayEvent`, dieselbe Funktion, die auch die Poststellen
+bedient. Ein zweiter Zeichen-Weg wäre eine zweite Fassung.
+
+**Drei Riegel dagegen, dass eine Vorführung für einen echten Lauf gehalten
+wird:** der Rekorder schweigt während einer Wiedergabe · das Lauschen wird
+angehalten (sonst mischte sich echter Verkehr darunter und ginge zugleich aus
+der Aufzeichnung verloren) · das Band nennt Datum, Herkunft und ausdrücklich,
+dass das Originaltempo **nicht** wiedergegeben wird.
+
+⚠ **DIE MITSCHNITTE HIER BLEIBEN UNVERÄNDERT — SIE SIND DER BELEG.** Was die
+Karte abspielt, ist eine **abgeleitete** Datei
+(`mycel-karte/mitschnitt/mycel-lauf-2026-09-10.json`, 50 KB), gekürzt auf die
+Felder, die die Karte beim Zeichnen liest; sie sagt das in ihrem eigenen Kopf.
+Die 17 MB mit jeder Spore, jedem 384-stelligen Vektor und jeder Signatur
+liegen weiter unter `sbkim/mitschnitte/`. Abgeleitet wird mit
+`mycel-karte/tools/mitschnitt-eindampfen.mjs` — eine Datei, die einen echten
+Lauf behauptet und von Hand entstand, wäre eine erfundene Aufzeichnung.
+
+⚠ **UND DERSELBE GRIFF DANEBEN WIE IN `smoke_mitschnitt.mjs`, EINE DATEI
+WEITER:** der Kopf der abgeleiteten Datei nahm Anfang und Ende aus der nach
+**Dateinamen** geordneten Liste. `T` sortiert vor `_` — das Ende stand vor
+seinem Anfang. Geordnet wird nach der Zeit der Ereignisse; ein Wächter und ein
+Gegenprobe-Fall halten es fest.
+
+**Offen:** Klaus' Browser-Sichttest. Ob die drei Minuten die richtige Länge
+sind und ob man dem Band ansieht, dass es eine Vorführung ist, sagt nur er.
+
+---
+
+
+---
+
+## Stand 2026-09-10 (Haupt-Sitzung, Abend) · ✅ DIE ZWEITE EIGENE TÜR IST IN DER LISTE
+
+Klaus: *„In Kimboard fehlt ein Relais und auch in der Pinnwand … das von PWA
+Toolpoint. Da müsste noch das private Relais rein."*
+
+Er hat recht: `wss://relay.pwa-toolpoint.de` fehlte in **Kimboard** und in
+**`pinnwand/`**, obwohl die Mycel-Karte und PWA Toolpoint es längst führen.
+Nachgetragen, in beiden.
+
+⚠ **ES IST KEINE ZWEITE POSTSTELLE, SONDERN EINE ZWEITE TÜR.** Belegt in
+`family-project/Caddyfile.example`: seit dem 2026-08-11 liegt der Name als
+zweiter Caddy-Block auf **demselben** Relais-Container (Klaus hat es an der
+Server-Konsole gemessen — Zertifikat, HTTP 200, NIP-11-Name „Toolpoint-Relay").
+Beide Türen führen in denselben Nachrichten-Speicher.
+
+**Daraus folgt etwas für den Default-Aktiv-Satz.** Der zählte fünf
+**verschiedene** Speicher (`RELAY_POOL.slice(0, 5)`); die zweite Tür einfach
+hineinzuschieben hätte daraus vier gemacht, während die Oberfläche weiter
+„fünf gestreut" schreibt — eine Zahl, die etwas anderes verspricht, als sie
+hält.
+
+**Klaus hat den Satz deshalb auf SECHS gehoben** (*„Ja, mach den Default-Satz
+auf sechs"*): fünf Speicher wie vorher, plus die zweite Tür des ersten. Die
+Streuung schrumpft dadurch nicht, und der Grund steht im Code daneben — sonst
+kürzt die nächste Sitzung den Satz wieder auf fünf, „weil da eine Dopplung
+drin ist", und nimmt dabei einen echten Speicher mit. Gemessen wird nicht die
+Zahl der Pillen, sondern die Zahl der **verschiedenen Speicher** darin.
+
+Doppelt ankommende Zettel sind unkritisch: Kimboard verwirft sie über
+`seen.has(ev.id)` (nachgesehen, nicht angenommen).
+
+**Nebenbei berichtigt:** der Kopf-Kommentar über `RELAY_POOL` behauptete in
+beiden Apps, der **erste** Eintrag sei das „Toolpoint-Relay", und verwies auf
+eine Notiz, die es in keinem der Depots gibt. Der erste Eintrag ist
+`relay.family-projekt.de`.
+
+**Gemessen:** Sage `node tests/run_alle.mjs` **99 grün · 0 rot**,
+`pinnwand/_smoke.mjs` **74 grün** (vorher 67) · Kimboard `tests/alle.mjs`
+**alle 31 Prüfungen grün**, `smoke_vorgezeichnet` **22 grün** (vorher 11).
+Von Hand gegengeprüft: Relais entfernt · Grund gestrichen · „(eigenes)" nur am
+Heim-Relais · **den Satz wieder auf fünf gekürzt** — der letzte meldet
+„4 verschiedene Speicher bei 5 Pillen", jeder mit dem Namen seiner eigenen
+Zusicherung in der roten Zeile.
+
+---
+

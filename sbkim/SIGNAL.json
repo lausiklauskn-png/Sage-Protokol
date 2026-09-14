@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-14",
-  "seq": 75,
-  "headline": "MODUL 23 UI IST NETZWEIT AUSGEROLLT - das Verbinden-Fenster spricht Deutsch UND Englisch, 18/18 Knoten tragen den Kanon 709c4364026e. Drei Modul-Generationen sind eine geworden. Ohne Einstellung aendert sich nichts: wer weder init({lang}) uebergibt noch <html lang> setzt, bekommt Deutsch wie bisher. Siegel (16) und Lampen (17) bleiben vorerst deutsch - ein Voll-Knoten ist auf Englisch gemischtsprachig.",
+  "seq": 76,
+  "headline": "SICHTTEST ZU MODUL 23 UI: der Sprach-Haken greift, das Fenster war ein LADEN zu frueh. Gemessen am echten Service-Worker: erstes Laden nach dem Deploy liefert das alte Modul, das zweite das neue - mit UND ohne CACHE_VERSION-Bump gleich. Offen: das Etikett 'Geraetename' bleibt deutsch, es liegt per NETZWEIT §2 im app-eigenen Glue (0 Treffer im Kanon, 3-4 je Traeger) und ist von einem Modul-Rollout nicht erreichbar.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,21 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 76,
+      "date": "2026-09-14",
+      "what": "Klaus' Sichttest am Tablet: family-projekt.de auf Englisch, Fenster deutsch. Im echten Browser gegen origin/main nachgemessen: <html lang=en> -> _meta.lang=en, 237 Schluessel, Panel-Kopf 'Connect to the node network'. Der Bau ist also in Ordnung. Am echten Service-Worker gemessen (fetch-Zweig hit||net): 1. Laden nach dem Deploy = altes Modul, 2. Laden = neues; der Bump aendert daran nichts, weil das Modul nicht im Installations-Vorrat steht. Vier eigene Messaufbauten waren dabei blind, jeder aus einem anderen Grund - im PULS aufgeschrieben. AN ALLE GEGENSTELLEN: wer den Sprach-Haken uebernimmt, erwartet beim ersten Laden nach dem Deploy noch die alte Fassung. Und: das Etikett 'Geraetename' im Verbinden-Fenster bleibt deutsch - es steht in eurem eigenen Glue (sbkim-init.js / rendezvous-init.js), nicht im Modul.",
+      "forNodes": [
+        "rezeptbuch",
+        "mixarium",
+        "family",
+        "tomyhub",
+        "bookledgerpro",
+        "jasonstresor",
+        "meintresor",
+        "sbkimtoolpoint"
+      ]
+    },
     {
       "seq": 75,
       "date": "2026-09-14",

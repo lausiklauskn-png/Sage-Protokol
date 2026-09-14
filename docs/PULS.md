@@ -31,6 +31,94 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, Sichttest) · ⚠ DAS FENSTER WAR DEUTSCH — UND DER CODE WAR RICHTIG
+
+**Rolle:** Haupt-Sitzung, Nachtrag zum Rollout. Klaus hat vom Tablet
+Bildschirmfotos geschickt: `family-projekt.de` stand auf Englisch, das
+Verbinden-Fenster darin **deutsch**. Genau der Befund, gegen den der Sprach-Haken
+gebaut wurde — nach dem Rollout.
+
+### Der Code ist es nicht. Gemessen im echten Browser.
+
+`origin/main` lokal ausgeliefert, Chromium, Panel geöffnet:
+
+| `fp_lang` | `<html lang>` | Seite | `_meta` | Panel-Kopf |
+|---|---|---|---|---|
+| `de` | `de` | deutsch | `{lang:"de", langKeys:237}` | „Mit dem Knotennetz verbinden" |
+| `en` | `en` | **englisch** | `{lang:"en", langKeys:237}` | **„Connect to the node network"** |
+
+Der Haken greift. Also ist es die **Auslieferung**, nicht der Bau.
+
+### ⚠ EIN LADEN ZU FRÜH — und der Cache-Bump hätte NICHT geholfen
+
+`sw.js` bedient das Modul über den letzten Zweig: `hit || net`. Gemessen am
+echten Service-Worker (Wegwerf-Kopie, Modul nach dem Aufwärmen ausgetauscht):
+
+| | 1. Laden danach | 2. Laden |
+|---|---|---|
+| **ohne** `CACHE_VERSION`-Bump | **altes Modul** | neues |
+| **mit** Bump | **altes Modul** | neues |
+
+**Beide Spalten sind gleich.** Der Bump wirkt hier nicht, weil das Modul gar
+nicht im Installations-Vorrat steht: der neue Worker startet zwar mit leerem
+Vorrat, übernimmt aber erst, wenn die letzte Seite unter dem alten zu ist.
+
+> **Damit ist die Rollout-Entscheidung „hier kein Bump" bestätigt** — und zwar
+> gemessen, nicht begründet. Ich hatte sie nach Klaus' Bild selbst für meinen
+> Fehler gehalten; sie war keiner. **Ein Verdacht gegen die eigene Arbeit ist so
+> lange eine Vermutung wie jeder andere.**
+
+### ⚠ VIER ANLÄUFE, VIER BLINDE HARNISCHE — alle an derselben Probe
+
+Keiner der vier war ein Befund über den Code; jeder sah wie einer aus:
+
+| # | Was gemessen wurde | Warum es nichts sagte |
+|---|---|---|
+| 1 | `typeof NEUE_FASSUNG_MARKE` | die Marke stand **in der Modul-Kapsel** — global nie sichtbar, also immer „alt" |
+| 2 | dasselbe, mit Warten auf den Worker-Wechsel | derselbe Fehler, nur langsamer |
+| 3 | `fetch()` der Datei aus der Seite | las den Vorrat **nach** der Hintergrund-Auffrischung — nicht, was die Seite **ausgeführt** hat |
+| 4 | ausgeführtes Modul, aber ohne Aufwärmen | beim **ersten** Laden beherrscht ein frischer Worker die Seite nicht; die Anfrage geht am fetch-Zweig vorbei und landet **nie** im Vorrat — die Schublade war leer, also kam zwangsläufig „neu" |
+
+**Der vierte ist der lehrreichste:** die Probe maß eine Lage, die es bei Klaus
+gar nicht gibt. Sein Worker läuft seit Wochen. *Eine Probe, deren Ausgangslage
+die des Nutzers nicht trifft, misst etwas anderes, als sie zu messen glaubt.*
+
+### 🔴 „Gerätename" bleibt deutsch — netzweit, und der Rollout konnte es nicht fassen
+
+Im englischen Panel steht mitten zwischen englischen Zeilen **„🏷️ Gerätename:"**.
+Gemessen: **0 Treffer** im Kanon-Modul, **3–4 Treffer** im app-eigenen Glue
+**jedes** Trägers (`sbkim-init.js` / `rendezvous-init.js`).
+
+Das ist kein Versäumnis des Rollouts, sondern Bauart: NETZWEIT § 2 legt den
+Gerätenamen ausdrücklich in den app-eigenen Klebstoff, **nie** in die
+byte-kopierte Panel-Datei. Er ist damit von einem Modul-Rollout grundsätzlich
+nicht erreichbar.
+
+**Offen, Entscheidung von Klaus** (unten eingereiht): das Etikett in 18 Repos
+einzeln übersetzen — oder es in den Kanon ziehen und die Bauart ändern.
+
+### Was die übrigen Bilder zeigen — und was davon SBKIM ist
+
+- **Muttis Rezeptbuch auf EN:** die App selbst ist übersetzt („Save progress",
+  „RATE YOUR PROGRESS"). Deutsch bleiben **ihre eigenen** Werkzeuge
+  („Übersetzen", „ZIELSPRACHE WÄHLEN (MAX. 2)", „API-Key fehlt", „+ Menu",
+  „einklappen") — **Muttis i18n-Bestand, nicht SBKIM.**
+- **„SIEGEL"** ist Modul 16/17 und bleibt deutsch — seit dem Rollout benannt.
+- **„🌐 Mycel"** ist in beiden Sprachen gleich: ein Eigenname, kein fehlender Text.
+- **Kimboard:** der Wähler oben rechts ist der **Mikrofon-Sprachwähler**
+  (Spracheingabe), kein UI-Umschalter — deshalb ändert „English"/„Українська"
+  am Text nichts. Gemessen beim Rollout (`index.html:4179` setzt `lang` am
+  Eingabefeld, nicht am Dokument). **Für den Nutzer sieht er aus wie ein
+  Sprachumschalter der App** — Bedien-Befund, keine Fehlfunktion.
+
+**Was NICHT geprüft werden konnte:** ob `family-projekt.de` den neuen Stand schon
+ausliefert. Der Ausgangs-Proxy dieser Sitzung sperrt die Domäne (`HTTP 000`,
+gemessen). Zwischen „ein Laden zu früh" und „noch nicht deployt" kann von hier
+aus **niemand** unterscheiden — beide enden im selben Bild.
+
+**Nächster sinnvoller Schritt:** Klaus lädt die Seite ein zweites Mal. Bleibt das
+Fenster deutsch, ist es der Deploy und nicht der Vorrat.
+
 ## Stand 2026-09-14 (Haupt-Sitzung, Rollout) · ✅ MODUL 23 UI IN 18 APPS — UND ZWEI LÜCKEN IN DER GESCHENKBOX
 
 **Rolle:** Haupt-Sitzung, Rollout. Skill `netzweiter-modul-rollout`.
@@ -700,169 +788,26 @@ Klaus' Browser-Sichttest auf der Sage-Page: steht die Suche nur noch einmal da,
 ist die Pinnwand über die PWA-Liste erreichbar, und trägt die eingebettete
 Karte Pause/Schritt/Spulen?
 
-## Stand 2026-09-10 (Haupt-Sitzung, Abend) · ✅ DIE ZWEITE EIGENE TÜR IST IN DER LISTE
+## Eine Sitzung vom 2026-09-10 (Abend) — ausgelagert am 2026-09-14
 
-Klaus: *„In Kimboard fehlt ein Relais und auch in der Pinnwand … das von PWA
-Toolpoint. Da müsste noch das private Relais rein."*
+> ✅ DIE ZWEITE EIGENE TÜR IST IN DER LISTE stand bis heute hier in voller Länge
+> (46 Zeilen). **Ausgelagert, nicht gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-3.md`](sessions/archiv/2026-09-14_puls-auslagerung-3.md).
 
-Er hat recht: `wss://relay.pwa-toolpoint.de` fehlte in **Kimboard** und in
-**`pinnwand/`**, obwohl die Mycel-Karte und PWA Toolpoint es längst führen.
-Nachgetragen, in beiden.
+## Noch eine Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
-⚠ **ES IST KEINE ZWEITE POSTSTELLE, SONDERN EINE ZWEITE TÜR.** Belegt in
-`family-project/Caddyfile.example`: seit dem 2026-08-11 liegt der Name als
-zweiter Caddy-Block auf **demselben** Relais-Container (Klaus hat es an der
-Server-Konsole gemessen — Zertifikat, HTTP 200, NIP-11-Name „Toolpoint-Relay").
-Beide Türen führen in denselben Nachrichten-Speicher.
+> ✅ DIE MYCEL-KARTE SPIELT DEN ECHTEN LAUF NACH stand bis heute hier in voller
+> Länge (53 Zeilen). **Ausgelagert, nicht gekürzt** — der Wortlaut steht
+> vollständig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-3.md`](sessions/archiv/2026-09-14_puls-auslagerung-3.md).
 
-**Daraus folgt etwas für den Default-Aktiv-Satz.** Der zählte fünf
-**verschiedene** Speicher (`RELAY_POOL.slice(0, 5)`); die zweite Tür einfach
-hineinzuschieben hätte daraus vier gemacht, während die Oberfläche weiter
-„fünf gestreut" schreibt — eine Zahl, die etwas anderes verspricht, als sie
-hält.
+## Zwei weitere Sitzungen vom 2026-09-10 — ausgelagert am 2026-09-14
 
-**Klaus hat den Satz deshalb auf SECHS gehoben** (*„Ja, mach den Default-Satz
-auf sechs"*): fünf Speicher wie vorher, plus die zweite Tür des ersten. Die
-Streuung schrumpft dadurch nicht, und der Grund steht im Code daneben — sonst
-kürzt die nächste Sitzung den Satz wieder auf fünf, „weil da eine Dopplung
-drin ist", und nimmt dabei einen echten Speicher mit. Gemessen wird nicht die
-Zahl der Pillen, sondern die Zahl der **verschiedenen Speicher** darin.
-
-Doppelt ankommende Zettel sind unkritisch: Kimboard verwirft sie über
-`seen.has(ev.id)` (nachgesehen, nicht angenommen).
-
-**Nebenbei berichtigt:** der Kopf-Kommentar über `RELAY_POOL` behauptete in
-beiden Apps, der **erste** Eintrag sei das „Toolpoint-Relay", und verwies auf
-eine Notiz, die es in keinem der Depots gibt. Der erste Eintrag ist
-`relay.family-projekt.de`.
-
-**Gemessen:** Sage `node tests/run_alle.mjs` **99 grün · 0 rot**,
-`pinnwand/_smoke.mjs` **74 grün** (vorher 67) · Kimboard `tests/alle.mjs`
-**alle 31 Prüfungen grün**, `smoke_vorgezeichnet` **22 grün** (vorher 11).
-Von Hand gegengeprüft: Relais entfernt · Grund gestrichen · „(eigenes)" nur am
-Heim-Relais · **den Satz wieder auf fünf gekürzt** — der letzte meldet
-„4 verschiedene Speicher bei 5 Pillen", jeder mit dem Namen seiner eigenen
-Zusicherung in der roten Zeile.
-
----
-
-## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DIE MYCEL-KARTE SPIELT DEN ECHTEN LAUF NACH
-
-Klaus: *„könnte man die 235 Ereignisse in der Mycelkarte mit den entsprechenden
-Knoten als Probelauf im Regler starten lassen, so dass man aus dem realen
-bereits Gelaufenen eine Demo macht … das natürlich langsamer abgespielt, in
-ungefähr 235 Sekunden?"*
-
-Gebaut in **mycel-karte** (PR #21, gemergt): ein Knopf **▶ Mitschnitt
-abspielen** im Regler spielt **191 echte Ereignisse** aus den fünf hier
-abgelegten Aufzeichnungen des 10.09.2026 ab, ein Ereignis je Sekunde — rund
-drei Minuten statt der vier Stunden des Originals.
-
-**Gemessen** (2026-09-10):
-
-| | |
-|---|---|
-| abgespielte Ereignisse | **191** aus 5 Mitschnitten (136 · 20 · 25 · 2 · 8) |
-| davon Anwesenheit / Anfrage / Handshake | 42 · 125 · 24 |
-| Takt | 1 000 ms je Ereignis |
-| statische Wächter | 34 grün · 0 ROT |
-| Gegenprobe | 18 gefangen · 0 durchgerutscht · 0 aus dem falschen Grund · 0 tote Anker |
-| im echten Chromium | 14 grün · 0 ROT |
-
-**Die Wiedergabe nimmt denselben Weg wie echter Verkehr** — sie gibt jedes
-Ereignis an `handleRelayEvent`, dieselbe Funktion, die auch die Poststellen
-bedient. Ein zweiter Zeichen-Weg wäre eine zweite Fassung.
-
-**Drei Riegel dagegen, dass eine Vorführung für einen echten Lauf gehalten
-wird:** der Rekorder schweigt während einer Wiedergabe · das Lauschen wird
-angehalten (sonst mischte sich echter Verkehr darunter und ginge zugleich aus
-der Aufzeichnung verloren) · das Band nennt Datum, Herkunft und ausdrücklich,
-dass das Originaltempo **nicht** wiedergegeben wird.
-
-⚠ **DIE MITSCHNITTE HIER BLEIBEN UNVERÄNDERT — SIE SIND DER BELEG.** Was die
-Karte abspielt, ist eine **abgeleitete** Datei
-(`mycel-karte/mitschnitt/mycel-lauf-2026-09-10.json`, 50 KB), gekürzt auf die
-Felder, die die Karte beim Zeichnen liest; sie sagt das in ihrem eigenen Kopf.
-Die 17 MB mit jeder Spore, jedem 384-stelligen Vektor und jeder Signatur
-liegen weiter unter `sbkim/mitschnitte/`. Abgeleitet wird mit
-`mycel-karte/tools/mitschnitt-eindampfen.mjs` — eine Datei, die einen echten
-Lauf behauptet und von Hand entstand, wäre eine erfundene Aufzeichnung.
-
-⚠ **UND DERSELBE GRIFF DANEBEN WIE IN `smoke_mitschnitt.mjs`, EINE DATEI
-WEITER:** der Kopf der abgeleiteten Datei nahm Anfang und Ende aus der nach
-**Dateinamen** geordneten Liste. `T` sortiert vor `_` — das Ende stand vor
-seinem Anfang. Geordnet wird nach der Zeit der Ereignisse; ein Wächter und ein
-Gegenprobe-Fall halten es fest.
-
-**Offen:** Klaus' Browser-Sichttest. Ob die drei Minuten die richtige Länge
-sind und ob man dem Band ansieht, dass es eine Vorführung ist, sagt nur er.
-
----
-
-## Stand 2026-09-10 (Haupt-Sitzung) · ✅ MIXARIUM NACHGEZOGEN — 0.826040 → 0.883142
-
-**Was getan.** Klaus hat über das **Siegel** neu signiert. Der Mitschnitt von
-16:29 zeigt Mixarium mit **2141 Zeichen** im Raum statt 88, und der Wert steigt
-auf **0.883142**. Die Spore liegt jetzt in Mein-Mixarium (PR #199), die alte als
-Vorgänger daneben; Sages Register führt Zahl und `nodeId` nach, die alte Kennung
-steht unter `previousNodeIds`.
-
-**Geprüft vor dem Ablegen:** VALID · `id == base64url(SHA256(rawPub))` · kein `d`
-· `key_ops` nur `["verify"]` · L2 = 1.000000103 · kanonisch byte-gleich mit der
-Spore im Raum · Text byte-gleich mit dem Depot. **Die Kennung ist dieselbe** —
-die Identität hat den Text-Wechsel überlebt.
-
-**⚠ Benannt: das ist eine andere MESSGRUNDLAGE, nicht nur ein besserer Text.**
-Vorher rechnete die Zahl aus den Getränke-Namen (`embeddingSource: "content"`),
-jetzt aus der Selbstbeschreibung (Siegel-Weg, 14 Schnipsel). Beide Wege sind
-gewollt. **Und es gab keinen Handshake** — Sage war nicht im Raum, die 0.883142
-ist nachgerechnet und **nicht** von Modul 05 bestätigt.
-
-**Zwei eigene Wächter waren zu streng oder zu eng:**
-
-| Was | Warum es falsch war |
-|---|---|
-| „Sage tritt im **neuesten** Mitschnitt auf" | der Mitschnitt von 16:30 ist ein 76-Sekunden-Lauf mit nur Mixarium. Ein Wächter, der einen Ein-Knoten-Mitschnitt für einen Defekt hält, **verbietet das Ablegen genau der Belege**, die eine einzelne Reparatur zeigen. Gemessen wird jetzt am neuesten Mitschnitt, **der Sage trägt** — und dass es überhaupt einen gibt, ist eine eigene Prüfung |
-| die Signatur-Wächter lasen **nur den neuesten** | jeder ältere Beleg blieb ungeprüft. Ein Mitschnitt, den niemand nachrechnet, ist eine Behauptung mit Dateinamen. Jetzt: **29 Sporen über 5 Mitschnitte**, alle geprüft |
-
-Gefunden hat das zweite nicht das Nachdenken, sondern **vier Gegenprobe-Fälle,
-die plötzlich durchrutschten**, weil ihre Sabotage in einem anderen Mitschnitt
-landete als der, den der Wächter ansah.
-
-**Proben:** `npm test` → **99 grün, 0 rot**. Gegenprobe → **8 gefangen, 0
-durchgerutscht**, jeder Fall von Hand nachgestellt.
-
----
-
-## Stand 2026-09-10 (Haupt-Sitzung, Nachtrag) · ⚠ MIXARIUMS ZAHL KOMMT AUS DEN DRINKS
-
-**Was getan.** Klaus hat Mixariums Siegel fotografiert: im Feld stand der
-88-Zeichen-Zweizeiler, ohne Herkunfts-Zeile und ohne Rückhol-Knopf. Behoben in
-Mein-Mixarium PR #198 — beide Wege zur Spore tragen jetzt denselben Text (2141
-Zeichen, 22 Stichworte, mit Protokoll-Absatz), und der Vorschlag der App gewinnt.
-
-**⚠ Und dabei ist eine eigene Folgerung von heute Nachmittag präzisiert worden.**
-Ich hatte geschrieben, *„wer dort neu signiert, bekommt den Zweizeiler"* — und
-das im Register so vermerkt. Der Text-Teil stimmt. Die Folgerung über die **Zahl**
-war zu kurz gegriffen:
-
-| Weg zur Spore | was eingebettet wird |
-|---|---|
-| **Siegel** | `embedPassage(beschreibung)` — der Text |
-| **stille Erst-Anmeldung** | `embedContentVector(samples)` — die **Getränke-Namen** |
-
-Gemessen an der Raum-Spore vom 2026-09-02: `embeddingSource: "content"`.
-**Mixariums 0.826040 stammt aus seinen Drinks.** Das ist die Entscheidung vom
-2026-06-28 und bleibt so — sie ist die ehrlichere Messung. Eine bessere
-Beschreibung wirkt dort erst beim Signieren **über das Siegel**.
-
-> **Eine Folgerung ist keine Messung.** Der Text im Raum war gemessen; dass er
-> auch den Vektor bestimmt, war angenommen. Das eine stimmte, das andere nicht.
-
-**Proben:** `npm test` → **99 grün, 0 rot**. Mixarium: 15 Wächter grün,
-Gegenprobe 10 gefangen / 0 durchgerutscht.
-
----
+> ✅ MIXARIUM NACHGEZOGEN — 0.826040 → 0.883142 und ⚠ MIXARIUMS ZAHL KOMMT AUS
+> DEN DRINKS standen bis heute hier in voller Länge (zusammen 64 Zeilen). Der
+> Sichttest-Nachtrag von heute hat die Datei über die Grenze geschoben;
+> **ausgelagert, nicht gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-3.md`](sessions/archiv/2026-09-14_puls-auslagerung-3.md).
 
 ## Eine weitere Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
@@ -906,6 +851,10 @@ Gegenprobe 10 gefangen / 0 durchgerutscht.
 
 | Sitzung | Wortlaut | Übergabeprotokoll |
 |---|---|---|
+| 2026-09-10 (Haupt-Sitzung, Abend) — ✅ Die zweite eigene Tür ist in der Liste | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung) — ✅ Die Mycel-Karte spielt den echten Lauf nach | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung) — ✅ Mixarium nachgezogen, 0.826040 → 0.883142 | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung, Nachtrag) — ⚠ Mixariums Zahl kommt aus den Drinks | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung) — ✅ Das Register misst jetzt gegen den Raum | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung) — ✅ Dritter Mitschnitt, das Netz ist vollständig gemessen | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung) — ✅ Zweiter Mitschnitt, 18 Knoten live gemessen | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
@@ -1093,6 +1042,28 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 > oben verlangt **auslagern statt kürzen**, und die Git-Historie trägt es ohnehin.
 
 ## Offene Querschnitts-Fragen
+
+- 🟠 **„Gerätename" bleibt deutsch, auch wenn alles andere Englisch spricht**
+  (Klaus' Sichttest 2026-09-14, **nicht behoben**, Frage an Klaus). Gemessen:
+  **0 Treffer** im Kanon-Modul, **3–4 Treffer** im app-eigenen Glue **jedes**
+  der 18 Träger.
+
+  Das ist Bauart, kein Versäumnis: NETZWEIT § 2 legt den Gerätenamen
+  ausdrücklich in den app-eigenen Klebstoff und **nie** in die byte-kopierte
+  Panel-Datei — damit ist er von einem Modul-Rollout grundsätzlich nicht zu
+  erreichen. Der Preis steht jetzt im Bild: eine deutsche Zeile mitten in einem
+  englischen Fenster.
+
+  **Zwei Wege, und sie unterscheiden sich in dem, was sie kosten:**
+  das Etikett in **18 Repos einzeln** übersetzen (die Bauart bleibt, die Arbeit
+  wiederholt sich bei jedem weiteren Text) — **oder** das *Etikett* in den Kanon
+  ziehen und nur den *Wert* app-eigen lassen (einmal gemacht, aber ein Eingriff
+  in eine Regel, die aus Schaden entstanden ist).
+
+  **Nicht eigenmächtig entschieden:** der zweite Weg ändert eine netzweite
+  Tafel. Tafel-Evolutions-Klausel — benannt statt stillschweigend umfahren.
+  **Klaus entscheidet.**
+
 
 - 🔴 **Der Verbinden-Knopf erscheint NICHT, wenn `SbkimStorage` fehlt — obwohl
   der Kommentar daneben das Gegenteil zusichert** (gefunden 2026-09-14 beim
