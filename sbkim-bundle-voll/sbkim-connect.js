@@ -14,6 +14,14 @@
  *     domainKeywords:    ["Stichwort", "…"],  // Themen/Stichworte
  *     // optional: stammCategories, guestCategories, nodeType ("hybrid"),
  *     //           corner ("bl"|"br"|"tl"|"tr"), allowedOrigins:[…]
+ *     // optional: lang: "de" | "en" — Sprache des Verbinden-Fensters.
+ *     //           OHNE ANGABE AENDERT SICH NICHTS: das Fenster liest dann
+ *     //           <html lang> und faellt sonst auf Deutsch zurueck. Jeder
+ *     //           andere Wert (ru/zh/fr/…) faellt ebenfalls auf Deutsch.
+ *     //           Setz es, wenn deine App die Sprache umschaltet, OHNE dabei
+ *     //           <html lang> mitzuziehen — sonst genuegt das Attribut.
+ *     //           ⚠ Noch deutsch bleiben das Siegel (16) und die Lampen (17);
+ *     //           ein Voll-Knoten ist auf Englisch heute gemischtsprachig.
  *     // optional: sampleContent: async () => [ "Inhalt 1", {label, text}, … ]
  *     //           — liefert echte lokale Inhalts-Schnipsel; der domainVector
  *     //           entsteht dann INHALTS-TREU (Modul 03 embedContentVector)
@@ -148,11 +156,22 @@
     // soll immer erscheinen, auch wenn die Kette oben mal stolpert).
     if (global.SbkimRendezvousUI) {
       try {
-        global.SbkimRendezvousUI.init({
+        var uiCfg = {
           nodeName: cfg.nodeName || "SBKIM-Knoten",
           corner: cfg.corner || "bl",
           createIdentity: buildCreateIdentity(cfg),
-        });
+        };
+        // Sprache des Verbinden-Fensters (2026-09-14). NUR durchreichen, wenn
+        // die App wirklich etwas gesagt hat: ein hier erfundener Standard wuerde
+        // <html lang> ueberstimmen, und das Modul liest es selbst. Wer nichts
+        // uebergibt, bekommt weiter Deutsch bzw. das, was <html lang> sagt.
+        //
+        // WARUM DIESE ZEILEN UEBERHAUPT DASTEHEN: bis zum Rollout am 2026-09-14
+        // hat init() das Feld STILL verschluckt. Ein Fremder, der die Kiste
+        // auspackt, hat genau EIN init() — das ist ihr Versprechen; die Sprache
+        // war darueber nicht erreichbar, ohne dass irgendwo etwas dazu stand.
+        if (cfg.lang === "de" || cfg.lang === "en") uiCfg.lang = cfg.lang;
+        global.SbkimRendezvousUI.init(uiCfg);
         info("Rendezvous-UI gemountet (öffentlicher 🌐-Knopf).");
       } catch (e) { warn("Rendezvous-UI", e); }
     } else {
@@ -168,6 +187,6 @@
   };
 
   if (global.console && console.info) {
-    console.info("SBKIM-CONNECT bereit — SbkimConnect.init({ nodeName, endpoint, domain, domainDescription, domainKeywords, … }).");
+    console.info("SBKIM-CONNECT bereit — SbkimConnect.init({ nodeName, endpoint, domain, domainDescription, domainKeywords, lang?, … }).");
   }
 })(typeof window !== "undefined" ? window : globalThis);

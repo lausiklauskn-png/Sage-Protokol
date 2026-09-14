@@ -4847,7 +4847,42 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
         createIdentity?, corner?, accent? }). DOM-only, fail-soft, idempotent,
         createElement-basiert. Komponiert NUR Modul 23. Surface
         init/show/hide/isOpen/_meta. Headless-Smoke smoke_bau23_rendezvous_ui.mjs
-        32/32 grün. createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
+        32/32 grün.
+
+        SPRACHE (2026-09-14, Klaus' Befund am Tablet: englische Seite, deutsches
+        Fenster). init() nimmt zusätzlich lang?: "de" | "en". Das Verfahren ist
+        SCHLÜSSELLOS — der deutsche Satz IST der Schlüssel, TEXTE.en trägt die
+        Übersetzungen, T(de) fällt bei fehlendem Eintrag auf Deutsch zurück.
+        Rangfolge: cfg.lang, sonst <html lang> (erste zwei Zeichen), sonst "de".
+        Jeder andere Wert (ru/zh/fr/…) fällt fail-soft auf Deutsch zurück.
+        _meta zusätzlich: lang (die gerade geltende) + langKeys (237).
+
+        DIE VERBINDLICHE ZUSICHERUNG: OHNE EINSTELLUNG ÄNDERT SICH NICHTS. Wer
+        weder lang übergibt noch <html lang> setzt, bekommt Deutsch wie bisher.
+        Ein Rollout in eine App ist damit rückwirkungsfrei.
+
+        ⚠ DER PREIS DES SCHLÜSSELLOSEN VERFAHRENS ist benannt: wer einen deutschen
+        Satz ändert, verliert STILL seine Übersetzung. Dagegen steht ein Wächter,
+        der in BEIDE Richtungen misst (jeder Schlüssel hat eine Fundstelle im
+        Code, jedes T() eine englische Fassung) — tests/smoke_bau23_sprache.mjs.
+
+        ⚠ T() liest die Sprache bei JEDEM Aufruf. Was schon im DOM steht, wechselt
+        also nicht mit; ein Sprachwechsel bei OFFENEM Fenster wirkt erst beim
+        nächsten Zeichnen. Benannte Grenze, kein Fehler.
+
+        ⚠ DIESER ABSATZ KAM NACH DEM CODE (nachgetragen 2026-09-14, nach dem
+        netzweiten Rollout). Die Tafel-Regel lautet umgekehrt: erst hier
+        nachziehen, dann den Code. PR #986/#988 haben das Modul und beide
+        Bauvorlagen geändert, ohne diese Tafel anzufassen — die Schnittstelle war
+        vier Tage lang breiter als ihre Beschreibung. Aufgefallen ist es nicht
+        beim Bauen, sondern weil Klaus ausdrücklich nach den Bauplänen gefragt hat.
+
+        Die Sprache kommt in den Apps NICHT von selbst: gemessen am 2026-09-14
+        ziehen 9 der 18 Träger <html lang> beim Sprachwechsel mit, 9 nicht. Wo
+        nicht, bleibt das Fenster deutsch — das ist die Rückfalllinie, kein Fehler.
+
+        NOCH DEUTSCH: 16_siegel.js (47 Texte) und 17_floating_widget.js (19).
+        Ein Voll-Knoten ist damit heute gemischtsprachig. createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
         Pro Karte zeigt das Panel ein Verwandtschafts-Badge („🧬 verwandt 0.72"
         vs „· verbunden …") + einen „🧬 nur verwandte"-Schalter (Default aus) —
         REINE ANZEIGE über discover()'s relatedness/isRelated; gatet NICHTS, der

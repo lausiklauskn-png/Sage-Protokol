@@ -130,6 +130,8 @@ Bundler, kein CDN).
     domain:            "meine-domaene",
     domainDescription: "Was die App ist, in 3–8 Sätzen, mit Synonymen …",
     domainKeywords:    ["Stichwort A", "Stichwort B"],
+    // lang: "en",  // Sprache des Verbinden-Fensters. Weglassen = Deutsch bzw.
+                    // das, was <html lang> sagt. Siehe „Deutsch oder Englisch".
   });
 
   // (b) Status-Lampen ZUERST (legt die Proxy-Slots an)
@@ -176,3 +178,32 @@ node sbkim-bundle-voll/tests/smoke_vollbundle.mjs   # Drift-Guard: alle Module b
 
 Der **Browser-Sichttest** (Installation als PWA + Andock im Raum + Siegel-Badge
 sichtbar) bleibt bei dir — headless ersetzt ihn nicht.
+
+
+---
+
+## Deutsch oder Englisch
+
+Das **Verbinden-Fenster** (Modul 23 UI) trägt **237 englische Texte**. Zwei Wege,
+keiner ist Pflicht:
+
+| Weg | wann |
+|---|---|
+| `lang: "en"` im `SbkimConnect.init()` | wenn deine App die Sprache umschaltet, **ohne** `<html lang>` mitzuziehen |
+| `<html lang="en">` am Dokument | wenn deine App das Attribut ohnehin pflegt — dann ist **nichts** zu tun |
+
+**Ohne Einstellung ändert sich nichts.** Jeder andere Wert (`ru`, `zh`, `fr` …)
+fällt auf Deutsch zurück. Fehlt eine Übersetzung, bleibt dieser eine Satz
+deutsch — nie leer, nie ein Platzhalter.
+
+### ⚠ Auf Englisch ist diese Kiste heute GEMISCHTSPRACHIG
+
+| Modul | Stand |
+|---|---|
+| `23_rendezvous_ui.js` — Verbinden-Fenster | ✅ Deutsch + Englisch |
+| `16_siegel.js` — Siegel-Fenster | ⚠ **nur Deutsch** (47 Texte) |
+| `17_floating_widget.js` — die Lampen | ⚠ **nur Deutsch** (19 Texte) |
+
+Wer auf Englisch stellt, bekommt also ein englisches Verbinden-Fenster neben
+deutschen Lampen. Das steht hier, damit du es **vor** dem Einbau weißt und nicht
+erst im eigenen Browser. Stand 2026-09-14.

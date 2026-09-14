@@ -92,6 +92,59 @@ async function run() {
     calls.generate[0] && (calls.generate[0].domainKeywords || []).join(","),
     calls.generate[0] && (calls.generate[0].domainKeywords || []).join(",") === "a,b");
 
+  /* ── Sprache durchreichen (2026-09-14) ───────────────────────────────────
+   *
+   * WARUM DIESE VIER WAECHTER. Die Kiste verspricht einem Fremden GENAU EIN
+   * init(). Bis zum 2026-09-14 hat dieses init() das Feld `lang` still
+   * verschluckt: wer `lang:"en"` uebergab, bekam ein deutsches Fenster und
+   * nirgends einen Hinweis darauf. Kein Wert war falsch — es kam schlicht
+   * keiner an.
+   *
+   * ⚠ DER WICHTIGSTE DAVON IST DER ZWEITE, und er misst das Gegenteil: OHNE
+   * Angabe darf `lang` NICHT gesetzt sein. Ein hier erfundener Standard
+   * ("de", wenn nichts dasteht) wuerde <html lang> UEBERSTIMMEN — dann waere
+   * eine englische Seite, die das Attribut korrekt mitzieht, ploetzlich
+   * wieder deutsch, und zwar wegen der Kiste. Ein Waechter nur auf
+   * "durchgereicht" waere dafuer blind. */
+  const langStub = () => {
+    const gesehen = [];
+    const st = { console: console, setTimeout: setTimeout };
+    /* ⚠ SbkimStorage MUSS im Stub liegen, sonst misst dieser Block nichts.
+     * init() steigt ohne es mit einem blanken `return` aus und erreicht den
+     * UI-Mount nie — mein erster Harnisch hatte es weggelassen und meldete
+     * drei rote Waechter, die alle in Ordnung waren. Der Fehlschlag sah aus
+     * wie ein Befund ueber den Code und war einer ueber die Probe. */
+    st.SbkimStorage = { init: async () => {} };
+    st.SbkimRendezvousUI = { init: (o) => gesehen.push(o) };
+    const src = readFileSync(resolve(repoRoot, "sbkim-bundle/sbkim-connect.js"), "utf8");
+    new Function("window", "globalThis", "console", "setTimeout", src)(st, st, console, setTimeout);
+    return { st, gesehen };
+  };
+
+  const a = langStub();
+  await a.st.SbkimConnect.init({ nodeName: "X", lang: "en" });
+  record("UI lang durchgereicht", "en",
+    String(a.gesehen[0] && a.gesehen[0].lang), a.gesehen[0] && a.gesehen[0].lang === "en");
+
+  record("OHNE Angabe wird lang NICHT gesetzt (sonst ueberstimmt die Kiste <html lang>)",
+    "undefined", String(capturedUiOpts && capturedUiOpts.lang),
+    capturedUiOpts !== null && capturedUiOpts.lang === undefined);
+
+  const c = langStub();
+  await c.st.SbkimConnect.init({ nodeName: "X", lang: "de" });
+  record("UI lang durchgereicht: de", "de",
+    String(c.gesehen[0] && c.gesehen[0].lang), c.gesehen[0] && c.gesehen[0].lang === "de");
+
+  /* Ein unbekannter Wert wird NICHT durchgereicht, sondern weggelassen — dann
+   * entscheidet <html lang> bzw. Deutsch. Ihn durchzureichen waere dasselbe
+   * wie ihn zu erfinden: das Modul wuerde ihn ohnehin verwerfen, aber die
+   * Kiste haette dabei behauptet, die App habe etwas gesagt. */
+  const d = langStub();
+  await d.st.SbkimConnect.init({ nodeName: "X", lang: "ru" });
+  record("unbekannte Sprache wird weggelassen, nicht durchgereicht",
+    "undefined", String(d.gesehen[0] && d.gesehen[0].lang),
+    d.gesehen[0] && d.gesehen[0].lang === undefined);
+
   // fail-soft: ohne Module kein Throw.
   const stub2 = { console: console, setTimeout: setTimeout };
   const src = readFileSync(resolve(repoRoot, "sbkim-bundle/sbkim-connect.js"), "utf8");

@@ -31,6 +31,134 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-14 (Haupt-Sitzung, Rollout) · ✅ MODUL 23 UI IN 18 APPS — UND ZWEI LÜCKEN IN DER GESCHENKBOX
+
+**Rolle:** Haupt-Sitzung, Rollout. Skill `netzweiter-modul-rollout`.
+Auftrag war das Ausrollen in „die sechzehn Apps"; **gemessen sind es achtzehn.**
+
+**Drei Generationen sind eine geworden.** Gemessen vor dem Kopieren, gegen
+`origin/main` jedes Repos, nicht gegen den Klon:
+
+| Generation | Zeilen | Repos |
+|---|---|---|
+| `4882c3b68203` | 2249 | 3 — Mein-Mixarium · Mein-Rezeptbuch · family-project |
+| `b496bc86b5b2` | 2279 | 13 |
+| `d344a851a025` | 2424 | 2 — PWA-Toolpoint · kim-hub-company |
+| **`709c4364026e`** | **2960** | **18/18 nach dem Merge** |
+
+**Der Diff wurde je Generation gelesen, nicht überschrieben.** 235–236 entfernte
+Zeilen je Generation; für **jede** wurde belegt, dass ihr Literal im Kanon noch
+vorkommt (0 ohne Entsprechung). Reiner Kanon-Fortschritt, keine repo-eigene Zeile.
+
+**Elf sha-Pins nachgezogen**, und einer davon zeigt, warum der Brief nicht reicht:
+`SB-KIMTool-Point/test/kopien_drift.test.js` pinnt mit **16 Zeichen**
+(`b496bc86b5b23ce0`). Eine Suche nach der vollen sha findet ihn **nicht** — die
+Falle, vor der das Rezept warnt, und sie hat zugeschnappt. Danach netzweit
+gegengeprüft: **keine alte sha mehr irgendwo.**
+
+**Neun `CACHE_VERSION` erhöht** — nur dort, wo das Modul wirklich im Vorrat steht.
+Die Zahl kam aus `origin/main`, nicht aus der eigenen Datei (NETZWEIT § 3a).
+
+**Gemessen je Repo, Rückgabewert aus der Prüfung selbst.** Zwei Repos melden
+rote Proben, **beide vorbestehend** — belegt per Gegenprobe auf einem frischen
+Klon von unberührtem `origin/main`: SB-KIMTool-Point 130/2 (dieselben zwei
+Namen, `ERR_MODULE_NOT_FOUND`), Tomys-Hub dieselben zwei. family-project ist
+`⊘ nicht lauffähig, nicht rot` (`playwright-core` fehlt).
+
+**Der Sprach-Haken wurde nicht geglaubt, sondern gefahren.** Jede der 18 Kopien
+wurde in einem Mini-DOM **geladen** und gefragt: `<html lang="de">` → `de`,
+`<html lang="en">` → `en`, 237 Schlüssel. **18/18.**
+
+### ⚠ „Ausgerollt" heißt noch nicht „ändert etwas" — 9 von 18
+
+Gemessen, welche App `<html lang>` beim Sprachwechsel **mitzieht**:
+
+| | Apps |
+|---|---|
+| ✅ Haken greift heute | Alis-Moderaum · Perfect-Skin-Beauty · Perfect-Skin-Fashion · family-project · Mein-Mixarium · Mein-Rezeptbuch · Muttis-Rezeptbuch · Mein-WorkFloh · Tomys-Hub |
+| ⏸ bleibt deutsch | Jasons-Tresor · Kim-Bell · Kimboard · Kimseek · Mein-Tresor · Mein-Workfloh-Page · PWA-Toolpoint · SB-KIMTool-Point · kim-hub-company |
+
+Das ist die **Rückfalllinie, kein Fehler** — aber ohne diese Zeile hieße es
+„netzweit ausgerollt" und änderte für die Hälfte der Nutzer nichts.
+
+### 🔴 UND DANN HAT KLAUS' NACHFRAGE ZWEI LÜCKEN AUFGEDECKT
+
+Er bat mitten in der Sitzung darum, **auch Geschenkbox und Baupläne** zu prüfen.
+Beides war nötig, und beides hätte der Rollout allein nicht gefunden.
+
+**1 · `SbkimConnect.init({lang})` wurde STILL VERSCHLUCKT.** Die Kiste verspricht
+einem Fremden **genau ein `init()`** — und ausgerechnet darüber war die Sprache
+nicht erreichbar. Kein Fehler, keine Warnung, nur ein deutsches Fenster.
+`<html lang>` wirkte weiter, die Lücke war also nicht kaputt, sondern **stumm**.
+Behoben in beiden Bauvorlagen, mit vier Wächtern und Gegenprobe.
+
+> ⚠ **Der zweitwichtigste Wächter misst das GEGENTEIL:** ohne Angabe darf die
+> Kiste `lang` **nicht** setzen. Ein erfundener Standard („`de`, wenn nichts
+> dasteht") überstimmte `<html lang>` — dann wäre eine englische Seite, die das
+> Attribut korrekt mitzieht, wieder deutsch, **und zwar wegen der Kiste**. Ein
+> Wächter nur auf „durchgereicht" wäre dafür blind.
+
+**2 · `docs/INTERFACES.md` kannte den Sprach-Haken nicht.** Die Tafel nannte
+`init({ nodeName, createIdentity?, corner?, accent? })` — `lang?` fehlte. PR #986
+und #988 haben Modul und beide Bauvorlagen geändert, **ohne die Tafel
+anzufassen**; die Schnittstelle war vier Tage lang breiter als ihre Beschreibung.
+
+> **Die Regel lautet umgekehrt:** *„Wer eine Schnittstelle ändert, zieht ZUERST
+> dort nach, DANN den Code."* Hier lief es andersherum, und es ist niemandem
+> aufgefallen — auch mir nicht, bis Klaus ausdrücklich danach fragte.
+> Nachgetragen, samt dem Vermerk, dass es nachgetragen wurde.
+
+**Nachgezogen wurden außerdem:** `docs/MYCEL-GESCHENKBOX.md`, beide
+Kisten-READMEs und `docs/PFLICHT_MODULE.md` — überall mit der ehrlichen Zeile,
+dass ein **Voll-Knoten auf Englisch heute gemischtsprachig** ist (23-UI englisch,
+16 und 17 deutsch). Eine benannte Lücke ist Arbeit, eine verschwiegene ist Schaden.
+
+**Kein `ZERTIFIKAT_ASPEKTE`-Eintrag**, und das ist eine Entscheidung, keine
+Auslassung: die Regel gilt für **Schutz-Module** (10/11/12/14/15.B). 23-UI ist
+Oberfläche. Ein Aspekt ohne Schutz-Änderung ließe das Siegel etwas behaupten,
+das nicht dazugehört.
+
+### ⚠ Mein eigener Harnisch war zuerst falsch — und sah aus wie ein Befund
+
+Die drei ersten Sprach-Wächter meldeten rot. Nicht der Code war schuld: mein
+Stub hatte `SbkimStorage` weggelassen, und `init()` steigt ohne es mit einem
+blanken `return` aus, **bevor** es den UI-Mount erreicht. Ein Fehlschlag, der wie
+eine Aussage über den Code aussah und eine über die Probe war.
+
+### 🔴 Dabei herausgefallen, NICHT behoben — eine Frage an Klaus
+
+Genau dieser `return` steht gegen eine Zusicherung, die dreißig Zeilen darunter
+im selben File steht: *„Öffentlicher Rendezvous-Knopf — **UNABHÄNGIG von der
+Init-Kette** gemountet … soll **immer** erscheinen, auch wenn die Kette oben mal
+stolpert."* Fehlt `SbkimStorage`, erscheint er **nicht**.
+
+Ich habe es **nicht** eigenmächtig geändert: ob ein Verbinden-Knopf ohne Speicher
+erscheinen *soll*, ist eine Verhaltensfrage im Störfall und damit echtes Zweifeln.
+**Offene Frage, unten eingereiht.**
+
+**Gemessen (Sage).**
+
+| | |
+|---|---|
+| `node tests/run_alle.mjs` | **101 Proben — 101 grün, 0 rot, 0 nicht lauffähig** |
+| `tests/smoke_bundle_connect.mjs` | **25 grün, 0 rot** (4 davon neu) |
+| `tests/gegenprobe_bundle_sprache.mjs` (neu) | **4 gefangen · 0 durchgerutscht · 0 aus dem falschen Grund** |
+| `tests/gegenprobe_bau23_sprache.sh` | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| `tests/gegenprobe_bauvorlagen.mjs` | **7/7 bemerkt, kein blinder Fleck** |
+| Netzweit | **18/18 tragen `709c4364026e` auf `origin/main`** |
+
+Die neue Gegenprobe läuft je Fall an einer **Wegwerf-Kopie** (`mktemp -d`) — ein
+abgebrochener Lauf hinterlässt kein sabotiertes Modul im Depot.
+
+**Was NICHT geprüft ist.** Wie die englischen Texte im echten Fenster stehen,
+sieht nur ein Browser — **Klaus' Sichttest steht aus**, und `family-project` ist
+dafür der richtige Ort, weil der Befund dort entstand. `16_siegel.js` (47 Texte)
+und `17_floating_widget.js` (19) bleiben deutsch.
+
+**Nächster sinnvoller Schritt:** Klaus' Sichttest an `family-projekt.de` auf
+Englisch; danach Modul 16 und 17 nach demselben Muster.
+
+
 ## Stand 2026-09-14 (Haupt-Sitzung, Nachtrag) · ⚠ DER SPRACH-WÄCHTER WAR BLIND FÜR 52 TEXTE
 
 **Rolle:** Haupt-Sitzung, Bau. PR #988 gemergt (`d71a678`). **Die Zahlen im
@@ -736,177 +864,19 @@ Gegenprobe 10 gefangen / 0 durchgerutscht.
 
 ---
 
-## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DAS REGISTER MISST JETZT GEGEN DEN RAUM
+## Eine weitere Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
-**Was getan.** Klaus: *„bevor du den Register auf den neuen Maßstab umstellst,
-prüfe bitte die Analyse."* Geprüft, dann umgestellt — in dieser Reihenfolge.
+> ✅ DAS REGISTER MISST JETZT GEGEN DEN RAUM stand bis heute hier in voller Länge
+> (45 Zeilen). **Ausgelagert, nicht gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-3.md`](sessions/archiv/2026-09-14_puls-auslagerung-3.md).
 
-**PWA Toolpoint ist von 0.808113 auf 0.917550 gesprungen**, nachdem Klaus mit der
-neuen Beschreibung neu signiert hat. Geprüft wurde:
+## Zwei Sitzungen vom 2026-09-10 — ausgelagert am 2026-09-14
 
-| | Ergebnis |
-|---|---|
-| Signatur beider Sporen | **VALID**, `id == SHA256(pub)`, kein `d`, L2 = 1 |
-| Kennung | `WJ14jzCKnqlz…` — **dieselbe**, die Identität hat den Wechsel überlebt |
-| Text im Raum ⟷ Depot | **byte-gleich** (2585 Zeichen, 37 Stichworte) |
-| Handshake | **beide Richtungen**, 6/6 und 1/2 |
-
-**⭐ Modul 05 hat die Zahl selbst gemeldet:** `"score": 0.9175501500545508`,
-achtmal — und die Nachrechnung ergibt dieselbe Zahl. Genau der Vergleich, der
-beim ersten Mitschnitt nicht stimmte.
-
-**⚠ Ist der Sprung echt, oder nur Sages Vokabular gespiegelt?** Gemessen gegen
-**alle** 21 Knoten: Toolpoint stieg gegen 19 (KHC +0.070, Muttis +0.072, WorkFloh
-+0.069) und **fiel** gegen die zwei ohne Protokoll-Bezug — Tomys Hub −0.013,
-Muster Werbetechnik −0.010. Hätte der Text nur gespiegelt, wäre alles
-gleichmäßig gestiegen und nichts gefallen.
-
-**Benannt bleibt:** der Anstieg gegen **Sage** (+0.109) ist rund doppelt so groß
-wie der Durchschnitt gegen die übrigen. Sages Text ist der protokoll-dichteste im
-Netz — *„schreib wie Sage"* ist ein Hebel auf **diese** Zahl, und das ist nicht
-dasselbe wie *„passe besser zu allen"*. Und die obersten zwei trennen **vier
-Zehntausendstel** (0.917550 / 0.917107): das ist keine Rangfolge.
-
-**Umgestellt:** alle 21 `matchScore` messen jetzt gegen die Spore, die der Knoten
-im **Raum** angesagt hat. `matchScoreMassstab` sagt es im Register, jeder Eintrag
-trägt `matchScoreQuelle`. Sieben Werte bewegen sich gar nicht. **Kein Knoten
-wechselt die Seite des Bodens 0.80**, die `nodeId`-Spalte bleibt die committete
-Identität.
-
-**Nächster Schritt.** Mein Mixarium — Klaus hat den Beleg im Bild geschickt: im
-Siegel steht der 88-Zeichen-Zweizeiler, ohne Herkunfts-Zeile und ohne
-Rückhol-Knopf. Dieselbe Vorrang-Falle, dort noch offen.
-
-**Proben:** `npm test` → **99 grün, 0 rot, 0 nicht lauffähig**.
-
----
-
-## Stand 2026-09-10 (Haupt-Sitzung) · ✅ DRITTER MITSCHNITT — das Netz ist vollständig gemessen
-
-**Was getan.** Klaus hat die vier Knoten geöffnet, die im zweiten Mitschnitt
-gefehlt hatten. **Für alle 21 Gegenstellen liegen jetzt live gemessene Sporen
-vor.** Sage tritt zum zweiten Mal mit `cos = 1.0` gegen die abgelegte Spore an —
-der Maßstab hält. Beleg abgelegt unter
-[`sbkim/mitschnitte/2026-09-10T1516_mycel-karte-analyse.json`](../sbkim/mitschnitte/2026-09-10T1516_mycel-karte-analyse.json).
-
-**⚠ MEINE ERKLÄRUNG VON HEUTE NACHMITTAG IST WIDERLEGT.** Ich hatte als Kandidat
-für den Vektor-Unterschied genannt, die Depot-Sporen stammten aus der
-Neu-Signier-Welle und seien mit `tools/resign_spore_v02.mjs` in einer anderen
-Umgebung gerechnet worden. **PWA Toolpoint widerlegt das:**
-
-| | Depot | Raum |
-|---|---|---|
-| Kennung | `WJ14jzCKnqlz…` | `WJ14jzCKnqlz…` — **dieselbe** |
-| signiert | 08:11:**25**.674Z | 08:11:**39**.000Z |
-| Text · Stichworte | 283 Zeichen · 8 | **byte-gleich** |
-| `cos(Depot, Raum)` | **0.992957** | |
-
-Zwei Sporen, derselbe Schlüssel, derselbe Text, **vierzehn Sekunden**
-auseinander — und ein anderer Vektor. Dieselbe App, derselbe Browser. Das
-Embedding ist unter denselben Eingaben nicht deterministisch. **Die Ursache
-bleibt ungemessen**; widerlegt ist nur die eine Vermutung, und sie wird nicht
-durch die nächste plausible Geschichte ersetzt.
-
-> Eine Vermutung, die man nicht als solche kennzeichnet, wird beim nächsten
-> Lesen zum Befund. Diese war gekennzeichnet — deshalb ließ sie sich mit einer
-> Messung wieder einkassieren.
-
-**⚠ Mein Mixarium sagt im Raum etwas anderes an, als im Depot liegt:** **88
-Zeichen** gegen **1476**. Wer dort neu signiert, bekommt den Zweizeiler — dieselbe
-Vorrang-Falle, die Sage und Kim Hub Company heute abgestellt haben und die in
-Mein-Mixarium **nicht** abgestellt ist.
-
-**📏 Länge entscheidet nicht, der Inhalt tut es** — gemessen über alle 21:
-
-| Knoten | Zeichen | gegen Sage | nennt SBKIM/Mycel? |
-|---|---|---|---|
-| Kim-Bell | **82** | **0.874864** | ja |
-| SB-KIMTool-Point | **61** | **0.865795** | ja |
-| Muster Werbetechnik | 421 | 0.793613 | nein |
-| Perfect Skin Beauty | 265 | 0.783216 | nein |
-
-Für die fünf Knoten unter dem Handshake-Boden ist der Hebel damit **nicht mehr
-Text**, sondern der Satz, dass sie zum SBKIM-Mycel gehören. Klaus hat das am
-selben Tag von sich aus benannt: *„dass sie im Sage Protokoll mit sind, das wird
-nämlich bedeuten, dass sie leichter gefunden würden innerhalb des Mycels."*
-
-**Was offen ist.** Der Grund, aus dem das Register noch nicht auf den
-Raum-Maßstab umgestellt ist, ist **weggefallen** — er war „für vier Knoten liegt
-kein Mitschnitt vor". Die Entscheidung liegt bei Klaus.
-
-**Proben:** `npm test` → **99 grün, 0 rot, 0 nicht lauffähig**.
-
----
-
-## Stand 2026-09-10 (Haupt-Sitzung) · ✅ ZWEITER MITSCHNITT — 18 KNOTEN LIVE GEMESSEN
-
-**Was getan.** Klaus hat einen zweiten Mitschnitt der Mycel-Karte geschickt
-(14:02–14:33, 154 Ereignisse) und dabei **zwölf Apps nacheinander geöffnet und neu
-signiert**. Damit liegen erstmals **18 live gemessene Sporen** nebeneinander statt
-einer. Abgelegt als
-[`sbkim/mitschnitte/2026-09-10T1433_mycel-karte-analyse.json`](../sbkim/mitschnitte/2026-09-10T1433_mycel-karte-analyse.json).
-
-**Alle 18 verifizieren** — VALID, `id == base64url(SHA256(rawPub))`, kein `d`,
-`key_ops` nur `["verify"]`, L2 = 1.
-
-**✅ Der Vorbehalt über Sage ist eingelöst.** Sages Raum-Spore und `sbkim/spore.json`
-sind **dieselbe**: gleiche Kennung, gleicher Zeitstempel, `domainVector` **byte-gleich**,
-cos = 1.0. Der Maßstab, gegen den alle zwanzig `matchScore` gerechnet sind, ist damit
-gemessen und nicht mehr nur behauptet.
-
-**⚠ Dreizehn von fünfzehn Gegenstellen trugen im Raum eine ANDERE Kennung** — der
-Stufe-0e-Befund vom 2026-07-29, im großen Maßstab. Kein Fehler der Apps: der
-Browser-Speicher einer nur im Tab geöffneten Seite ist „best effort". Die
-`nodeId`-Spalte im Register bleibt die **committete** Identität.
-
-**⚠ BEFUND OHNE URSACHE: derselbe Text ergibt nicht immer denselben Vektor.** Bei
-fünf Knoten weicht `cos(Depot, Raum)` ab, obwohl `domainDescription`,
-`domainKeywords`, `domain` und `embeddingModel` **byte-gleich** sind — Alis Moderaum
-0.995264 · Jasons-Tresor 0.994307 · Mein-Tresor 0.990437 · Kimseek 0.989639 ·
-Kimboard 0.987958. Sieben weitere kommen auf exakt **1.000000**.
-
-Bei Kimseek weichen **alle 384 Dimensionen** ab (größte Einzelabweichung 0.024),
-beide Vektoren sind sauber normiert. **Und es ist je App stabil:** der Mitschnitt vom
-2026-07-29 nennt für Kimboard 0.9880 und für Family Projekt 1.0000 — sechs Wochen und
-zwei Schlüsselwechsel später stehen dort 0.987958 und 1.000000.
-
-Ein Kandidat ist, dass die Depot-Sporen der betroffenen Knoten aus der
-Neu-Signier-Welle vom 18.–19.07. stammen und mit `tools/resign_spore_v02.mjs` statt in
-der App gerechnet wurden. **Das ist eine Vermutung, kein Befund.**
-
-**Neu: `tests/smoke_mitschnitt.mjs`** (10 Prüfungen) + Gegenprobe (8 Fälle). Sie
-rechnet den Satz „Sage im Raum IST Sage im Depot" bei jedem Lauf nach — ein gemessener
-Satz, den keine Probe nachrechnet, ist spätestens beim nächsten Signieren wieder eine
-Behauptung. Und sie prüft das Belegmaterial selbst: jede Spore darin verifiziert, jede
-Kennung ist der Hash ihres Schlüssels, **kein privater Schlüsselteil**.
-
-**Drei eigene Fehler, alle von der Handprobe gefunden:**
-
-| Was | Warum es nichts maß |
-|---|---|
-| „der neueste Mitschnitt" wurde am **Dateinamen** erkannt | `T` (0x54) sortiert vor `_` (0x5F) — die Probe hielt den zwei Stunden älteren für den neueren und wurde rot **aus dem falschen Grund**. Gefragt wird jetzt das Feld `beendet` in der Datei |
-| der Privatteil-Fall hängte `d` an und unterschrieb **danach** neu | das frische Paar ersetzte den Schlüssel samt `d`. Umgeworfen wurde der Kennungs-Wächter; der Privatteil-Wächter kam **nie dran** und hätte blind sein können |
-| drei Fälle trafen Sages eigene Spore | ein Eingriff daran wirft die drei Sage-Wächter mit um — der Fall beweist dann über den gemeinten weniger, als seine rote Zeile verspricht |
-
-**Was offen ist — und Klaus vorgelegt.** Das Register ist **nicht** auf den
-Raum-Maßstab umgestellt. Vier Knoten waren nicht im Raum (**Rezeptbuch** 0.874048 ·
-**Mixarium** 0.817718 · **Muttis-Rezeptbuch** 0.870249 · **PWA Toolpoint** 0.811202),
-und eine halb umgestellte Tabelle sähe einheitlich aus, ohne es zu sein.
-
-**Woran es nicht hängt:** **kein einziger Knoten wechselt die Seite des
-Handshake-Bodens** 0.80 — für alle 17 nachgerechnet. Größte Unterschiede:
-BookLedgerPro −0.028687, Auslieferungsprüfer +0.028407, Kimboard +0.028326,
-SB-KIMTool-Point −0.027231; sieben sind auf sechs Stellen identisch. Private Brain
-liegt mit 0.800773 nur noch **acht Zehntausendstel** über dem Boden.
-
-**Fünf sehr dünne Beschreibungen** sind dabei sichtbar geworden: SB-KIMTool-Point
-**61 Zeichen**, Kim-Bell 82, BookLedgerPro 83, Private Brain 171, Kimboard 238 — zum
-Vergleich Sage 3028. Bei allen fünf ist die eigene Beschreibung der nächste Hebel.
-
-**Proben:** `npm test` → **99 grün, 0 rot, 0 nicht lauffähig**.
-Gegenprobe → **8 gefangen, 0 durchgerutscht**.
-
----
+> ✅ DRITTER MITSCHNITT — das Netz ist vollständig gemessen (57 Zeilen) und
+> ✅ ZWEITER MITSCHNITT — 18 KNOTEN LIVE GEMESSEN (70 Zeilen) standen bis heute
+> hier in voller Länge. Die Datei stand vor dem Eintrag von heute bei **2.990 von
+> 3.000**; **ausgelagert, nicht gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-09-14_puls-auslagerung-3.md`](sessions/archiv/2026-09-14_puls-auslagerung-3.md).
 
 ## Noch eine Sitzung vom 2026-09-10 — ausgelagert am 2026-09-14
 
@@ -936,6 +906,9 @@ Gegenprobe → **8 gefangen, 0 durchgerutscht**.
 
 | Sitzung | Wortlaut | Übergabeprotokoll |
 |---|---|---|
+| 2026-09-10 (Haupt-Sitzung) — ✅ Das Register misst jetzt gegen den Raum | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung) — ✅ Dritter Mitschnitt, das Netz ist vollständig gemessen | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
+| 2026-09-10 (Haupt-Sitzung) — ✅ Zweiter Mitschnitt, 18 Knoten live gemessen | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-3.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung, später) — 🔴 Neun von 21 Knoten unter dem Handshake-Boden | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung, Abschluss) — ✅ Sage neu signiert, vier Knoten sind zurück | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
 | 2026-09-10 (Haupt-Sitzung, Nachtrag) — SBKIM wird wieder überall gleich aufgelöst | [→ Archiv](sessions/archiv/2026-09-14_puls-auslagerung-2.md) | kein eigenes Protokoll |
@@ -1120,6 +1093,37 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 > oben verlangt **auslagern statt kürzen**, und die Git-Historie trägt es ohnehin.
 
 ## Offene Querschnitts-Fragen
+
+- 🔴 **Der Verbinden-Knopf erscheint NICHT, wenn `SbkimStorage` fehlt — obwohl
+  der Kommentar daneben das Gegenteil zusichert** (gefunden 2026-09-14 beim
+  Rollout, **nicht behoben**, Frage an Klaus). In `sbkim-connect.js` steht:
+
+  ```js
+  if (!global.SbkimStorage) {
+    warn("SBKIM-Module nicht geladen — Andock übersprungen …");
+    return;                       // ← der UI-Mount kommt DANACH
+  }
+  ```
+
+  Dreißig Zeilen darunter, am UI-Mount: *„Öffentlicher Rendezvous-Knopf —
+  **UNABHÄNGIG von der Init-Kette** gemountet (Klaus' Festlegung: sofort
+  öffentlich … soll **immer** erscheinen, auch wenn die Kette oben mal
+  stolpert)."* Ein blankes `return` ist aber genau der Fall „die Kette
+  stolpert". **Eine der beiden Stellen ist falsch, und welche, entscheidet
+  nicht der Code.**
+
+  Getroffen wird das einen **Fremden**, der die Geschenkbox auspackt und eine
+  Script-Zeile vergisst: er bekommt eine Warnung in der Konsole (die er nicht
+  liest) und **gar keinen Knopf**. Für einen Marktplatz-Fall ist das der
+  schlechtere von zwei Ausgängen.
+
+  **Warum nicht eigenmächtig geändert:** ob ein Verbinden-Knopf ohne lokalen
+  Speicher überhaupt erscheinen *soll* (er könnte danach an anderer Stelle
+  scheitern), ist eine Verhaltensfrage im Störfall — mehrdeutig, mit zwei
+  vertretbaren Wegen. Das ist die Grenze des Freibriefs. **Klaus entscheidet:**
+  Knopf trotzdem mounten (und die Zusicherung halten) **oder** den Kommentar
+  richtigstellen (und die Zusicherung streichen).
+
 
 - **DeX-Chrome vs. Tablet-Chrome — zwei getrennte Browser-Instanzen**
   (eingetragen 2026-05-17, Mini-Pflege „Live-Channel-Handshake"). Auf

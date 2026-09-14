@@ -51,11 +51,29 @@ Vor `</body>` (Reihenfolge ist wichtig):
     // optional:
     // stammCategories: [...], guestCategories: [...],
     // nodeType: "hybrid", corner: "bl"  // bl|br|tl|tr
+    // lang: "en"   // Sprache des Fensters — siehe unten. Weglassen = Deutsch.
   });
 </script>
 ```
 
 Das war's. Unten links erscheint **„🌐 Mit dem Netz verbinden"**.
+
+## Deutsch oder Englisch
+
+Das Fenster trägt **237 englische Texte**. Du hast zwei Wege, und **keiner ist
+Pflicht**:
+
+| Weg | wann |
+|---|---|
+| `lang: "en"` im `init()` oben | wenn deine App die Sprache umschaltet, **ohne** `<html lang>` mitzuziehen |
+| `<html lang="en">` am Dokument | wenn deine App das Attribut ohnehin pflegt — dann ist **nichts** zu tun |
+
+**Ohne Einstellung ändert sich nichts:** wer weder das eine noch das andere tut,
+bekommt Deutsch. Jeder andere Wert (`ru`, `zh`, `fr` …) fällt ebenfalls auf
+Deutsch zurück — das Fenster kennt zwei Sprachen, nicht mehr.
+
+Fehlt einmal eine Übersetzung, bleibt **dieser eine Satz** deutsch. Nie leer,
+nie ein Platzhalter.
 
 ---
 
