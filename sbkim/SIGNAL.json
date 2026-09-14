@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-14",
-  "seq": 76,
-  "headline": "SICHTTEST ZU MODUL 23 UI: der Sprach-Haken greift, das Fenster war ein LADEN zu frueh. Gemessen am echten Service-Worker: erstes Laden nach dem Deploy liefert das alte Modul, das zweite das neue - mit UND ohne CACHE_VERSION-Bump gleich. Offen: das Etikett 'Geraetename' bleibt deutsch, es liegt per NETZWEIT §2 im app-eigenen Glue (0 Treffer im Kanon, 3-4 je Traeger) und ist von einem Modul-Rollout nicht erreichbar.",
+  "seq": 77,
+  "headline": "SIEGEL (16) UND LAMPEN (17) SPRECHEN JETZT ENGLISCH - byte-1:1 in 19 Traegern (Privat-Brain kommt dazu, es trug kein 23-UI). Kanon 16=7589f18d59dc, 17=3f757b35cea5. Verfahren wie 23 UI: schluessellos, OHNE EINSTELLUNG AENDERT SICH NICHTS. ACHTUNG FUER GEGENSTELLEN: lang geht an DREI init() (23-UI, 16, 17) - keiner reicht ihn weiter; ueber <html lang> entfaellt das, alle drei lesen es selbst. Offen und neu aufgemacht: das Andock-Werkzeug IM Siegel ist app-eigener Klebstoff (20 Dateien, je 41-52 deutsche Texte) und vom Rollout nicht erreichbar - wie der Geraetename.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,21 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 77,
+      "date": "2026-09-14",
+      "what": "Modul 16 (Siegel, 55 Eintraege) und 17 (Lampen, 28) sprechen Deutsch und Englisch, Verfahren byte-gleich mit 23 UI: schluessellos, Rangfolge cfg.lang -> <html lang> -> de, fail-soft. DIE TAFEL KAM DIESMAL ZUERST: INTERFACES.md traegt die SPRACHE-Absaetze fuer 16 und 17, geschrieben BEVOR Code entstand - bei 23 lief es umgekehrt und fiel vier Tage nicht auf. Byte-1:1 in 19 Traeger kopiert; alle trugen EINE Generation, byte-genau die Fassung davor. 12 sha-Pins nachgezogen (SB-KIMTool-Point pinnt mit 16 Zeichen - eine 64er-Suche findet ihn NICHT), 10 CACHE_VERSION erhoeht, 9 bewusst NICHT (gemessen: das Modul steht dort nicht im Installations-Vorrat). KEIN ZERTIFIKAT_ASPEKTE-Eintrag, obwohl 16 ein Schutz-Modul ist: eine Uebersetzung ist Render-Schicht, und ein Eintrag 'spricht jetzt Englisch' behauptete einen Sicherheits-Fortschritt, den es nicht gibt. Waechter smoke_bau1617_sprache.mjs 64 gruen, Gegenprobe 25 gefangen / 0 durchgerutscht / 0 tote Anker; sie hat drei eigene blinde Stellen entlarvt. AN ALLE GEGENSTELLEN: wer 16/17 uebernimmt, gibt lang getrennt an ODER setzt <html lang> - eine Einstellung allein am Verbinden-Fenster erreicht Siegel und Lampen nicht. Und die Aspekte-Liste bleibt deutsch im Code; uebersetzt wird an der Anzeige-Stelle. Wer einen Aspekt ERGAENZT, traegt seine englische Fassung mit ein - der Waechter besteht darauf.",
+      "forNodes": [
+        "rezeptbuch",
+        "mixarium",
+        "family",
+        "tomyhub",
+        "bookledgerpro",
+        "jasonstresor",
+        "meintresor",
+        "sbkimtoolpoint"
+      ]
+    },
     {
       "seq": 76,
       "date": "2026-09-14",
