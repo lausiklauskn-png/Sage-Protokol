@@ -416,6 +416,13 @@ Nachbar-Klon) und `tools/wizard-trennung-pruefen.mjs` (misst das Ergebnis im
 echten Browser). **Die Übersetzung steht noch aus** — der Rahmen (`T()`,
 `TEXTE_DE`) ist gebaut und ändert ohne Tabelle nichts.
 
+⚠ **Wer an einer Nachlade-Kette etwas ANHÄNGT, prüft die Zeile DAVOR.** Am
+2026-09-15 hat ein fehlendes Komma sieben Apps getroffen, **vier davon ohne
+jedes SBKIM** — `[…]` unter `[…]` ist kein Syntaxfehler, sondern ein Zugriff,
+`"a"` unter `"b"` schon. Gemessen wird das mit
+`node tools/wizard-laedt-pruefen.mjs`: es **lädt** jede Seite im echten Browser,
+statt sie zu lesen. [`docs/LEHREN.md` § 12](docs/LEHREN.md).
+
 **Gemessen beim ersten Lauf: 44 Kanon-Dateien im Netz hängen zurück**, einzelne
 um über 300 Zeilen. Ein Generationen-Sprung wird als solcher benannt — er
 braucht einen Probenlauf im Ziel-Repo, ein Zwei-Zeilen-Nachtrag nicht.

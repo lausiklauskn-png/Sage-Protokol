@@ -139,10 +139,10 @@ for (const konfigPfad of KONFIGS) {
     let getroffen = 0;
     /* ⚠ EIN BLOCK-KOMMENTAR WIRD MITGEZAEHLT, NICHT AM ZEILENANFANG ERKANNT.
      * Die erste Fassung sprang nur ueber Zeilen, die mit `//`, `*` oder `/*`
-     * ANFANGEN — und zerlegte damit PWA Toolpoints `sw.js`: dort steht mitten
-     * in einem Block-Kommentar die Zeile
-     *     dessen `assets/siegel-inhalt.js` aus demselben Grund fehlt. */
-     * Sie faengt mit einem Wort an und nennt den Pfad in Rueckwaerts-Strichen.
+     * ANFANGEN — und zerlegte damit PWA Toolpoints sw.js: dort steht mitten
+     * in einem Block-Kommentar eine Zeile, die mit einem WORT anfaengt und den
+     * Pfad in Rueckwaerts-Strichen nennt (sinngemaess: "dessen
+     * assets/siegel-inhalt.js aus demselben Grund fehlt").
      * Das Werkzeug legte eine Schwester daneben, und der Service-Worker war
      * syntaktisch kaputt — ein Offline-Vorrat, der nicht mehr laedt. Gefunden
      * hat es die Probe des Ziel-Repos, nicht das Nachdenken.
@@ -158,6 +158,17 @@ for (const konfigPfad of KONFIGS) {
       if (nackt.startsWith("//") || nackt.startsWith("#") || nackt.startsWith("<!--")) continue;
       /* Nur echte Einbindungen: der Pfad MUSS in Anfuehrungszeichen stehen. */
       if (!new RegExp(`["'\`][^"'\`]*${name.replace(/\./g, "\\.")}["'\`]`).test(z)) continue;
+      /* ⚠ WAR DIE VORLAGE DAS LETZTE FELD-ELEMENT, FEHLT IHR DAS KOMMA.
+       * Genau daran sind am 2026-09-14 SIEBEN Apps gestorben. Die Schwester
+       * wird ANGEHAENGT; stand die Vorlage als letztes Element ohne Komma da,
+       * steht danach `[…]` direkt unter `[…]` — und das ist KEIN Syntaxfehler,
+       * sondern ein ZUGRIFF: zwei Eintraege werden still zu einem `undefined`.
+       * Bei einem Feld aus blossen Zeichenketten (`"a"` unter `"b"`) ist es
+       * dagegen ein echter Syntaxfehler und toetet den ganzen Skript-Block —
+       * vier Apps hatten danach GAR KEIN SBKIM mehr, keine Lampen, kein Siegel.
+       * Ein Skript-Tag endet auf `>` und braucht nichts. */
+      const ohneRand = z.replace(/\s+$/, "");
+      if (/[\"'`\]]$/.test(ohneRand)) raus[raus.length - 1] = ohneRand + ",";
       raus.push(z.split(name).join(neuName));
       getroffen++;
     }
