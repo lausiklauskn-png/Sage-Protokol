@@ -31,6 +31,100 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-15 (Haupt-Sitzung, vierter Teil) · ⚠ DER SIEGEL-WEG ZERSTÖRTE DEN INHALTS-VEKTOR
+
+**Der Befund.** Es gibt **zwei Wege zur Spore**, und sie betteten Verschiedenes
+ein: die stille Erst-Anmeldung (`sbkim-connect.js:88-103`) rechnete den Vektor
+aus `sampleContent()` — den **echten** Inhalten —, der Siegel-Weg
+(`16b_andock_wizard.js:353`) ausschließlich aus der App-Beschreibung.
+
+**Für einen fremden Nutzer, der Mein Rezeptbuch mit SEINEN Rezepten füllt, hieß
+das:** die erste Anmeldung war richtig, und in dem Moment, in dem er im Siegel
+neu signierte, **verlor er seinen Inhalts-Vektor** und bekam die Beschreibung
+der fremden App. Sein Knoten kündigte danach ein Thema an, das ihm nicht gehört.
+
+**Vier Änderungen am Kanon**, verteilt in 19 Kopien, 21 Depots gemergt:
+
+| | |
+|---|---|
+| **1** | **Zwei echte Wizard-Fehler.** Schritt 1 rief `getOrCreateIdentity()` ohne Argument → hart `"main"`, Schritt 2 signiert mit dem **aktiven** Fach. Nach einem Wechsel bedienten zwei Knöpfe desselben Fensters **zwei Identitäten**. Dasselbe im Neu-Signier-Weg. Und der Semantik-Block zog nach einem Wechsel nicht nach |
+| **2** | **Der Dateiname nennt die Kennung** (Klaus' eigener Vorschlag) und ein sortierbares Datum |
+| **3** | **Der Siegel-Weg rechnet aus dem Inhalt**, wenn `cfg.sampleContent` welchen liefert, und setzt `embeddingSource: "content"` |
+| **4** | **Wer zuletzt SELBST geschrieben hat, behält sein Wort** im Textfeld |
+
+**Und die drei Inhalts-Apps sind verdrahtet.** `sampleContent()` steht in
+Mein-Rezeptbuch, Muttis-Rezeptbuch und Mein-Mixarium jetzt auf **Datei-Ebene**
+statt in `__sbkimErzeugeSpore`; `siegel-inhalt.js` verweist **spät aufgelöst**
+darauf (`sbkim-init.js` wird **vor** ihr geladen). **Eine** Fassung der
+Stichprobe — zwei ergäben zwei Vektoren für denselben Knoten.
+
+**Klaus' Geltungsbereich, wörtlich:** Rezeptbuch · Muttis · Mixarium.
+Ausgeschlossen BookLedgerPro (Buchhaltung) und vorerst Mein-WorkFloh.
+⚠ **Der Bestand passte schon dazu:** BLPs `sampleContent()` liefert die **festen**
+`STANDARD_KONTO_LABELS` (bei jedem Nutzer gleich), WorkFloh hat **gar keine**.
+**Es brauchte also keine Sperre** — eine Sperre, die nichts sperrt, sieht aus
+wie Schutz.
+
+**Tafel.** `docs/INTERFACES.md` §2 trägt jetzt `embeddingSource` und
+`embeddingVersion`. Beide standen **nicht** dort, obwohl Modul 02 sie seit v0.2
+in die **signierte** Spore schreibt. Dazu die Lesart: **zwei Sporen desselben
+Knotens sind nur vergleichbar, wenn ihr `embeddingSource` derselbe ist** —
+belegt an Mixarium, dieselbe Kennung `6U3aniLM…`, 0.826040 aus dem Inhalt gegen
+0.883142 aus der Beschreibung.
+
+⚠ **EIN BLINDER WÄCHTER VON MIR, von der Gegenprobe entlarvt.** „Wirft
+`sampleContent`, bleibt es still (fail-soft)" fragte nur, ob die Vektor-Zeile
+fehlt. Nimmt man das `try/catch` heraus, entsteht der **ganze Semantik-Block**
+nicht mehr — und **genau das hätte der Wächter „fail-soft" genannt.** Er misst
+jetzt auch, dass der Block dasteht. Gefunden beim **Nachstellen von Hand**,
+nicht beim Schreiben.
+
+⚠ **EINE ZUSICHERUNG GESCHÄRFT, NICHT GELOCKERT — an drei Stellen.**
+`smoke_sage_beschreibung.mjs`, PWA-Toolpoints `smoke.mjs` (zweimal, je Knoten)
+und kim-hub-companys `smoke_knoten.mjs` verlangten „genau **eine** Zuweisung an
+`ta.value` im Lade-Pfad". Seit Punkt 4 ist das **Zählen das falsche Maß**;
+gemessen wird die **Bedingung** und die **Gegenrichtung** (dass der Vermerk beim
+Signieren wirklich gesetzt wird). Tafel-Evolutions-Klausel, ausdrücklich benannt.
+
+⚠ **ZWEI PROBEN WAREN NICHT ROT, SONDERN NICHT LAUFFÄHIG.** Kimboard meldete
+„21 von 31 ROT", Privat-Brain brach ab — beide Male fehlte `playwright-core`.
+Wer die erste Zahl genommen hätte, hätte eine fehlende Abhängigkeit als Schaden
+am Code gemeldet. Nachinstalliert: Kimboard **31/31 grün**.
+
+⚠ **UND PRIVAT-BRAIN IST VORBESTEHEND ROT.** `npm test` meldet dort
+**12 bestanden, 4 fehlgeschlagen** (das Siegel injiziert nichts). Gemessen, nicht
+vermutet: derselbe Lauf gegen `origin/main` in einem eigenen Arbeitsbaum ergibt
+**dieselben vier Zeilen, Wort für Wort**. Eigener Vorgang.
+
+**Gemessen.** `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
+lauffähig**, Rückgabewert **0** (ohne Pipe gelesen) · `wizard-laedt-pruefen.mjs`
+→ alle **21** Seiten liefern Konfiguration **und** Kanon aus ·
+`smoke_service_worker_parst.mjs` → 3 grün · **sieben Gegenproben von Hand
+nachgestellt**, alle gefangen, jede mit dem Namen ihrer eigenen Zusicherung in
+der roten Zeile · die Kette in den **echten App-Dateien** im Browser gemessen.
+Fremde Läufe: PWA-Toolpoint **871/871**, kim-hub-company **69 grün**,
+family-project **110/110**, BookLedgerPro **2182 bestanden** (Generationen-Sprung
+von 1.179 Zeilen), Alis-Moderaum 55/55, Perfect-Skin-Beauty 25, Kim-Bell,
+Kimseek, Jasons-Tresor, Mein-Tresor, Mein-Workfloh-Page, Perfect-Skin-Fashion
+grün.
+
+**NICHT GEBAUT, und der Grund ist gemessen:** der Drift-Hinweis („dein Inhalt
+hat sich von deiner Spore entfernt"). Seine Schwelle wäre zu **raten** gewesen —
+das Einbettungs-Modell ist in dieser Umgebung ein **16K-Platzhalter**, und
+huggingface antwortet mit **HTTP 000**. Eine geratene Schwelle erzeugt entweder
+eine Warnung, die man nicht mehr los wird, oder eine, die nie kommt.
+
+**Offen.** Der Drift-Hinweis (braucht Klaus' Browser für die Schwelle) · die
+Übersetzung (`TEXTE.en`, 76 Einträge) · `sbkim/15_membran.js` in family-project
+hängt eine Generation zurück · Privat-Brains vier vorbestehende rote Zeilen ·
+der Rezept-Export trägt die Spore **nicht** mit (benannter Befund, eigener
+Vorgang).
+
+**Nächster Schritt.** Klaus' Sichttest im Siegel von Mein Rezeptbuch: steht dort
+die Zeile „Dein Vektor kommt aus deinen eigenen Inhalten (N Einträge)"?
+
+---
+
 ## Stand 2026-09-15 (Haupt-Sitzung, dritter Teil) · ⚠ DER VIERTE IDENTITÄTS-WECHSEL EINES KNOTENS
 
 **Getan.** Klaus hat für **Mein-Rezeptbuch** über das Siegel neu signiert und die
@@ -616,77 +710,12 @@ an einem Wegwerf-Netz, liest es nicht) · `gegenprobe_kanon_verteilen.sh`
 
 ---
 
-## Stand 2026-09-14 (Haupt-Sitzung, Nacht, Abschluss) · ✅ DIE LAMPEN DER ZWEI MARKTPLÄTZE SPRECHEN MIT
+## Eine Sitzung vom 2026-09-14 (Nacht, Lampen) — ausgelagert am 2026-09-15
 
-**Rolle:** Haupt-Sitzung, dritte und letzte Entscheidung aus der Nachlese.
-Klaus: *„Ja, beide — klein und sichtbar."*
-
-### Was gebaut wurde
-
-Der Befund der Nachlese war: auf den zwei Seiten, die Klaus ansehen wollte,
-malt **nicht Modul 17** die Lampen, sondern app-eigener Klebstoff. Beide sind
-jetzt nachgezogen — mit dem, was jedes Repo **schon hat**, statt mit einem
-zweiten System:
-
-| Repo | wo | wie |
-|---|---|---|
-| **family-project** | `assets/status-widget.js` | eigenes schlüsselloses `T()`, Rangfolge nur `<html lang>` (dieses Widget hat kein `init({lang})`) |
-| **PWA-Toolpoint** | `index.html` + `assets/sprache.js` | über das **vorhandene** `data-i18n`-System |
-
-⚠ **Die Begriffe sind mit Modul 17 abgestimmt** (`alive`/`traffic`/`foreign`/
-`seal`). Zwei Fassungen desselben Wortes liefen auseinander — und dann hieße
-dieselbe Lampe im Widget anders als im Modul-Fenster daneben.
-
-**Gemessen, beide Richtungen, headless an drei Seiten:**
-
-| | `lang=en` | `lang=de` |
-|---|---|---|
-| family-projekt.de | **ALIVE · TRAFFIC · FOREIGN · SEAL** | LEBT · VERKEHR · FREMD · SIEGEL |
-| pwa-toolpoint.de | **alive · traffic · foreign** | lebt · verkehr · fremd |
-| …/auslieferungspruefer | ALIVE · TRAFFIC · FOREIGN · SEAL | LEBT · VERKEHR · FREMD · SIEGEL |
-
-Dazu im Wappen: `OFFICIAL ATTESTATION` / `SEAL` gegen `OFFIZIELLE BESTÄTIGUNG`
-/ `SIEGEL`. **Auf Deutsch ändert sich nirgends etwas** — die tragende
-Zusicherung gilt in beide Richtungen, und sie ist gemessen, nicht behauptet.
-
-### ⚠ UND TOOLPOINTS WÄCHTER SCHRIEB DAS WÖRTERBUCH AB, STATT ES ABZULESEN
-
-In `tests/smoke.mjs` stand eine **fest verdrahtete Liste** von neun
-BASIS-Schlüsseln — eine zweite Fassung dessen, was in `assets/sprache.js`
-steht. Sie ist prompt auseinandergelaufen: die sechs neuen Lampen-Schlüssel
-standen im Wörterbuch, und der Wächter meldete sie trotzdem als fehlend
-(**860/861**).
-
-**Die Lehre stand in Toolpoints eigener Verfassung schon** — *„die Relais
-werden ABGELESEN, NICHT ABGESCHRIEBEN: zwei Listen derselben Poststellen
-laufen auseinander"* —, nur an einer anderen Tür. Behoben wurde die
-**Ursache**, nicht der Einzelfall: der Wächter liest die Liste jetzt aus
-`sprache.js`.
-
-⚠ **Er wird dadurch nicht schwächer** — er fragt „steht der benutzte Schlüssel
-im Wörterbuch?", und BASIS *ist* das Wörterbuch. Und er hat einen **eigenen
-Riegel**, der meldet, wenn das Ablesen selbst bricht: von Hand nachgestellt
-meldet er `nur 0 gefunden`, **bevor** die Folgemeldungen kommen. Ohne ihn wäre
-ein gebrochener Ableser still zu streng oder still zu lasch.
-
-**Gemessen:** Toolpoint `npm test` **862/862** · family-project
-`tests/smoke_all.mjs` **110/110** · zwei Gegenprobe-Fälle ergänzt, **beide von
-Hand in einer Wegwerf-Kopie nachgestellt** (der Arbeitsbaum bleibt unberührt,
-wie die dortige Verfassung es verlangt).
-
-### Was diese Sitzung insgesamt hinterlässt
-
-| | |
-|---|---|
-| **Aufgabe 1** (Nachlese) | erledigt — drei Befunde, alle gemessen |
-| **Wappen** | entschieden, gebaut, in **20 Trägern** ausgerollt |
-| **Lampen** | entschieden, gebaut, in beiden Marktplätzen |
-| **Aufgabe 2** (Andock-Werkzeug) | **unberührt** — Klaus' Weg steht fest: *erst zusammenführen, dann übersetzen* |
-
-⚠ **`docs/PULS.md` steht bei rund 2.980 Zeilen.** Die nächste Sitzung lagert
-aus, **bevor** sie schreibt — auslagern statt kürzen, die Schutz-Klausel oben
-gilt.
-
+> **↓ Ausgelagert.** Der Eintrag „DIE LAMPEN DER ZWEI MARKTPLÄTZE SPRECHEN MIT"
+> steht **wortwörtlich** in
+> [`sessions/archiv/2026-09-15_puls-auslagerung-4.md`](sessions/archiv/2026-09-15_puls-auslagerung-4.md).
+> Die Datei stand bei 3.033 von 3.000 Zeilen; **ausgelagert, nicht gekürzt.**
 ---
 
 ## Eine Sitzung vom 2026-09-14 (Nacht, Wappen) — ausgelagert am 2026-09-15
