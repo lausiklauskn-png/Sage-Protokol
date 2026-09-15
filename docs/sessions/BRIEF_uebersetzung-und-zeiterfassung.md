@@ -580,8 +580,28 @@ nicht darin. Die Zahlen dafür liegen in diesem Brief; das Werkzeug ist
 - **Zwei `jasons-bibliothek/`-Spiegel** (Jasons-Tresor, Mein-Tresor) laden kein
   SBKIM — Unterordner ohne eigenes `assets/`. **Vorbestehend, nicht von A18**,
   als benannte Ausnahme in `tools/wizard-laedt-pruefen.mjs` eingetragen.
-- **Die zwei Kennungen** (Rezeptbuch, WorkFloh) und **die vier fehlenden
-  Sicherungen** — Klaus' Entscheidung bzw. Klaus' Knopfdruck.
+- **✅ ERLEDIGT — die zwei Kennungen** (Rezeptbuch, WorkFloh) sind abgelegt und
+  im Register nachgezogen. WorkFloh `LEIbBDaS…` (0.902126), Rezeptbuch
+  `r-k1NyHe…` (0.874048, `depot-2026-09-15`, `previousNodeIds` jetzt **vier**).
+  Bei **beiden** ist der Text byte-gleich und die Zahl auf sechs Stellen
+  unverändert — **der Wechsel kostet die Zahl nichts, er kostet die Identität.**
+  ⚠ **Benannte Lücke:** für WorkFloh lag der Beleg vor, dass die alte Kennung
+  verloren ist; **für Rezeptbuch nicht.** Abgelegt auf Klaus' Anweisung.
+- **Die vier fehlenden Sicherungen** — Klaus' Knopfdruck, weiter offen.
+- **⏸ ZUR ENTSCHEIDUNG VORGELEGT: `docs/VORSCHLAG_IDENTITAETS-KETTE.md`.**
+  Antwort auf Klaus' Frage, wie ein ungeübter Nutzer im Netz erkannt bleibt.
+  Sechs Punkte nach Kosten geordnet; **1 und 2 ohne Protokoll-Änderung**, ab 3
+  wird `docs/INTERFACES.md` angefasst. **Nichts davon ist gebaut.**
+  Der billigste und einzige sofort wirkende ist **Punkt 1, Klaus' eigene Idee:**
+  der Dateiname trägt die Kennung. Gemessen an den drei Stellen, die einen Namen
+  bauen (`16b_andock_wizard.js:192` und `:573`, `23_rendezvous_ui.js:1176`) —
+  **keine nennt sie**, deshalb hießen zwei WorkFloh-Sporen desselben Tages
+  `…_15_09_26.json` und `…_15_09_26_1.json`, und welche die neuere war, stand
+  nur im Inhalt.
+  Und die **offene Frage** aus § 10: soll der Identitäts-Wechsler nach
+  **Zeitstempel** vorwählen statt lexikographisch? Beide Regeln haben ihren
+  Schaden — „die neueste gewinnt" heißt auch, dass ein **versehentlich**
+  erzeugter Schlüssel die gewachsene Identität verdrängt.
 
 ---
 
