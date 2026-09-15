@@ -209,7 +209,9 @@ Befunde mit ihrer Herkunft stehen im Brief.
 - die Übersetzung (`TEXTE.en`) — der Hauptauftrag des Folge-Briefs
 - die Zeiterfassung zusammenführen — Klaus entscheidet den Weg
 - zwei abweichende Kennungen (Rezeptbuch, WorkFloh) — Klaus entscheidet
-- vier fehlende Sicherungen — Klaus' Knopfdruck, eine Sitzung kann es nicht
+- ~~vier fehlende Sicherungen~~ — **erledigt am 2026-09-15, Klaus’ Angabe**
+  („Sicherungen sind alle angelegt“). **Nicht gemessen:** der Vermerk
+  lebt im Browser-Speicher, eine Sitzung kann ihn nicht lesen.
 - `noble-secp256k1` lädt in der Kette nicht — vorbestehend, nicht untersucht
 - 44 netzweit zurückhängende Kanon-Dateien
 - 38 blinde Gegenprobe-Fälle in PWA Toolpoint

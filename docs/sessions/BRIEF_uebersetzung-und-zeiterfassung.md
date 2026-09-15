@@ -118,6 +118,8 @@ Bei **Mixarium** wiegt es am schwersten: seine Kennung
 die, die am 2026-09-10 den Sprung 0,826 → 0,883 überlebt hat.
 Klaus ist darauf hingewiesen; **eine Sitzung kann den Knopf nicht drücken.**
 
+✅ **ERLEDIGT AM 2026-09-15 — Klaus’ Angabe:** *„Sicherungen sind alle angelegt.“* ⚠ **Das ist eine Angabe, keine Messung.** Der Vermerk „Letzte Sicherung: <Datum>“ lebt im Browser-Speicher des jeweiligen Geräts; eine Sitzung kann ihn nicht lesen (NETZWEIT § 6b). Nachprüfbar ist er nur im Verbinden-Fenster der App — dort steht dann ein Datum statt der Warnung.
+
 ### ✅ NACHTRAG desselben Tages — Muster Werbetechnik ist über dem Boden
 
 Klaus hat noch am 2026-09-15 über das Siegel neu signiert und die Spore
@@ -143,8 +145,9 @@ sondern dass der Text das Protokoll **nennt**.
 
 ⚠ Der Eintrag trägt `matchScoreQuelle: "depot-2026-09-15"` und damit einen
 **anderen Maßstab** als die übrigen zwanzig (`raum-2026-09-10`).
-⚠ **Die fehlende Sicherung bleibt.** Neu signieren ist nicht dasselbe wie
-sichern — die Warnung im Verbinden-Fenster steht weiter.
+✅ **Die Sicherung ist inzwischen angelegt** (Klaus, 2026-09-15 — seine Angabe,
+nicht gemessen). **Neu signieren ist trotzdem nicht dasselbe wie sichern**;
+die zwei Schritte bleiben getrennt.
 
 ### ⚠ UND ZWEI REGELN ZIEHEN BEIM PULS GEGENEINANDER
 
@@ -478,7 +481,7 @@ nicht darin. Die Zahlen dafür liegen in diesem Brief; das Werkzeug ist
 | Sieben leere Pull Requests | `regel` (der neue Wächter blieb rot) | nein |
 | Eine Messung nur in EINE Richtung geprüft (`top < 0`, nie `top > Höhe`) | `hinsehen` | **ja** |
 | Wortwahl „seit gestern kein SBKIM" falsch | `klaus` | — (kein Wächter zuständig) |
-| Vier Knoten ohne Sicherung, zwei Kennungen abweichend | `hinsehen` (aus Klaus' Bildern) | nein |
+| Vier Knoten ohne Sicherung (**inzwischen angelegt**), zwei Kennungen abweichend | `hinsehen` (aus Klaus' Bildern) | nein |
 | `noble-secp256k1` lädt in der Kette nicht | `hinsehen` | **ja** |
 | Zeiterfassung läuft in beide Fehlerrichtungen | `klaus` | **ja** — die Warnung stand im Kopf der Datei |
 

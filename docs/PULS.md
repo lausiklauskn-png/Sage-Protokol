@@ -131,8 +131,7 @@ lag.
 Mitschnitt vorliegt. Eine Tabelle mit zwei Maßstäben nennt sie, statt einheitlich
 auszusehen.
 
-⚠ **NICHT erledigt:** die Warnung „für diesen Knoten liegt KEINE Sicherung vor"
-steht weiter. **Neu signieren ist nicht dasselbe wie sichern.**
+✅ **Inzwischen erledigt** (Klaus, 2026-09-15: „Sicherungen sind alle angelegt“) — **seine Angabe, nicht gemessen**, der Vermerk lebt im Browser-Speicher und ist von einer Sitzung nicht zu lesen. **Neu signieren bleibt trotzdem etwas anderes als sichern.**
 
 ## Stand 2026-09-15 (Haupt-Sitzung, zweiter Teil) · ⚠ DIE ZEITERFASSUNG LÄUFT IN BEIDE FEHLERRICHTUNGEN
 
@@ -159,7 +158,8 @@ Kette — steht er da, sind die siebzehn Dateien davor angekommen.
 **Aus den Bildern gemessen — Kennung im Browser gegen `status.json`:** fünf von
 sieben gleich (Mixarium, Alis, PSF, PSB, Muster Werbetechnik), **zwei anders**
 (Mein Rezeptbuch, Mein WorkFloh). Am 2026-09-10 waren es netzweit zwei von
-fünfzehn. **Vier Knoten haben KEINE Sicherung ihrer Kennung** (Muster
+fünfzehn. **Vier Knoten hatten KEINE Sicherung ihrer Kennung** — inzwischen nach Klaus’
+Angabe alle angelegt (Muster
 Werbetechnik, Rezeptbuch, **Mixarium**, WorkFloh) — bei Mixarium ist die Kennung
 in `status.json` und in den Proben genagelt. Klaus ist darauf hingewiesen; eine
 Sitzung kann den Knopf nicht drücken.
@@ -204,7 +204,7 @@ V1 hält, V2 hält. Die **Auswertung** selbst steht weiter aus; die Sitzungen vo
 
 **Offen:** die Übersetzung (`TEXTE.en`) · die Zeiterfassung zusammenführen
 (drei Wege vorgelegt, Klaus entscheidet) · die zwei abweichenden Kennungen ·
-die vier fehlenden Sicherungen · 44 zurückhängende Kanon-Dateien · 38 blinde
+44 zurückhängende Kanon-Dateien · 38 blinde
 Gegenprobe-Fälle in PWA Toolpoint · die zwei `jasons-bibliothek/`-Spiegel ·
 `noble-secp256k1` in der Kette.
 
