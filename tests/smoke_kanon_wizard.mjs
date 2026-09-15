@@ -196,6 +196,41 @@ async function browserTeil() {
      Sabotage-Fall darauf blieb zu Recht gruen. */
   writeFileSync(join(basis, "rang.html"), SEITE(Object.assign({}, KONFIG, { lang: "en" }), "de", false));
 
+  /* ⚠ EINE FUNKTION ÜBERLEBT JSON.stringify NICHT. `sampleContent` ist eine, also
+     braucht der Inhalts-Weg eigene Seiten, auf denen die Konfiguration im Skript
+     zusammengesetzt wird statt serialisiert. Ohne das misst der Wächter eine
+     Konfiguration, in der das Feld gar nicht ankommt — grün aus dem falschen Grund. */
+  const SEITE_INHALT = (rumpf, sporeStub) => [
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>',
+    '<div id="sbkim-siegel-modal"><div role="dialog"><p id="alt">Siegel</p></div></div>',
+    sporeStub ? skript(sporeStub) : "",
+    skript("window.SBKIM_SIEGEL_WIZ = Object.assign(" + JSON.stringify(KONFIG) +
+      ", { sampleContent: function () { " + rumpf + " } });"),
+    '<script src="wizard.js">' + ZU,
+    "</body></html>",
+  ].join("\n");
+  writeFileSync(join(basis, "inhalt.html"),
+    SEITE_INHALT("return ['Kuchen Apfelkuchen','Sushi Maki','Suppe Linsen'];", null));
+  writeFileSync(join(basis, "inhalt-leer.html"), SEITE_INHALT("return [];", null));
+  writeFileSync(join(basis, "inhalt-wirft.html"),
+    SEITE_INHALT("throw new Error('kaputt');", null));
+
+  /* Wer im Textfeld gewinnt (Stufe 5c). Der Stub liefert eine Spore mit einem
+     ANDEREN Text als die App — nur dann ist die Frage überhaupt gestellt. */
+  const SPORE_STUB = "window.SbkimSpore = { getOwnSpore: function () {" +
+    " return Promise.resolve({ domainDescription: 'Mein eigener Text ueber meine Kueche.' }); } };";
+  const SEITE_TEXT = (flagge) => [
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>',
+    '<div id="sbkim-siegel-modal"><div role="dialog"><p id="alt">Siegel</p></div></div>',
+    skript("try { localStorage.setItem('sbkim_eigener_text_pruef-backup', " + JSON.stringify(flagge) + "); } catch (e) {}"),
+    skript(SPORE_STUB),
+    skript("window.SBKIM_SIEGEL_WIZ = " + JSON.stringify(KONFIG) + ";"),
+    '<script src="wizard.js">' + ZU,
+    "</body></html>",
+  ].join("\n");
+  writeFileSync(join(basis, "text-eigener.html"), SEITE_TEXT("ja"));
+  writeFileSync(join(basis, "text-app.html"), SEITE_TEXT("nein"));
+
   const PORT = 8830 + (process.pid % 40);
   const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1"],
     { cwd: basis, stdio: "ignore" });
@@ -293,6 +328,74 @@ async function browserTeil() {
     }));
     ok("mit Modul 15 steht die Membran-Zusage da",
       m.membran === "ja" && /Membran zeigt/.test(m.text));
+
+    console.log("\nDer Vektor — INHALT schlägt Selbstbeschreibung (Stufe 5a)\n");
+    const lies = () => {
+      const z = document.getElementById("sbkim-si-semantik-vektorquelle");
+      return {
+        da: !!z, marke: z ? z.getAttribute("data-vektor") : null, text: z ? z.textContent : "",
+        /* ⚠ DER BLOCK WIRD MITGEMESSEN, und das ist kein Beiwerk. Die Gegenprobe
+           hat gezeigt: nimmt man das try/catch aus inhaltsSchnipsel heraus, wirft
+           eine kaputte App-Funktion mitten im Bauen — der ganze Semantik-Block
+           entsteht dann NICHT. Eine Prüfung, die nur „keine Vektor-Zeile" fragt,
+           nennt genau das „fail-soft" und ist damit blind für den schlimmeren
+           Fall. Gefunden beim Nachstellen von Hand, nicht beim Schreiben. */
+        block: !!document.getElementById("sbkim-si-semantik-block"),
+      };
+    };
+    const i1 = await hole("inhalt.html", lies);
+    ok("liefert die App eigene Inhalte, steht die Vektor-Quelle da", i1.da === true);
+    ok("… und sie ist als „content“ markiert", i1.marke === "content");
+    /* ⚠ Die ZAHL wird mitgemessen, nicht nur die Anwesenheit der Zeile. Eine
+       Zeile, die immer „0 Einträge" sagt, wäre von einer richtigen nicht zu
+       unterscheiden — und sie stünde bei jedem Nutzer gleich falsch da. */
+    ok("… und nennt die gemessene Anzahl (3)", /\b3\b/.test(i1.text));
+
+    /* Die GEGENRICHTUNG. Ohne sie wäre der Wächter darüber auch dann grün, wenn
+       die Zeile IMMER erschiene — also auch bei Apps ohne eigene Inhalte, wo der
+       Satz schlicht gelogen wäre. */
+    const i2 = await hole("inhalt-leer.html", lies);
+    ok("ohne Inhalte steht KEINE Vektor-Quelle da", i2.da === false);
+    const i3 = await hole("inhalt-wirft.html", lies);
+    ok("wirft sampleContent, bleibt es still (fail-soft)", i3.da === false);
+    ok("… und der Semantik-Block steht trotzdem da", i3.block === true);
+    ok("… ebenso ohne Inhalte", i2.block === true);
+
+    console.log("\nWer im Textfeld gewinnt (Stufe 5c)\n");
+    const liesText = () => {
+      const feld = document.getElementById("sbkim-si-semantik-text");
+      const herk = document.getElementById("sbkim-si-semantik-herkunft");
+      const knopf = document.getElementById("sbkim-si-semantik-eigener-text");
+      return {
+        wert: feld ? feld.value : null,
+        woher: herk ? herk.getAttribute("data-woher") : null,
+        knopfText: (knopf && !knopf.hidden) ? knopf.textContent : "",
+      };
+    };
+    /* ⚠ Der Semantik-Block liest getOwnSpore ASYNCHRON. Auf die BEDINGUNG warten,
+       nicht auf die Uhr — sonst misst die Probe den Zustand vor der Entscheidung
+       und ist zufällig grün. */
+    const holeText = async (datei, erwartetWoher) => {
+      const s = await browser.newPage();
+      s.on("pageerror", (e) => fehler.push(datei + ": " + String(e).slice(0, 120)));
+      await s.goto(`http://127.0.0.1:${PORT}/${datei}`, { waitUntil: "load" });
+      await s.waitForFunction((w) => {
+        const h = document.getElementById("sbkim-si-semantik-herkunft");
+        return !!h && h.getAttribute("data-woher") === w;
+      }, erwartetWoher, { timeout: 8000 }).catch(() => { /* der Aufrufer urteilt */ });
+      const r = await s.evaluate(liesText);
+      await s.close();
+      return r;
+    };
+    const t1 = await holeText("text-eigener.html", "spore");
+    ok("hat der Nutzer selbst geschrieben, steht SEIN Text im Feld",
+      t1.wert === "Mein eigener Text ueber meine Kueche." && t1.woher === "spore");
+    ok("… und der App-Vorschlag steht hinter einem Knopf", /Vorschlag der App/.test(t1.knopfText));
+
+    const t2 = await holeText("text-app.html", "app");
+    ok("hat er den App-Text übernommen, gewinnt der App-Vorschlag weiter",
+      t2.wert === KONFIG.domainDescription && t2.woher === "app");
+    ok("… und SEIN Text steht hinter dem Knopf", /zuletzt signierten Text/.test(t2.knopfText));
 
     ok(`kein Skript-Fehler im Browser${fehler.length ? " — " + fehler[0] : ""}`, fehler.length === 0);
   } finally {

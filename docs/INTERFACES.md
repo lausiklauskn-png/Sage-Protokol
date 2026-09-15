@@ -5172,7 +5172,31 @@ guestCategories         : string[]            Begleit-Kategorien (UI-Label: "Üb
                                               Beispiel Rezeptbuch: ["Begleitgetränke", "Weinkarte"].
                                               Disjunkt zu stammCategories (kein Element in beiden Listen);
                                               das ist Hosting-Pflicht des Knotens, kein Empfänger-Check.
+embeddingSource         : "content"|"description"
+                                              WORAUS der domainVector gerechnet ist. "content" = aus echten
+                                              Inhalten der App (Modul 03 embedContentVector), "description"
+                                              = aus domainDescription + domainKeywords (embedPassage).
+                                              Fehlt das Feld, ist NICHTS über die Herkunft gesagt — es ist
+                                              KEIN Synonym für "description". Alte Sporen tragen es nicht.
+embeddingVersion        : number              Zähler, der bei JEDEM Wechsel des domainVector um eins steigt
+                                              (Modul 02 regenerateOwnSpore). Er sagt, der wievielte
+                                              Inhalts-Stand diese Spore ist — die Kennung bleibt dabei
+                                              dieselbe. Optional; ein explizit übergebener Wert gewinnt.
 ```
+
+⚠ **`embeddingSource` und `embeddingVersion` standen bis zum 2026-09-15 NICHT
+hier**, obwohl Modul 02 sie seit v0.2 in die **signierte** Spore schreibt
+(`src/modules/02_spore.js`, Allow-List in `generateOwnSpore`). Die Tafel war
+damit unvollständig, nicht falsch: wer sie las, hielt eine inhalts-getriebene
+Spore für eine beschreibungs-getriebene. Nachgetragen, als der Siegel-Weg die
+Rangfolge „Inhalt schlägt Selbstbeschreibung" übernahm.
+
+⚠ **Und daraus folgt eine Lesart für jede Zahl, die aus einem `domainVector`
+gerechnet wurde:** zwei Sporen desselben Knotens sind nur dann vergleichbar,
+wenn ihr `embeddingSource` derselbe ist. Gemessen an Mein Mixarium — dieselbe
+Kennung `6U3aniLM…`, am 2026-09-02 `embeddingSource: "content"` (88 Zeichen
+Text, 0.826040 gegen Sage), am 2026-09-10 aus der Beschreibung (2141 Zeichen,
+0.883142). **Beide Zahlen sind richtig gerechnet und messen Verschiedenes.**
 
 **Hinweis Spec-Sitzung M04-Erweiterung (Brief 03, 2026-05-19):** Die
 neuen Felder `embeddingCapabilities` und `embeddingNeeds` sind beide
