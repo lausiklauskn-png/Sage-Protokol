@@ -294,11 +294,37 @@ sieben Apps, der Kennungs-Abgleich gegen das Register — **hinterlässt keinen
 einzigen Commit** und ist für `zeiten-sammeln.mjs` unsichtbar. Aus einem
 Arbeitstag werden 29 Minuten.
 
-⚠ **Das trifft den Forschungsdatensatz unmittelbar.** `forschung/METHODE.md` § 3
-führt das Feld `spanne`, und es ist genau diese Commit-Spanne. Der Eintrag für
-den 2026-09-15 würde also **29 Minuten** melden. `forschung/STAND_V1_V2.md`
-nennt für zwanzig Sitzungen *„98,1 h (Commit-Spannen, **nicht** Klaus'
-Arbeitszeit)"* — die Klammer ist ehrlich, aber die Zahl wird trotzdem gelesen.
+⚠ **Das trifft den Forschungsdatensatz unmittelbar — und dort steht ein
+Widerspruch, der beim Nachmessen am 2026-09-15 herausfiel.**
+
+`forschung/METHODE.md` § 3 sagt, `beginn` und `ende` seien *„erste und letzte
+Handlung der Sitzung, in UTC | **Uhr der Sitzung**"*.
+`forschung/STAND_V1_V2.md` nennt dieselben Zahlen *„98,1 h (**Commit-Spannen**,
+nicht Klaus' Arbeitszeit)"*.
+
+**Die Daten geben dem zweiten recht, und zwar unübersehbar.** Zwei Einträge vom
+2026-09-08 melden **eine Minute**:
+
+| Eintrag | beginn–ende | Minuten |
+|---|---|---|
+| `2026-09-08-tresor-rezeptbuch-design` | 16:27–16:28 | **1** |
+| `2026-09-08-chefcode-aenderbar` | 16:53–16:54 | **1** |
+| `2026-09-09-sichttest-und-quellmessung` | 09:17–09:55 | 38 |
+
+Eine Sitzung, die Befunde hervorbringt, dauert keine Minute. Das sind zwei
+Commits, die eine Minute auseinanderliegen — also die **Commit-Spanne**, nicht
+die Uhr der Sitzung.
+
+**Damit sagt die Methode etwas anderes als der Datensatz tut**, und die Summe
+(100,8 h über 22 Einträge) trägt beide Fehlerrichtungen aus der Tabelle oben in
+sich. Der Eintrag für den 2026-09-15 würde **29 Minuten** melden.
+
+**Das gehört in Auftrag B mit hinein:** bevor eine neue Zeiterfassung gebaut
+wird, ist zu klären, ob `beginn`/`ende` künftig wirklich die Uhr der Sitzung
+tragen — und ob die 22 vorhandenen Einträge dann noch mit den neuen
+vergleichbar sind. **Eine halb umgestellte Reihe sähe einheitlich aus, ohne es
+zu sein.** Die Vorhersagen V1 und V2 hängen nicht an diesem Feld (sie zählen
+Herkünfte, keine Minuten) — die Summenzeile schon.
 
 ### Was heute existiert, und was jedes davon NICHT kann
 

@@ -161,8 +161,14 @@ genau beiden Richtungen** — und ist an zwei aufeinanderfolgenden Tagen in beid
 gelaufen, ohne dass es an der Zahl auffiel. Gemerkt hat es der Betreiber, weil
 ihm das Stoppen der Stechuhr lästig wurde.
 
-**Das trifft `forschung/METHODE.md` § 3 unmittelbar:** das Feld `spanne` IST
-diese Commit-Spanne.
+**Und im Forschungsdatensatz steht dazu ein Widerspruch.** `forschung/METHODE.md`
+§ 3 sagt, `beginn`/`ende` kämen aus der **Uhr der Sitzung**;
+`forschung/STAND_V1_V2.md` nennt dieselben Zahlen **Commit-Spannen**. Die Daten
+geben dem zweiten recht: zwei Einträge vom 2026-09-08 melden **eine Minute**
+(16:27–16:28 und 16:53–16:54). Eine Sitzung mit Befunden dauert keine Minute —
+das sind zwei Commits eine Minute auseinander. Summe über 22 Einträge: 100,8 h.
+**Gefunden beim Nachprüfen einer Behauptung, die ich selbst in den Brief
+geschrieben hatte.** Herkunft: `hinsehen`.
 
 Drei Wege sind im Brief vorgelegt (Historie über alle Depots · automatische
 Anwesenheit im Browser · beide getrennt geführt und benannt zusammengerechnet),
