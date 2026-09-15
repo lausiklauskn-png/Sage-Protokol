@@ -293,7 +293,7 @@ node tests/smoke_werkzeuge_parsen.mjs                # parst jedes Werkzeug
 
 ---
 
-## B · AUFTRAG ZWEI: die Zeiterfassung zusammenführen (Klaus 2026-09-15)
+## B · AUFTRAG ZWEI: die Zeiterfassung bauen (Klaus 2026-09-15 — der Weg ist ENTSCHIEDEN)
 
 ### Klaus' Wort — der Auftrag im Wortlaut
 
@@ -385,29 +385,75 @@ und die Stechuhr im `localStorage` reisen **nicht mit**. Eine Auswertung in
 einer anderen Umgebung sieht sie nie — der Forschungsdatensatz aber schon
 (`forschung/sitzungen.json` steht bewusst **nicht** im `.gitignore`).
 
-### Die Frage, die zu entscheiden ist
+### ✅ ENTSCHIEDEN AM 2026-09-15 (Klaus) — drei Quellen, jede beschriftet
 
-**Nicht zu entscheiden von einer Sitzung — vorzulegen.** Drei Wege, jeder mit
-seinem Preis, keiner umsonst:
+Klaus hat den Weg gewählt und ihn dabei vervollständigt. Sein Wort:
 
-1. **Historie als alleinige Grundlage, aber über ALLE Depots statt nur Kimhub.**
-   Nachprüfbar, reist mit, braucht keine Disziplin.
-   **Preis:** der Schwanz fehlt weiter (der 15. bliebe 29 Minuten), und die
-   Pausen zählen weiter voll.
-2. **Anwesenheit im Browser automatisch erfassen** (Maus, Tastatur,
-   `visibilitychange`), wie Klaus es beschreibt.
-   **Preis:** misst den **Browser**, nicht die Arbeit. Termux, Lesen am Tablet,
-   Nachdenken ohne offene Seite fallen heraus — und ein Tab, der über Nacht
-   offen bleibt, meldet acht Stunden Arbeit. Klaus' eigenes Argument
-   („überwachende Funktion ist auch Arbeit") spricht **für** großzügiges Zählen,
-   macht aber genau diesen Fehler teuer.
-3. **Beide, getrennt geführt und benannt zusammengerechnet** — Historie als
-   nachprüfbarer Boden, erfasste Anwesenheit als Aufschlag, jede Zeile mit ihrer
-   Herkunft.
-   **Preis:** zwei Quellen, die auseinanderlaufen können, und die Pflicht,
-   Überschneidungen **einmal** zu zählen — die Regel dafür steht schon in
-   Kimhubs Verfassung (*„dieselbe Stunde zählt EINMAL"*, Vereinigung der
-   Zeiträume, Korrektur wird **beziffert**).
+> *„Die Historie über alle Depots als Boden und die Sitzung trägt ihr eigenes
+> Ende ein. Dann musst du nichts mehr drücken. Genau das ist der Sinn.“*
+
+> *„Start dann bei der neuen Sitzung wieder, weil die muss ich ja selber wieder
+> starten, indem ich das reinkopiere. Also ist eigentlich immer festgelegt, wann
+> ich anfange und wann ich aufhöre.“*
+
+> *„Wenn ich Kim Hub Company ohne Sitzung starte, also in Vorbereitung, dann kann
+> ich den Play-Button drücken … Das wäre dann separat mit der Information: ohne
+> Sitzung gearbeitet in Kimhub, Agenten gestartet.“*
+
+**Der tragende Gedanke:** die Grenzen einer Sitzung sind längst hart — sie
+beginnt, wenn Klaus den Brief einfügt, und sie endet, wenn sie ihren
+Abschluss schreibt. **Beides ist ein Zeitstempel, den niemand drücken muss.**
+Genau der fehlte bisher, und genau er ist das Loch von 3 h 12 min am 2026-09-15.
+
+| # | Quelle | misst | wer löst sie aus | Beschriftung |
+|---|---|---|---|---|
+| **1** | **Historie über ALLE Depots** | erster bis letzter Commit je Tag | niemand — fällt an | `historie` |
+| **2** | **Die Sitzung selbst** | Einfügen des Briefs → Abschluss-Eintrag | die Sitzung, am Ende | `sitzung` |
+| **3** | **Die Stechuhr in Kimhub** | Arbeit **ohne** Sitzung (Vorbereitung, Agenten starten, Lesen) | Klaus, per Knopf | `ohne-sitzung` |
+
+**Quelle 1 ist der nachprüfbare Boden** — sie reist mit, braucht keine Disziplin
+und lässt sich von jedem gegen die Git-Historie nachrechnen.
+**Quelle 2 schließt das Loch**, das Quelle 1 strukturell hat: alles nach dem
+letzten Commit.
+**Quelle 3 fängt, was gar keine Sitzung sieht** — und sie ist die einzige, die
+einen Knopf braucht. Das ist vertretbar: sie deckt den Fall ab, in dem Klaus
+ohnehin vor der Werkstatt sitzt und dort etwas auslöst.
+
+### Was beim Bauen nicht schiefgehen darf
+
+- ⚠ **DIESELBE STUNDE ZÄHLT EINMAL.** Die drei Quellen überschneiden sich — eine
+  Sitzung erzeugt Commits, und die Stechuhr kann parallel laufen. Gerechnet wird
+  über die **Vereinigung der Zeiträume**, und die Korrektur wird **beziffert**:
+  eine Korrektur, die man nicht sieht, ist von einem Fehler nicht zu
+  unterscheiden. Die Regel steht schon in Kimhubs Verfassung (§ „JEDE SCHICHT
+  IST AUCH EIN STUNDENNACHWEIS“) — **nachschlagen, nicht neu erfinden.**
+- ⚠ **JEDE ZEILE TRÄGT IHRE HERKUNFT.** Ohne sie ist die Summe eine Behauptung.
+  Mit ihr lässt sich jede Zahl einzeln nachprüfen — und **ein Streit über eine
+  Zeile wirft nicht die anderen um.**
+- ⚠ **`beginn`/`ende` in `forschung/sitzungen.json` sind GENAU DAS, was Quelle 2
+  liefert** — und `METHODE.md` § 3 verlangt das seit jeher („Uhr der Sitzung“).
+  Der Datensatz tut es heute **nicht** (zwei Einträge vom 2026-09-08 tragen EINE
+  Minute). Mit Quelle 2 stimmt die Methode endlich mit den Daten überein.
+  **Die 22 alten Einträge werden dadurch aber NICHT vergleichbar mit den neuen.**
+  Entweder sie bleiben als Commit-Spannen stehen und **sagen das**, oder sie
+  werden nachgerechnet — eine halb umgestellte Reihe sähe einheitlich aus, ohne
+  es zu sein. **Das ist noch zu entscheiden.**
+- ⚠ **Quelle 3 lebt im `localStorage` eines Browsers** und reist nicht mit
+  (`.gitignore`). Sie muss einen Weg nach draußen haben, sonst sieht der
+  Forschungsdatensatz sie nie — dasselbe Problem wie beim Tresor: **Wohnort und
+  Ausgang sind zwei Dinge.**
+- ⚠ **Eine Sitzung kann Quelle 3 nicht drücken** (NETZWEIT § 6b). Was sie
+  eintragen kann, ist Quelle 2 — ihr eigenes Ende.
+
+### Was ausdrücklich NICHT gebaut wird
+
+**Die automatische Anwesenheits-Erfassung im Browser** (Maus, Tastatur,
+`visibilitychange`). Sie misst den **Browser**, nicht die Arbeit: Termux, Lesen
+am Tablet und Nachdenken ohne offene Seite fallen heraus, und ein Tab, der über
+Nacht offen bleibt, meldet acht Stunden. Klaus' Argument („eine überwachende
+Funktion ist auch Arbeit“) spricht **für** großzügiges Zählen und macht genau
+diesen Fehler teuer. Die drei Quellen oben decken denselben Anspruch ab, ohne
+die Zahl angreifbar zu machen.
 
 **Was in jedem Fall gilt und nicht verhandelbar ist:**
 
