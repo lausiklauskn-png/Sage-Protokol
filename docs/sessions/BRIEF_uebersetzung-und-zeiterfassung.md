@@ -118,6 +118,48 @@ Bei **Mixarium** wiegt es am schwersten: seine Kennung
 die, die am 2026-09-10 den Sprung 0,826 → 0,883 überlebt hat.
 Klaus ist darauf hingewiesen; **eine Sitzung kann den Knopf nicht drücken.**
 
+### ✅ NACHTRAG desselben Tages — Muster Werbetechnik ist über dem Boden
+
+Klaus hat noch am 2026-09-15 über das Siegel neu signiert und die Spore
+geschickt. Geprüft (8 Prüfungen, 0 rot: Signatur VALID reziprok ·
+`id == base64url(SHA256(rawPub))` · kein `d` · `key_ops` nur `["verify"]` ·
+384 Stellen · L2 = 1.000000044 · kein `_demo` · Text **byte-gleich mit beiden
+Wegen zur Spore**), abgelegt als `Mein-Workfloh-Page/sbkim/spore.json`, die
+alte daneben als `spore-vorgaenger-2026-08-16.json`.
+
+**Die abgelegte Spore hing bis dahin auf der ALTEN Kennung** — das Register
+führte seit dem 2026-09-10 schon die neue. **Depot und Register stimmen jetzt
+zum ersten Mal überein.**
+
+| | gegen Sages Spore |
+|---|---|
+| vorher (421 Zeichen) | 0.793613 |
+| **jetzt (864 Zeichen)** | **0.907431** — über `PROVIDER_MIN_MATCH = 0.80` |
+
+**Von den fünf Knoten unter dem Boden sind VIER übrig:** Alis Moderaum
+0.795460 · Perfect Skin Fashion 0.793030 · Tomys Hub 0.786371 · Perfect Skin
+Beauty 0.783216. **Für alle vier ist derselbe Hebel gemessen:** nicht Länge,
+sondern dass der Text das Protokoll **nennt**.
+
+⚠ Der Eintrag trägt `matchScoreQuelle: "depot-2026-09-15"` und damit einen
+**anderen Maßstab** als die übrigen zwanzig (`raum-2026-09-10`).
+⚠ **Die fehlende Sicherung bleibt.** Neu signieren ist nicht dasselbe wie
+sichern — die Warnung im Verbinden-Fenster steht weiter.
+
+### ⚠ UND ZWEI REGELN ZIEHEN BEIM PULS GEGENEINANDER
+
+Beim Auslagern (2.983 → 2.904) wurde `smoke_sbkim_name.mjs` rot, zu Recht: ihre
+vierte Prüfung ist eine **Gegenrichtung** und verlangt, dass `docs/PULS.md` den
+alten Befund zur falschen SBKIM-Auflösung **weiter festhält** — Tilgen wäre der
+Schaden, den sie verhindert.
+
+> „PULS über 3000 Zeilen wird ausgelagert" gegen „PULS muss diesen Befund
+> behalten".
+
+Aufgelöst ohne eine der beiden zu beugen: ausgelagert wurde ein Eintrag, der den
+Befund **nicht** trägt. **Wer das nächste Mal auslagert, sieht vorher nach,
+welcher Eintrag ihn trägt** (`grep -n "Semantisch-Empfangendes" docs/PULS.md`).
+
 ### Ein Nebenbefund, nicht von A18
 
 `modules/noble-secp256k1.js` steht in der Nachlade-Kette und wird dort als
@@ -495,8 +537,8 @@ nicht darin. Die Zahlen dafür liegen in diesem Brief; das Werkzeug ist
 ## ABSCHLUSS
 
 `docs/PULS.md` fortschreiben (Grenze 3000, **auslagern** statt kürzen — sie
-steht bei **2.885**) · Übergabeprotokoll in `docs/sessions/archiv/` ·
-`sbkim/SIGNAL.json` `seq`+1 (steht bei **82**), danach das JSON auf Heilheit
+steht bei **2.904**) · Übergabeprotokoll in `docs/sessions/archiv/` ·
+`sbkim/SIGNAL.json` `seq`+1 (steht bei **83**), danach das JSON auf Heilheit
 prüfen · vollen Lauf fahren und den **echten** Rückgabewert nennen (`| tail` ist
 zum Lesen da, nicht zum Urteilen) · `node tools/wizard-laedt-pruefen.mjs` aus
 `origin/main` · nächsten Brief als Codeblock im Chat · **Klaus die Adresse für
