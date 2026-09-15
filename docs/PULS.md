@@ -101,6 +101,39 @@ Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
 
 ---
 
+## Stand 2026-09-15 (Haupt-Sitzung, Nachtrag) · ✅ MUSTER WERBETECHNIK IST ÜBER DEM HANDSHAKE-BODEN
+
+Klaus hat noch am selben Tag über das Siegel neu signiert und die Spore
+geschickt. **Acht Prüfungen, 0 rot**, bevor sie abgelegt wurde: Signatur VALID
+reziprok · `id == base64url(SHA256(rawPub))` · kein `d` · `key_ops` nur
+`["verify"]` · `OKP`/`Ed25519` · 384 Stellen · **L2 = 1.000000044** · kein
+`_demo` · Text **byte-gleich mit beiden Wegen zur Spore** (864 Zeichen).
+
+**Die abgelegte Spore hing bis dahin auf der ALTEN Kennung.** Das Register
+führt seit dem 2026-09-10 `Gq_Mt8o…` und `_Psq_…` unter `previousNodeIds`,
+`sbkim/spore.json` trug noch `_Psq_…` vom 2026-08-16. **Depot und Register
+stimmen jetzt zum ersten Mal überein** — keine Identitäts-Entscheidung, die fiel
+am 2026-09-10.
+
+**Gemessen gegen Sages Spore: 0,793613 → 0,907431**, also über
+`PROVIDER_MIN_MATCH = 0.80`. Von den fünf Knoten unter dem Boden sind **vier**
+übrig: Alis Moderaum 0,795460 · Perfect Skin Fashion 0,793030 · Tomys Hub
+0,786371 · Perfect Skin Beauty 0,783216.
+
+⚠ **Die Ursache ist nicht die Länge, sondern der Inhalt.** 421 → 864 Zeichen,
+aber entscheidend ist, dass der neue Text SBKIM, Mycel, Knoten und Sage-Protokol
+**nennt**. Derselbe Hebel, den `status.json` aus den Mitschnitten vom 2026-09-10
+benennt — **jetzt ein zweites Mal belegt**, an einem Knoten, der vorher darunter
+lag.
+
+⚠ **`matchScoreQuelle` ist hier `depot-2026-09-15`**, bei den übrigen zwanzig
+`raum-2026-09-10`. Gerechnet gegen die abgelegte Spore, weil für diesen Tag kein
+Mitschnitt vorliegt. Eine Tabelle mit zwei Maßstäben nennt sie, statt einheitlich
+auszusehen.
+
+⚠ **NICHT erledigt:** die Warnung „für diesen Knoten liegt KEINE Sicherung vor"
+steht weiter. **Neu signieren ist nicht dasselbe wie sichern.**
+
 ## Stand 2026-09-15 (Haupt-Sitzung, zweiter Teil) · ⚠ DIE ZEITERFASSUNG LÄUFT IN BEIDE FEHLERRICHTUNGEN
 
 **Rolle:** Haupt-Sitzung, Fortsetzung. **Anlass:** Klaus' Widerspruch
