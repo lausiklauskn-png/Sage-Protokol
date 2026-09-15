@@ -916,3 +916,37 @@ es.
 > **Der allgemeine Satz:** was angehängt wird, ändert das, was davor steht.
 > „Hinzufügen statt Ändern" schützt den Nachbarn — am **Ende** einer Liste gibt
 > es keinen Nachbarn mehr, und dann ist Hinzufügen selbst eine Änderung.
+
+## ⚠ Nachtrag zu § 1: eine unterdrückte Fehlerausgabe macht aus dem Push ein Schweigen (2026-09-15)
+
+Am selben Tag noch einmal dieselbe Falle, mit einem neuen Auslöser. Der Push auf
+sieben App-Zweige wurde **abgelehnt** — kein Fast-Forward, denn nach dem
+Squash-Merge des Vortags trug der Server noch den alten Stand. Der Aufruf lautete:
+
+```bash
+for i in 1 2 3 4; do git push -q … 2>/dev/null && break || sleep $((2**i)); done
+```
+
+**`-q` und `2>/dev/null` haben die Ablehnung unsichtbar gemacht.** Die Schleife
+schlief viermal und gab auf; die Zeile danach meldete den **lokalen** Commit und
+sah wie Erfolg aus. Die PRs entstanden aus dem alten Zweig, waren **leer**, und
+ein leerer PR merget erfolgreich.
+
+**Gefunden hat es nicht der Merge, sondern der Wächter** — er lief gegen
+`origin/main` und blieb rot, obwohl acht PRs „gemergt" gemeldet hatten.
+
+Drei Sätze daraus:
+
+- **Eine Wiederhol-Schleife ohne sichtbaren Fehler ist eine Schweige-Schleife.**
+  Sie kann einen echten Netzfehler von einer berechtigten Ablehnung nicht
+  unterscheiden — und behandelt beide gleich.
+- **Nach einem Squash-Merge gehört `--force-with-lease` dazu**, und zwar von
+  Anfang an, nicht als Reparatur. Der Zweig trägt dann nur schon gemergte
+  Historie.
+- **Vor jedem PR:** `git diff --stat origin/main origin/<zweig>`. Leer heißt, der
+  PR wäre leer. Das steht in § 1 seit langem; hier hat es zum ersten Mal
+  wirklich gegriffen, weil ein unabhängiger Wächter widersprochen hat.
+
+> **Der allgemeine Satz:** ein Werkzeug, dem man den Mund zuhält, meldet auch
+> das, was man hören müsste. `2>/dev/null` gehört an Stellen, wo man den Fehler
+> **kennt** — nicht an Stellen, wo man ihn nicht sehen will.
