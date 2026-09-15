@@ -31,6 +31,55 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-09-15 (Haupt-Sitzung) · ⚠ EIN FEHLENDES KOMMA HAT VIER APPS ABGESCHALTET
+
+**Rolle:** Haupt-Sitzung. **Anlass:** Klaus meldete, im Mixarium-Siegel fehle die
+Beschreibung — *„die beschreibung ist in den anderen siegel auch zu sehen wenn
+sie bereits eine id und spore haben, im mixarium ist es anders."*
+
+**Ursache.** Der A18-Rollout hat die Wizard-Zeile an die Nachlade-Ketten
+**angehängt**. `siegel-inhalt.js` stand dort als **letztes** Feld-Element ohne
+Komma — danach fehlte es. Derselbe Fehler, zwei Sprengweiten: bei einem Feld aus
+**Paaren** ist `[…]` unter `[…]` kein Syntaxfehler, sondern ein **Zugriff** (zwei
+Einträge werden still zu einem `undefined`); bei einem Feld aus **Zeichenketten**
+ist es ein **echter Syntaxfehler** und tötet den ganzen Skript-Block.
+
+**Gemessen** (Chromium 390×844, jede Seite vorher gegen den Eltern-Stand des
+A18-Commits, nachher gegen `main`):
+
+| | vorher | nachher |
+|---|---|---|
+| Alis-Moderaum · Perfect-Skin-Beauty · Perfect-Skin-Fashion · Mein-Workfloh-Page | 01✓ 16✓ 17✓ | **01✗ 16✗ 17✗** — kein SBKIM |
+| Mein-Mixarium · Mein-Rezeptbuch · Mein-WorkFloh | 01✓ 16✓ 17✓ | Module ✓, **Konfig + Wizard ✗** |
+| Kimhub/start · zwei `jasons-bibliothek/`-Spiegel | ✗ | ✗ — **unverändert, nicht von A18** |
+
+**24 Seiten geprüft · 7 Apps betroffen · 4 davon ohne jedes SBKIM.**
+
+**Getan.** Komma in 9 Dateien (7 Repos; Mixariums Spiegel und Rezeptbuchs
+`build.py` nachgezogen und verifiziert) · `tools/wizard-trennen.mjs` setzt das
+Komma jetzt selbst · **`tools/wizard-laedt-pruefen.mjs`** neu: lädt jede Seite
+im echten Browser und fragt, ob `SBKIM_SIEGEL_WIZ` und `SbkimSiegelTexte`
+ankommen, mit benannten Ausnahmen, die in **beide** Richtungen geprüft werden ·
+**`tests/smoke_werkzeuge_parsen.mjs`** neu.
+
+**⚠ Und das Werkzeug selbst hat NIE geparst** — `tools/wizard-trennen.mjs` war
+schon in dem Commit kaputt, der es anlegte (Kommentarblock mitten im Satz
+geschlossen). Es lief aus einer Arbeitskopie; der Kommentar kam danach dazu.
+Lehre: `docs/LEHREN.md` § 12.
+
+**Nachher gemessen.** `tools/wizard-laedt-pruefen.mjs` → **alle 21 nicht
+ausgenommenen Seiten liefern Konfiguration UND Kanon aus**, echter exit 0 ·
+`node tests/run_alle.mjs` → **106 grün · 0 rot · 0 nicht lauffähig**, echter
+exit 0 · die Proben der vier betroffenen Apps mit eigener Suite: 55, 25, 66, 84
+grün.
+
+**Offen.** Die zwei `jasons-bibliothek/`-Spiegel laden SBKIM nicht, weil der
+Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
+Klaus' ursprüngliche Anzeige-Frage (Siegel-Knopf im Handymodus außerhalb des
+sichtbaren Bereichs) ist damit **noch nicht** beantwortet.
+
+---
+
 ## Stand 2026-09-14 (Haupt-Sitzung, A18, Abschluss) · ⚠ TOTER ANKER ALS BLINDER WÄCHTER GELESEN
 
 **Rolle:** Haupt-Sitzung, Abschluss von A18.

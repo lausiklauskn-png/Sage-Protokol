@@ -854,3 +854,65 @@ er zeigt nur auf eine Zeile, die umgezogen ist.
 > **Der allgemeine Satz:** eine Prüfung hat drei Ausgänge, nicht zwei — gefangen,
 > blind, **und hat gar nicht stattgefunden**. Wer die dritte Spalte weglässt,
 > verteilt sie auf die anderen beiden, und beide werden dadurch unwahr.
+
+---
+
+# 12. Ein fehlendes Komma hat zwei Sprengweiten (2026-09-15)
+
+Der A18-Rollout hat die Wizard-Zeile an die Nachlade-Ketten **angehängt**. Die
+Vorlage `siegel-inhalt.js` stand dort als **letztes** Feld-Element — ohne Komma.
+Das Werkzeug legte die Schwester darunter und ließ die Vorlage, wie sie war.
+
+**Derselbe Fehler, zwei völlig verschiedene Schäden:**
+
+| Gestalt der Kette | was passiert | was man sieht |
+|---|---|---|
+| `["a","b"]` unter `["c","d"]` | **kein Syntaxfehler, ein ZUGRIFF.** Zwei Einträge werden still zu **einem `undefined`** | Module laden, Konfiguration und Wizard nicht. Das Siegel öffnet und ist leer |
+| `"a"` unter `"b"` | **echter Syntaxfehler** — der ganze Skript-Block stirbt | **gar kein SBKIM**: keine Module, keine Lampen, kein Siegel |
+
+Gemessen am 2026-09-15 über **24 Seiten**, jede vorher gegen den Eltern-Stand
+des A18-Commits und nachher gegen `main`: **sieben Apps betroffen, vier davon
+ohne jedes SBKIM.** Drei weitere Seiten waren rot — und **vorher genauso**;
+sie stehen jetzt als benannte Ausnahmen da, mit Grund.
+
+## Warum keine Probe es gefangen hat
+
+**Weil alle Proben den Quelltext lesen.** Ein Wächter auf „die Zeile steht da"
+war grün: die Zeile stand da. Ein Wächter auf „das Komma fehlt" hätte die
+Paar-Gestalt gefunden und die Zeichenketten-Gestalt auch — aber ihn gab es
+nicht, und er hätte nur die Form gefunden, die sein Autor sich vorgestellt hat.
+
+> **Ein Wächter, der eine Datei LIEST, misst nicht, ob sie LÄUFT.** Der Satz
+> steht seit dem 2026-08-24 in Kimhubs Verfassung. Hier hat er zum ersten Mal
+> netzweit Geld gekostet.
+
+`tools/wizard-laedt-pruefen.mjs` **lädt** jede Seite in einem echten Browser und
+fragt, ob `window.SBKIM_SIEGEL_WIZ` und `window.SbkimSiegelTexte` ankommen. Die
+Gegenprobe baut **beide** Gestalten wieder ein; beide fallen um.
+
+## Und das Werkzeug selbst war nie lauffähig
+
+`tools/wizard-trennen.mjs` lag seit dem 2026-09-14 auf `main` und ließ sich
+**nicht parsen** — ein Kommentarblock war mitten im Satz geschlossen. Es war in
+genau dem Commit kaputt, der es angelegt hat: gelaufen ist es aus einer
+Arbeitskopie, der Kommentar kam danach dazu.
+
+⚠ **Das ist die stillste Sorte überhaupt.** Ein Werkzeug, das nicht parst,
+meldet sich nicht — es wird ja nicht aufgerufen. Sein Schaden ist längst
+verteilt, und der Nächste, der es braucht, hält das Depot für kaputt.
+
+`tests/smoke_werkzeuge_parsen.mjs` fährt seitdem `node --check` über **jede**
+Datei unter `tools/` und `tests/`. Millisekunden, eine Frage, und die
+Gegenprobe fährt den echten kaputten Stand von gestern: sie wird rot.
+
+## Eine Ausnahmeliste bekommt Gründe — und wird in beide Richtungen geprüft
+
+Drei Seiten sind ausgenommen (Kimhubs abgeleitete Schale, zwei
+`jasons-bibliothek/`-Spiegel ohne eigenes `assets/`). Jede trägt ihren Grund im
+Werkzeug. **Und das Werkzeug meldet, wenn eine Ausnahme überflüssig geworden
+ist** — sonst deckt sie irgendwann einen echten Rückfall zu, und niemand sieht
+es.
+
+> **Der allgemeine Satz:** was angehängt wird, ändert das, was davor steht.
+> „Hinzufügen statt Ändern" schützt den Nachbarn — am **Ende** einer Liste gibt
+> es keinen Nachbarn mehr, und dann ist Hinzufügen selbst eine Änderung.
