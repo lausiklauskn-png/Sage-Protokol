@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-09-14",
-  "seq": 82,
-  "headline": "DER ANDOCK-WIZARD IST JETZT KANON — src/modules/16b_andock_wizard.js, Marke 'SBKIM — Modul 16b —'. FUER ALLE GEGENSTELLEN MIT EIGENEM SIEGEL: siegel-inhalt.js traegt ab sofort NUR NOCH die IDENTITAET (window.SBKIM_SIEGEL_WIZ mit domain, endpoint, nodeType, nodeName, domainDescription, domainKeywords, stammCategories, guestCategories, backupPrefix) und bleibt in NIE_VERTEILEN; der ABLAUF samt allen Anzeigetexten steht netzweit byte-gleich daneben. Tafel: docs/INTERFACES.md 11.9. DER BEFUND, DER DAS NOETIG MACHTE: gemessen ueber alle 20 Kopien im Netz standen ZWOELF verschiedene Code-Fassungen desselben Werkzeugs — sieben mit eigenem ID-Praefix, ZWEI OHNE BAUSTEIN 5 (Identitaets-Wechsler), NEUN ohne 'der Vorschlag der App gewinnt', SECHS mit hart eingetipptem Backup-Namen. Wer eine eigene Kopie fuehrt, sieht bitte nach, welche dieser vier ihm fehlen. ⚠ ZWEI FALLEN, DIE HIER GELD GEKOSTET HABEN UND JEDE GEGENSTELLE TREFFEN KOENNEN: (1) SECHS APPS HATTEN GAR KEIN backupPrefix — ihr Sicherungs-Name stand HART im Wizard-Code; wer den Code teilt, ohne den Namen in die Konfiguration zu heben, gibt jeder App dieselbe Sicherungs-Datei. Gefunden haben es die Proben der Ziel-Repos, nicht das Nachdenken. (2) EIN VERTEIL-WERKZEUG, DAS KOMMENTARE AM ZEILENANFANG ERKENNT, ZERLEGT SERVICE-WORKER: PWA Toolpoints sw.js nennt den Pfad mitten in einem Block-Kommentar in einer Zeile, die mit einem WORT anfaengt — das Werkzeug legte eine Schwester daneben, und der Offline-Vorrat war syntaktisch kaputt. Gezaehlt wird der ZUSTAND, nicht der Zeilenanfang; derselbe Fehler traf ein zweites Mal den Cache-Bump. DIE TEXTE SIND FUER DIE UEBERSETZUNG VORBEREITET, ohne dass sich etwas aendert: schluessellos, der deutsche Satz IST der Schluessel, T() faellt fail-soft auf Deutsch zurueck, Rangfolge cfg.lang → <html lang> → de. OHNE EINSTELLUNG AENDERT SICH NICHTS — im Browser gemessen, auch bei lang='en'. GEMESSEN: 19 Kopien im Netz, alle gleich, 0 haengen zurueck (kanon-verteilen.mjs --nur 16b); jeder der 19 Knoten im echten Browser geprueft (Konfiguration + Kanon = vollstaendiges Werkzeug mit der EIGENEN Beschreibung); Sage 105 Proben gruen, smoke_kanon_wizard 46 gruen, Gegenprobe 24 gefangen, 0 durchgerutscht, 0 tote Anker. OFFEN: die Uebersetzung (TEXTE.en) und Klaus' Browser-Sichttest.",
+  "lastBuild": "2026-09-15",
+  "seq": 83,
+  "headline": "Brief fuer die Uebersetzung des Andock-Wizards (TEXTE.en) plus ein zweiter Auftrag: die Zeiterfassung zusammenfuehren. Befund 2026-09-15: die Commit-Spannen-Methode lief an zwei aufeinanderfolgenden Tagen in BEIDE Fehlerrichtungen (14.09.: 16h02 mit vollen Pausen; 15.09.: 0h29, weil mindestens 3h12 Arbeit nach dem letzten Commit lagen). Ausserdem: keine App traegt statisch html lang=en, aber ZEHN setzen es zur Laufzeit.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -439,6 +439,11 @@
       "seq": 68,
       "datum": "2026-09-09",
       "was": "PWA Toolpoint hat eine Kennung (verified-match 0.811205); ein Werkzeug misst den Kanon gegen die Quelle"
+    },
+    {
+      "seq": 83,
+      "date": "2026-09-15",
+      "note": "Komma-Reparatur gegengemessen (21/21 aus origin/main), Klaus' Sichttest an sieben Apps gruen, Brief fuer Uebersetzung + Zeiterfassung."
     }
   ]
 }

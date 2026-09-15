@@ -101,6 +101,84 @@ Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
 
 ---
 
+## Stand 2026-09-15 (Haupt-Sitzung, zweiter Teil) · ⚠ DIE ZEITERFASSUNG LÄUFT IN BEIDE FEHLERRICHTUNGEN
+
+**Rolle:** Haupt-Sitzung, Fortsetzung. **Anlass:** Klaus' Widerspruch
+*„Alle hatten SBKIM UND NICHT ERST SEIT GESTERN"*, danach sein Sichttest an
+sieben Apps und ein zweiter Auftrag zur Zeiterfassung.
+
+**Klaus hatte recht, und zwar an der Wortwahl.** Im Chat stand
+*„die vier Apps, die seit gestern gar kein SBKIM hatten"*. Gemessen: SBKIM liegt
+in diesen vier Apps seit dem **2026-08-16** (Alis #39, PSB #43, PSF #15,
+Muster Werbetechnik #7). Die Messung über das A18-Fenster stimmte — der Satz
+las sich, als hätten die Apps SBKIM erst seit gestern. Berichtigt.
+Herkunft des Befundes: `klaus`.
+
+**Nachgemessen im echten Browser, sieben Apps, je drei Stände** (Wegwerf-Worktrees
+an `A18^`, `A18`, `origin/main`): vorher Speicher/Siegel/Lampen ✓ · im A18-Stand
+alle ✗ mit `Unexpected string` · heute wieder ✓ und zusätzlich Konfiguration und
+Kanon. Das Fenster war rund **ein Tag**, im Depot.
+
+**Klaus' Sichttest: grün, alle sieben.** Jede App trägt ihren eigenen Text im
+Siegel, jede hat den Andock-Wizard. Der Wizard ist das **letzte** Glied der
+Kette — steht er da, sind die siebzehn Dateien davor angekommen.
+
+**Aus den Bildern gemessen — Kennung im Browser gegen `status.json`:** fünf von
+sieben gleich (Mixarium, Alis, PSF, PSB, Muster Werbetechnik), **zwei anders**
+(Mein Rezeptbuch, Mein WorkFloh). Am 2026-09-10 waren es netzweit zwei von
+fünfzehn. **Vier Knoten haben KEINE Sicherung ihrer Kennung** (Muster
+Werbetechnik, Rezeptbuch, **Mixarium**, WorkFloh) — bei Mixarium ist die Kennung
+in `status.json` und in den Proben genagelt. Klaus ist darauf hingewiesen; eine
+Sitzung kann den Knopf nicht drücken.
+
+**Nebenbefund, nicht von A18:** `modules/noble-secp256k1.js` steht in der
+Nachlade-Kette und wird dort als gewöhnliches Skript geladen — es ist ein
+ES-Modul und wirft `Unexpected token 'export'`, vorher wie nachher. Kette läuft
+fail-soft weiter, Siegel und Spore sind da. **Nicht untersucht**, ob dadurch
+etwas fehlt.
+
+**⚠ DER BEFUND DES TAGES: die Historien-Methode ist an zwei aufeinanderfolgenden
+Tagen in BEIDE Fehlerrichtungen gelaufen.** `Kimhub/tools/zeiten-sammeln.mjs`
+warnt in seinem eigenen Kopf vor genau beiden — *„UNTERGRENZE … Pausen
+dazwischen zaehlen voll mit"* — und niemand hat es an der Zahl gemerkt.
+Gemessen über alle 22 Depots:
+
+| Tag | Commits | Depots | Commit-Spanne | Wirkung |
+|---|---|---|---|---|
+| 2026-09-14 | 197 | 22 | **16 h 02 min** (07:04–23:06 UTC) | Pausen zählen voll → zu viel |
+| 2026-09-15 | 24 | 8 | **0 h 29 min** (09:13–09:42 UTC) | Klaus' Bildschirmfotos tragen 12:41–12:54 UTC → mindestens **3 h 12 min** liegen nach dem letzten Commit → zu wenig |
+
+Die ganze Arbeit des 15. nach 09:42 — drei Browser-Stände messen, Klaus'
+Widerspruch, sein Sichttest, der Kennungs-Abgleich — hinterlässt **keinen
+einzigen Commit**. Aus einem Arbeitstag werden 29 Minuten.
+**Das trifft `forschung/METHODE.md` § 3 unmittelbar:** das Feld `spanne` IST
+diese Commit-Spanne. Gemerkt hat es der Betreiber, weil ihm das Stoppen der
+Stechuhr lästig wurde. Herkunft: `klaus`, Wächter blind.
+
+**Für die Übersetzung neu gemessen:** **keine** App im Netz trägt statisch
+`html lang="en"` — die Zusicherung „ohne Einstellung ändert sich nichts" hält.
+**Aber zehn Apps setzen `<html lang>` zur Laufzeit**, sobald der Nutzer eine
+Sprache wählt (Alis-Moderaum:448, PSF:299, New-PSB:296, PWA-Toolpoint
+`sprache.js`:97, Mixarium:6100, Rezeptbuch-QC:6230, Mein-WorkFloh:1041,
+Muttis:4694, Mixarium-Page:51, Tomys `workfloh`:978). Die Falle ist damit eine
+andere als im alten Brief beschrieben.
+
+**Forschungsstand nachgerechnet** (2026-09-15, über alle 22 Einträge in
+`Kimhub/forschung/sitzungen.json`): 340 Befunde · `hinsehen` 43,5 % ·
+`gegenprobe` 25,0 % · `klaus` 17,1 % · `regel` 14,4 % · **blinde Wächter 42,9 %**.
+V1 hält, V2 hält. Die **Auswertung** selbst steht weiter aus; die Sitzungen vom
+14. und 15. sind noch nicht eingetragen.
+
+**Offen:** die Übersetzung (`TEXTE.en`) · die Zeiterfassung zusammenführen
+(drei Wege vorgelegt, Klaus entscheidet) · die zwei abweichenden Kennungen ·
+die vier fehlenden Sicherungen · 44 zurückhängende Kanon-Dateien · 38 blinde
+Gegenprobe-Fälle in PWA Toolpoint · die zwei `jasons-bibliothek/`-Spiegel ·
+`noble-secp256k1` in der Kette.
+
+**Nächster Schritt:** `docs/sessions/BRIEF_uebersetzung-und-zeiterfassung.md` —
+er trägt beide Aufträge und alle Zahlen dieses Tages.
+
+
 ## Stand 2026-09-14 (Haupt-Sitzung, A18, Abschluss) · ⚠ TOTER ANKER ALS BLINDER WÄCHTER GELESEN
 
 **Rolle:** Haupt-Sitzung, Abschluss von A18.
