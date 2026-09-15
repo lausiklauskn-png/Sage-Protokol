@@ -110,6 +110,43 @@ auch bei der Kennung"*. Die zwei nachzuziehen kostet ein Neu-Signieren und
 rechnet alle 21 `matchScore`-Werte neu. **Klaus' Entscheidung, nicht die einer
 Sitzung.**
 
+### ⚠ MEIN-WORKFLOH: GEMESSEN AM 2026-09-15 — NICHT eintragen
+
+Klaus hat in dem Browser, an dem er sitzt, neu signiert und die Spore geschickt.
+Sie ist tadellos (**8 Prüfungen, 0 rot**, Signatur VALID) — und sie wurde
+**bewusst NICHT abgelegt.** Der Grund ist gemessen:
+
+| | Depot (`foFm64sA…`) | neu (`LEIbBDaS…`) |
+|---|---|---|
+| Beschreibung | 1025 Zeichen | **1025 — wortgleich** |
+| Stichworte | 15 | **dieselben 15** |
+| gegen Sage | **0.902126** | 0.900515 |
+| `cos(alt, neu)` | — | 0.994245 |
+
+**Der Text ist Zeichen für Zeichen derselbe.** Der einzige Unterschied ist der
+**Schlüssel**. Eintragen würde WorkFloh eine neue Identität geben, **ohne
+irgendetwas zu verbessern** — und `previousNodeIds` trägt schon einen Eintrag,
+es wäre der zweite Wechsel.
+
+Dass die Zahl dabei minimal fällt, ist **kein Fehler**: dieselbe
+Nicht-Determiniertheit des Einbettungs-Modells, die `status.json` für PWA
+Toolpoint schon belegt (byte-gleicher Text, `cos = 0.992957`, vierzehn Sekunden
+auseinander).
+
+**An WorkFloh ist im Netz nichts zu reparieren** — Depot und Register stimmen
+überein und liegen bei 0.902126, weit über dem Boden. Was klemmt, ist **ein
+Browser**: von dort meldet sich die App im Raum unter einer anderen Kennung.
+
+**Offen und Klaus vorgelegt:** ob `foFm64sA…` in einem anderen Browser noch lebt
+(dann ist nichts zu tun) oder verloren ist (dann wird der Wechsel eingetragen,
+mit `foFm64sA…` unter `previousNodeIds`). **Eine Sitzung kann das nicht
+nachsehen** — der Schlüssel liegt in IndexedDB.
+
+⚠ **UND DIE REIHENFOLGE IST DIE LEHRE DARAUS:** wer signiert, bevor geklärt ist,
+welche Identität gelten soll, hat die Entscheidung schon getroffen. Die Spore
+trägt dann die Kennung des Browsers, in dem gearbeitet wurde — nicht die, die
+gemeint war. **Erst klären, dann signieren.**
+
 **Vier Knoten haben KEINE Sicherung ihrer Kennung** (aus Klaus' Bildern
 abgelesen): Muster Werbetechnik · Mein Rezeptbuch · **Mein Mixarium** · Mein
 WorkFloh. Alis, PSF und PSB tragen `2026-09-14`.
