@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-09-14 (27 Module)
+  title Modulstand 2026-09-15 (27 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -30,6 +30,73 @@ pie showData
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
+
+## Stand 2026-09-15 (Haupt-Sitzung, dritter Teil) · ⚠ DER VIERTE IDENTITÄTS-WECHSEL EINES KNOTENS
+
+**Getan.** Klaus hat für **Mein-Rezeptbuch** über das Siegel neu signiert und die
+Spore geschickt. Geltend ist `r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI`; die
+Fassung vom 2026-07-19 liegt als `spore-vorgaenger-2026-07-19.json` daneben.
+Geprüft vor dem Ablegen: **9 Prüfungen, 0 rot** (Signatur VALID reziprok,
+`id == base64url(SHA256(rawPub))`, kein `d`, `key_ops` nur `["verify"]`,
+OKP/Ed25519, 384 Stellen, **L2 = 0.999999811**, kein `_demo`, `endpoint` gehört
+zu Mein-Rezeptbuch). Register nachgezogen: `nodeId`, `previousNodeIds` (jetzt
+**vier**), `matchScore` 0.835683 → **0.874048**, Quelle `depot-2026-09-15`.
+
+**Gemessen.** Der Text ist **byte-gleich** mit der alten Spore (851 Zeichen,
+7 Stichworte), und gegen Sage steht **exakt derselbe Wert** wie zuvor. Zweites
+Mal an einem Tag dasselbe Bild — bei Mein-WorkFloh war es 0.902126 vor und nach
+dem Wechsel. **Der Wechsel kostet die Zahl nichts, er kostet die Identität.**
+
+⚠ **Die Vorwerte sind NICHT unmittelbar vergleichbar:** 0.835683 stand gegen die
+Raum-Spore vom 2026-09-10, 0.874048 steht gegen die abgelegte. Zwei Maßstäbe,
+und deshalb trägt der Eintrag seine Quelle.
+
+⚠ **BENANNTE LÜCKE.** Für Mein-WorkFloh lag der Beleg vor, dass die alte Kennung
+verloren ist — der Identitäts-Wechsler meldete *„Genau eine Identität — sauber"*.
+**Für diesen Knoten liegt er nicht vor.** Abgelegt auf Klaus\' ausdrückliche
+Anweisung (*„damit übertragen wir das gleich auf die anderen"*); die alte Spore
+bleibt als Vorgänger liegen, falls sich das Gegenteil herausstellt.
+
+**Und daraus ist der eigentliche Befund gefallen:** `previousNodeIds` trägt für
+diesen Knoten jetzt **vier** Einträge, mehr als für jeden anderen im Netz. Die
+Ursache liegt nicht im Knoten, sondern in der **Bedienung** — Klaus hat sie
+selbst benannt: *„Dann wird im Mycel eine Sicherung angelegt, die aber auch schon
+im Siegel angelegt werden kann. Also auch wieder doppelt."* Nachgemessen: Sichern,
+Einspielen und Wechseln stehen in **Modul 23 und Modul 16b**, mit verschiedenen
+Dateinamen und verschiedenen Texten.
+
+**Vorschlag geschrieben, nicht gebaut:** `docs/VORSCHLAG_IDENTITAETS-KETTE.md`.
+Er trennt, was heute vermischt wird — `previousNodeIds` in der Spore wäre eine
+**Behauptung**, eine vom alten Schlüssel unterschriebene Nachfolge (`successorOf`)
+ein **Beweis**, und der zweite Weg geht nur dort, wo der alte Schlüssel noch lebt.
+Das ist genau **nicht** Klaus\' häufiger Fall. Sechs Punkte, nach Kosten geordnet;
+ab Punkt 3 wird `docs/INTERFACES.md` angefasst — **das entscheidet Klaus**.
+
+**⚠ DER DATEINAME TRÄGT DIE KENNUNG NICHT, und das hat heute Verwirrung
+gekostet** (Klaus: *„vielleicht über die Dateibezeichnung schon erkennt, welche
+Spore oder ID oder beides"*). Nachgemessen an den drei Stellen, die einen Namen
+bauen — `16b_andock_wizard.js:192` (`<Knotenname>_spore_<TT_MM_JJ>.json`),
+`23_rendezvous_ui.js:1176`, `16b_andock_wizard.js:573`: **keine davon nennt die
+Kennung.** Zwei Sporen derselben App am selben Tag sind damit ununterscheidbar,
+und genau das ist passiert: die zweite WorkFloh-Datei hieß `…_1.json`, die `_1`
+kam vom Browser. Welche die neuere war, stand **nur im Inhalt** (13:03 gegen
+14:04) — und an derselben Stelle schrieb Klaus *„ich glaube, ich habe es gerade
+verwechselt"*. **Der Name trug den Unterschied nicht, also musste der Mensch ihn
+tragen.**
+
+**Gemessen am Ende:** `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
+lauffähig**, Rückgabewert **0** (ohne Pipe gemessen).
+
+**Offen.** Die Übersetzung (`TEXTE.en`, 76 Einträge) · 44 nachhängende
+Kanon-Dateien · Klaus\' Entscheidung zu den sechs Punkten des Vorschlags · und
+die Frage aus § 10: soll der Identitäts-Wechsler nach **Zeitstempel** vorwählen
+statt alphabetisch? Beide Regeln haben ihren Schaden, die alphabetische ist nur
+der stillere.
+
+**Nächster Schritt.** Klaus\' Entscheid zu Punkt 1 (Dateiname) — er kostet drei
+Zeilen in zwei Kanon-Dateien, ändert kein Protokoll und wirkt sofort.
+
+---
 
 ## Stand 2026-09-15 (Haupt-Sitzung) · ⚠ EIN FEHLENDES KOMMA HAT VIER APPS ABGESCHALTET
 
@@ -622,90 +689,12 @@ gilt.
 
 ---
 
-## Stand 2026-09-14 (Haupt-Sitzung, Nacht) · ✅ DAS WAPPEN SPRICHT MIT — 20 TRÄGER, NICHT 19
+## Eine Sitzung vom 2026-09-14 (Nacht, Wappen) — ausgelagert am 2026-09-15
 
-**Rolle:** Haupt-Sitzung, Fortsetzung. Klaus hat die Frage aus der Nachlese
-darüber entschieden: **das Wappen spricht mit.** Aufgabe 2 (Andock-Werkzeug)
-bleibt unberührt — Klaus' Weg dafür steht fest (erst zusammenführen, dann
-übersetzen) und ist eine eigene Sitzung.
-
-### Was gebaut wurde
-
-| | |
-|---|---|
-| `OFFIZIELLE BESTÄTIGUNG` | → `OFFICIAL ATTESTATION` |
-| `SIEGEL` | → `SEAL` (abgestimmt mit Modul 17, dort heißt der Slot ebenso) |
-| `SBKIM` | bleibt — Eigenname |
-| `ribbonText` | bleibt — den graviert der Host |
-
-**Neuer Kanon: 16 = `d84fa539e76e`** · 17 unverändert `3f757b35cea5`.
-
-`renderWappenSvg()` ist die einzige Ausgabestelle und führt die zwei Texte
-durch `T()`. **Auf Deutsch gibt `T()` den Satz unverändert zurück, die
-Ersetzung entfällt, das SVG bleibt byte-identisch** — dieselbe Bauart, die der
-`ribbonText` seit jeher hat. Damit gilt *OHNE EINSTELLUNG ÄNDERT SICH NICHTS*
-auch hier.
-
-⚠ **Gesucht wird `>TEXT<`, nicht der Text allein.** Beide Wörter kommen im SVG
-ein zweites Mal außerhalb eines Textknotens vor; eine Ersetzung am bloßen Wort
-träfe Markup statt Anzeige.
-
-### Der Rollout — 20 Träger, und warum es nicht 19 sind
-
-**BookLedgerPro kam dazu.** Es hing schon vor diesem Rollout **eine Generation
-zurück** (kein Sprach-Haken) und fiel deshalb aus dem Raster, das nach der
-*erwarteten* Vorgänger-Fassung suchte. Gemessen: seine 35 abweichenden Zeilen
-waren **genau die**, die der Kanon durch `T()` ersetzt — kein repo-eigener
-Code, reiner Rückstand.
-
-> **Ein Rollout, der nur die zählt, die die erwartete Vorgänger-Fassung tragen,
-> übersieht die, die noch weiter zurückhängen.** Verwandt mit „ein Drift-Guard
-> sagt *unverändert*, nicht *aktuell*" — hier von der anderen Seite.
-
-⚠ **UND BOOKLEDGERPRO PINNTE SEINEN EIGENEN sha**, nicht den von Sage
-(`3e17f6474fc7f96f`). Meine Pin-Suche lief über alle drei Längen des
-**Sage**-sha und konnte ihn nicht finden. Gefunden hat ihn die Probe des Repos
-selbst: **2181/1, `✗ 16_siegel.js unverändert`.** Der Drift-Guard hat getan,
-wofür er da ist.
-
-⚠ **11 von 20 brauchten einen `CACHE_VERSION`-Bump**, gemessen statt geraten —
-und jeder **+1 gegen `origin/main`** geprüft, nicht gegen die eigene Datei
-(die Kollisionsfalle vom 2026-09-07, als zwei Sitzungen unabhängig `v26`
-vergaben). Beim ersten Messversuch hatte `head -1` in zwei Repos den
-**falschen** Service-Worker erwischt; neu gemessen über alle Worker je Repo.
-
-### Der Wächter — und warum Abschnitt 4 allein nicht genügt
-
-**Abschnitt 4** gleicht das Wappen gegen die Tafel ab (jeder Text benannt,
-jeder `WAPPEN_TEXTE`-Eintrag mit englischer Fassung, jeder genau einmal als
-`>Text<` im SVG). **Abschnitt 4b ist neu und misst das WIRKLICH GERENDERTE
-Badge** — denn 4 liest nur den Quelltext und fände die Zeilen auch dann
-tadellos, wenn `renderWappenSvg()` gar nicht mehr gerufen würde. *Ein Wächter,
-der eine Datei liest, misst nicht, ob sie läuft.*
-
-⚠ **ZWEI GEGENPROBE-FÄLLE FINGEN AUS DEM FALSCHEN GRUND.** Beide benannten
-einen Wörterbuch-Schlüssel um — damit verlor er zugleich seine Fundstelle im
-Code, und **Abschnitt 1 feuerte zuerst**. Gefangen waren sie, gemessen hatten
-sie den Nachbarn. Geschärft über `SBKIM` (steht im Wappen, hat mit Absicht
-keinen Eintrag) und `Pflicht-Module` (hat einen Eintrag, steht nicht im
-Wappen) — jetzt fällt je genau der gemeinte Wächter.
-
-⚠ **KEIN FALL zur Abbruch-Bedingung, und das ist eine benannte Grenze statt
-einer Lücke:** nimmt man sie weg, läuft auf Deutsch ein `replace(">X<", ">X<")`
-— byte-genau dasselbe. Der Fall wäre **immer** „nicht gefangen", ohne dass der
-Wächter etwas falsch macht. *Ein Fall, der nichts messen kann, sieht aus wie
-Deckung.*
-
-**Gemessen:** `smoke_bau1617_sprache.mjs` **83 grün** (vorher 64) ·
-`gegenprobe_bau1617_sprache.sh` **30 gefangen, 0 durchgerutscht, 0 tote Anker**
-· voller Sage-Lauf **103 grün, 0 rot** · alle 20 Träger nach dem Rollout grün,
-darunter family-project **110/110** und BookLedgerPro **2182/0**.
-
-⚠ **EIN `exit=0` KAM VOM `echo`, NICHT VOM `node`** — die `| tail`-Falle in
-einem neuen Kostüm. family-project meldete zuerst „grün", während die Probe in
-Wahrheit mit `ERR_MODULE_NOT_FOUND` abbrach: `playwright-core` fehlte, also
-**nicht lauffähig, nicht grün**. Nachinstalliert und wirklich gemessen.
-
+> **↓ Ausgelagert.** Der Eintrag „DAS WAPPEN SPRICHT MIT — 20 TRÄGER, NICHT 19"
+> steht **wortwörtlich** in
+> [`sessions/archiv/2026-09-15_puls-auslagerung-3.md`](sessions/archiv/2026-09-15_puls-auslagerung-3.md).
+> Die Datei stand bei 3.017 von 3.000 Zeilen; **ausgelagert, nicht gekürzt.**
 ---
 
 ## Eine Sitzung vom 2026-09-14 (Sichttest-Nachlese) — ausgelagert am 2026-09-15
