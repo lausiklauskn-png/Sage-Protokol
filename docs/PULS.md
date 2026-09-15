@@ -101,6 +101,39 @@ Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
 
 ---
 
+## Stand 2026-09-15 (Haupt-Sitzung, Nachtrag) · ✅ MUSTER WERBETECHNIK IST ÜBER DEM HANDSHAKE-BODEN
+
+Klaus hat noch am selben Tag über das Siegel neu signiert und die Spore
+geschickt. **Acht Prüfungen, 0 rot**, bevor sie abgelegt wurde: Signatur VALID
+reziprok · `id == base64url(SHA256(rawPub))` · kein `d` · `key_ops` nur
+`["verify"]` · `OKP`/`Ed25519` · 384 Stellen · **L2 = 1.000000044** · kein
+`_demo` · Text **byte-gleich mit beiden Wegen zur Spore** (864 Zeichen).
+
+**Die abgelegte Spore hing bis dahin auf der ALTEN Kennung.** Das Register
+führt seit dem 2026-09-10 `Gq_Mt8o…` und `_Psq_…` unter `previousNodeIds`,
+`sbkim/spore.json` trug noch `_Psq_…` vom 2026-08-16. **Depot und Register
+stimmen jetzt zum ersten Mal überein** — keine Identitäts-Entscheidung, die fiel
+am 2026-09-10.
+
+**Gemessen gegen Sages Spore: 0,793613 → 0,907431**, also über
+`PROVIDER_MIN_MATCH = 0.80`. Von den fünf Knoten unter dem Boden sind **vier**
+übrig: Alis Moderaum 0,795460 · Perfect Skin Fashion 0,793030 · Tomys Hub
+0,786371 · Perfect Skin Beauty 0,783216.
+
+⚠ **Die Ursache ist nicht die Länge, sondern der Inhalt.** 421 → 864 Zeichen,
+aber entscheidend ist, dass der neue Text SBKIM, Mycel, Knoten und Sage-Protokol
+**nennt**. Derselbe Hebel, den `status.json` aus den Mitschnitten vom 2026-09-10
+benennt — **jetzt ein zweites Mal belegt**, an einem Knoten, der vorher darunter
+lag.
+
+⚠ **`matchScoreQuelle` ist hier `depot-2026-09-15`**, bei den übrigen zwanzig
+`raum-2026-09-10`. Gerechnet gegen die abgelegte Spore, weil für diesen Tag kein
+Mitschnitt vorliegt. Eine Tabelle mit zwei Maßstäben nennt sie, statt einheitlich
+auszusehen.
+
+⚠ **NICHT erledigt:** die Warnung „für diesen Knoten liegt KEINE Sicherung vor"
+steht weiter. **Neu signieren ist nicht dasselbe wie sichern.**
+
 ## Stand 2026-09-15 (Haupt-Sitzung, zweiter Teil) · ⚠ DIE ZEITERFASSUNG LÄUFT IN BEIDE FEHLERRICHTUNGEN
 
 **Rolle:** Haupt-Sitzung, Fortsetzung. **Anlass:** Klaus' Widerspruch
@@ -628,92 +661,12 @@ Wahrheit mit `ERR_MODULE_NOT_FOUND` abbrach: `playwright-core` fehlte, also
 
 ---
 
-## Stand 2026-09-14 (Haupt-Sitzung, Sichttest-Nachlese) · ⚠ DIE LAMPEN, DIE KLAUS SIEHT, KOMMEN NICHT AUS MODUL 17
+## Eine Sitzung vom 2026-09-14 (Sichttest-Nachlese) — ausgelagert am 2026-09-15
 
-**Rolle:** Haupt-Sitzung. Aufgabe 1 des Briefs (Sichttest-Nachlese). Aufgabe 2
-(Andock-Werkzeug im Siegel) wartet unberührt auf Klaus' Entscheidung.
-**Kein Modul-Code angefasst** — `16_siegel.js` und `17_floating_widget.js`
-liegen byte-gleich auf `origin/main` (7589f18d59dc · 3f757b35cea5).
-
-### Was gemessen wurde
-
-Die zwei Domänen sind aus dieser Sitzung nicht abrufbar (Proxy, HTTP 000 —
-gegengeprüft). Gemessen wurde stattdessen **lokal im echten Browser**
-(playwright-core + Chromium) an frischen `git archive`-Auszügen von
-`origin/main`, mit gesetzter Sprachwahl im `localStorage`:
-
-| Seite | `<html lang>` | Modul 17 | was SICHTBAR dasteht |
-|---|---|---|---|
-| family-projekt.de | en | geladen, `_meta.lang === "en"` | **LEBT · VERKEHR · FREMD · SIEGEL** |
-| pwa-toolpoint.de | en | **nicht geladen** | **lebt · verkehr · fremd** |
-| …/auslieferungspruefer.html | en | geladen, en | **ALIVE · TRAFFIC · FOREIGN · SEAL** |
-
-**Der Sprach-Haken arbeitet** — am Prüfer gemessen. Was auf den beiden Seiten
-deutsch bleibt, ist **app-eigener Klebstoff**, vom Modul-Rollout grundsätzlich
-nicht erreichbar:
-
-- **family-project** ruft in `sbkim/sbkim-init.js` `SbkimWidget.hide()`. Die
-  sichtbare Leiste ist `assets/status-widget.js` — Etiketten fest im Code,
-  **0 Treffer** auf `documentElement.lang`, `T(`, `TEXTE`.
-- **pwa-toolpoint** lädt Modul 17 auf der Startseite bewusst nicht (eigene
-  `.lamps`-Leiste); die Etiketten stehen als Markup in `index.html`, die
-  Tooltips ebenfalls deutsch.
-
-Dieselbe Lage wie beim Gerätenamen (NETZWEIT §2) und beim Andock-Werkzeug.
-
-### ⚠ Und das WAPPEN im Siegel trägt zwei deutsche Anzeigetexte
-
-Gemessen an allen drei Seiten, in jeder Stufe: im Wappen stehen
-**`OFFIZIELLE BESTÄTIGUNG`** und **`SIEGEL`** deutsch da, während alles andere
-Englisch spricht. Sie stecken als Markup in der Konstante `WAPPEN_SVG` und
-gehen nicht durch `T()`. (`SBKIM` ist Eigenname, der `ribbonText` wird vom Host
-graviert und war korrekt gesetzt.)
-
-**Das ist NICHT dieselbe Frage wie die ZERTIFIKAT_ASPEKTE**: deren deutscher
-Wortlaut ist die Urkunde und steht nur im Code, übersetzt wird an der
-Anzeige-Stelle. Hier steht er **in der Anzeige**. Ob ein Wappen als Emblem
-deutsch bleibt oder mitspricht, **ist hier nicht entschieden** — die Frage geht
-an Klaus, die Lage ist in INTERFACES § Modul 16 SPRACHE benannt.
-
-### Warum kein Wächter es gefangen hat
-
-Abschnitt 3 der Probe misst **zeilenweise** und nur Zeilen mit einer
-Anzeige-Zuweisung. `WAPPEN_SVG` ist eine `var`-Zuweisung mit Markup, eingesetzt
-wird sie über eine **Variable** — auf deren Zeile steht keine Zeichenkette. Für
-beide Filter unsichtbar. Das ist seine **dritte** benannte Grenze; zwei standen
-schon da.
-
-**Abschnitt 4 ist neu** und gleicht das Wappen gegen die Tafel ab: jeder Text
-darin muss in INTERFACES benannt sein. Er entscheidet **nichts** über die
-Übersetzungsfrage — er verhindert nur, dass ein Text **unbenannt** bleibt.
-
-⚠ **Die Wegwerf-Kopie der Gegenprobe kannte `docs/` nicht.** Abschnitt 4 liest
-INTERFACES; ohne die Zeile in `frisch()` war die Kopie **schon ohne Eingriff
-rot**, und damit maßen alle 25 Fälle nichts. Die Ausgangslage-Prüfung hat es
-beim ersten Lauf gefangen — die Positivlisten-Falle, zum wiederholten Mal.
-
-⚠ **Eine eigene These wurde von der Messung widerlegt**, und das steht hier,
-weil sie fast in den Bericht gewandert wäre: aus einem ersten Lauf
-(„★ SEAL" beim Prüfer) hatte ich geschlossen, das Wappen erscheine nur in
-Gold-Stufe. Nachgemessen: **alle drei stehen auf Bronze und zeigen dasselbe
-Wappen.** Der Unterschied waren zwei verschiedene Elemente, nicht zwei Stufen.
-
-**Gemessen:** `smoke_bau1617_sprache.mjs` **68 grün** (vorher 64) ·
-`gegenprobe_bau1617_sprache.sh` **27 gefangen, 0 durchgerutscht, 0 tote Anker**
-(vorher 25) · voller Lauf **103 Proben grün, 0 rot, 0 nicht lauffähig**
-(Rückgabewert direkt gemessen, nicht hinter einer Pipe).
-
-### Was offen ist
-
-- **Aufgabe 2** — das Andock-Werkzeug im Siegel (20 Dateien, 407–540 Zeilen,
-  272 gemeinsam): unberührt, wartet auf Klaus' Entscheidung zwischen
-  „20 einzeln" und „erst zusammenführen, dann übersetzen".
-- **Die zwei Wappen-Texte**: Entscheidung Klaus (Emblem deutsch ⟷ mitsprechen).
-- **Der app-eigene Klebstoff** der Lampen in family-project und PWA-Toolpoint:
-  nicht angefasst, keine Entscheidung getroffen.
-- Der **Sichttest selbst** steht weiter aus — er ist durch nichts zu ersetzen.
-
----
+> **↓ Ausgelagert.** Der Eintrag „DIE LAMPEN, DIE KLAUS SIEHT, SIND NICHT DIE
+> LAMPEN IM DEPOT" steht **wortwörtlich** in
+> [`sessions/archiv/2026-09-15_puls-auslagerung-2.md`](sessions/archiv/2026-09-15_puls-auslagerung-2.md).
+> Die Datei lief auf 3.000 Zeilen zu (2.983); **ausgelagert, nicht gekürzt.**
 
 ## Eine Sitzung vom 2026-09-14 (spät) — ausgelagert am 2026-09-15
 
