@@ -117,7 +117,7 @@ am 2026-09-10.
 
 **Gemessen gegen Sages Spore: 0,793613 → 0,907431**, also über
 `PROVIDER_MIN_MATCH = 0.80`. Von den fünf Knoten unter dem Boden sind **vier**
-übrig: Alis Moderaum 0,795460 · Perfect Skin Fashion 0,793030 · Tomys Hub
+übrig: Alis Moderaum 0,793347 · Perfect Skin Fashion 0,793030 · Tomys Hub
 0,786371 · Perfect Skin Beauty 0,783216.
 
 ⚠ **Die Ursache ist nicht die Länge, sondern der Inhalt.** 421 → 864 Zeichen,

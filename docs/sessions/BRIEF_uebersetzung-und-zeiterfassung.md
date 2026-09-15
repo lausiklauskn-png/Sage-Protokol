@@ -137,7 +137,7 @@ zum ersten Mal überein.**
 | **jetzt (864 Zeichen)** | **0.907431** — über `PROVIDER_MIN_MATCH = 0.80` |
 
 **Von den fünf Knoten unter dem Boden sind VIER übrig:** Alis Moderaum
-0.795460 · Perfect Skin Fashion 0.793030 · Tomys Hub 0.786371 · Perfect Skin
+0.793347 · Perfect Skin Fashion 0.793030 · Tomys Hub 0.786371 · Perfect Skin
 Beauty 0.783216. **Für alle vier ist derselbe Hebel gemessen:** nicht Länge,
 sondern dass der Text das Protokoll **nennt**.
 
