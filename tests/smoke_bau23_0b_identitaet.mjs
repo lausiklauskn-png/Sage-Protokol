@@ -332,9 +332,24 @@ async function run() {
   UI._test.clickIdFormButton("Datei erzeugen");
   await sleep(30);
   record("0b/1 Sicherung erzeugt (Datei angeboten)", "1 Download", String(downloads.length), downloads.length === 1);
-  record("0b/1 Dateiname trägt Knoten + Datum", "sbkim-sicherung-test0b-…",
+  record("0b/1 Dateiname trägt Knoten + Datum", "sbkim-sicherung-test0b-JJJJ-MM-TT…",
     downloads[0] ? downloads[0].name : "(keine)",
-    !!(downloads[0] && /^sbkim-sicherung-test0b-\d{4}-\d{2}-\d{2}\.json$/.test(downloads[0].name)));
+    !!(downloads[0] && /^sbkim-sicherung-test0b-\d{4}-\d{2}-\d{2}/.test(downloads[0].name)));
+  /* Seit dem 2026-09-15 nennt der Name auch die KENNUNG (Klaus: „vielleicht über
+     die Dateibezeichnung schon erkennt, welche Spore oder ID"). Vorher ergaben
+     zwei Sicherungen desselben Tages denselben Namen, und der Browser hängte ein
+     „_1" an — welche die neuere war, stand nur im Inhalt.
+     ⚠ Gemessen wird BEIDES: dass acht Zeichen dastehen UND dass sie zur echten
+     nodeId gehören. Nur auf „_xxxxxxxx" zu prüfen wäre auch dann grün, wenn dort
+     eine erfundene Zeichenkette stünde. */
+  const nodeIdVorher = await stub.SbkimSpore.getNodeId();
+  const sichName = downloads[0] ? downloads[0].name : "";
+  const kennungImNamen = (sichName.match(/_([A-Za-z0-9\-_]{8})\.json$/) || [])[1] || "";
+  record("0b/1 Dateiname trägt die Kennung", "acht Zeichen der nodeId",
+    kennungImNamen || "(keine)", kennungImNamen.length === 8);
+  record("0b/1 … und zwar die ECHTE nodeId", "Anfang der nodeId",
+    kennungImNamen + " ⟷ " + String(nodeIdVorher || "").slice(0, 8),
+    !!nodeIdVorher && kennungImNamen === String(nodeIdVorher).slice(0, 8));
   record("0b/1 Passwort NICHT gespeichert", "kein Passwort im Speicher",
     Object.values(_ls).some((v) => String(v).indexOf("geheim12345") !== -1) ? "gefunden!" : "keins",
     !Object.values(_ls).some((v) => String(v).indexOf("geheim12345") !== -1));

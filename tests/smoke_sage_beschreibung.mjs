@@ -119,16 +119,40 @@ const vorbelegung = iFeld >= 0 && iHerk > iFeld ? wiz.slice(iFeld, iHerk) : "";
 ok("das Feld zeigt den Vorschlag der App",
   vorbelegung.length > 0 && /ta\.value\s*=\s*c\.domainDescription\b/.test(vorbelegung));
 
-/* Die andere Hälfte, und sie ist die eigentliche Zusicherung: im Lade-Pfad
-   darf NUR EINE Zuweisung an `ta.value` stehen — die im Knopf. Gezählt statt
-   gesucht: „steht irgendwo" ist hier keine Frage, die etwas beantwortet. */
+/* Die andere Hälfte, und sie ist die eigentliche Zusicherung — welcher Text im
+   Lade-Pfad gewinnt. Gemessen wird der BLOCK, nicht „steht irgendwo in der
+   Datei": das beantwortet keine Frage. */
 const iLade = wiz.indexOf("getOwnSpore()");
 const iEnde = wiz.indexOf('ta.addEventListener("input"', iLade);
 const ladePfad = iLade >= 0 && iEnde > iLade ? wiz.slice(iLade, iEnde) : "";
 const imKnopf = /zurueck\.addEventListener[\s\S]{0,240}?ta\.value\s*=\s*eigener\s*;/.test(ladePfad);
-const stilleZuweisungen = (ladePfad.match(/ta\.value\s*=/g) || []).length;
-ok("… und die gespeicherte Spore überschreibt ihn NICHT mehr von selbst",
-  ladePfad.length > 0 && imKnopf && stilleZuweisungen === 1);
+/* ⚠ DIESE ZUSICHERUNG IST AM 2026-09-15 GESCHÄRFT WORDEN, nicht gelockert —
+   Tafel-Evolutions-Klausel, ausdrücklich benannt statt stillschweigend umfahren.
+
+   ALT (2026-09-10): „die gespeicherte Spore überschreibt den App-Vorschlag NIE
+   von selbst", gemessen als „genau EINE Zuweisung an ta.value im Lade-Pfad".
+   Sie war richtig für Klaus' EIGENE Apps, wo der App-Text der gepflegte ist.
+
+   NEU: für einen FREMDEN Nutzer, der die App mit eigenen Inhalten füllt, ist sie
+   genau falsch herum — ein App-Update würde seinen selbst geschriebenen Text
+   beim nächsten Signieren überschreiben. Klaus hat das am 2026-09-15 benannt
+   („dann würde die Sporenbeschreibung des Nutzers überschrieben") und dafür die
+   Alternative „Module einfrieren" verworfen.
+   Es gewinnt jetzt, WER ZULETZT GESCHRIEBEN HAT. Der App-Vorschlag gewinnt
+   unverändert, solange der Nutzer nie einen eigenen Text unterschrieben hat.
+
+   ⚠ DAS ZÄHLEN IST DAMIT DAS FALSCHE MASS. Gemessen wird die BEDINGUNG: keine
+   Zuweisung an ta.value im Lade-Pfad steht ungeschützt da — jede hängt entweder
+   an `hatEigenenText()` oder an einem Knopf. Die beiden Richtungen misst der
+   Browser-Wächter in tests/smoke_kanon_wizard.mjs, der die Seite wirklich lädt. */
+ok("… und die gespeicherte Spore überschreibt ihn nur, wenn der Nutzer SELBST geschrieben hat",
+  ladePfad.length > 0 && imKnopf && /if\s*\(hatEigenenText\(\)\)\s*\{/.test(ladePfad));
+/* Die Gegenrichtung: der Vermerk wird beim Signieren auch wirklich GESETZT.
+   Ohne ihn stünde die Bedingung da und wäre für immer falsch — ein Riegel, den
+   keine Probe von seinem Fehlen unterscheiden kann, ist eine Behauptung. */
+ok("… und beim Signieren wird vermerkt, ob der Text ein eigener war",
+  /merkeEigenenText\(beschreibung\)/.test(wiz)
+  && /function merkeEigenenText/.test(wiz));
 
 /* ⚠ AN DER MARKE, NICHT AM SATZ. */
 ok("eine Zeile nennt, WELCHER der beiden Texte im Feld steht",
