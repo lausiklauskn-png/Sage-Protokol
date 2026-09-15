@@ -169,7 +169,25 @@ for (const konfigPfad of KONFIGS) {
        * Ein Skript-Tag endet auf `>` und braucht nichts. */
       const ohneRand = z.replace(/\s+$/, "");
       if (/[\"'`\]]$/.test(ohneRand)) raus[raus.length - 1] = ohneRand + ",";
-      raus.push(z.split(name).join(neuName));
+      /* ⚠ UND DIE SCHWESTER DARF NUR DEN EINTRAG SPIEGELN, NICHT DIE ZEILE.
+       * Zweite Haelfte desselben Schadens, gefunden am 2026-09-15 in
+       * Mein-WorkFloh/sw.js: dort stehen DREI Pfade je Zeile, und
+       * `z.split(name).join(neuName)` nahm die Nachbarn mit — der Vorrat trug
+       * `nostr-listen-init.js` danach doppelt. In index.html steht ein Eintrag
+       * je Zeile, deshalb ist es dort nie aufgefallen.
+       * Traegt die Zeile nur EINEN Pfad, bleibt alles wie zuvor: ein
+       * `<script src=…>`-Tag muss ganz gespiegelt werden, ein einzelnes
+       * Feld-Element ebenso. Erst ab ZWEI Pfaden wird der Eintrag herausgeloest. */
+      const inAnfuehrung = /(["'`])[^"'`]*\1/g;
+      const wieViele = (z.match(inAnfuehrung) || []).length;
+      if (wieViele > 1 && !z.includes("<")) {
+        const einzug = (z.match(/^\s*/) || [""])[0];
+        const treffer = z.match(new RegExp(`(["'\`])[^"'\`]*${name.replace(/\./g, "\\.")}\\1`));
+        const schwanz = /,$/.test(ohneRand) ? "," : "";
+        raus.push(einzug + treffer[0].split(name).join(neuName) + schwanz);
+      } else {
+        raus.push(z.split(name).join(neuName));
+      }
       getroffen++;
     }
     if (getroffen) nachzuziehen.push({ pfad: p, inhalt: raus.join("\n"), getroffen });

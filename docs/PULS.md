@@ -101,6 +101,53 @@ Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
 
 ---
 
+## Stand 2026-09-15 (Haupt-Sitzung, Nachtrag 2) · ⚠ DERSELBE KOMMA-FEHLER IM SERVICE-WORKER
+
+**Gefunden beim Verifizieren nach `Mein-WorkFloh/CLAUDE.md`** (*„node --check auf
+den `<script>`-Block von `index.html` **und** `sw.js`“*). Der A18-Rollout hat die
+Wizard-Zeile auch an den **Offline-Vorrat** angehängt, und dort zweifach falsch:
+
+```
+  'assets/nostr-listen-init.js', 'assets/siegel-inhalt.js'         <- Komma fehlt
+  'assets/nostr-listen-init.js', 'assets/sbkim-andock-wizard.js'   <- Doppel-Eintrag
+```
+
+**Ein Service-Worker, der nicht parst, installiert nicht** — die App hatte einen
+Tag lang keinen Offline-Vorrat. **Netzweit gemessen: nur diese eine App**, alle
+übrigen 24 Service-Worker parsen. Behoben, Cache-Bump v129 → v130.
+
+⚠ **WARUM DER NEUE WÄCHTER ES NICHT FANGEN KONNTE, und das ist der Punkt:**
+`tools/wizard-laedt-pruefen.mjs` **lädt die Seite** und misst, ob Konfiguration
+und Kanon ankommen. Ein Service-Worker ist daran nicht beteiligt — er wird
+**registriert**, nicht geladen. Die Seite war tadellos, der Vorrat tot.
+**Ein Wächter misst, was er misst, und kein Zeichen mehr.**
+Seitdem: `tests/smoke_service_worker_parst.mjs` fährt `node --check` über alle
+**25** Service-Worker des Netzes, mit Gegenprobe auf genau den Komma-Fall.
+
+**URSACHE IM WERKZEUG behoben.** `tools/wizard-trennen.mjs` spiegelte die
+**ganze Zeile**; in `index.html` steht ein Eintrag je Zeile (dort ging es gut),
+in `sw.js` stehen drei. Ab zwei Pfaden je Zeile wird jetzt nur noch der
+**Eintrag** herausgelöst. **An zwei Fixtures gemessen**, nicht behauptet: die
+`sw.js`-Form parst danach, die `index.html`-Form bleibt unverändert.
+
+**MEIN-WORKFLOH HAT SEINE IDENTITÄT VERLOREN — und das ist diesmal kein
+Fortschritt.** `foFm64sA…` ist weg: Klaus hat gesucht, es gibt keine Sicherung,
+und der Identitäts-Wechsler der App sagt es selbst — *„Genau eine Identität —
+sauber.“* Er nutzt die App ausschließlich über den DeX-Browser. Geltend ist
+`LEIbBDaS…`; die alte steht unter `previousNodeIds` (jetzt **zwei** Einträge).
+
+**Gemessen: gegen Sages Spore exakt `0.902126`** — auf sechs Stellen derselbe
+Wert wie die alte Identität. **Der Wechsel kostet die Zahl nichts, er kostet die
+Identität.** 10 Prüfungen vor dem Ablegen, 0 rot.
+
+✅ **UND EINE ANTWORT AUF KLAUS'' FRAGE, GEMESSEN STATT GERATEN.** Er fragte, wie
+sich verhindern lässt, dass alte Kennungen mitgenommen werden. Nachgesehen in
+`src/modules/02_spore.js`: liegen **mehrere** Identitäten in einem Browser und
+ist keine als aktiv markiert, nimmt Modul 02 den **ersten Slot lexikographisch**
+(`listIdentities()` sortiert alphabetisch) — **nicht die neueste nach
+Zeitstempel.** Das ist nicht falsch, aber willkürlich, und es steht jetzt da,
+damit niemand „die neueste gewinnt“ annimmt.
+
 ## Stand 2026-09-15 (Haupt-Sitzung, Nachtrag) · ✅ MUSTER WERBETECHNIK IST ÜBER DEM HANDSHAKE-BODEN
 
 Klaus hat noch am selben Tag über das Siegel neu signiert und die Spore

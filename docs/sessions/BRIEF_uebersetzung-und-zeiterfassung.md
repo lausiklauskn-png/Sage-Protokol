@@ -110,50 +110,48 @@ auch bei der Kennung"*. Die zwei nachzuziehen kostet ein Neu-Signieren und
 rechnet alle 21 `matchScore`-Werte neu. **Klaus' Entscheidung, nicht die einer
 Sitzung.**
 
-### ⚠ MEIN-WORKFLOH: GEMESSEN AM 2026-09-15 — NICHT eintragen
+### ✅ MEIN-WORKFLOH: Identitäts-Wechsel EINGETRAGEN am 2026-09-15
 
-Klaus hat in dem Browser, an dem er sitzt, neu signiert und die Spore geschickt.
-Sie ist tadellos (**8 Prüfungen, 0 rot**, Signatur VALID) — und sie wurde
-**bewusst NICHT abgelegt.** Der Grund ist gemessen:
+> **Hier stand zuerst das Gegenteil** — „NICHT eintragen“, weil der Text
+> identisch war und der Wechsel nichts brächte. Das galt, **solange offen war, ob
+> die alte Kennung noch lebt.** Klaus hat nachgesehen: sie lebt nicht.
 
-| | Depot (`foFm64sA…`) | neu (`LEIbBDaS…`) |
-|---|---|---|
-| Beschreibung | 1025 Zeichen | **1025 — wortgleich** |
-| Stichworte | 15 | **dieselben 15** |
-| gegen Sage | **0.902126** | 0.900515 |
-| `cos(alt, neu)` | — | 0.994245 |
+`foFm64sA…` ist **verloren**. Keine Sicherung, und der Identitäts-Wechsler der
+App sagt es selbst: *„Genau eine Identität — sauber.“* Klaus nutzt die App
+ausschließlich über den DeX-Browser. Damit war es keine Entscheidung mehr,
+sondern eine Feststellung.
 
-**Der Text ist Zeichen für Zeichen derselbe.** Der einzige Unterschied ist der
-**Schlüssel**. Eintragen würde WorkFloh eine neue Identität geben, **ohne
-irgendetwas zu verbessern** — und `previousNodeIds` trägt schon einen Eintrag,
-es wäre der zweite Wechsel.
+Geltend: `LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58` · die alte unter
+`previousNodeIds` (zwei Einträge) · Spore als
+`spore-vorgaenger-2026-08-17.json` daneben · **10 Prüfungen, 0 rot**.
 
-Dass die Zahl dabei minimal fällt, ist **kein Fehler**: dieselbe
-Nicht-Determiniertheit des Einbettungs-Modells, die `status.json` für PWA
-Toolpoint schon belegt (byte-gleicher Text, `cos = 0.992957`, vierzehn Sekunden
-auseinander).
+**Gegen Sages Spore exakt `0.902126`** — auf sechs Stellen derselbe Wert wie
+zuvor. **Der Wechsel kostet die Zahl nichts, er kostet die Identität.**
 
-**An WorkFloh ist im Netz nichts zu reparieren** — Depot und Register stimmen
-überein und liegen bei 0.902126, weit über dem Boden. Was klemmt, ist **ein
-Browser**: von dort meldet sich die App im Raum unter einer anderen Kennung.
+### ⚠ UND DABEI FIEL DER ZWEITE KOMMA-SCHADEN AUF: `sw.js`
 
-**Offen und Klaus vorgelegt:** ob `foFm64sA…` in einem anderen Browser noch lebt
-(dann ist nichts zu tun) oder verloren ist (dann wird der Wechsel eingetragen,
-mit `foFm64sA…` unter `previousNodeIds`). **Eine Sitzung kann das nicht
-nachsehen** — der Schlüssel liegt in IndexedDB.
+Der A18-Rollout hat die Wizard-Zeile auch an den **Offline-Vorrat** angehängt,
+und dort zweifach falsch (fehlendes Komma **und** Doppel-Eintrag). **Ein
+Service-Worker, der nicht parst, installiert nicht.** Netzweit war nur
+Mein-WorkFloh betroffen.
 
-⚠ **UND DIE REIHENFOLGE IST DIE LEHRE DARAUS:** wer signiert, bevor geklärt ist,
-welche Identität gelten soll, hat die Entscheidung schon getroffen. Die Spore
-trägt dann die Kennung des Browsers, in dem gearbeitet wurde — nicht die, die
-gemeint war. **Erst klären, dann signieren.**
+⚠ **`wizard-laedt-pruefen.mjs` KONNTE ES NICHT FANGEN** — es **lädt die Seite**,
+und ein Service-Worker wird **registriert**, nicht geladen. *Ein Wächter misst,
+was er misst, und kein Zeichen mehr.* Neu:
+`tests/smoke_service_worker_parst.mjs` (alle 25, mit Gegenprobe).
 
-**Vier Knoten haben KEINE Sicherung ihrer Kennung** (aus Klaus' Bildern
-abgelesen): Muster Werbetechnik · Mein Rezeptbuch · **Mein Mixarium** · Mein
-WorkFloh. Alis, PSF und PSB tragen `2026-09-14`.
-Bei **Mixarium** wiegt es am schwersten: seine Kennung
-`6U3aniLM3Rps…` ist in `status.json` **und in den Proben genagelt** — es ist
-die, die am 2026-09-10 den Sprung 0,826 → 0,883 überlebt hat.
-Klaus ist darauf hingewiesen; **eine Sitzung kann den Knopf nicht drücken.**
+**Die Ursache im Werkzeug ist behoben und an zwei Fixtures gemessen:**
+`tools/wizard-trennen.mjs` spiegelte die **ganze Zeile**; ab zwei Pfaden je
+Zeile wird jetzt nur der **Eintrag** herausgelöst. Ein Eintrag je Zeile
+(`index.html`) verhält sich unverändert.
+
+### ✅ Welche Identität Modul 02 wählt — gemessen
+
+Liegen **mehrere** in einem Browser und ist keine als aktiv markiert, nimmt
+Modul 02 den **ersten Slot lexikographisch** (`listIdentities()` sortiert
+alphabetisch, `src/modules/02_spore.js`) — **nicht die neueste nach
+Zeitstempel.** Nicht falsch, aber willkürlich. Wer daran etwas ändern will,
+ändert eine Tafel-Frage, keine Zeile.
 
 ✅ **ERLEDIGT AM 2026-09-15 — Klaus’ Angabe:** *„Sicherungen sind alle angelegt.“* ⚠ **Das ist eine Angabe, keine Messung.** Der Vermerk „Letzte Sicherung: <Datum>“ lebt im Browser-Speicher des jeweiligen Geräts; eine Sitzung kann ihn nicht lesen (NETZWEIT § 6b). Nachprüfbar ist er nur im Verbinden-Fenster der App — dort steht dann ein Datum statt der Warnung.
 
