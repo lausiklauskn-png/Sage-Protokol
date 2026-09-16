@@ -282,6 +282,31 @@ async function browserTeil() {
   writeFileSync(join(basis, "text-eigener.html"), SEITE_TEXT("ja"));
   writeFileSync(join(basis, "text-app.html"), SEITE_TEXT("nein"));
 
+  /* Der Vermerk „Letzte Sicherung" (Klaus 2026-09-16). Beide Wege sichern ueber
+     dasselbe `SbkimSpore.exportBackup`; der Vermerk hing aber an Modul 23. Die
+     Seite stellt ein Modul 02 UND — in einer der beiden Fassungen — ein Modul 23,
+     das nur mitschreibt, ob es gerufen wurde.
+     ⚠ `window.prompt` wird gestellt, sonst haelt der Browser an und die Probe
+     wartet auf etwas, das nie kommt. */
+  const SPORE_FUER_BACKUP =
+    "window.SbkimSpore = {" +
+    "  exportBackup: function (pw) { window.__pw = pw; return Promise.resolve({ v: 2, ct: 'xx' }); }," +
+    "  listIdentities: function () { return Promise.resolve(['main']); }," +
+    "  getOrCreateIdentity: function () { return Promise.resolve({ nodeId: 'PRUEFKENNUNG123' }); }" +
+    "};";
+  const SEITE_STEMPEL = (mitModul23) => [
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>',
+    '<div id="sbkim-siegel-modal"><div role="dialog"><p id="alt">Siegel</p></div></div>',
+    skript("window.__gerufen = 0; window.prompt = function () { return 'geheim12345'; };"),
+    skript(SPORE_FUER_BACKUP),
+    mitModul23 ? skript("window.SbkimRendezvousUI = { markBackupMade: function () { window.__gerufen++; return true; } };") : "",
+    skript("window.SBKIM_SIEGEL_WIZ = " + JSON.stringify(KONFIG) + ";"),
+    '<script src="wizard.js">' + ZU,
+    "</body></html>",
+  ].join("\n");
+  writeFileSync(join(basis, "stempel-mit23.html"), SEITE_STEMPEL(true));
+  writeFileSync(join(basis, "stempel-ohne23.html"), SEITE_STEMPEL(false));
+
   const PORT = 8830 + (process.pid % 40);
   const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1"],
     { cwd: basis, stdio: "ignore" });
@@ -454,6 +479,57 @@ async function browserTeil() {
     ok("hat er den App-Text übernommen, gewinnt der App-Vorschlag weiter",
       t2.wert === KONFIG.domainDescription && t2.woher === "app");
     ok("… und SEIN Text steht hinter dem Knopf", /zuletzt signierten Text/.test(t2.knopfText));
+
+    /* ── Eine Sicherung im SIEGEL vermerkt sich auch im PANEL ──────────────
+       Klaus 2026-09-16: „Backup-Workflow und Sicherung-Workflow, ist das
+       dasselbe?" Ja — beide rufen `SbkimSpore.exportBackup`. Bis dahin setzte
+       aber nur das Panel den Vermerk „Letzte Sicherung"; wer hier sicherte, sah
+       dort weiter das alte Datum. Eine Auskunft, die in die falsche Richtung
+       zeigt, ist teurer als gar keine.
+       ⚠ GEMESSEN WIRD DER GRIFF, NICHT DER QUELLTEXT: der Knopf wird wirklich
+       gedrueckt. Ein Waechter auf „die Zeile steht in der Datei" waere auch dann
+       gruen, wenn sie nie erreicht wird. */
+    const stempel = async (datei) => {
+      const s = await browser.newPage();
+      s.on("pageerror", (e) => fehler.push(datei + ": " + String(e).slice(0, 120)));
+      await s.goto(`http://127.0.0.1:${PORT}/${datei}`, { waitUntil: "load" });
+      await s.waitForFunction(() => !!document.querySelector("#sbwiz-s3"), { timeout: 8000 })
+        .catch(() => { /* der Aufrufer misst das Ergebnis, nicht die Frist */ });
+      const r = await s.evaluate(async () => {
+        const b = document.querySelector("#sbwiz-s3");
+        if (!b) return { knopf: false };
+        b.disabled = false;      // Schritt 3 haengt sonst an Schritt 1/2
+        b.click();
+        /* Auf die BEDINGUNG warten, nicht auf die Uhr: das Backup laeuft ueber
+           zwei Promises, die Meldung steht erst danach. */
+        for (let i = 0; i < 200; i++) {
+          const t = (document.querySelector("#sbwiz-o3") || {}).textContent || "";
+          if (/aufbewahren|Fehler/.test(t)) break;
+          await new Promise((r2) => setTimeout(r2, 10));
+        }
+        return {
+          knopf: true,
+          gerufen: window.__gerufen,
+          pw: window.__pw || null,
+          meldung: (document.querySelector("#sbwiz-o3") || {}).textContent || "",
+        };
+      });
+      await s.close();
+      return r;
+    };
+
+    const stMit = await stempel("stempel-mit23.html");
+    ok("der Backup-Knopf im Siegel ist da und laesst sich druecken", stMit.knopf === true);
+    ok("… er sichert wirklich (Modul 02 bekommt das Passwort)", stMit.pw === "geheim12345");
+    ok("… und meldet Erfolg statt eines Fehlers", /aufbewahren/.test(stMit.meldung));
+    ok("… und vermerkt die Sicherung im Verbinden-Panel (genau einmal)", stMit.gerufen === 1);
+
+    /* Die Gegenrichtung: ohne Modul 23 darf das Backup trotzdem entstehen.
+       Ein fehlender Vermerk kostet kein Backup — und keinen Skript-Fehler. */
+    const stOhne = await stempel("stempel-ohne23.html");
+    ok("ohne Modul 23 sichert das Siegel trotzdem",
+      stOhne.pw === "geheim12345" && /aufbewahren/.test(stOhne.meldung));
+    ok("… und ruft nichts ins Leere", stOhne.gerufen === 0);
 
     ok(`kein Skript-Fehler im Browser${fehler.length ? " — " + fehler[0] : ""}`, fehler.length === 0);
   } finally {
