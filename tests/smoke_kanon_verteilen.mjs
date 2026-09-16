@@ -104,6 +104,11 @@ function netzBauen() {
     "assets/sbkim-siegel.js": "/* Loader, keine Marke */\nvar L = 1;\n",  // kein Kanon
     "sandbox/16_siegel.js": "/* Fassung des Modells, keine Marke */\nvar M = 1;\n",
   });
+  /* App 4: eine ZWEITE, ANDERE alte Fassung desselben Moduls. Ohne sie steht
+   * im Wegwerf-Netz nur EINE aeltere Fassung, und der Generationen-Wächter
+   * waere von seinem Fehlen nicht zu unterscheiden — er meldete so oder so
+   * „eine aeltere Fassung". Gemessen wird, dass er ZWEI auseinanderhaelt. */
+  app("App-Vier", { "sbkim/16_siegel.js": modul(16, "var NOCH_AELTER = 0;") });
   return { w, sage };
 }
 
@@ -236,6 +241,111 @@ console.log("\nEinmal gleich, bleibt gleich:");
   lauf(sage, w, ["--schreiben"]);
   ok(readFileSync(join(w, "App-Eins", "sw.js"), "utf8") === swNach1,
      "ein zweites --schreiben bumpt NICHT noch einmal");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* ══ Wie viele Fassungen liegen draussen? ════════════════════════════════
+ *
+ * WARUM ES DIESEN WAECHTER GIBT. Am 2026-09-16 hat dieses Werkzeug fuer
+ * Modul 15 „19 haengen zurueck" gemeldet, mit Zeilen-Abstaenden von 225 bis
+ * 657 — und ich habe daraus „ueberall fehlt dieselbe Aenderung" gelesen.
+ * Gemessen war es etwas anderes: ACHT Traeger trugen den Kanon byte-genau,
+ * ZWOELF eine von VIER aelteren Fassungen. Der Abstand je Datei beantwortet
+ * „wie weit ist DIESE zurueck", nicht „wie viele Staende liegen draussen".
+ */
+console.log("\nWie viele Fassungen liegen draussen:");
+{
+  const { w, sage } = netzBauen();
+  const r = lauf(sage, w, ["--nur", "16_siegel"]);
+  ok(/Fassungen im Netz/.test(r.text), "der Lauf meldet die Fassungen im Netz");
+  ok(/2 verschiedene aeltere Fassungen/.test(r.text),
+     "…und haelt ZWEI aeltere Fassungen auseinander",
+     (r.text.match(/.*aeltere Fassung.*/) || [""])[0].trim());
+  ok(/MEHR ALS EINE aeltere Fassung/.test(r.text),
+     "…und nennt es einen Generationen-Fall, nicht einen Nachtrag");
+  /* Die GEGENRICHTUNG: liegt nur EINE alte Fassung draussen, darf er nicht
+   * von Generationen reden. Ein Wächter, der immer warnt, ist keiner. */
+  rmSync(join(w, "App-Vier"), { recursive: true, force: true });
+  const r2 = lauf(sage, w, ["--nur", "16_siegel"]);
+  ok(/eine aeltere Fassung/.test(r2.text) && !/verschiedene aeltere/.test(r2.text),
+     "bei nur EINER alten Fassung meldet er keine Generationen");
+  ok(!/MEHR ALS EINE aeltere Fassung/.test(r2.text),
+     "…und die Generationen-Warnung bleibt weg");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* ══ Ein Arbeitsbaum, der aelter ist als sein Depot ══════════════════════
+ *
+ * WARUM ES DIESEN WAECHTER GIBT, und er ist der teurere der beiden. Dieses
+ * Werkzeug liest den ARBEITSBAUM. Am 2026-09-16 stand BookLedgerPros Klon im
+ * Behaelter 302 Commits / drei Monate zurueck — sein Sitzungs-Zweig war aus
+ * dem alten Klon abgezweigt, und der Sitzungsstart-Hook fasst einen
+ * Nicht-Standard-Zweig zu Recht nicht an. In diesem Baum gab es
+ * `sbkim/15_membran.js` noch gar nicht.
+ *
+ * Folge: keine Marke, kein Traeger, kein Eintrag — der Lauf meldete
+ * „19 Repos tragen Kanon-Dateien", waehrend auf origin/main ZWANZIG eine
+ * Kopie tragen. Das Repo fiel aus dem Lauf, OHNE dass eine Zeile darueber
+ * stand. Ein stilles Ueberspringen ist teurer als ein lautes Rot.
+ *
+ * ⚠ HIER MUESSEN ES ECHTE DEPOTS SEIN. Das Wegwerf-Netz oben legt `.git` als
+ * gewoehnliches Verzeichnis an; `git rev-list` scheitert dort, der Code faellt
+ * fail-soft durch, und ein Fall darauf waere IMMER „nicht gefangen" — ohne
+ * dass der Waechter etwas falsch macht.
+ */
+console.log("\nEin Arbeitsbaum, der aelter ist als sein Depot:");
+{
+  const w = mkdtempSync(join(tmpdir(), "kanon-git-"));
+  const sage = join(w, "Sage-Protokol");
+  mkdirSync(join(sage, "src", "modules"), { recursive: true });
+  mkdirSync(join(sage, "tools"), { recursive: true });
+  writeFileSync(join(sage, "tools", "kanon-verteilen.mjs"), readFileSync(werkzeug));
+  const modul = (nr, inhalt) => `/*\n * SBKIM — Modul ${nr} — Probe\n */\n${inhalt}\n`;
+  writeFileSync(join(sage, "src/modules/16_siegel.js"), modul(16, "var NEU = 2;"));
+
+  const git = (cwd, ...a) => execFileSync("git", ["-C", cwd, ...a],
+    { stdio: "pipe", env: { ...process.env, GIT_AUTHOR_NAME: "p", GIT_AUTHOR_EMAIL: "p@p",
+                            GIT_COMMITTER_NAME: "p", GIT_COMMITTER_EMAIL: "p@p" } });
+
+  /* Ein „Depot" und ein Klon davon. Der Klon bleibt auf dem ersten Stand;
+   * das Depot bekommt danach die Kanon-Kopie. Genau BookLedgerPros Lage. */
+  const fern = join(w, "fern.git");
+  mkdirSync(fern, { recursive: true });
+  git(fern, "init", "--bare", "--initial-branch=main", ".");
+  const quelle = join(w, "quelle");
+  mkdirSync(quelle, { recursive: true });
+  git(quelle, "init", "--initial-branch=main", ".");
+  writeFileSync(join(quelle, "liesmich.txt"), "erster Stand\n");
+  git(quelle, "add", "-A"); git(quelle, "commit", "-m", "erster");
+  git(quelle, "remote", "add", "origin", fern); git(quelle, "push", "-q", "origin", "main");
+
+  const alt = join(w, "App-Alt");
+  execFileSync("git", ["clone", "-q", fern, alt], { stdio: "pipe" });
+  /* Danach kommt im Depot die Kopie dazu — der Klon sieht sie nie. */
+  mkdirSync(join(quelle, "sbkim"), { recursive: true });
+  writeFileSync(join(quelle, "sbkim/16_siegel.js"), modul(16, "var ALT = 1;"));
+  git(quelle, "add", "-A"); git(quelle, "commit", "-m", "Kanon-Kopie dazu");
+  git(quelle, "push", "-q", "origin", "main");
+
+  const r = lauf(sage, w, ["--nur", "16_siegel"]);
+  ok(/ARBEITSBAUM AELTER ALS DAS DEPOT/.test(r.text),
+     "der Lauf meldet den veralteten Arbeitsbaum");
+  ok(/App-Alt: 1 Commits hinter origin/.test(r.text),
+     "…mit Namen und Rueckstand",
+     (r.text.match(/App-Alt.*/) || [""])[0].trim());
+  /* ⚠ DIE VORBEDINGUNG WIRD GEMESSEN: die Kopie ist im ALTEN Baum wirklich
+   * unsichtbar. Waere sie sichtbar, sagte der Fall nichts ueber das stille
+   * Ueberspringen aus. */
+  ok(!/App-Alt.*haengt zurueck/.test(r.text),
+     "…und das Repo taucht als Traeger NICHT auf (genau das stille Ueberspringen)");
+
+  /* GEGENRICHTUNG: ein Klon auf dem neuesten Stand darf NICHT gemeldet werden.
+   * Ein Werkzeug, das jeden Baum als veraltet meldet, liest bald niemand. */
+  git(alt, "pull", "-q", "origin", "main");
+  const r2 = lauf(sage, w, ["--nur", "16_siegel"]);
+  ok(!/ARBEITSBAUM AELTER/.test(r2.text), "ein frischer Klon wird NICHT gemeldet");
+  ok(/App-Alt/.test(r2.text) && /haengt zurueck/.test(r2.text),
+     "…und seine Kopie ist jetzt sichtbar");
   rmSync(w, { recursive: true, force: true });
 }
 

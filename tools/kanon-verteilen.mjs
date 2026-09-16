@@ -150,6 +150,46 @@ const repos = readdirSync(NACHBARN).filter((r) => {
   catch { return false; }
 }).sort();
 
+/* ── Wessen Arbeitsbaum ist aelter als sein Depot? ─────────────────────────
+ * ⚠ ERGAENZT AM 2026-09-16, NACH EINEM STILLEN UEBERSPRINGEN. Dieser Automat
+ * liest den ARBEITSBAUM. BookLedgerPros Klon im Behaelter stand an dem Tag
+ * 302 Commits / drei Monate zurueck (HEAD 2026-06-14, origin/main 2026-09-16),
+ * weil sein Sitzungs-Zweig aus dem alten Klon abgezweigt war und der
+ * Sitzungsstart-Hook einen Nicht-Standard-Zweig zu Recht nicht anfasst.
+ *
+ * Folge: in diesem Baum gab es `sbkim/15_membran.js` noch gar nicht. Der
+ * Automat fand also keine Marke, zaehlte das Repo nicht als Traeger und
+ * meldete „19 Repos tragen Kanon-Dateien" — waehrend auf `origin/main` ZWANZIG
+ * eine Kopie tragen. Das Repo fiel aus dem Lauf, ohne dass eine Zeile darueber
+ * stand.
+ *
+ * Das ist die Schwester der Lehre „eine gefundene Liste schuetzt vor einer
+ * veralteten Kopie, nicht vor einer fehlenden" — nur ist die Kopie hier gar
+ * nicht fehlend, sondern bloss unsichtbar. Gemeldet wird deshalb, WESSEN BAUM
+ * aelter ist als sein Depot: dort sagt dieser Lauf ueber die Kanon-Dateien
+ * nichts aus, weder „gleich" noch „haengt zurueck".
+ *
+ * Es wird NICHTS nachgezogen. Ein Automat, der fremde Arbeitsbaeume bewegt,
+ * koennte ungepushte Arbeit ueberfahren — gemeldet, nicht angefasst. */
+const veraltet = [];
+for (const r of repos) {
+  const rp = join(NACHBARN, r);
+  try {
+    execFileSync("git", ["-C", rp, "fetch", "origin", "--quiet"], { stdio: "ignore", timeout: 30000 });
+    let def = "main";
+    try { execFileSync("git", ["-C", rp, "rev-parse", "origin/main"], { stdio: "ignore" }); }
+    catch { def = "master"; }
+    const n = Number(String(execFileSync("git", ["-C", rp, "rev-list", "--count", `HEAD..origin/${def}`],
+      { encoding: "utf8" })).trim());
+    if (n > 0) veraltet.push({ repo: r, n });
+  } catch { /* kein Depot, kein Netz — fail-soft, das ist kein Befund */ }
+}
+if (veraltet.length) {
+  console.log(`\n⚠ ARBEITSBAUM AELTER ALS DAS DEPOT — hier sagt dieser Lauf NICHTS aus:`);
+  for (const v of veraltet) console.log(`  ${v.repo}: ${v.n} Commits hinter origin`);
+  console.log(`  (frisch abzweigen, dann erneut laufen lassen — dieser Automat fasst fremde Baeume nicht an)`);
+}
+
 let gleich = 0, nachgezogen = 0, betroffen = 0;
 /* ⚠ HIER OBEN, NICHT BEI cacheBump. Ein `const` unterhalb seiner Verwendung
  * liegt in der toten Zone — der erste Lauf starb mit „Cannot access
@@ -158,6 +198,22 @@ let gleich = 0, nachgezogen = 0, betroffen = 0;
  * zweiter Grund, den Vorrat wegzuwerfen. */
 const schonGebumpt = new Set();
 const offen = [];
+/* ⚠ WIE VIELE FASSUNGEN NEBENEINANDER IM NETZ STEHEN — ergaenzt am 2026-09-16,
+ * nachdem ich die eigene Ausgabe dieses Werkzeugs falsch gelesen habe.
+ *
+ * Es meldete fuer Modul 15 „19 haengen zurueck" mit Zeilen-Abstaenden von 225
+ * bis 657. Daraus liest man „ueberall fehlt meine Aenderung, bei einigen etwas
+ * mehr". Gemessen war es etwas anderes: ACHT Traeger trugen den Kanon
+ * byte-genau, ZWOELF eine von VIER aelteren Fassungen — bis zu 349 Zeilen
+ * zurueck, in einem SCHUTZ-Modul.
+ *
+ * Der Abstand je Datei beantwortet „wie weit ist DIESE zurueck". Er beantwortet
+ * NICHT „wie viele verschiedene Staende liegen draussen" — und das ist die
+ * Frage, an der sich entscheidet, ob ein Rollout ein Nachtrag oder ein
+ * Generationen-Sprung ist. Gruppiert wird nach dem sha des TRAEGERS, nicht
+ * nach dem Abstand: zwei Dateien koennen gleich weit zurueckhaengen und
+ * trotzdem verschiedene Fassungen sein. */
+const generationen = new Map();   // modul → Map<traeger-sha, string[]>
 
 for (const repo of repos) {
   const rp = join(NACHBARN, repo);
@@ -194,7 +250,17 @@ for (const repo of repos) {
     const weite = zeilenAbstand(t.datei, t.k.pfad);
     const wie = weite >= 50 ? `  ⚠ ${weite} Zeilen — GENERATIONEN-SPRUNG, Proben im Ziel-Repo fahren`
               : weite > 0   ? `  (${weite} Zeilen)` : "";
-    if (!schreiben) { console.log(`    ⚠ haengt zurueck: ${rel}  (${t.k.marke || t.k.name})${wie}`); offen.push(`${repo}/${rel}`); continue; }
+    const modName = t.k.marke || t.k.name;
+    if (!generationen.has(modName)) generationen.set(modName, new Map());
+    const gm = generationen.get(modName);
+    /* ⚠ GRUPPIERT WIRD NACH DEM sha DES TRAEGERS, nicht nach seinem Abstand.
+     * Zwei Dateien koennen gleich weit zurueckhaengen und trotzdem
+     * verschiedene Fassungen sein — dann meldete diese Uebersicht EINE
+     * Generation, wo ZWEI liegen, und genau darauf kommt es hier an. */
+    const gkey = t.ist;
+    if (!gm.has(gkey)) gm.set(gkey, []);
+    gm.get(gkey).push(`${repo}/${rel}`);
+    if (!schreiben) { console.log(`    ⚠ haengt zurueck: ${rel}  (${modName})${wie}`); offen.push(`${repo}/${rel}`); continue; }
     writeFileSync(t.datei, t.k.roh);
     console.log(`    ✓ nachgezogen: ${rel}  (${t.k.marke || t.k.name})`);
     nachgezogen++;
@@ -331,6 +397,27 @@ function cacheBump(rp, zielPfad) {
        die Zahl da, statt es still zu tun. */
     if (gezogen) {
       console.log(`        ↳ ?v= mitgezogen: ${gezogen} Stellen in ${dateienGezogen} Dateien  ${altN} → ${neuN}`);
+    }
+  }
+}
+
+/* ── 4b. Wie viele Fassungen liegen draussen? ─────────────────────────── */
+/* Nur fuer Module, bei denen ueberhaupt etwas zurueckhaengt — eine Uebersicht,
+ * die bei jedem Lauf „1 Fassung" meldet, liest bald niemand mehr. */
+{
+  const mehrfach = [...generationen.entries()].filter(([, gm]) => gm.size > 0);
+  if (mehrfach.length) {
+    console.log(`\nFassungen im Netz (nach sha des Traegers, nicht nach Abstand):`);
+    for (const [mod, gm] of mehrfach) {
+      const sortiert = [...gm.entries()].sort((a, b) => b[1].length - a[1].length);
+      const wort = sortiert.length === 1 ? "eine aeltere Fassung" : `${sortiert.length} verschiedene aeltere Fassungen`;
+      console.log(`  ${mod}: ${wort} bei ${sortiert.reduce((n, e) => n + e[1].length, 0)} Traegern`);
+      for (const [sha, wo] of sortiert) {
+        console.log(`     ${sha.slice(0, 12)}  ${wo.length}×  ${wo.map((x) => x.split("/")[0]).join(", ")}`);
+      }
+      if (sortiert.length > 1) {
+        console.log(`     ⚠ MEHR ALS EINE aeltere Fassung — das ist kein Nachtrag, das sind Generationen.`);
+      }
     }
   }
 }
