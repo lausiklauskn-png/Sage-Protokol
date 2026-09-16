@@ -81,6 +81,21 @@ Code, meistens als Warten auf die Uhr statt auf die Bedingung.
 Sorte A (etwas kommt) gehört auf eine Bedingung, Sorte B (etwas bleibt aus)
 braucht eine verstreichende Frist.
 
+### 5 · Die Auswertung der Forschungs-Vorhersagen steht an
+
+**Gemessen 2026-09-16.** `Kimhub/forschung/sitzungen.json` steht bei **23
+Sitzungen** und 353 Befunden. `forschung/METHODE.md` § 6 legt fest:
+*„Ausgewertet wird bei **zwanzig** Sitzungen, vorher nicht."* Die Schwelle ist
+überschritten.
+
+Gerechnet halten beide vorregistrierten Vorhersagen — V1 (Anteil `regel` unter
+`hinsehen`): **15,0 % gegen 43,6 %**; V2 (blinde Wächter nicht unter 10 %):
+**43,9 %**.
+
+**Was zu tun wäre:** nichts von selbst. *Die Rechnung ist nicht die Auswertung* —
+wie das Ergebnis formuliert wird und was es für Paper A heißt, entscheidet
+Klaus. Der Punkt steht hier, damit die Schwelle nicht unbemerkt verstreicht.
+
 ---
 
 ## Erledigt
