@@ -5178,10 +5178,20 @@ embeddingSource         : "content"|"description"
                                               = aus domainDescription + domainKeywords (embedPassage).
                                               Fehlt das Feld, ist NICHTS über die Herkunft gesagt — es ist
                                               KEIN Synonym für "description". Alte Sporen tragen es nicht.
-embeddingVersion        : number              Zähler, der bei JEDEM Wechsel des domainVector um eins steigt
-                                              (Modul 02 regenerateOwnSpore). Er sagt, der wievielte
-                                              Inhalts-Stand diese Spore ist — die Kennung bleibt dabei
-                                              dieselbe. Optional; ein explizit übergebener Wert gewinnt.
+embeddingVersion        : number              Zähler, der bei JEDEM Wechsel des domainVector um eins steigt.
+                                              Er sagt, der wievielte Inhalts-Stand diese Spore ist — die
+                                              Kennung bleibt dabei dieselbe. Optional; ein explizit
+                                              übergebener Wert gewinnt.
+                                              ⚠ ZWEI WEGE SETZEN IHN, seit 2026-09-16 beide:
+                                              Modul 02 `regenerateOwnSpore` rechnet ihn selbst, und der
+                                              Andock-Wizard (16b) gibt ihn `generateOwnSpore` mit.
+                                              GRUND: `generateOwnSpore` setzt das Feld NUR, wenn der
+                                              Aufrufer es übergibt — der Wizard tat das nicht, und in
+                                              jeder über das Siegel signierten Spore fehlte es
+                                              (gemessen an einer echten Spore vom 2026-09-16).
+                                              Gezählt wird nur bei einem WIRKLICH anderen Vektor: ein
+                                              Zähler, der bei jedem Signieren steigt, misst Klicks
+                                              statt Inhalten und ist als Drift-Anzeige wertlos.
 ```
 
 ⚠ **`embeddingSource` und `embeddingVersion` standen bis zum 2026-09-15 NICHT

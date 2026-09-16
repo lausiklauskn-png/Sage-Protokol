@@ -264,6 +264,32 @@ saboten_paar "der Hinweis auf die EINE Sicherung verschwindet" \
   " The very same backup as in the connect window: pressing twice gives you two files with identical contents." ""
 
 echo
+echo "═══ G · Der Inhalts-Zaehler und der halbe Satz (Klaus 2026-09-16) ═══"
+# An Klaus' ECHTER Spore gemessen: `embeddingVersion` fehlte ganz, und der Satz
+# „nicht aus dem Text oben" galt nur fuer den domainVector — alle sechs
+# snippetVectors waren Saetze der Beschreibung.
+
+saboten "der Inhalts-Zaehler wird gar nicht erst mitgegeben" \
+  "embeddingVersion: ver," ""
+
+# ⚠ Ein Zaehler, der bei JEDEM Signieren hochlaeuft, misst Klicks statt
+#   Inhalten — und sieht dabei genauso aus wie ein richtiger.
+saboten "der Zaehler laeuft auch ohne Aenderung hoch" \
+  "        return prev || 1;" "        return prev + 1;"
+
+# ⚠ Und die Gegenrichtung: einer, der NIE hochlaeuft, ist ebenso wertlos.
+#   Sabotiert wird der VERGLEICH, nicht das `return prev + 1` — sonst faellt
+#   auch „ohne Vorgaenger faengt er bei 1 an" mit, und die rote Zeile traegt
+#   zwei Namen statt des gemeinten.
+saboten "der Zaehler laeuft bei einem ANDEREN Vektor nicht hoch" \
+  "        for (var i = 0; i < a.length; i++) if (a[i] !== neuerVektor[i]) return prev + 1;" \
+  "        for (var i = 0; i < a.length; i++) if (false) return prev + 1;"
+
+saboten_paar "der Satz verschweigt wieder, woher die Satz-Schnipsel kommen" \
+  " Die Satz-Schnipsel für die Feinsuche kommen weiter aus dem Text." "" \
+  " The sentence snippets used for fine-grained search still come from the text." ""
+
+echo
 echo "── $gefangen gefangen · $durch durchgerutscht · $tot tote Anker ──"
 rm -f "$LOG"
 [ "$durch" -eq 0 ] && [ "$tot" -eq 0 ]

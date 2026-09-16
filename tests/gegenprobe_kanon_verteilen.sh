@@ -129,6 +129,24 @@ saboten "zwei Kopien im selben Repo bumpen zweimal" \
   '    if (schonGebumpt.has(sw)) continue;' \
   '    if (false) continue;'
 
+# ── Die ?v= ziehen mit, aber nur die richtigen (Befund 2026-09-16) ──────────
+#
+# Der Anlass war ein Schaden DIESES Werkzeugs: es bumpte zwei Marktplaetze und
+# liess ihre Asset-Adressen stehen — beide Baeume waren danach rot.
+saboten "der Mitzieher wird ausgebaut" \
+  tools/kanon-verteilen.mjs \
+  '    for (const d of traegerDateien(rp)) {' \
+  '    for (const d of []) {'
+
+# ⚠ DIE WICHTIGERE RICHTUNG. Ein Werkzeug, das JEDES ?v= mitzieht, schreibt in
+#   Rezeptbuch, Muttis und Mixarium den ICON-Zaehler um — eine Zahl, die eine
+#   ganz andere Sache zaehlt. Der Riegel ist die Messung „stand es VORHER schon
+#   auf der Cache-Nummer?"; faellt sie weg, faellt genau dieser Waechter.
+saboten "der Riegel faellt weg — jedes ?v= wird mitgezogen" \
+  tools/kanon-verteilen.mjs \
+  '    const vMuster = new RegExp(`\\?v=${altN}(?!\\d)`, "g");' \
+  '    const vMuster = new RegExp(`\\?v=\\d+`, "g");'
+
 echo
 echo "$gefangen gefangen · $durch durchgerutscht · $tot tote Anker"
 [ "$durch" -eq 0 ] && [ "$tot" -eq 0 ] || exit 1
