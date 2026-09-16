@@ -5107,6 +5107,22 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
         (`modules/net-widget.js`, 838 Zeilen, app-eigen und bewusst nativ
         gebaut — 0 Treffer auf `TEXTE`). Wer den Stand einer App beurteilt,
         prüft ZUERST, wer dort malt.
+
+        ⚠ UND DER KANON IST NICHT DAS NETZ. Am 2026-09-16 ist Modul 15 in
+        ACHT der zwanzig Träger nachgezogen worden (Alis-Moderaum,
+        BookLedgerPro, Mein-Workfloh-Page, PWA-Toolpoint, Perfect-Skin-Beauty,
+        Perfect-Skin-Fashion, SB-KIMTool-Point, kim-hub-company) — dort war es
+        ein Nachtrag in der Render-Schicht: +203 Zeilen, 22 ersetzt, alle 22
+        deutsche Anzeige-Sätze, keine Zeile Schutz-Logik. ZWÖLF Träger stehen
+        weiter auf VIER älteren Generationen (bis 657 Zeilen zurück) und
+        wurden ausdrücklich zurückgehalten: ein Generationen-Sprung in einem
+        Schutz-Modul braucht einen Probenlauf im Ziel-Repo, und beides in einer
+        Bewegung wäre das Vermischen, vor dem die Tafel warnt.
+
+        Der Stand wird deshalb GEMESSEN, nicht aus dem Kanon geschlossen:
+        `node tools/kanon-verteilen.mjs --nur 15_membran` zählt die Fassungen
+        nach dem sha des Trägers. Am 2026-09-16 nach dem Rollout: 8 gleich,
+        12 zurück, 4 Fassungen draußen (vorher 5).
         (Bis dahin stand hier „NOCH DEUTSCH: 16_siegel.js (47 Texte) und
         17_floating_widget.js (19). Ein Voll-Knoten ist damit heute
         gemischtsprachig." — fünf Tage lang richtig. Sie war nicht falsch,
