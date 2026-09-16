@@ -186,3 +186,31 @@ Den **Herkunfts-Wächter** in `tools/kanon-verteilen.mjs` bauen: meldet, wenn
 der sha einer Kopie nicht in Sages Historie steht, und hält sie zurück statt
 sie zu überschreiben. Er hätte den teuersten Fund dieses Tages ohne Zutun
 gemeldet — und wird ihn beim nächsten Modul wieder brauchen.
+
+
+---
+
+## Nachtrag am selben Tag — der Wächter ist gebaut
+
+Klaus: *„ja, bau den Herkunfts-Wächter noch ein."*
+
+`tools/kanon-verteilen.mjs` hält seitdem vor jedem Schreiben den sha jeder
+Kopie gegen Sages eigene Historie. **An den echten vier nachgestellt**: er
+meldet `33d6fe0c5057`, `0f8a3f69de61` (zweimal) und `8a07567f98ce` — und
+**nicht** Kimboard und Kimseek, die auf der echten Kanon-Generation
+`fbf9f42d8a27` standen.
+
+Drei Ausgänge statt zwei (war Kanon · Handarbeit · nicht prüfbar), die Suche
+kennt alle Pfade, unter denen eine Datei je lag, `--handarbeit-gesichert` ist
+der ausdrückliche Weg daran vorbei, und der Rückgabewert ist 1 auch im
+Schreib-Gang.
+
+**Benannte Grenze:** der Klon ist flach; was hinter der Abschneide-Grenze
+liegt, sieht die Prüfung nicht. Der Lauf schreibt das dazu.
+
+Gemessen: `smoke_kanon_verteilen` **65 grün** (vorher 53) · Gegenprobe **28
+gefangen · 0 durchgerutscht · 0 tote Anker** (vorher 21) · `run_alle` **107/107
+grün**.
+
+Damit ist der Punkt, den dieses Protokoll als nächsten Schritt nannte,
+erledigt. Der nächste ist jetzt der **Briefkasten**.
