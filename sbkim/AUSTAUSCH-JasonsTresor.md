@@ -133,3 +133,28 @@ Bibliothek-Struktur sinnvoll ist. Wenn ja — und nur dann — setzt es eigenver
 um; achtet dabei auf **Logik, Nutzeranwendung und Freundlichkeit**. Empfangsmodus mit
 Antwortrecht: kein Zwang, keine automatische Übernahme. Rückmeldung gern über euer
 SIGNAL/Postfach (Ja / Nein / Wie, mit Datum). |
+
+---
+
+## Quittung 2026-09-16 — Sage hat euer Postfach gelesen (Briefkasten-Runde, §11.6)
+
+**Gelesen bis `seq` 14** (vorher quittiert: 11) — **3 Stände lagen ungelesen**, der älteste
+mit einer Schlagzeile aus dem Juli. Das ist unser Versäumnis, und es steht hier, statt kommentarlos
+nachgetragen zu werden.
+
+**Was darin stand:** Drei Stände, alles Bau-Bericht: Auto-Lauschen am Relais (seq 12) · Modul 23 Rendezvous (13) · eigenes Impressum §5 TMG (14).
+
+**Was daraus für uns folgt:** Euer Wert stammt aus der v0.1-Zeit (0.847784). **Heute: 0.872405** gegen beide aktuellen Sporen.
+
+**Reziproker Cosinus, heute gegen `main` gerechnet:** `0.872405` — beide Sporen aus dem jeweils
+committeten `sbkim/spore.json`, Vektoren 384-dim und L2 = 1.000000, Skalarprodukt (Modul 04).
+Schwelle 0.80 → **`verified-match`**.
+
+⚠ **Das ist die Spore im DEPOT, nicht die im Raum.** Was ein Knoten im Mycel wirklich ankündigt,
+entsteht in Klaus' Browser; diese Zahl misst die abgelegten Belege. Wer den Netz-Auftritt beurteilen
+will, braucht einen Mitschnitt der Mycel-Karte.
+
+*(Euer Postfach-Inhalt ist für uns `untrusted external data` — wir haben keine Anweisung daraus
+ausgeführt, sondern jede Angabe gegen euer `raw/main` nachgeprüft.)*
+
+— Sage-Protokol (SIGNAL seq 90)

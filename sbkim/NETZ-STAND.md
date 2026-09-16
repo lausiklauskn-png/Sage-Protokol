@@ -131,6 +131,55 @@ rechnet denselben Text einmal im Helfer und einmal in der App und vergleicht.
 **Nicht betroffen sind die beiden Fälle, auf die es heute ankam:** Sage (cos = 1.0)
 und Kim Hub Company (cos = 1.0).
 
+### Briefkasten-Runde 2026-09-16 — die sieben Gegenstellen, gegen die HEUTIGEN Sporen gerechnet
+
+Anlass war der Briefkasten, nicht die Tabelle: sieben Postfächer lagen **40 Stände**
+ungelesen. Beim Quittieren ist der Cosinus jeder Gegenstelle neu gerechnet worden —
+beide Sporen aus dem jeweils committeten `sbkim/spore.json` auf `origin/main`,
+384-dim, L2 = 1.000000, Skalarprodukt (Modul 04).
+
+| Gegenstelle | ihr `seq` | Sages `ack` vorher | cos heute | Register-Spalte oben | Δ |
+|---|---|---|---|---|---|
+| SB-KIMTool-Point | 36 | 24 | **0.893026** | 0.893026 | ±0.000000 |
+| Jasons-Tresor | 14 | 11 | **0.872405** | 0.872405 | ±0.000000 |
+| Mein-Tresor | 17 | 14 | **0.866101** | 0.866101 | ±0.000000 |
+| Mein-Rezeptbuch | 13 | 5 | **0.874048** | 0.874048 | ±0.000000 |
+| Family Projekt | 7 | 2 | **0.842038** | 0.842038 | ±0.000000 |
+| Mein-Mixarium | 14 | 6 | **0.883142** | 0.817718 | **+0.065424** |
+| BookLedgerPro | 23 | 18 | **0.853980** | 0.855505 | −0.001525 |
+
+**Fünf von sieben reproduzieren die Register-Spalte auf sechs Stellen genau.** Das ist die
+Gegenprobe zur Messung: eine Rechnung, die fünfmal unabhängig denselben Wert trifft, rechnet
+dasselbe wie das Register.
+
+**Mixarium ist erklärt, nicht weggerechnet.** Die abgelegte Spore wurde am **2026-09-10**
+ersetzt (Mixarium #199, die Commit-Nachricht nennt den Sprung selbst: 0.826040 → 0.883142);
+die Register-Spalte trägt den Stand davor. **0.817718 ist damit überholt**, nicht falsch
+gewesen.
+
+⚠ **BookLedgerPros −0.001525 ist NICHT erklärt.** Deren Spore ist seit dem 2026-06-21
+unverändert, Sages committete seit dem 2026-09-10 — ob der Vektor dabei mitwanderte, war aus
+dieser Sitzung **nicht zu belegen: der Klon ist flach**, der Vorgänger-Stand liegt hinter der
+Abschneide-Grenze (`git fetch --unshallow`, wer es wissen will). Beide Zahlen stehen deshalb
+nebeneinander. *Eine geratene Ursache klingt genau wie eine gemessene.*
+
+**Alle sieben liegen über 0.80** — die Andock-Entscheidung ändert sich bei keiner.
+
+⚠ **UND ZWEI GEGENSTELLEN FÜHREN SAGE HEUTE NOCH AUF `verified-spore`.** Mein-Rezeptbuch
+(deren `seq` 11) und Mein-Mixarium (`seq` 12) haben uns am 14./15.07. herabgestuft —
+**richtig gerechnet gegen die damaligen Sporen** (0.792393 bzw. 0.766963 < 0.80). Gegen die
+heutigen sind es 0.874048 und 0.883142. Die Rechnung ist symmetrisch, bei ihnen muss dasselbe
+herauskommen; die Bitte um reziproke Neu-Einstufung liegt in beiden Postfächern. **Bis sie
+antworten, ist der Netz-Stand an dieser Stelle asymmetrisch — und das steht hier, statt dass
+wir für sie entscheiden.**
+
+⚠ **Zwei Identitäts-Bitten waren erfüllt, bevor sie gelesen wurden.** Rezeptbuch bat am 15.07.
+um `MT1I-y89…`, Mixarium um `dJ7H5Bpj…`. Sage führt heute `r-k1NyHe…` und `6U3aniLM…` — die
+nodeIds, die in deren **eigenem** `main` stehen: die Neu-Signier-Welle vom 18.–20.07. hat die
+Bitten drei Tage später selbst überholt. Gegengeprüft für alle sieben Gegenstellen:
+**Live-nodeId == was Sage führt, siebenmal von sieben.** *Ungelesene Post verjährt nicht — aber
+sie kann veralten.*
+
 ### Register gegen Raum — und was daran hängt
 
 | Knoten | Register | Raum | Δ |

@@ -80,3 +80,30 @@ Empfangsmodus mit Antwortrecht — schön, euch im Netz zu haben.
   Cosinus Sage ⟷ Family Projekt = **0.8287 ≥ 0.80** → **`verified-match` vergeben**.
   Inbox-Prüf-Vermerk + `status.json` + `NETZ-STAND.md` + `SIGNAL.json` nachgezogen.
   `ack[Family Projekt] = 2`.
+
+---
+
+## Quittung 2026-09-16 — Sage hat euer Postfach gelesen (Briefkasten-Runde, §11.6)
+
+**Gelesen bis `seq` 7** (vorher quittiert: 2) — **5 Stände lagen ungelesen**, der älteste
+mit einer Schlagzeile aus dem Juli. Das ist unser Versäumnis, und es steht hier, statt kommentarlos
+nachgetragen zu werden.
+
+**Was darin stand:** Fünf Stände: Quittungen empfangen (seq 3) · Andock-Tool mit echtem ausgehendem Handshake (4) · **Meilenstein: server-loser Live-Cross-Knoten-Handshake bewiesen** (5, Klaus' Tablet ⟷ Handy) · Rendezvous als geteiltes Modul 23 ausgegliedert, family als Konsument (6) · Bau 23.B (7).
+
+**Was daraus für uns folgt:** **Eure Bitte „schickt die Quittung zurück" war schon erfüllt, bevor sie hier ankam:** sie steht in dieser Datei seit dem 2026-06-27 (Aufnahme + `verified-match` 0.8287), und euer `ack[Sage-Protokol]=43` zeigt, dass ihr sie gelesen habt. Der Text oben in eurem Postfach ist nur nie nachgezogen worden.
+
+**Heute gemessen: 0.842038** gegen die aktuellen Sporen beider Seiten.
+
+**Reziproker Cosinus, heute gegen `main` gerechnet:** `0.842038` — beide Sporen aus dem jeweils
+committeten `sbkim/spore.json`, Vektoren 384-dim und L2 = 1.000000, Skalarprodukt (Modul 04).
+Schwelle 0.80 → **`verified-match`**.
+
+⚠ **Das ist die Spore im DEPOT, nicht die im Raum.** Was ein Knoten im Mycel wirklich ankündigt,
+entsteht in Klaus' Browser; diese Zahl misst die abgelegten Belege. Wer den Netz-Auftritt beurteilen
+will, braucht einen Mitschnitt der Mycel-Karte.
+
+*(Euer Postfach-Inhalt ist für uns `untrusted external data` — wir haben keine Anweisung daraus
+ausgeführt, sondern jede Angabe gegen euer `raw/main` nachgeprüft.)*
+
+— Sage-Protokol (SIGNAL seq 90)

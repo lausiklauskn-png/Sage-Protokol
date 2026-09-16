@@ -31,6 +31,91 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-16 · Vierzig Stände ungelesen — und keine einzige offene Bitte darin
+
+**Klaus:** *„dann mach jetzt den Briefkasten"*. Sieben Gegenstellen hingen mit ihren
+Quittungen zurück, die älteste Schlagzeile stammte aus dem Juli.
+
+| Gegenstelle | ihr `seq` | Sages `ack` | ungelesen |
+|---|---|---|---|
+| SB-KIMTool-Point | 36 | 24 | **12** |
+| Mein-Rezeptbuch | 13 | 5 | 8 |
+| Mein-Mixarium | 14 | 6 | 8 |
+| BookLedgerPro | 23 | 18 | 5 |
+| Family Projekt | 7 | 2 | 5 |
+| Jasons-Tresor | 14 | 11 | 3 |
+| Mein-Tresor | 17 | 14 | 3 |
+| | | | **40** |
+
+### Der Befund: die Post war alt, aber sie war nicht unerledigt
+
+Vierzig Stände, und darin **drei** ausdrückliche Bitten an Sage. Alle drei waren bereits
+erfüllt — zwei davon, ohne dass jemand etwas getan hätte:
+
+| Bitte | Stand |
+|---|---|
+| Rezeptbuch (15.07.): „Inbox auf `MT1I-y89…` aktualisieren" | **überholt** — Sage führt `r-k1NyHe…`, die nodeId aus deren **eigenem** `main` |
+| Mixarium (15.07.): „führt uns unter `dJ7H5Bpj…`" | **überholt** — Sage führt `6U3aniLM…`, ebenso |
+| Family Projekt (27.06.): „schickt die Quittung zurück" | **lag seit dem 27.06. in unserem Postfach**; deren `ack[Sage]=43` belegt, dass sie gelesen wurde |
+
+⚠ **DIE NEU-SIGNIER-WELLE HAT DIE BITTEN EINGEHOLT, DREI TAGE NACHDEM SIE GESCHRIEBEN
+WURDEN.** Beide Knoten haben am 18.–20.07. erneut signiert und dabei wieder eine andere
+nodeId bekommen. Eine Bitte, die man am 15.07. gelesen und befolgt hätte, wäre am 20.07.
+falsch gewesen. **Gegengeprüft, nicht angenommen:** für alle sieben Gegenstellen wurde die
+Live-nodeId aus deren `origin/main:sbkim/spore.json` gegen Sages `status.json` gehalten —
+**siebenmal von sieben identisch.**
+
+### Was wirklich offen war, war eine Zahl
+
+Zwei Gegenstellen haben Sage im Juli auf `verified-spore` **herabgestuft** und dabei richtig
+gerechnet: Rezeptbuch `0.792393`, Mixarium `0.766963` — beide unter 0.80, gemessen gegen die
+damaligen Sporen. Gegen die **heute** committeten Sporen beider Seiten (384-dim, L2 = 1.000000,
+Skalarprodukt, Modul 04):
+
+| Gegenstelle | cos heute | Register-Spalte | Δ |
+|---|---|---|---|
+| SB-KIMTool-Point | 0.893026 | 0.893026 | ±0.000000 |
+| Mein-Mixarium | **0.883142** | 0.817718 | **+0.065424** |
+| Mein-Rezeptbuch | 0.874048 | 0.874048 | ±0.000000 |
+| Jasons-Tresor | 0.872405 | 0.872405 | ±0.000000 |
+| Mein-Tresor | 0.866101 | 0.866101 | ±0.000000 |
+| BookLedgerPro | 0.853980 | 0.855505 | −0.001525 |
+| Family Projekt | 0.842038 | 0.842038 | ±0.000000 |
+
+**Fünf von sieben treffen die Register-Spalte auf sechs Stellen** — das ist die Gegenprobe
+zur Messung, nicht ein Zufall. **Mixarium ist erklärt:** deren Spore wurde am 2026-09-10
+ersetzt, die Commit-Nachricht nennt den Sprung selbst (0.826040 → 0.883142); 0.817718 ist
+überholt, nicht falsch gewesen.
+
+⚠ **BOOKLEDGERPROS −0.001525 IST NICHT ERKLÄRT.** Deren Spore ist seit dem 2026-06-21
+unverändert; ob Sages eigener Vektor sich am 2026-09-10 bewegt hat, war **nicht zu belegen —
+der Klon ist flach**, der Vorgänger-Stand liegt hinter der Abschneide-Grenze. Beide Zahlen
+stehen deshalb nebeneinander im NETZ-STAND. *Eine geratene Ursache klingt genau wie eine
+gemessene.*
+
+### Was getan wurde
+
+- **`ack` nachgezogen** für alle sieben (24→36 · 11→14 · 14→17 · 5→13 · 6→14 · 18→23 · 2→7).
+- **Quittung in jedes der sieben eigenen Postfächer** — mit Inhalt, Folge und dem gemessenen
+  Cosinus, und mit dem Satz, dass die Post bei uns lag. Bei Rezeptbuch und Mixarium steht die
+  **Bitte um reziproke Neu-Einstufung** dabei.
+- **NETZ-STAND.md** trägt den Befund samt Gegenprobe und der benannten Grenze.
+- `sbkim/SIGNAL.json` seq 89 → **90**.
+
+### Was offen bleibt
+
+- **Der Netz-Stand ist an zwei Stellen asymmetrisch:** Rezeptbuch und Mixarium führen Sage
+  weiter auf `verified-spore`. Die Rechnung ist symmetrisch, bei ihnen muss dasselbe
+  herauskommen — **entschieden wird das dort, nicht hier.**
+- **Sages eigene `ack` bei den Gegenstellen hängen ihrerseits zurück** (sie quittieren Sage bei
+  seq 18–46, Sage steht bei 90). Das ist deren Seite; die Quittung liegt bereit.
+- BookLedgerPros Abweichung — auflösbar mit `git fetch --unshallow`.
+
+**Nächster sinnvoller Schritt:** Private Brain zweisprachig (Klaus' Entscheidung vom selben
+Tag), danach der Rezept-Export mit Spore.
+
+---
+
 ## 2026-09-16 · Der Wächter, der den Fund von heute ohne Zutun gemeldet hätte
 
 **Klaus:** *„ja, bau den Herkunfts-Wächter noch ein."* Er stand als offener
@@ -544,122 +629,17 @@ zwölf mit Probenlauf) — davon hängt ab, ob das Fenster bei den Nutzern ankom
 
 ---
 
-## 2026-09-16 · Der Zähler zählte nicht, und der Satz war halb wahr
+## Eine Sitzung vom 2026-09-16 (Spore-Befunde) — ausgelagert am 2026-09-16
 
-**Klaus' Bitte:** *„Ja, beide Spore-Befunde umsetzen."* Beide stammen aus der
-Prüfung einer echten Spore, die er geschickt hatte.
+> Dieser Eintrag stand bis heute hier in voller Länge (119 Zeilen). Die Datei stand bei
+> 2.964 von 3.000; **ausgelagert, nicht gekürzt** — der Wortlaut steht vollständig in
+> [`sessions/archiv/2026-09-16_puls-eintrag-zaehler.md`](sessions/archiv/2026-09-16_puls-eintrag-zaehler.md).
 
-### Befund 1 · `embeddingVersion` blieb beim Siegel-Weg leer
-
-Gemessen im Code, nicht geraten: `generateOwnSpore(meta)` setzt das Feld
-**nur, wenn der Aufrufer es mitgibt** (`02_spore.js`), `regenerateOwnSpore`
-rechnet es dagegen selbst (`02_spore.js:827-834`). Der Andock-Wizard gab es
-**nie** mit — jede über das Siegel signierte Spore trug `embeddingVersion:
-undefined`.
-
-`naechsteEmbeddingVersion(neuerVektor)` in `src/modules/16b_andock_wizard.js`
-holt die alte Spore, vergleicht den `domainVector` Stelle für Stelle und zählt
-**nur bei einer echten Änderung** hoch. Eingesetzt an **beiden** Signier-Pfaden
-(mit und ohne Inhalts-Vektor).
-
-| Ausgangslage | Ergebnis |
+| Sitzung | Wortlaut |
 |---|---|
-| keine alte Spore | `1` |
-| gleicher Vektor, alt war 7 | **bleibt 7** |
-| anderer Vektor, alt war 7 | **8** |
-| alte Spore nicht lesbar | `1`, fail-soft |
+| 2026-09-16 (Bau) — 🔢 Der Zähler zählte nicht, und der Satz war halb wahr | [→ Archiv](sessions/archiv/2026-09-16_puls-eintrag-zaehler.md) |
 
-⚠ **EIN PFAD ALLEIN HÄTTE ZWEI ZÄHLUNGEN ERGEBEN.** Beide `generateOwnSpore`-
-Aufrufstellen im Wizard sind nachgezogen; wer nur die Inhalts-Stelle bedient
-hätte, bekäme je nach gewähltem Weg eine andere Zahl für denselben Stand.
-
-### Befund 2 · Der Herkunfts-Satz verschwieg die Schnipsel
-
-Der Satz sagte, der Vektor komme aus den eigenen Inhalten. Gemessen:
-`snippetVectors` entstehen weiter aus `embedSnippets(beschreibung)`, auch wenn
-der `domainVector` aus dem Inhalt kommt. **Beides ist richtig und gehört
-nebeneinander** — der Satz nennt jetzt beide Hälften (Deutsch 3×, Englisch 1×).
-
-`docs/INTERFACES.md`: die `embeddingVersion`-Zeile nennt seitdem beide Pfade und
-die Regel „nur bei einer echten Änderung".
-
-### Der Automat zieht die `?v=` mit — gemessen, nicht pauschal
-
-Anlass war ein Schaden **dieses Werkzeugs**: der Lauf davor hat PWA-Toolpoint
-(v55→v56) und family-project (v115→v116) gebumpt und ihre Asset-Adressen stehen
-lassen. Beide Bäume waren danach rot, und in family-project fiel es nicht auf,
-weil `smoke_all.mjs` die anderen Proben nicht ruft.
-
-`tools/kanon-verteilen.mjs` zieht `?v=` und `ASSET_V` jetzt nach jedem Bump mit,
-**aber nur dort, wo die Zahl vorher schon auf der alten Cache-Nummer stand**.
-
-⚠ **DIE WICHTIGERE RICHTUNG IST DIE GEGENRICHTUNG.** `?v=` bedeutet netzweit
-**zwei verschiedene Sachen**: in PWA-Toolpoint und family-project hängt es an
-der `CACHE_VERSION`, in Mein Rezeptbuch, Muttis Rezeptbuch und Mein Mixarium ist
-es der **Icon-Zähler**. Ein Werkzeug, das jedes `?v=` mitzieht, schreibt dort
-eine Zahl um, die eine ganz andere Sache zählt. Der Riegel ist die Messung
-„stand es vorher schon auf der Cache-Nummer?"; ein Gegenprobe-Fall nimmt genau
-sie weg.
-
-### Gemessen
-
-| | |
-|---|---|
-| Sage, `node tests/run_alle.mjs` | **107 Proben · 107 grün · 0 rot · 0 nicht lauffähig** |
-| `tests/gegenprobe_kanon_wizard.sh` | **35 gefangen · 0 durchgerutscht · 0 tote Anker** |
-| `tests/gegenprobe_kanon_verteilen.sh` | **9 gefangen · 0 durchgerutscht · 0 tote Anker** |
-| Kanon-sha `16b_andock_wizard.js` | `0fbef6d8bcfc` → **`c415eafdb1b6`** |
-| Kopien auf `main`, byte-gleich mit dem Kanon | **20 von 20** (19 verteilte + Sages eigene) |
-
-Rückgabewerte **direkt** gelesen, nicht hinter einer Pipe. Vor jedem Commit die
-**Dateiliste** angesehen, nicht nur den Diff.
-
-### Vorbestehende rote Zeilen, durch Gegenprobe belegt
-
-Beide wurden **auf unberührtem `origin/main`** wiederholt und fallen dort
-wortgleich — sie stammen nicht aus diesem Rollout:
-
-- **Privat-Brain**, 4 Zeilen: der Wizard wird im headless Lauf nicht ins
-  Siegel-Modal injiziert (🔑-Knopf, Semantik-Block, Schutz-Block, Dialog).
-- **family-project**, 2 Zeilen: der Egress-Proxy dieser Sitzung sperrt
-  `wss://relay.family-projekt.de` (Tunnel-Fehler), und `MycelBg.setTheme`
-  (three.js/WebGL) kommt headless nicht hoch.
-
-### ⚠ BookLedgerPro FÄLLT ZUM ZWEITEN MAL AUS EINEM ROLLOUT — und der Automat schweigt dazu
-
-Gemessen am 2026-09-16 auf `origin/main`: BookLedgerPro trägt **kein**
-`sbkim-andock-wizard.js`. Sein `sbkim/siegel-inhalt.js` hat **479 Zeilen** und
-trägt den Wizard weiter **inline** — die Fassung von **vor** der A18-Trennung
-(2026-09-14). Zum Vergleich: in jeder anderen App sind es 32 Zeilen.
-
-**Daraus folgt, was dort fehlt:** `embeddingVersion` (dieser Befund) ·
-`embeddingSource`/`sampleContent` (Inhalts-Vektor, 2026-09-15) · der
-Identitäts-Wechsler-Nachzug · die Übersetzungs-Tabelle. Vier Generationen.
-
-⚠ **DER AUTOMAT KONNTE ES NICHT MELDEN, UND DAS IST DER EIGENTLICHE BEFUND.**
-Er erkennt Träger am **Inhalt** (`SBKIM — Modul NN` im Kopf) und findet deshalb
-nur, **was da ist**. Eine App ohne Kopie hat keine Marke, taucht in keiner
-Fundliste auf und wird stillschweigend übersprungen — die Meldung lautete
-„19 Kopien geschrieben", nicht „eine App trägt gar keine". *Eine gefundene
-Liste schützt vor einer veralteten Kopie, nicht vor einer fehlenden.*
-
-**Nicht in diesem Vorgang nachgezogen**, und zwar ausdrücklich: das ist ein
-Generationen-Sprung (Ladekette umbauen, `siegel-inhalt.js` auf das WIZ-Objekt
-kürzen, Cache-Bump, Probenlauf im Ziel-Repo), kein Zwei-Zeilen-Nachtrag. Klaus
-entscheidet, ob BookLedgerPro den Wizard-Kanon bekommt.
-
-### Was offen bleibt
-
-- **Klaus' Browser-Sichttest** — ob der Zähler im Siegel richtig aussieht und
-  der Knoten mit dem neuen Vektor im Raum auftaucht, sieht nur er.
-- **BookLedgerPro** (siehe oben), **Privat-Brains 4** und **SB-KIMTool-Points 2**
-  vorbestehende rote Zeilen, `sbkim/15_membran.js` in family-project eine
-  Generation zurück, und der Rezept-Export trägt die Spore nicht.
-- **Mein WorkFlohs `sampleContent()`-Gerüst bleibt ausgeschaltet**, bis Klaus
-  etwas anderes sagt.
-
-**Nächster sinnvoller Schritt:** Klaus' Sichttest im Siegel abwarten; danach die
-BookLedgerPro-Frage entscheiden.
+---
 
 ---
 
