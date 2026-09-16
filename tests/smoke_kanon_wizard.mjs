@@ -270,17 +270,23 @@ async function browserTeil() {
      ANDEREN Text als die App — nur dann ist die Frage überhaupt gestellt. */
   const SPORE_STUB = "window.SbkimSpore = { getOwnSpore: function () {" +
     " return Promise.resolve({ domainDescription: 'Mein eigener Text ueber meine Kueche.' }); } };";
-  const SEITE_TEXT = (flagge) => [
+  const SEITE_TEXT = (flagge, proben) => [
     '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>',
     '<div id="sbkim-siegel-modal"><div role="dialog"><p id="alt">Siegel</p></div></div>',
     skript("try { localStorage.setItem('sbkim_eigener_text_pruef-backup', " + JSON.stringify(flagge) + "); } catch (e) {}"),
     skript(SPORE_STUB),
-    skript("window.SBKIM_SIEGEL_WIZ = " + JSON.stringify(KONFIG) + ";"),
+    skript("window.SBKIM_SIEGEL_WIZ = Object.assign(" + JSON.stringify(KONFIG) +
+      (proben ? ", { sampleContent: function () { return " + JSON.stringify(proben) + "; } });"
+              : ", {});")),
     '<script src="wizard.js">' + ZU,
     "</body></html>",
   ].join("\n");
   writeFileSync(join(basis, "text-eigener.html"), SEITE_TEXT("ja"));
   writeFileSync(join(basis, "text-app.html"), SEITE_TEXT("nein"));
+  /* Eine Seite MIT eigenen Inhalten — nur dort zeichnet der Semantik-Block die
+     Vektor-Zeile, und nur dort laesst sich messen, was sie WIRKLICH sagt. */
+  writeFileSync(join(basis, "text-inhalt.html"),
+    SEITE_TEXT("nein", ["Suppe Linsen", "Kuchen Apfel", "Fisch Lachs"]));
 
   /* Der Vermerk „Letzte Sicherung" (Klaus 2026-09-16). Beide Wege sichern ueber
      dasselbe `SbkimSpore.exportBackup`; der Vermerk hing aber an Modul 23. Die
@@ -316,9 +322,14 @@ async function browserTeil() {
      „vektorFuerSpore steht in der Datei" waere auch dann gruen, wenn der Aufruf
      nie erreicht wird. Der Stub schreibt die uebergebenen Felder mit. */
   const STUBS_FUER_S2 =
-    "window.__meta = null; window.__proben = 0;" +
+    "window.__meta = null; window.__proben = 0; window.__altSpore = null;" +
     "window.SbkimSpore = {" +
     "  getActiveIdentityKey: function () { return Promise.resolve('main'); }," +
+    /* ⚠ OHNE DIESEN STUB WAERE DIE RICHTUNG „zaehlt hoch" NICHT MESSBAR.
+       `naechsteEmbeddingVersion` liest die alte Spore; fehlt die Funktion,
+       faellt es in seinen fail-soft-Zweig und liefert IMMER 1 — der
+       Waechter waere dann gruen, ohne je gezaehlt zu haben. */
+    "  getOwnSpore: function () { return Promise.resolve(window.__altSpore); }," +
     "  getOrCreateIdentity: function () { return Promise.resolve({ nodeId: 'PRUEFKENNUNG123' }); }," +
     "  listIdentities: function () { return Promise.resolve(['main']); }," +
     "  generateOwnSpore: function (meta) { window.__meta = meta;" +
@@ -486,10 +497,17 @@ async function browserTeil() {
       const feld = document.getElementById("sbkim-si-semantik-text");
       const herk = document.getElementById("sbkim-si-semantik-herkunft");
       const knopf = document.getElementById("sbkim-si-semantik-eigener-text");
+      /* ⚠ DIE ZEILE WIRD AN IHRER EIGENEN KENNUNG GELESEN, nicht aus einem
+         Behaelter. Der erste Anlauf nahm `sbkim-si-wizard` — das gibt es, aber
+         der Semantik-Block haengt im SIEGEL-Modal daneben. Drei Waechter waren
+         dadurch rot, obwohl die Zeile tadellos dastand: rot aus dem falschen
+         Grund, im Waechter. */
+      const vz = document.getElementById("sbkim-si-semantik-vektorquelle");
       return {
         wert: feld ? feld.value : null,
         woher: herk ? herk.getAttribute("data-woher") : null,
         knopfText: (knopf && !knopf.hidden) ? knopf.textContent : "",
+        sichtbar: vz ? vz.textContent : "",
       };
     };
     /* ⚠ Der Semantik-Block liest getOwnSpore ASYNCHRON. Auf die BEDINGUNG warten,
@@ -569,12 +587,15 @@ async function browserTeil() {
     ok("… und ruft nichts ins Leere", stOhne.gerufen === 0);
 
     console.log("\nSchritt 2 — der Inhalt schlaegt die Selbstbeschreibung\n");
-    const schrittZwei = async (datei) => {
+    const schrittZwei = async (datei, altSpore) => {
       const s = await browser.newPage();
       s.on("pageerror", (e) => fehler.push(datei + ": " + String(e).slice(0, 120)));
       await s.goto(`http://127.0.0.1:${PORT}/${datei}`, { waitUntil: "load" });
       await s.waitForFunction(() => !!document.querySelector("#sbwiz-s2"), { timeout: 8000 })
         .catch(() => { /* der Aufrufer misst das Ergebnis, nicht die Frist */ });
+      /* Die „alte" Spore wird VOR dem Klick gestellt — der Helfer liest sie erst
+         beim Signieren, also genau dann, wie im echten Ablauf. */
+      if (altSpore !== undefined) await s.evaluate((sp) => { window.__altSpore = sp; }, altSpore);
       const r = await s.evaluate(async () => {
         const b = document.querySelector("#sbwiz-s2");
         if (!b) return { knopf: false };
@@ -591,6 +612,7 @@ async function browserTeil() {
         return {
           knopf: true,
           quelle: window.__meta ? window.__meta.embeddingSource : null,
+          version: window.__meta ? window.__meta.embeddingVersion : null,
           proben: window.__proben,
           meldung: (document.querySelector("#sbwiz-o2") || {}).textContent || "",
           dialog: d ? d.textContent : "",
@@ -618,6 +640,50 @@ async function browserTeil() {
     ok("… und die Meldung behauptet dann keine eigenen Inhalte",
       /committen/.test(s2b.meldung) && !/eigenen Inhalten/.test(s2b.meldung));
     ok("… `embedContentVector` wird dabei gar nicht erst gerufen", s2b.proben === 0);
+
+    /* ── embeddingVersion: der Zaehler „der wievielte Inhalts-Stand" ────────
+     *
+     * ⚠ DER BEFUND (Klaus 2026-09-16): das Feld FEHLTE in seiner echten Spore.
+     * `generateOwnSpore` setzt es nur, wenn der Aufrufer es mitgibt — und der
+     * Wizard tat das nicht. Gemessen wird deshalb, was Modul 02 WIRKLICH
+     * bekommt, nicht ob der Name im Quelltext steht.
+     *
+     * DREI Faelle, und die zweite Richtung ist die wichtigere: ein Zaehler, der
+     * bei jedem Signieren hochlaeuft, misst KLICKS statt Inhalten. */
+    ok("die Spore traegt einen Inhalts-Zaehler", typeof s2a.version === "number");
+    ok("… ohne Vorgaenger faengt er bei 1 an", s2a.version === 1);
+
+    /* Der Stub bettet 384 Nullen ein; eine „alte" Spore mit demselben Vektor ist
+       also wirklich unveraendert — die Zahl muss stehen bleiben. */
+    const NULLEN = new Array(384).fill(0);
+    const s2c = await schrittZwei("s2-inhalt.html",
+      { embeddingVersion: 7, domainVector: NULLEN });
+    ok("… gleicher Vektor ⇒ die Zahl bleibt stehen", s2c.version === 7,
+      `bekommen: ${s2c.version}`);
+
+    const s2d = await schrittZwei("s2-inhalt.html",
+      { embeddingVersion: 7, domainVector: NULLEN.map((_x, i) => (i === 0 ? 0.5 : 0)) });
+    ok("… anderer Vektor ⇒ die Zahl zaehlt hoch", s2d.version === 8,
+      `bekommen: ${s2d.version}`);
+
+    /* ── Der Satz sagt jetzt die GANZE Wahrheit (Klaus 2026-09-16) ─────────
+     *
+     * ⚠ DER BEFUND, an Klaus' echter Spore gemessen: `embeddingSource` stand auf
+     * „content", und alle sechs `snippetVectors` waren trotzdem Saetze der
+     * BESCHREIBUNG — `embedSnippets` bekommt den Text, nicht die Inhalte. Der
+     * Satz „nicht aus dem Text oben" las sich wie eine Aussage ueber die ganze
+     * Spore und stimmte nur fuer den domainVector.
+     *
+     * ⚠ GEMESSEN WIRD, WAS AUF DEM SCHIRM STEHT. Ein Waechter, der den
+     * Quelltext liest, waere auch dann gruen, wenn die Zeile nie gezeichnet
+     * wird — genau der Fehler, der in WorkFloh am selben Tag ein ganzes Geruest
+     * an nichts haengen liess. Die Zeile entsteht nur MIT eigenen Inhalten. */
+    const tv = await holeText("text-inhalt.html", "app");
+    ok("mit eigenen Inhalten steht die Vektor-Zeile da",
+      /Vektor kommt aus deinen eigenen Inhalten/.test(tv.sichtbar));
+    ok("… sie nennt die Zahl der Inhalte", /\(3 Einträge\)/.test(tv.sichtbar));
+    ok("… und sie sagt, dass die Satz-Schnipsel WEITER aus dem Text kommen",
+      /Satz-Schnipsel für die Feinsuche kommen weiter aus dem Text/.test(tv.sichtbar));
 
     console.log("\nEinmal signieren, einmal sichern — es steht dran\n");
     /* ⚠ GEMESSEN WIRD DER TEXT IM FENSTER, nicht im Quelltext. Der Satz ist die

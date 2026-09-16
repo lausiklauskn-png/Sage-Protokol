@@ -68,7 +68,16 @@ function netzBauen() {
      * Gegenprobe-Lauf. */
     "assets/siegel-inhalt.js":
       `/*\n * SBKIM — Modul 99 — Klebstoff\n */\nvar WIZ = { nodeName: "App Eins", domainDescription: "Eigene Beschreibung" };\n`,
-    "sw.js": `var CACHE_VERSION = "app-eins-v7";\nvar CORE = ["modules/sbkim-siegel.js"];\n`,
+    "sw.js": `var CACHE_VERSION = "app-eins-v7";\nvar ASSET_V = "7";\nvar CORE = ["modules/sbkim-siegel.js"];\n`,
+    /* ⚠ ZWEI SORTEN ?v= IN EINER SEITE, und das ist der ganze Punkt. Die eine
+     * steht auf der Cache-Nummer (7) — sie MEINT die Schale und muss mitziehen.
+     * Die andere ist ein Icon-Zaehler (1) und meint etwas voellig anderes; wer
+     * die mitzieht, schreibt eine fremde Zahl um. Netzweit gemessen am
+     * 2026-09-16: in Rezeptbuch, Muttis und Mixarium ist ?v= GENAU dieser
+     * Icon-Zaehler. */
+    "index.html": `<link rel="stylesheet" href="assets/style.css?v=7">\n`
+      + `<link rel="icon" href="icons/app.png?v=1">\n`
+      + `<script src="assets/app.js?v=7"></script>\n`,
     /* ⚠ EIN ZWEITER WORKER, in dessen Vorrat die Datei NICHT steht. Ohne ihn
      * aendert ein ausgebauter Vorrat-Riegel nichts, und der Fall misst nichts. */
     "extra-sw.js": `var CACHE_VERSION = "extra-v3";\nvar CORE = ["index.html"];\n`,
@@ -156,6 +165,25 @@ console.log("\nMit --schreiben:");
   /* Cache-Bump nur, wo die Datei im Vorrat steht. */
   const sw = readFileSync(join(w, "App-Eins", "sw.js"), "utf8");
   ok(/app-eins-v8/.test(sw), "CACHE_VERSION wurde erhoeht (v7 → v8)", sw.slice(0, 60));
+
+  /* ── Die ?v= ziehen mit — aber nur die richtigen (Befund 2026-09-16) ─────
+   *
+   * ⚠ DER ANLASS WAR EIN SCHADEN DIESES WERKZEUGS. Es hob
+   * `family-projekt-v116` auf `v117` und `pwa-toolpoint-v56` auf `v57` und
+   * liess die Asset-Adressen stehen. Beide Marktplaetze binden ihre ?v= an die
+   * Cache-Nummer, und beide Baeume waren danach ROT — eine Stunde, nachdem
+   * genau diese Luecke in beiden von Hand geschlossen worden war.
+   *
+   * Beide Richtungen, und die zweite ist die wichtigere: ein Werkzeug, das
+   * JEDES ?v= mitzieht, wuerde in drei Apps den Icon-Zaehler umschreiben. */
+  const seite = readFileSync(join(w, "App-Eins", "index.html"), "utf8");
+  ok(/style\.css\?v=8/.test(seite) && /app\.js\?v=8/.test(seite),
+    "die ?v= auf der Cache-Nummer ziehen mit (7 → 8)", seite.replace(/\n/g, " | "));
+  ok(/icons\/app\.png\?v=1\b/.test(seite),
+    "… und ein ?v=, das etwas ANDERES zaehlt, bleibt liegen", seite.replace(/\n/g, " | "));
+  ok(/ASSET_V = "8"/.test(sw),
+    "… ASSET_V zaehlt mit — es ist die ausdrueckliche Bindung an die Cache-Nummer",
+    sw.slice(0, 90));
 
   /* ⚠ UND DER WORKER, DER DIE DATEI WEDER FUEHRT NOCH ABLEGT, BLEIBT STEHEN.
    * Ein Bump ohne jede Bedingung zwaenge jedem Nutzer einen Download auf,

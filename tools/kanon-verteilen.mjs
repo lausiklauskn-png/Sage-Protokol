@@ -114,6 +114,22 @@ console.log(`Nachbarn: ${NACHBARN}\n`);
 
 /* ── 2. In jedem Nachbar-Klon die Kopien FINDEN ───────────────────────── */
 const UEBERSPRINGEN = new Set(["node_modules", ".git", "docs", "tests", "test", "mitschnitt", "archiv"]);
+/* Wie jsDateien, nur auch fuer HTML — die Versions-Anhaenge stehen in den
+   Seiten, nicht nur in den Skripten. */
+function traegerDateien(wurzel, tiefe = 0) {
+  const aus = [];
+  if (tiefe > 4) return aus;
+  let eintraege; try { eintraege = readdirSync(wurzel); } catch { return aus; }
+  for (const e of eintraege) {
+    if (UEBERSPRINGEN.has(e)) continue;
+    const p = join(wurzel, e);
+    let st; try { st = statSync(p); } catch { continue; }
+    if (st.isDirectory()) aus.push(...traegerDateien(p, tiefe + 1));
+    else if (/\.(js|html)$/.test(e) && st.size < 3_000_000) aus.push(p);
+  }
+  return aus;
+}
+
 function jsDateien(wurzel, tiefe = 0) {
   const aus = [];
   if (tiefe > 4) return aus;
@@ -279,6 +295,43 @@ function cacheBump(rp, zielPfad) {
     writeFileSync(sw, s.slice(0, m.index) + neu + s.slice(m.index + m[0].length));
     schonGebumpt.add(sw);
     console.log(`        ↳ Cache-Bump: ${relative(rp, sw)}  ${m[4]}${m[5]} → ${m[4]}${Number(m[5]) + 1}`);
+
+    /* ── ⚠ UND DIE ?v= ZIEHEN MIT — aber NUR, wo sie VORHER schon passten ──
+     *
+     * GEMESSEN am 2026-09-16, und zwar an einem Schaden, den dieser Automat
+     * selbst angerichtet hat: er hob `family-projekt-v116` auf `v117` und
+     * `pwa-toolpoint-v56` auf `v57` — und liess die `?v=` stehen. Beide
+     * Marktplaetze binden ihre Asset-Adressen aber an die Cache-Nummer, und
+     * beide Baeume waren danach ROT. Eine Stunde zuvor war genau diese Luecke
+     * in beiden von Hand geschlossen worden.
+     *
+     * ⚠ ES WIRD NICHT GERATEN, OB EIN ?v= DIE CACHE-NUMMER MEINT. Netzweit
+     * gemessen (28 Repos) heisst es meistens etwas ANDERES: in Rezeptbuch,
+     * Muttis und Mixarium ist es der ICON-Zaehler und steht bei `?v=1`,
+     * waehrend die Cache-Nummer ganz woanders liegt. Wer dort mitzieht,
+     * schreibt eine Zahl um, die eine andere Sache zaehlt.
+     *
+     * Der Riegel ist deshalb eine MESSUNG, keine Annahme: mitgezogen wird nur,
+     * was vor dem Bump BUCHSTAEBLICH auf der alten Cache-Nummer stand. Stimmten
+     * sie vorher ueberein, gehoeren sie zusammen; taten sie es nicht, bleibt
+     * alles liegen. `ASSET_V` zaehlt mit — es ist die ausdrueckliche Erklaerung
+     * einer Seite, dass ihre Adressen an der Cache-Nummer haengen. */
+    const altN = m[5], neuN = String(Number(m[5]) + 1);
+    const vMuster = new RegExp(`\\?v=${altN}(?!\\d)`, "g");
+    const aMuster = new RegExp(`(ASSET_V\\s*=\\s*(['"\`]))${altN}\\2`, "g");
+    let gezogen = 0, dateienGezogen = 0;
+    for (const d of traegerDateien(rp)) {
+      let t; try { t = readFileSync(d, "utf8"); } catch { continue; }
+      const treffer = (t.match(vMuster) || []).length + (t.match(aMuster) || []).length;
+      if (!treffer) continue;
+      writeFileSync(d, t.replace(vMuster, `?v=${neuN}`).replace(aMuster, `$1${neuN}$2`));
+      gezogen += treffer; dateienGezogen++;
+    }
+    /* Eine Meldung, die niemand liest, ist kein Bump — also steht auch hier
+       die Zahl da, statt es still zu tun. */
+    if (gezogen) {
+      console.log(`        ↳ ?v= mitgezogen: ${gezogen} Stellen in ${dateienGezogen} Dateien  ${altN} → ${neuN}`);
+    }
   }
 }
 
