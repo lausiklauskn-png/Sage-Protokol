@@ -36,7 +36,18 @@ function ohneKommentare(txt) {
     .join("\n");
 }
 
+/* ⚠ MODUL 15 KAM AM 2026-09-16 DAZU, und der Dateiname blieb.
+ * Er nennt die Bau-Sitzung, nicht den Umfang — und er steht in der Gegenprobe,
+ * in INTERFACES, in drei Skills und in der SIGNAL-Historie. Ein Umbenennen
+ * hätte sechs Anker gebrochen, um ein Wort zu verbessern.
+ *
+ * Warum 15 hierher gehört und nicht in eine eigene Datei: die zwei Wächter
+ * unten (Wörterbuch gegen Code in beide Richtungen · geht jeder Anzeigetext
+ * durch T()) sind GENERISCH und werden aus dieser Liste gefahren. Eine zweite
+ * Datei wäre eine zweite Fassung derselben zwei Wächter — und zwei Fassungen
+ * laufen auseinander. */
 const MODULE = [
+  { nr: "15", datei: "src/modules/15_membran.js",         global: "SbkimMembrane" },
   { nr: "16", datei: "src/modules/16_siegel.js",          global: "SbkimSiegel" },
   { nr: "17", datei: "src/modules/17_floating_widget.js", global: "SbkimWidget" },
 ];
@@ -129,7 +140,17 @@ for (const mod of MODULE) {
    * anzuhängen. Ohne diesen Wächter wäre die Übersetzung ab dem nächsten
    * Sicherheits-Update wieder löchrig — und niemand sähe es.
    */
-  const datenTabellen = mod.nr === "16"
+  /* Modul 15 übersetzt seine zwei Klartext-Tafeln an der Anzeige-Stelle
+   * (T(GRUND_TEXT[…]) / T(ABSENDER_TEXT[…])) — dieselbe Bauart wie die
+   * ZERTIFIKAT_ASPEKTE in 16. Ihr deutscher Wortlaut steht in der Tabelle,
+   * nicht im Aufruf; ohne diesen Wächter stünde ein neu ergänzter
+   * Abweis-Grund still auf Deutsch im englischen Fenster. */
+  const datenTabellen = mod.nr === "15"
+    ? [{ name: "GRUND_TEXT",    von: "var GRUND_TEXT = {",    bis: "\n  };",
+         muster: /^\s+"[^"]+":\s+"((?:[^"\\]|\\.)*)"/gm },
+       { name: "ABSENDER_TEXT", von: "var ABSENDER_TEXT = {", bis: "\n  };",
+         muster: /^\s+"[^"]+":\s+"((?:[^"\\]|\\.)*)"/gm }]
+    : mod.nr === "16"
     ? [{ name: "ZERTIFIKAT_ASPEKTE", von: "var ZERTIFIKAT_ASPEKTE = [", bis: "\n  ];",
          muster: /^\s+(?:aspect|description|name):\s+"((?:[^"\\]|\\.)*)",/gm }]
     : [{ name: "SLOT_TOOLTIPS", von: "var SLOT_TOOLTIPS = {", bis: "\n  };",
@@ -174,7 +195,7 @@ function stubBauen(htmlLang) {
       tagName: String(tag).toUpperCase(), nodeType: 1, id: "", textContent: "", title: "",
       type: "", value: "", placeholder: "", href: "", innerHTML: "", children: [], parentNode: null,
       style: { cssText: "", display: "", setProperty() {}, removeProperty() {} },
-      dataset: {}, _attr: {},
+      dataset: {}, _attr: {}, _innerHTML: "",
       appendChild(c) { c.parentNode = el; el.children.push(c); return c; },
       removeChild(c) { el.children = el.children.filter((x) => x !== c); return c; },
       insertBefore(c) { return el.appendChild(c); },
@@ -197,6 +218,45 @@ function stubBauen(htmlLang) {
       querySelector(sel) { return suche(el, sel); },
       querySelectorAll(sel) { return alle(el, sel); },
     };
+    /* ⚠ `innerHTML` WAR EINE REINE ZEICHENKETTE — und damit war alles
+     * unsichtbar, was ein Modul als Markup-Gerüst setzt und danach per
+     * textContent füllt. Modul 15 baut seine Tabelle genau so:
+     * `table.innerHTML = "…<tbody data-membran-tbody></tbody>"`, und ein
+     * `querySelector("[data-membran-tbody]")` fand nichts. Die Zeilen
+     * entstanden nie, und der ganze Abschnitt hätte in BEIDEN Sprachen ins
+     * Leere gemessen.
+     *
+     * Die Zeichenkette bleibt erhalten (der Getter gibt sie zurück, Abschnitt
+     * 2 liest sie weiter); zusätzlich werden die Tags zu echten Kindern. Der
+     * Leser kann nur, was die Module wirklich emittieren: Tags mit
+     * Attributen, Text dazwischen, keine Kommentare, kein Selbstschluss. Mehr
+     * wäre ein Browser, und den gibt es hier nicht. */
+    Object.defineProperty(el, "innerHTML", {
+      get() { return el._innerHTML; },
+      set(v) {
+        el._innerHTML = String(v);
+        el.children = [];
+        const stapel = [el];
+        const re = /<(\/?)([a-zA-Z][\w-]*)((?:\s+[\w-]+(?:=(?:"[^"]*"|'[^']*'))?)*)\s*>|([^<]+)/g;
+        let m;
+        while ((m = re.exec(el._innerHTML))) {
+          const oben = stapel[stapel.length - 1];
+          if (m[4] !== undefined) {                       // Text zwischen Tags
+            const t = m[4];
+            if (t.trim() && oben !== el) oben.textContent += t;
+            continue;
+          }
+          if (m[1] === "/") { if (stapel.length > 1) stapel.pop(); continue; }
+          const kind = mk(m[2]);
+          for (const a of (m[3] || "").matchAll(/([\w-]+)(?:="([^"]*)"|='([^']*)')?/g)) {
+            kind.setAttribute(a[1], a[2] !== undefined ? a[2] : (a[3] !== undefined ? a[3] : ""));
+          }
+          oben.appendChild(kind);
+          stapel.push(kind);
+        }
+      },
+      configurable: true, enumerable: true,
+    });
     return el;
   };
   /* Nur die Selektor-Formen, die 16/17 wirklich benutzen: [attr], #id, .klasse. */
@@ -467,6 +527,22 @@ for (const mod of MODULE) {
     for (const m of s.matchAll(/"((?:[^"\\]|\\.)*)"/g)) {
       const w = m[1];
       if (!/\p{L}/u.test(w)) continue;
+      /* ⚠ MARKUP-RUMPF OHNE TEXT — kam am 2026-09-16 mit Modul 15 dazu.
+       * Es baut seine Tabellenzellen als LEERES Markup und füllt sie danach
+       * per textContent: `tr.innerHTML = "<td style=\"padding:…;border:…\">"`.
+       * Der Vorfilter lässt die Zeile durch (sie weist an innerHTML zu), und
+       * im Literal stehen Buchstaben — aber nur CSS-Eigenschaften.
+       *
+       * ⚠ GEMESSEN WIRD, OB TEXT ÜBRIG BLEIBT, nicht ob es nach CSS aussieht.
+       * Ein CSS-Filter („enthält ein Semikolon") verböte das Richtige: er
+       * würfe auch einen echten Anzeigetext mit Semikolon heraus — genau der
+       * Fehler, den die 23er-Probe am 2026-09-14 gemacht und benannt hat.
+       * Hier fallen die Tags weg (auch ein unvollständiger am Zeilenende,
+       * denn das Literal bricht mitten im Tag um); was danach noch einen
+       * Buchstaben trägt, ist Anzeigetext und wird gemessen. Ein
+       * `<th …>Zeit</th>` fällt damit weiterhin auf. */
+      const ohneTags = w.replace(/<[^>]*>/g, " ").replace(/<[^>]*$/, " ");
+      if (!/\p{L}/u.test(ohneTags)) continue;
       if (/^(\\n)+$/.test(w)) continue;
       if (TECHNISCH.has(w)) continue;
       if (s.slice(Math.max(0, m.index - 2), m.index).endsWith("T(")) continue;
@@ -608,6 +684,122 @@ console.log("\nDas gerenderte Wappen:");
   ok(svgDe.includes(">SBKIM<") && svgEn.includes(">SBKIM<"),
      "der Eigenname SBKIM steht in BEIDEN Sprachen unveraendert da");
   ok(rohSvg.includes(">SBKIM<"), "…und zwar unveraendert aus der Konstante");
+}
+
+/* ══ 5. Modul 15 — das Fremdzugriff-Fenster, WIRKLICH GERENDERT ═══════════
+ *
+ * WARUM DIESER ABSCHNITT DER EIGENTLICHE IST. Abschnitt 1 liest den Quelltext
+ * und fände die Tabelle auch dann tadellos, wenn T() gar nicht mehr gerufen
+ * würde. Hier wird das Fenster gebaut und gelesen — und mit einem echten
+ * Eintrag gefüttert, denn die Erklär-Sätze entstehen erst dann.
+ *
+ * ⚠ GEMESSEN WIRD DER ANBLICK, NICHT DIE TABELLE. Die Erklär-Zeile entsteht
+ * aus MEHREREN Wörterbuch-Einträgen, die der Code zu einem Satz zusammensetzt.
+ * Ein Wächter auf „der Eintrag steht im Wörterbuch" wäre grün, während im
+ * Fenster ein halb deutscher Satz stünde.
+ */
+console.log("\nModul 15 — das Fremdzugriff-Fenster gerendert:");
+{
+  /* Ein Eintrag, der ALLE Satzteile auslöst: Grund, Absender, Herkunft,
+   * Zeit-mit-Sichtbarkeit und die Feldliste mit „und N weitere". */
+  const EINTRAG = {
+    at: "12:00:00", kind: "membrane-postmessage", origin: null,
+    endpoint: null, decision: "ignored",
+    details: { grund: "nicht-erlaubt", typ: "sbkim-handshake",
+               absender: "eingebetteter-rahmen", nachLadenMs: 3400,
+               sichtbar: true, felder: ["op", "nonce"], felderMehr: 2 },
+  };
+
+  async function fensterTexte(htmlLang, initOpts) {
+    const g = stubBauen(htmlLang);
+    delete g.SbkimMembrane;                 // das echte Modul, nicht der Mock
+    /* ⚠ DIE LAMPE MUSS DA SEIN, BEVOR init() LÄUFT. Ohne sie hängt das Modul
+     * keinen Klick-Hörer an — und ohne Klick bleibt das Fenster ZU. Die
+     * Tabellenzeilen entstehen erst beim Öffnen; ein Abschnitt ohne sie hätte
+     * in BEIDEN Sprachen nichts gemessen und trotzdem grün gemeldet. Genau
+     * das ist beim ersten Lauf passiert, und der Vorbedingungs-Wächter unten
+     * hat es gefangen. */
+    const lampe = g.document.createElement("span");
+    lampe.setAttribute("id", "lamp-fremd");
+    g.document.body.appendChild(lampe);
+
+    laden(g, "src/modules/15_membran.js");
+    await g.SbkimMembrane.init(initOpts || {});
+    g.SbkimMembrane.fremdzugriff._recordForTest(EINTRAG);
+    lampe.click();                           // öffnen wie ein Finger
+    ok(g.SbkimMembrane._meta.modalOpen === true,
+       `das Fenster ist offen (${htmlLang}${initOpts ? ", init-lang" : ""})`);
+    return { g, texte: texte(g.document.body).join(" | ") };
+  }
+
+  const de = await fensterTexte("de");
+  const en = await fensterTexte("en");
+
+  ok(de.g.SbkimMembrane._meta.lang === "de", "ohne Angabe: Deutsch", de.g.SbkimMembrane._meta.lang);
+  ok(en.g.SbkimMembrane._meta.lang === "en", "<html lang='en'> allein genügt", en.g.SbkimMembrane._meta.lang);
+
+  const mitOpt = await fensterTexte("en", { lang: "de" });
+  ok(mitOpt.g.SbkimMembrane._meta.lang === "de", "init({lang}) schlägt <html lang>");
+
+  ok(de.g.SbkimMembrane._meta.langKeys > 20,
+     `das Wörterbuch trägt Einträge (${de.g.SbkimMembrane._meta.langKeys})`);
+
+  /* ⚠ DIE VORBEDINGUNG WIRD GEMESSEN, NICHT ANGENOMMEN. Baut das Fenster gar
+   * nicht auf, wären alle Vergleiche unten trivial: nichts steht da, also
+   * steht auch nichts Deutsches da. Ein Fall, der nichts messen kann, sähe
+   * sonst wie eine bestandene Prüfung aus. */
+  ok(de.texte.includes("Fremdzugriff-Fenster"),
+     "die Ausgangslage steht: das Fenster ist auf Deutsch wirklich da");
+  ok(de.texte.includes("Die Herkunft steht nicht auf der Erlaubnis-Liste"),
+     "…und die Erklär-Zeile zu dem Eintrag auch");
+
+  /* Auf Deutsch ändert sich NICHTS — die tragende Zusicherung. */
+  for (const satz of [
+    "Fremdzugriff-Fenster", "Aufräumen", "Tipp: leere Tabelle = Lampe geht aus.",
+    "Einträge im Ringbuffer", "Zeit", "(lokal)",
+    "Die Herkunft steht nicht auf der Erlaubnis-Liste",
+    "ein eingebetteter Rahmen auf dieser Seite",
+    "nach dem Laden der Seite, während der Tab vorn war",
+    "und 2 weitere",
+  ]) {
+    ok(de.texte.includes(satz), `auf Deutsch steht „${satz.slice(0, 42)}" unverändert da`);
+  }
+
+  /* Auf Englisch steht KEIN deutscher Satz mehr — das ist die Zusicherung
+   * gegen die halb übersetzte Tafel. */
+  for (const satz of [
+    "Fremdzugriff-Fenster", "Aufräumen", "Tipp: leere Tabelle",
+    "Einträge im Ringbuffer", "(lokal)",
+    "Die Herkunft steht nicht auf der Erlaubnis-Liste",
+    "ein eingebetteter Rahmen auf dieser Seite",
+    "nach dem Laden der Seite", "und 2 weitere",
+    "Felder der Nachricht",
+  ]) {
+    ok(!en.texte.includes(satz), `auf Englisch steht „${satz.slice(0, 42)}" NICHT mehr da`);
+  }
+
+  for (const satz of [
+    "Foreign-access window", "Clear", "Tip: an empty table means the lamp goes out.",
+    "entries in the ring buffer", "Time", "(local)",
+    "The origin is not on the allowlist",
+    "an embedded frame on this page",
+    "while the tab was in the foreground",
+    "and 2 more",
+  ]) {
+    ok(en.texte.includes(satz), `auf Englisch steht „${satz.slice(0, 42)}" da`);
+  }
+
+  /* ⚠ DIE PROTOKOLL-WERTE WANDERN NICHT MIT. Wer einen Befund meldet, soll in
+   * beiden Sprachen dasselbe Wort nennen können — `ignored` und
+   * `membrane-postmessage` sind Feldwerte, keine Sätze. */
+  for (const wert of ["ignored", "membrane-postmessage"]) {
+    ok(de.texte.includes(wert) && en.texte.includes(wert),
+       `der Protokoll-Wert „${wert}" steht in BEIDEN Sprachen gleich da`);
+  }
+
+  /* Die Gegenrichtung zum Wörterbuch: ein Satz OHNE Eintrag fällt fail-soft
+   * auf Deutsch zurück statt „undefined" zu zeigen. */
+  ok(!/undefined/.test(en.texte), "kein „undefined“ im englischen Fenster");
 }
 
 console.log(`\nErgebnis: ${pass} bestanden, ${fail} fehlgeschlagen`);

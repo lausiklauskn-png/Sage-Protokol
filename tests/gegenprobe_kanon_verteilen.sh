@@ -147,6 +147,38 @@ saboten "der Riegel faellt weg — jedes ?v= wird mitgezogen" \
   '    const vMuster = new RegExp(`\\?v=${altN}(?!\\d)`, "g");' \
   '    const vMuster = new RegExp(`\\?v=\\d+`, "g");'
 
+# ── Die Fassungen im Netz ─────────────────────────────────────────────────
+# Anlass: ich habe die eigene Ausgabe dieses Werkzeugs falsch gelesen. Es
+# meldete „19 haengen zurueck" mit Abstaenden von 225 bis 657 Zeilen; drinnen
+# standen ACHT aktuelle Traeger und ZWOELF auf VIER aelteren Fassungen.
+saboten "die Uebersicht wird nicht mehr gedruckt" \
+  tools/kanon-verteilen.mjs \
+  '  const mehrfach = [...generationen.entries()].filter(([, gm]) => gm.size > 0);' \
+  '  const mehrfach = [];'
+
+# Die GEGENRICHTUNG: nach dem ABSTAND gruppieren statt nach dem sha. Zwei
+# Dateien koennen gleich weit zurueckhaengen und trotzdem verschiedene
+# Fassungen sein — dann meldete die Uebersicht EINE Generation, wo ZWEI sind.
+saboten "gruppiert wird nach dem Abstand statt nach dem sha des Traegers" \
+  tools/kanon-verteilen.mjs \
+  '    const gkey = t.ist;' \
+  '    const gkey = "alle-gleich";'
+
+# ── Der veraltete Arbeitsbaum ─────────────────────────────────────────────
+# Der teurere der beiden: ein Repo, dessen Klon zurueckhaengt, faellt STUMM
+# aus dem Lauf. Gemessen an BookLedgerPro, 302 Commits / drei Monate.
+saboten "der veraltete Arbeitsbaum wird nicht mehr gemeldet" \
+  tools/kanon-verteilen.mjs \
+  '    if (n > 0) veraltet.push({ repo: r, n });' \
+  '    if (false) veraltet.push({ repo: r, n });'
+
+# Und die Gegenrichtung: wer JEDEN Baum meldet, meldet nichts. Eine Warnung,
+# die man nicht mehr los wird, ist keine Warnung.
+saboten "jeder Arbeitsbaum wird als veraltet gemeldet" \
+  tools/kanon-verteilen.mjs \
+  '    if (n > 0) veraltet.push({ repo: r, n });' \
+  '    veraltet.push({ repo: r, n });'
+
 echo
 echo "$gefangen gefangen · $durch durchgerutscht · $tot tote Anker"
 [ "$durch" -eq 0 ] && [ "$tot" -eq 0 ] || exit 1

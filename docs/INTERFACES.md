@@ -2711,7 +2711,65 @@ Bietet (öffentlich):
                                         // der via _recordForTest einen synthetischen endpoint-probe-Eintrag
                                         // einschiebt. Ausschließlich Sichttest-Werkzeug; Endknoten setzen
                                         // die Flag NICHT (echter Live-Test kommt dort über fremde Origin).
+      // Sprache (2026-09-16):
+      lang?: "de" | "en"                // Default: die Rangfolge unten. Siehe § Modul 15 SPRACHE.
     }
+
+  SPRACHE (2026-09-16, nach dem Modul-16/17-Rollout). Modul 15 spricht Deutsch
+        und Englisch. Das Verfahren ist SCHLÜSSELLOS und byte-gleich mit dem von
+        Modul 16, 17 und 23 UI — der deutsche Satz IST der Schlüssel, `TEXTE.en`
+        trägt die Übersetzungen, `T(de)` fällt bei fehlendem Eintrag auf Deutsch
+        zurück. Rangfolge: `init({lang})`, sonst `<html lang>` (erste zwei
+        Zeichen), sonst "de". `_meta` zusätzlich: `lang` + `langKeys`.
+
+        DIE VERBINDLICHE ZUSICHERUNG BLEIBT: OHNE EINSTELLUNG ÄNDERT SICH
+        NICHTS. Wer weder `lang` übergibt noch `<html lang>` setzt, bekommt
+        Deutsch wie bisher.
+
+        ⚠ WARUM ES DIESES MODUL BRAUCHTE. Das Fremdzugriff-Fenster hängt an der
+        FREMD-Lampe von Modul 17 — und die spricht seit dem 2026-09-14
+        Englisch. Wer dort klickte, bekam ein vollständig DEUTSCHES Fenster:
+        englische Leiste, deutsches Fenster dahinter. Gemessen am 2026-09-16
+        über alle Träger: 0 von 20 zeigten dieses Fenster auf Englisch,
+        20 von 20 die Leiste darüber. Genau die halb übersetzte Tafel, die
+        netzweit als die schlimmere Sorte benannt ist.
+
+        WAS ÜBERSETZT WIRD: alle Anzeigetexte des Fensters (Titel, Schließen-
+        Etikett, Zähl-Zeile, „Aufräumen", der Sichttest-Knopf samt Tooltip, der
+        Spaltenkopf „Zeit", der Tipp, „(lokal)") und die KLARTEXT-ZEILE unter
+        jedem Eintrag — also die fünf Abweis-Gründe (`GRUND_TEXT`), die fünf
+        Absender (`ABSENDER_TEXT`) und die Sätze, die daraus zusammengesetzt
+        werden.
+
+        WAS AUSDRÜCKLICH NICHT ÜBERSETZT WIRD: die Spaltenköpfe `kind`,
+        `origin`, `endpoint`, `decision` — das sind FELDNAMEN dieses Protokolls
+        (§ FremdzugriffEntry-Form), keine Sätze; und die WERTE darin
+        (`membrane-postmessage`, `ignored`, `accepted`, `rejected-allowlist`).
+        Wer einen Befund meldet, soll in beiden Sprachen dasselbe Wort nennen
+        können. Ein eigener Wächter besteht in beide Richtungen darauf.
+
+        ⚠ DIE KLARTEXT-ZEILE IST IN GANZEN SÄTZEN ÜBERSETZT, nicht in Stücken.
+        Bis zum 2026-09-16 baute `entryErklaerung()` sie aus Fragmenten
+        zusammen („Kam 3.4 s nach dem Laden der Seite" + „, während der Tab
+        vorn war."). Auf Deutsch ließ sich das am Komma zerschneiden; im
+        Englischen steht die Zeitangabe an anderer Stelle im Satz. Jede
+        Variante ist deshalb ein EIGENER Eintrag mit Platzhaltern (`{0}`).
+        Ein Satz, der am Komma auseinandergeschnitten wird, ist keine
+        Übersetzungs-Einheit.
+
+        ⚠ KEIN `ZERTIFIKAT_ASPEKTE`-EINTRAG, obwohl 15 ein Schutz-Modul ist —
+        dieselbe Begründung wie bei Modul 16 am 2026-09-14: eine Übersetzung
+        ist Render-Schicht. Sie rührt weder die Allowlist noch die
+        Nonce-Pflicht noch den Ringbuffer an. Ein Eintrag „spricht jetzt
+        Englisch" behauptete einen Sicherheits-Fortschritt, den es nicht gibt.
+
+        ⚠ DER PREIS DES SCHLÜSSELLOSEN VERFAHRENS gilt auch hier: wer einen
+        deutschen Satz ändert, verliert STILL seine Übersetzung. Dagegen steht
+        derselbe Wächter wie für 16 und 17 — `tests/smoke_bau1617_sprache.mjs`
+        misst in beide Richtungen, prüft `GRUND_TEXT` und `ABSENDER_TEXT` wie
+        die `ZERTIFIKAT_ASPEKTE` und RENDERT das Fenster in beiden Sprachen mit
+        einem echten Eintrag. Wer einen Abweis-Grund ERGÄNZT, trägt seine
+        englische Fassung mit ein.
 
   FremdzugriffEntry-Form (Karte 15 § Sub (e) Schema, verbindlich):
     {
@@ -5026,12 +5084,34 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
 
         SEIT 2026-09-14 SPRECHEN AUCH 16 (Siegel, 55 Texte) und 17 (Lampen,
         28) Englisch, nach demselben schlüssellosen Verfahren — § Modul 16
-        SPRACHE und § Modul 17 SPRACHE. Ein Voll-Knoten ist damit durchgehend
-        zweisprachig. ⚠ `lang` muss an ALLE DREI init() gehen; keiner reicht
-        ihn an die anderen weiter. Über `<html lang>` entfällt das.
+        SPRACHE und § Modul 17 SPRACHE. SEIT 2026-09-16 AUCH 15 (das
+        Fremdzugriff-Fenster hinter der FREMD-Lampe, 31 Texte) — § Modul 15
+        SPRACHE. ⚠ `lang` muss an ALLE VIER init() gehen; keiner reicht ihn an
+        die anderen weiter. Über `<html lang>` entfällt das.
+
+        ⚠ TAFEL-EVOLUTIONS-KLAUSEL, AUSDRÜCKLICH BENANNT. Hier stand vom
+        2026-09-14 bis zum 2026-09-16: „Ein Voll-Knoten ist damit durchgehend
+        zweisprachig." DER SATZ WAR FALSCH, und zwar genau um ein Fenster:
+        Modul 15 gehört zu den dreizehn Pflicht-Modulen eines arbeitenden
+        Knotens, seine FREMD-Lampe stand auf Englisch, und dahinter öffnete
+        sich ein vollständig deutsches Fenster. Gemessen am 2026-09-16:
+        0 von 20 Trägern zeigten es auf Englisch.
+
+        Der Satz ist ERSETZT, nicht stillschweigend getauscht: ein Voll-Knoten
+        ist seit dem 2026-09-16 in seinen VIER Kanon-Fenstern zweisprachig
+        (15 · 16 · 17 · 23 UI). ⚠ UND DAS IST NICHT DASSELBE WIE „der Nutzer
+        sieht Englisch": wo eine App ihre Lampen oder ihr Verbinden-Fenster
+        SELBST malt, erreicht der Kanon sie nicht. Gemessen am 2026-09-16:
+        family-project (`assets/status-widget.js`, ruft `SbkimWidget.hide()`),
+        PWA-Toolpoints Startseite (Lampen als Markup) und Private Brain
+        (`modules/net-widget.js`, 838 Zeilen, app-eigen und bewusst nativ
+        gebaut — 0 Treffer auf `TEXTE`). Wer den Stand einer App beurteilt,
+        prüft ZUERST, wer dort malt.
         (Bis dahin stand hier „NOCH DEUTSCH: 16_siegel.js (47 Texte) und
         17_floating_widget.js (19). Ein Voll-Knoten ist damit heute
-        gemischtsprachig." — fünf Tage lang richtig.)
+        gemischtsprachig." — fünf Tage lang richtig. Sie war nicht falsch,
+        sondern unvollständig: 15 stand in keiner der beiden Listen, und
+        deshalb fiel es zwei Tage lang niemandem auf.)
         createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
         Pro Karte zeigt das Panel ein Verwandtschafts-Badge („🧬 verwandt 0.72"
         vs „· verbunden …") + einen „🧬 nur verwandte"-Schalter (Default aus) —

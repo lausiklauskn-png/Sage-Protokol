@@ -31,6 +31,167 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-16 · Das Fenster hinter der englischen Lampe war deutsch
+
+**Klaus' Bitte:** *„verliere das Ziel Übersetzung in Mycel / Mit dem
+Knotennetz verbinden und Siegel nicht aus dem Auge. Es wurde in der
+Vorgängersitzung entwickelt."*
+
+### Zuerst gemessen, wo die Übersetzung wirklich steht
+
+| Modul | T()-Aufrufe | Einträge `TEXTE.en` | ohne englische Fassung |
+|---|---|---|---|
+| 16b Andock-Wizard | 83 | 83 | **0** |
+| 23 UI Verbinden-Fenster | 239 | 239 | **0** |
+| 16 Siegel · 17 Lampen | über Daten-Tafeln | 57 · 28 | **0** |
+| **15 Membran** | — | **keine Tabelle** | **alles** |
+
+⚠ **MEIN ERSTES MESSWERKZEUG WAR DAS BLINDE, NICHT DIE ÜBERSETZUNG.** Es
+suchte `T("…")` als Literal und hielt 39 Einträge in Modul 16 für tot. Modul 16
+übersetzt aber **Daten** an der Anzeige-Stelle — `T(a.aspect)`, `T(m.name)`,
+`T(WAPPEN_TEXTE[i])`. Der vorhandene Wächter deckt das längst ab; meins nicht.
+*Eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten hinsehen
+musst* — hier gab sie mir unrecht, und das war genauso falsch.
+
+### Der Befund: eine halb übersetzte Tafel, in einem Pflicht-Modul
+
+Das **Fremdzugriff-Fenster** von Modul 15 hängt an der **FREMD-Lampe von Modul
+17** — und die spricht seit dem 2026-09-14 Englisch. Wer dort klickte, bekam ein
+vollständig deutsches Fenster. Gemessen über alle Träger: **0 von 20** zeigten
+das Fenster auf Englisch, **20 von 20** die Leiste darüber.
+
+Modul 15 ist eines der **dreizehn Pflicht-Module** eines arbeitenden Knotens.
+`INTERFACES.md` behauptete seit dem 2026-09-14: *„Ein Voll-Knoten ist damit
+durchgehend zweisprachig."* **Der Satz war falsch, und zwar genau um dieses
+Fenster.** Ersetzt, nicht stillschweigend getauscht.
+
+### Was gebaut wurde
+
+Verfahren byte-gleich mit 16, 17 und 23 UI: schlüssellos, Rangfolge
+`init({lang})` → `<html lang>` → `de`, fail-soft. **31 Einträge.** OHNE
+EINSTELLUNG ÄNDERT SICH NICHTS.
+
+⚠ **DIE KLARTEXT-ZEILE IST IN GANZEN SÄTZEN ÜBERSETZT, nicht in Stücken.**
+`entryErklaerung()` baute sie aus Fragmenten zusammen — *„Kam 3.4 s nach dem
+Laden der Seite"* + *„, während der Tab vorn war."*. Auf Deutsch ließ sich das
+am Komma zerschneiden; im Englischen steht die Zeitangabe an anderer Stelle im
+Satz. Jede Variante ist jetzt ein **eigener** Eintrag mit Platzhaltern.
+
+⚠ **DIE ZÄHL-ZEILE STAND AN DREI STELLEN** als eigener Zusammenbau. Beim
+Übersetzen wären das drei Schlüssel gewesen, von denen zwei still deutsch
+geblieben wären. Jetzt `zaehlText()`.
+
+⚠ **NICHT ÜBERSETZT:** die Spaltenköpfe `kind`/`origin`/`endpoint`/`decision`
+und ihre Werte (`ignored`, `membrane-postmessage`). Das sind Feldnamen und
+Feldwerte des Protokolls — wer einen Befund meldet, soll in beiden Sprachen
+dasselbe Wort nennen können. Ein eigener Wächter besteht in beide Richtungen
+darauf.
+
+⚠ **KEIN `ZERTIFIKAT_ASPEKTE`-EINTRAG**, obwohl 15 ein Schutz-Modul ist —
+dieselbe Begründung wie bei Modul 16: eine Übersetzung ist Render-Schicht.
+
+### Drei eigene Fehler, keinen hat das Nachdenken gefunden
+
+| Was | Wie es sich zeigte |
+|---|---|
+| **`escapeHtmlText()` gibt es in Modul 15 gar nicht** | wäre beim ersten Öffnen des Fensters abgestürzt. `node --check` schweigt dazu — es prüft Syntax, nicht ob ein Name existiert |
+| **Der neue Abschnitt maß beim ersten Lauf NICHTS** | ohne `#lamp-fremd` hängt das Modul keinen Klick-Hörer an, das Fenster blieb **zu**, die Tabellenzeilen entstanden nie — und die zehn „steht auf Englisch nicht mehr da"-Zeilen waren **trivial grün**. Der Vorbedingungs-Wächter hat es gefangen |
+| **`innerHTML` war im DOM-Stub eine reine Zeichenkette** | also gab es kein `<tbody>` zum Befüllen. Der Stub liest jetzt einfaches Markup; 16 und 17 blieben dabei **gemessen** bei 99 grün, 0 rot |
+
+### Und der größere Fund: Modul 15 liegt netzweit in FÜNF Fassungen
+
+Beim Rollout-Blick gemessen, auf `origin/main`, nicht auf Arbeitsbäumen:
+
+| sha | Zeilen | Träger |
+|---|---|---|
+| `f88b5d04bc08` (aktuell) | 1662 | **8** |
+| `fbf9f42d8a27` | 1317 | **8** |
+| `0f8a3f69de61` | 1314 | 2 |
+| `33d6fe0c5057` | 1313 | 1 |
+| `8a07567f98ce` | 1558 | 1 (family-project) |
+
+**Zwölf Träger auf einer älteren Generation, bis zu 349 Zeilen zurück — in
+einem Schutz-Modul.** Der Brief nannte family-project als „eine Generation
+zurück"; es sind zwölf Repos, und family-project ist nicht einmal das
+entfernteste.
+
+⚠ **DER VERTEILER KONNTE DAS NICHT ZEIGEN, und ich habe seine Ausgabe prompt
+falsch gelesen.** Er meldete „19 hängen zurück" mit Abständen von 225 bis 657
+Zeilen — daraus liest man „überall fehlt dieselbe Änderung". Der Abstand je
+Datei beantwortet *wie weit ist DIESE zurück*, nicht *wie viele Stände liegen
+draußen*. Er zählt sie jetzt, **nach dem sha des Trägers, nicht nach dem
+Abstand**: zwei Dateien können gleich weit zurückhängen und trotzdem
+verschiedene Fassungen sein.
+
+### Und ein stilles Überspringen mit gemessener Ursache
+
+**BookLedgerPros Klon im Behälter steht 302 Commits / drei Monate zurück**
+(HEAD 2026-06-14, origin/main 2026-09-16) — als einziges der 33 Repos. Sein
+Sitzungs-Zweig wurde aus dem alten Klon abgezweigt, und der Sitzungsstart-Hook
+fasst einen Nicht-Standard-Zweig **zu Recht** nicht an.
+
+Der Verteiler liest den **Arbeitsbaum**. Dort gab es `sbkim/15_membran.js` noch
+gar nicht — also keine Marke, kein Träger, kein Eintrag: *„19 Repos tragen
+Kanon-Dateien"*, während auf `origin/main` **zwanzig** eine Kopie tragen. **Das
+Repo fiel aus dem Lauf, ohne dass eine Zeile darüber stand.**
+
+Das ist die Schwester der Lehre *„eine gefundene Liste schützt vor einer
+veralteten Kopie, nicht vor einer fehlenden"* — nur ist die Kopie hier nicht
+fehlend, sondern **unsichtbar**. Der Verteiler meldet es jetzt und **fasst
+nichts an**: ein Automat, der fremde Arbeitsbäume bewegt, könnte ungepushte
+Arbeit überfahren.
+
+⚠ **Der Befund der Vorgängersitzung hält trotzdem** — unabhängig auf
+`origin/main` nachgeprüft: BookLedgerPro trägt dort wirklich kein
+`sbkim-andock-wizard.js`, und `siegel-inhalt.js` hat 479 Zeilen.
+
+### Wer sein Verbinden-Fenster selbst malt, erreicht der Kanon nicht
+
+Gemessen: **Private Brain** hat kein `23_rendezvous_ui.js`, sondern
+`modules/net-widget.js` — 838 Zeilen, app-eigen, bewusst nativ gebaut, **0
+Treffer auf `TEXTE`**. Dazu die zwei längst benannten: family-project
+(`assets/status-widget.js`, ruft `SbkimWidget.hide()`) und PWA-Toolpoints
+Startseite. *Eine Kette mit `lang=en` beweist nicht, dass der Nutzer Englisch
+sieht.* Steht jetzt in `INTERFACES.md` statt nur in der SIGNAL-Historie.
+
+### Gemessen
+
+| | |
+|---|---|
+| `node tests/run_alle.mjs` | **107 Proben · 107 grün · 0 rot · 0 nicht lauffähig** |
+| `smoke_bau1617_sprache.mjs` | **141 grün** (vorher 83) |
+| `smoke_kanon_verteilen.mjs` | **35 grün** (vorher 25) |
+| `gegenprobe_bau1617_sprache.sh` | **41 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| `gegenprobe_kanon_verteilen.sh` | **13 gefangen · 0 durchgerutscht · 0 tote Anker** |
+
+Rückgabewerte **direkt** gelesen, nicht hinter einer Pipe. Vor jedem Commit die
+**Dateiliste** angesehen, nicht nur den Diff.
+
+⚠ **Die Zahlen davor bleiben daneben stehen, weil sie die Funde gemacht haben:**
+die Sprach-Gegenprobe meldete zuerst **40 gefangen · 1 toter Anker**, und zwei
+Fälle fielen am **Nachbar**-Wächter statt an ihrem eigenen. Bei der
+Verteiler-Gegenprobe war es dasselbe: zwei Sabotagen ließen das Werkzeug
+**abstürzen**, und dann meldete die erste Zusicherung des Laufs.
+
+### Was offen bleibt
+
+- **Der Rollout von Modul 15 ist NICHT gefahren** — und das ist eine
+  Entscheidung, keine Auslassung. Acht Träger bekämen einen reinen Nachtrag,
+  **zwölf einen Generationen-Sprung in einem Schutz-Modul**, und der braucht
+  laut Verfassung einen Probenlauf im Ziel-Repo. Beides in einer Bewegung wäre
+  genau das Vermischen, vor dem die Tafel warnt. **Klaus entscheidet.**
+- **BookLedgerPro** (Wizard-Kanon **und** der veraltete Klon), **Privat-Brains
+  4** und **SB-KIMTool-Points 2** vorbestehende rote Zeilen, und der
+  Rezept-Export trägt die Spore nicht.
+- **Klaus' Browser-Sichttest** — ob das Fenster auf einer englischen Seite
+  wirklich englisch dasteht, sieht nur er.
+- **Mein WorkFlohs `sampleContent()`-Gerüst bleibt ausgeschaltet.**
+
+**Nächster sinnvoller Schritt:** die Rollout-Frage entscheiden (acht jetzt,
+zwölf mit Probenlauf) — davon hängt ab, ob das Fenster bei den Nutzern ankommt.
+
+---
+
 ## 2026-09-16 · Der Zähler zählte nicht, und der Satz war halb wahr
 
 **Klaus' Bitte:** *„Ja, beide Spore-Befunde umsetzen."* Beide stammen aus der
@@ -542,163 +703,17 @@ Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
 
 ---
 
-## Stand 2026-09-15 (Haupt-Sitzung, Nachtrag 2) · ⚠ DERSELBE KOMMA-FEHLER IM SERVICE-WORKER
+## Eine Sitzung vom 2026-09-15 (Nachtrag 2) — ausgelagert am 2026-09-16
 
-**Gefunden beim Verifizieren nach `Mein-WorkFloh/CLAUDE.md`** (*„node --check auf
-den `<script>`-Block von `index.html` **und** `sw.js`“*). Der A18-Rollout hat die
-Wizard-Zeile auch an den **Offline-Vorrat** angehängt, und dort zweifach falsch:
+**Derselbe Komma-Fehler im Service-Worker.** Vollständig und wortgleich in
+[`sessions/archiv/2026-09-16_puls-auslagerung-15.md`](sessions/archiv/2026-09-16_puls-auslagerung-15.md).
 
-```
-  'assets/nostr-listen-init.js', 'assets/siegel-inhalt.js'         <- Komma fehlt
-  'assets/nostr-listen-init.js', 'assets/sbkim-andock-wizard.js'   <- Doppel-Eintrag
-```
+## Zwei Sitzungen vom 2026-09-15 — ausgelagert am 2026-09-16
 
-**Ein Service-Worker, der nicht parst, installiert nicht** — die App hatte einen
-Tag lang keinen Offline-Vorrat. **Netzweit gemessen: nur diese eine App**, alle
-übrigen 24 Service-Worker parsen. Behoben, Cache-Bump v129 → v130.
-
-⚠ **WARUM DER NEUE WÄCHTER ES NICHT FANGEN KONNTE, und das ist der Punkt:**
-`tools/wizard-laedt-pruefen.mjs` **lädt die Seite** und misst, ob Konfiguration
-und Kanon ankommen. Ein Service-Worker ist daran nicht beteiligt — er wird
-**registriert**, nicht geladen. Die Seite war tadellos, der Vorrat tot.
-**Ein Wächter misst, was er misst, und kein Zeichen mehr.**
-Seitdem: `tests/smoke_service_worker_parst.mjs` fährt `node --check` über alle
-**25** Service-Worker des Netzes, mit Gegenprobe auf genau den Komma-Fall.
-
-**URSACHE IM WERKZEUG behoben.** `tools/wizard-trennen.mjs` spiegelte die
-**ganze Zeile**; in `index.html` steht ein Eintrag je Zeile (dort ging es gut),
-in `sw.js` stehen drei. Ab zwei Pfaden je Zeile wird jetzt nur noch der
-**Eintrag** herausgelöst. **An zwei Fixtures gemessen**, nicht behauptet: die
-`sw.js`-Form parst danach, die `index.html`-Form bleibt unverändert.
-
-**MEIN-WORKFLOH HAT SEINE IDENTITÄT VERLOREN — und das ist diesmal kein
-Fortschritt.** `foFm64sA…` ist weg: Klaus hat gesucht, es gibt keine Sicherung,
-und der Identitäts-Wechsler der App sagt es selbst — *„Genau eine Identität —
-sauber.“* Er nutzt die App ausschließlich über den DeX-Browser. Geltend ist
-`LEIbBDaS…`; die alte steht unter `previousNodeIds` (jetzt **zwei** Einträge).
-
-**Gemessen: gegen Sages Spore exakt `0.902126`** — auf sechs Stellen derselbe
-Wert wie die alte Identität. **Der Wechsel kostet die Zahl nichts, er kostet die
-Identität.** 10 Prüfungen vor dem Ablegen, 0 rot.
-
-✅ **UND EINE ANTWORT AUF KLAUS'' FRAGE, GEMESSEN STATT GERATEN.** Er fragte, wie
-sich verhindern lässt, dass alte Kennungen mitgenommen werden. Nachgesehen in
-`src/modules/02_spore.js`: liegen **mehrere** Identitäten in einem Browser und
-ist keine als aktiv markiert, nimmt Modul 02 den **ersten Slot lexikographisch**
-(`listIdentities()` sortiert alphabetisch) — **nicht die neueste nach
-Zeitstempel.** Das ist nicht falsch, aber willkürlich, und es steht jetzt da,
-damit niemand „die neueste gewinnt“ annimmt.
-
-## Stand 2026-09-15 (Haupt-Sitzung, Nachtrag) · ✅ MUSTER WERBETECHNIK IST ÜBER DEM HANDSHAKE-BODEN
-
-Klaus hat noch am selben Tag über das Siegel neu signiert und die Spore
-geschickt. **Acht Prüfungen, 0 rot**, bevor sie abgelegt wurde: Signatur VALID
-reziprok · `id == base64url(SHA256(rawPub))` · kein `d` · `key_ops` nur
-`["verify"]` · `OKP`/`Ed25519` · 384 Stellen · **L2 = 1.000000044** · kein
-`_demo` · Text **byte-gleich mit beiden Wegen zur Spore** (864 Zeichen).
-
-**Die abgelegte Spore hing bis dahin auf der ALTEN Kennung.** Das Register
-führt seit dem 2026-09-10 `Gq_Mt8o…` und `_Psq_…` unter `previousNodeIds`,
-`sbkim/spore.json` trug noch `_Psq_…` vom 2026-08-16. **Depot und Register
-stimmen jetzt zum ersten Mal überein** — keine Identitäts-Entscheidung, die fiel
-am 2026-09-10.
-
-**Gemessen gegen Sages Spore: 0,793613 → 0,907431**, also über
-`PROVIDER_MIN_MATCH = 0.80`. Von den fünf Knoten unter dem Boden sind **vier**
-übrig: Alis Moderaum 0,793347 · Perfect Skin Fashion 0,793030 · Tomys Hub
-0,786371 · Perfect Skin Beauty 0,783216.
-
-⚠ **Die Ursache ist nicht die Länge, sondern der Inhalt.** 421 → 864 Zeichen,
-aber entscheidend ist, dass der neue Text SBKIM, Mycel, Knoten und Sage-Protokol
-**nennt**. Derselbe Hebel, den `status.json` aus den Mitschnitten vom 2026-09-10
-benennt — **jetzt ein zweites Mal belegt**, an einem Knoten, der vorher darunter
-lag.
-
-⚠ **`matchScoreQuelle` ist hier `depot-2026-09-15`**, bei den übrigen zwanzig
-`raum-2026-09-10`. Gerechnet gegen die abgelegte Spore, weil für diesen Tag kein
-Mitschnitt vorliegt. Eine Tabelle mit zwei Maßstäben nennt sie, statt einheitlich
-auszusehen.
-
-✅ **Inzwischen erledigt** (Klaus, 2026-09-15: „Sicherungen sind alle angelegt“) — **seine Angabe, nicht gemessen**, der Vermerk lebt im Browser-Speicher und ist von einer Sitzung nicht zu lesen. **Neu signieren bleibt trotzdem etwas anderes als sichern.**
-
-## Stand 2026-09-15 (Haupt-Sitzung, zweiter Teil) · ⚠ DIE ZEITERFASSUNG LÄUFT IN BEIDE FEHLERRICHTUNGEN
-
-**Rolle:** Haupt-Sitzung, Fortsetzung. **Anlass:** Klaus' Widerspruch
-*„Alle hatten SBKIM UND NICHT ERST SEIT GESTERN"*, danach sein Sichttest an
-sieben Apps und ein zweiter Auftrag zur Zeiterfassung.
-
-**Klaus hatte recht, und zwar an der Wortwahl.** Im Chat stand
-*„die vier Apps, die seit gestern gar kein SBKIM hatten"*. Gemessen: SBKIM liegt
-in diesen vier Apps seit dem **2026-08-16** (Alis #39, PSB #43, PSF #15,
-Muster Werbetechnik #7). Die Messung über das A18-Fenster stimmte — der Satz
-las sich, als hätten die Apps SBKIM erst seit gestern. Berichtigt.
-Herkunft des Befundes: `klaus`.
-
-**Nachgemessen im echten Browser, sieben Apps, je drei Stände** (Wegwerf-Worktrees
-an `A18^`, `A18`, `origin/main`): vorher Speicher/Siegel/Lampen ✓ · im A18-Stand
-alle ✗ mit `Unexpected string` · heute wieder ✓ und zusätzlich Konfiguration und
-Kanon. Das Fenster war rund **ein Tag**, im Depot.
-
-**Klaus' Sichttest: grün, alle sieben.** Jede App trägt ihren eigenen Text im
-Siegel, jede hat den Andock-Wizard. Der Wizard ist das **letzte** Glied der
-Kette — steht er da, sind die siebzehn Dateien davor angekommen.
-
-**Aus den Bildern gemessen — Kennung im Browser gegen `status.json`:** fünf von
-sieben gleich (Mixarium, Alis, PSF, PSB, Muster Werbetechnik), **zwei anders**
-(Mein Rezeptbuch, Mein WorkFloh). Am 2026-09-10 waren es netzweit zwei von
-fünfzehn. **Vier Knoten hatten KEINE Sicherung ihrer Kennung** — inzwischen nach Klaus’
-Angabe alle angelegt (Muster
-Werbetechnik, Rezeptbuch, **Mixarium**, WorkFloh) — bei Mixarium ist die Kennung
-in `status.json` und in den Proben genagelt. Klaus ist darauf hingewiesen; eine
-Sitzung kann den Knopf nicht drücken.
-
-**Nebenbefund, nicht von A18:** `modules/noble-secp256k1.js` steht in der
-Nachlade-Kette und wird dort als gewöhnliches Skript geladen — es ist ein
-ES-Modul und wirft `Unexpected token 'export'`, vorher wie nachher. Kette läuft
-fail-soft weiter, Siegel und Spore sind da. **Nicht untersucht**, ob dadurch
-etwas fehlt.
-
-**⚠ DER BEFUND DES TAGES: die Historien-Methode ist an zwei aufeinanderfolgenden
-Tagen in BEIDE Fehlerrichtungen gelaufen.** `Kimhub/tools/zeiten-sammeln.mjs`
-warnt in seinem eigenen Kopf vor genau beiden — *„UNTERGRENZE … Pausen
-dazwischen zaehlen voll mit"* — und niemand hat es an der Zahl gemerkt.
-Gemessen über alle 22 Depots:
-
-| Tag | Commits | Depots | Commit-Spanne | Wirkung |
-|---|---|---|---|---|
-| 2026-09-14 | 197 | 22 | **16 h 02 min** (07:04–23:06 UTC) | Pausen zählen voll → zu viel |
-| 2026-09-15 | 24 | 8 | **0 h 29 min** (09:13–09:42 UTC) | Klaus' Bildschirmfotos tragen 12:41–12:54 UTC → mindestens **3 h 12 min** liegen nach dem letzten Commit → zu wenig |
-
-Die ganze Arbeit des 15. nach 09:42 — drei Browser-Stände messen, Klaus'
-Widerspruch, sein Sichttest, der Kennungs-Abgleich — hinterlässt **keinen
-einzigen Commit**. Aus einem Arbeitstag werden 29 Minuten.
-**Das trifft `forschung/METHODE.md` § 3 unmittelbar:** das Feld `spanne` IST
-diese Commit-Spanne. Gemerkt hat es der Betreiber, weil ihm das Stoppen der
-Stechuhr lästig wurde. Herkunft: `klaus`, Wächter blind.
-
-**Für die Übersetzung neu gemessen:** **keine** App im Netz trägt statisch
-`html lang="en"` — die Zusicherung „ohne Einstellung ändert sich nichts" hält.
-**Aber zehn Apps setzen `<html lang>` zur Laufzeit**, sobald der Nutzer eine
-Sprache wählt (Alis-Moderaum:448, PSF:299, New-PSB:296, PWA-Toolpoint
-`sprache.js`:97, Mixarium:6100, Rezeptbuch-QC:6230, Mein-WorkFloh:1041,
-Muttis:4694, Mixarium-Page:51, Tomys `workfloh`:978). Die Falle ist damit eine
-andere als im alten Brief beschrieben.
-
-**Forschungsstand nachgerechnet** (2026-09-15, über alle 22 Einträge in
-`Kimhub/forschung/sitzungen.json`): 340 Befunde · `hinsehen` 43,5 % ·
-`gegenprobe` 25,0 % · `klaus` 17,1 % · `regel` 14,4 % · **blinde Wächter 42,9 %**.
-V1 hält, V2 hält. Die **Auswertung** selbst steht weiter aus; die Sitzungen vom
-14. und 15. sind noch nicht eingetragen.
-
-**Offen:** die Übersetzung (`TEXTE.en`) · die Zeiterfassung zusammenführen
-(drei Wege vorgelegt, Klaus entscheidet) · die zwei abweichenden Kennungen ·
-44 zurückhängende Kanon-Dateien · 38 blinde
-Gegenprobe-Fälle in PWA Toolpoint · die zwei `jasons-bibliothek/`-Spiegel ·
-`noble-secp256k1` in der Kette.
-
-**Nächster Schritt:** `docs/sessions/BRIEF_uebersetzung-und-zeiterfassung.md` —
-er trägt beide Aufträge und alle Zahlen dieses Tages.
-
+Die **Zeiterfassung, die in beide Fehlerrichtungen läuft** (Pausen zählen voll
+→ zu viel; alles nach dem letzten Commit fehlt → zu wenig) und **Muster
+Werbetechnik über dem Handshake-Boden**. Beide vollständig und wortgleich in
+[`sessions/archiv/2026-09-16_puls-auslagerung-15.md`](sessions/archiv/2026-09-16_puls-auslagerung-15.md).
 
 ## Drei Sitzungen vom 2026-09-14 (A18) — ausgelagert am 2026-09-16
 
