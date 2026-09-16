@@ -13,6 +13,7 @@
  */
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
@@ -346,6 +347,148 @@ console.log("\nEin Arbeitsbaum, der aelter ist als sein Depot:");
   ok(!/ARBEITSBAUM AELTER/.test(r2.text), "ein frischer Klon wird NICHT gemeldet");
   ok(/App-Alt/.test(r2.text) && /haengt zurueck/.test(r2.text),
      "…und seine Kopie ist jetzt sichtbar");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* ══ --nur-generation: nur EINE Fassung nachziehen ══════════════════════
+ * ERGAENZT AM 2026-09-16. Modul 15 bekam seine englische Tabelle; von 20
+ * Traegern standen 8 sonst byte-genau auf dem Kanon, 12 auf einer aelteren
+ * Generation. `--schreiben` kannte keinen Filter — es waere ganz oder gar
+ * nicht gewesen, und „ganz" haette einen SCHUTZ-Modul-Generationssprung in
+ * zwoelf Apps mitgenommen, ohne dass irgendwo eine Probe gelaufen waere.
+ *
+ * Das Wegwerf-Netz traegt zwei alte Fassungen: App-Eins/App-Drei (`var ALT`)
+ * und App-Vier (`var NOCH_AELTER`). Genau daran wird gemessen. */
+console.log("\nNur EINE Fassung nachziehen (--nur-generation):");
+{
+  const { w, sage } = netzBauen();
+  /* ⚠ DER sha WIRD GERECHNET, NICHT GENAGELT. Ein fest eingetragener Hash
+   * waere beim ersten Wort mehr im Probe-Modul still falsch, und der Fall
+   * meldete dann „trifft keinen Traeger" statt einer gebrochenen Zusicherung. */
+  const shaVon = (f) => createHash("sha256").update(readFileSync(f)).digest("hex");
+  const genAlt = shaVon(join(w, "App-Eins/modules/sbkim-siegel.js"));
+  const genAelter = shaVon(join(w, "App-Vier/sbkim/16_siegel.js"));
+  ok(genAlt !== genAelter,
+     "VORBEDINGUNG: die zwei Traeger-Fassungen sind wirklich verschieden");
+
+  const r = lauf(sage, w, ["--nur", "16_siegel", "--nur-generation", genAlt.slice(0, 12), "--schreiben"]);
+  ok(/App-Eins/.test(r.text) && /nachgezogen/.test(r.text),
+     "die passende Fassung wird nachgezogen (App-Eins)");
+  ok(/zurueckgehalten:.*App-Vier|App-Vier[\s\S]{0,200}?zurueckgehalten/.test(r.text)
+     || /App-Vier[\s\S]{0,200}?Fassung /.test(r.text),
+     "die andere Fassung wird ZURUECKGEHALTEN — und zwar sichtbar, mit Namen",
+     (r.text.match(/App-Vier[\s\S]{0,120}/) || [""])[0].trim());
+  /* ⚠ GEMESSEN WIRD DIE DATEI, NICHT DIE MELDUNG. Ein Werkzeug, das
+   * „zurueckgehalten" schreibt und trotzdem schreibt, saehe hier gleich aus. */
+  ok(shaVon(join(w, "App-Vier/sbkim/16_siegel.js")) === genAelter,
+     "…und die zurueckgehaltene Datei ist auf der Platte UNVERAENDERT");
+  ok(shaVon(join(w, "App-Eins/modules/sbkim-siegel.js")) !== genAlt,
+     "…waehrend die passende wirklich geschrieben wurde");
+  /* ⚠ DIE UEBERSICHT DARF DER FILTER NICHT BESCHNEIDEN. Sonst meldete ein
+   * gefilterter Lauf „eine Fassung im Netz", waehrend zwei draussen liegen —
+   * genau die Auskunft, wegen der es den Filter gibt. */
+  /* ⚠ GEMESSEN WIRD, DASS SIE DIE REPOS NENNT — nicht, dass sie zwei Gruppen
+   * zaehlt. Die erste Fassung dieses Waechters fragte nur nach „2 verschiedene
+   * aeltere Fassungen", und die Sabotage (Mitglieder nur noch bei Treffer
+   * eintragen) rutschte durch: `gm.set(gkey, [])` legt den Schluessel weiter
+   * an, die ZAHL blieb also 2, die Liste war leer. Eine Uebersicht, die zwei
+   * Fassungen behauptet und kein Repo nennt, ist keine Uebersicht. */
+  const uebersicht = (r.text.split("Fassungen im Netz")[1] || "");
+  ok(/2 verschiedene aeltere Fassungen/.test(uebersicht),
+     "die Fassungs-Uebersicht zaehlt weiter BEIDE Fassungen, trotz Filter",
+     (r.text.match(/Modul 16: .*/) || [""])[0]);
+  ok(/App-Vier/.test(uebersicht),
+     "…und nennt das ZURUECKGEHALTENE Repo dort beim Namen",
+     uebersicht.trim().split("\n").slice(0, 4).join(" | "));
+  ok(/zurueckgehalten \(andere Fassung\)/.test(r.text),
+     "die Schlusszeile nennt die Zurueckgehaltenen");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* GEGENRICHTUNG: ohne Filter wird ALLES nachgezogen. Ohne diesen Fall waere
+ * ein Werkzeug, das immer alles zurueckhaelt, von einem richtigen nicht zu
+ * unterscheiden. */
+{
+  const { w, sage } = netzBauen();
+  const shaVon = (f) => createHash("sha256").update(readFileSync(f)).digest("hex");
+  const vorher = shaVon(join(w, "App-Vier/sbkim/16_siegel.js"));
+  const r = lauf(sage, w, ["--nur", "16_siegel", "--schreiben"]);
+  ok(!/zurueckgehalten/.test(r.text), "OHNE Filter wird nichts zurueckgehalten");
+  ok(shaVon(join(w, "App-Vier/sbkim/16_siegel.js")) !== vorher,
+     "…und auch die andere Fassung wird wirklich nachgezogen");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* Ein Filter, der nichts trifft, ist ein BEFUND — kein stilles „nichts zu tun". */
+{
+  const { w, sage } = netzBauen();
+  const r = lauf(sage, w, ["--nur", "16_siegel", "--nur-generation", "deadbeefdead", "--schreiben"]);
+  ok(r.code === 2, "ein sha, der KEINEN Traeger trifft, gibt 2 zurueck", `war ${r.code}`);
+  ok(/trifft KEINEN/.test(r.text), "…und sagt es im Klartext");
+  const r2 = lauf(sage, w, ["--nur", "16_siegel", "--nur-generation", "xyz"]);
+  ok(r2.code === 2, "kein Hex-sha gibt 2 zurueck", `war ${r2.code}`);
+  ok(/mindestens 8 Hex-Zeichen/.test(r2.text), "…und nennt den Grund");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* ══ Der Standard-Zweig wird GEFRAGT, nicht geraten ═════════════════════
+ * ⚠ BIS ZUM 2026-09-16 STAND IM WERKZEUG `catch { def = "master"; }`. Gibt es
+ * auch `origin/master` nicht, warf das folgende `rev-list` ein „fatal:
+ * ambiguous argument", der aeussere catch schluckte es, und das Repo fiel aus
+ * der Veraltet-Pruefung — OHNE DASS EINE ZEILE DARUEBER STAND. Gemessen an
+ * `Meine-In-and-Out-Book`. Wortgleich der Schaden, gegen den diese Pruefung
+ * einen Tag vorher gebaut wurde, nur eine Zeile weiter. */
+console.log("\nDer Standard-Zweig wird gefragt, nicht geraten:");
+{
+  const w = mkdtempSync(join(tmpdir(), "kanon-zweig-"));
+  const sage = join(w, "Sage-Protokol");
+  mkdirSync(join(sage, "src", "modules"), { recursive: true });
+  mkdirSync(join(sage, "tools"), { recursive: true });
+  writeFileSync(join(sage, "tools", "kanon-verteilen.mjs"), readFileSync(werkzeug));
+  const modul = (nr, inhalt) => `/*\n * SBKIM — Modul ${nr} — Probe\n */\n${inhalt}\n`;
+  writeFileSync(join(sage, "src/modules/16_siegel.js"), modul(16, "var NEU = 2;"));
+
+  const git = (cwd, ...a) => execFileSync("git", ["-C", cwd, ...a],
+    { stdio: "pipe", env: { ...process.env, GIT_AUTHOR_NAME: "p", GIT_AUTHOR_EMAIL: "p@p",
+                            GIT_COMMITTER_NAME: "p", GIT_COMMITTER_EMAIL: "p@p" } });
+
+  /* Ein Depot, dessen Standard-Zweig WEDER main NOCH master heisst. */
+  const fern = join(w, "trunk.git");
+  mkdirSync(fern, { recursive: true });
+  git(fern, "init", "--bare", "--initial-branch=trunk", ".");
+  const quelle = join(w, "quelle");
+  mkdirSync(quelle, { recursive: true });
+  git(quelle, "init", "--initial-branch=trunk", ".");
+  writeFileSync(join(quelle, "liesmich.txt"), "erster Stand\n");
+  git(quelle, "add", "-A"); git(quelle, "commit", "-m", "erster");
+  git(quelle, "remote", "add", "origin", fern); git(quelle, "push", "-q", "origin", "trunk");
+
+  const app = join(w, "App-Trunk");
+  execFileSync("git", ["clone", "-q", fern, app], { stdio: "pipe" });
+  mkdirSync(join(quelle, "sbkim"), { recursive: true });
+  writeFileSync(join(quelle, "sbkim/16_siegel.js"), modul(16, "var ALT = 1;"));
+  git(quelle, "add", "-A"); git(quelle, "commit", "-m", "Kanon-Kopie dazu");
+  git(quelle, "push", "-q", "origin", "trunk");
+
+  /* Und ein Depot GANZ OHNE Zweig auf origin — das ist der dritte Ausgang. */
+  const leerFern = join(w, "leer.git");
+  mkdirSync(leerFern, { recursive: true });
+  git(leerFern, "init", "--bare", "--initial-branch=main", ".");
+  const leer = join(w, "App-Leer");
+  execFileSync("git", ["clone", "-q", leerFern, leer], { stdio: "pipe" });
+
+  const r = lauf(sage, w, ["--nur", "16_siegel"]);
+  ok(!/fatal:/.test(r.text),
+     "kein rohes git-fatal mehr in der Ausgabe", (r.text.match(/fatal:.*/) || [""])[0]);
+  ok(/App-Trunk: 1 Commits hinter origin/.test(r.text),
+     "ein Depot mit Standard-Zweig `trunk` wird GEMESSEN statt uebersprungen",
+     (r.text.match(/App-Trunk.*/) || [""])[0].trim());
+  ok(/NICHT MESSBAR/.test(r.text) && /App-Leer/.test(r.text),
+     "ein Depot ohne jeden Zweig heisst NICHT MESSBAR statt aktuell",
+     (r.text.match(/App-Leer.*/) || [""])[0].trim());
+  /* GEGENRICHTUNG: das messbare Repo darf NICHT als unmessbar dastehen. */
+  ok(!/NICHT MESSBAR[\s\S]{0,200}App-Trunk/.test(r.text),
+     "…und App-Trunk steht NICHT unter den unmessbaren");
   rmSync(w, { recursive: true, force: true });
 }
 

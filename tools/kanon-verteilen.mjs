@@ -53,6 +53,32 @@ const NACHBARN = ni >= 0 && args[ni + 1] ? args[ni + 1] : join(WURZEL, "..");
 const nuri = args.indexOf("--nur");
 const NUR = nuri >= 0 && args[nuri + 1] ? args[nuri + 1] : null;
 
+/* ── --nur-generation <sha> ────────────────────────────────────────────────
+ * ERGAENZT AM 2026-09-16, WEIL „ganz oder gar nicht" die falsche Wahl war.
+ * Modul 15 bekam seine englische Tabelle; von 20 Traegern standen 8 sonst
+ * byte-genau auf dem Kanon, 12 auf einer aelteren Generation. Bei den 8 aendert
+ * sich nur die Render-Schicht (gemessen: +203 / -22 Zeilen, alle 22 deutsche
+ * Anzeige-Saetze), bei den 12 springt ein SCHUTZ-Modul ganze Generationen, und
+ * dafuer verlangt die Verfassung einen Probenlauf im Ziel-Repo. Ohne Filter
+ * haette `--schreiben` beides in einer Bewegung getan.
+ *
+ * ⚠ GEFILTERT WIRD NACH DEM sha DES TRAEGERS, NICHT NACH REPO-NAMEN. Eine
+ * getippte Repo-Liste waere genau die gepflegte Liste, vor der der Kopf dieser
+ * Datei warnt: sie vergisst die App, die nach ihr gebaut wurde. Der sha steht
+ * in der Fassungs-Uebersicht dieses Laufs — er ist eine Messung, kein Name.
+ *
+ * ⚠ DIE UEBERSICHT BLEIBT VOLLSTAENDIG. Wuerde der Filter auch sie
+ * beschneiden, meldete ein gefilterter Lauf „eine Fassung im Netz", waehrend
+ * vier draussen liegen — die Auskunft, wegen der es den Filter ueberhaupt gibt. */
+const geni = args.indexOf("--nur-generation");
+const NUR_GEN = geni >= 0 && args[geni + 1] ? String(args[geni + 1]).trim().toLowerCase() : null;
+if (NUR_GEN !== null && !/^[0-9a-f]{8,64}$/.test(NUR_GEN)) {
+  /* Kein stilles Durchwinken: ein Tippfehler im sha traefe sonst KEINEN
+   * Traeger, und „0 nachgezogen" saehe aus wie „nichts zu tun". */
+  console.error(`--nur-generation braucht mindestens 8 Hex-Zeichen eines Traeger-sha, bekam: ${NUR_GEN}`);
+  process.exit(2);
+}
+
 const sha = (b) => createHash("sha256").update(b).digest("hex");
 
 /* ── Die Marke im Modul-Kopf ───────────────────────────────────────────────
@@ -172,15 +198,47 @@ const repos = readdirSync(NACHBARN).filter((r) => {
  * Es wird NICHTS nachgezogen. Ein Automat, der fremde Arbeitsbaeume bewegt,
  * koennte ungepushte Arbeit ueberfahren — gemeldet, nicht angefasst. */
 const veraltet = [];
+const unmessbar = [];   // Depot da, aber kein Vergleichs-Zweig zu finden
+
+/* Welchen Zweig nennt DIESES Depot seinen eigenen? Gefragt, nicht geraten.
+ * ⚠ BIS ZUM 2026-09-16 STAND HIER `catch { def = "master"; }` — ein Raten mit
+ * genau zwei erlaubten Antworten. Gibt es auch `origin/master` nicht, warf das
+ * folgende `rev-list` ein „fatal: ambiguous argument" in die Ausgabe, der
+ * aeussere catch schluckte es, und das Repo fiel aus der Pruefung, OHNE DASS
+ * EINE ZEILE DARUEBER STAND. Gemessen an `Meine-In-and-Out-Book` (Depot ohne
+ * einen einzigen Zweig auf origin). Das ist wortgleich der Schaden, gegen den
+ * dieser ganze Block einen Tag vorher gebaut wurde — nur eine Zeile weiter. */
+function standardZweig(rp) {
+  try {
+    const h = String(execFileSync("git", ["-C", rp, "symbolic-ref", "--short", "refs/remotes/origin/HEAD"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })).trim();
+    if (h.startsWith("origin/")) return h.slice(7);
+  } catch { /* kein origin/HEAD gesetzt — weiter unten nachsehen */ }
+  for (const kandidat of ["main", "master"]) {
+    try {
+      execFileSync("git", ["-C", rp, "rev-parse", `origin/${kandidat}`], { stdio: "ignore" });
+      return kandidat;
+    } catch { /* der naechste */ }
+  }
+  return null;
+}
+
 for (const r of repos) {
   const rp = join(NACHBARN, r);
   try {
     execFileSync("git", ["-C", rp, "fetch", "origin", "--quiet"], { stdio: "ignore", timeout: 30000 });
-    let def = "main";
-    try { execFileSync("git", ["-C", rp, "rev-parse", "origin/main"], { stdio: "ignore" }); }
-    catch { def = "master"; }
+    const def = standardZweig(rp);
+    if (def === null) {
+      /* Drei Ausgaenge, nicht zwei: aktuell · haengt zurueck · NICHT MESSBAR.
+       * Ein leeres Depot ist kein Befund, aber es als „aktuell" zu verbuchen
+       * waere einer. */
+      const zweige = String(execFileSync("git", ["-C", rp, "branch", "-r"],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })).trim();
+      unmessbar.push({ repo: r, grund: zweige ? "kein origin/main, origin/master oder origin/HEAD" : "kein Zweig auf origin" });
+      continue;
+    }
     const n = Number(String(execFileSync("git", ["-C", rp, "rev-list", "--count", `HEAD..origin/${def}`],
-      { encoding: "utf8" })).trim());
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })).trim());
     if (n > 0) veraltet.push({ repo: r, n });
   } catch { /* kein Depot, kein Netz — fail-soft, das ist kein Befund */ }
 }
@@ -189,8 +247,13 @@ if (veraltet.length) {
   for (const v of veraltet) console.log(`  ${v.repo}: ${v.n} Commits hinter origin`);
   console.log(`  (frisch abzweigen, dann erneut laufen lassen — dieser Automat fasst fremde Baeume nicht an)`);
 }
+if (unmessbar.length) {
+  console.log(`\n⊘ NICHT MESSBAR — kein Vergleichs-Zweig, also weder „aktuell" noch „haengt zurueck":`);
+  for (const u of unmessbar) console.log(`  ${u.repo}: ${u.grund}`);
+}
 
 let gleich = 0, nachgezogen = 0, betroffen = 0;
+const zurueckgehalten = [];   // vom --nur-generation-Filter uebergangen
 /* ⚠ HIER OBEN, NICHT BEI cacheBump. Ein `const` unterhalb seiner Verwendung
  * liegt in der toten Zone — der erste Lauf starb mit „Cannot access
  * 'schonGebumpt' before initialization", nachdem er eine Datei geschrieben
@@ -260,6 +323,18 @@ for (const repo of repos) {
     const gkey = t.ist;
     if (!gm.has(gkey)) gm.set(gkey, []);
     gm.get(gkey).push(`${repo}/${rel}`);
+
+    /* ⚠ ZURUECKGEHALTEN WIRD LAUT, NICHT STILL. Ein Traeger, der wegen des
+     * Filters uebergangen wird, verschwindet sonst aus jeder Zeile des Laufs —
+     * und ein Repo, das aus einem Rollout faellt, ohne dass eine Zeile darueber
+     * steht, ist genau der Schaden vom Vortag (BookLedgerPro). Er steht
+     * deshalb mit Grund da und zaehlt in der Schlusszeile mit. */
+    if (NUR_GEN !== null && !t.ist.startsWith(NUR_GEN)) {
+      console.log(`    ⤳ zurueckgehalten: ${rel}  (${modName}) — Fassung ${t.ist.slice(0, 12)}, nicht ${NUR_GEN}${wie}`);
+      zurueckgehalten.push(`${repo}/${rel}`);
+      continue;
+    }
+
     if (!schreiben) { console.log(`    ⚠ haengt zurueck: ${rel}  (${modName})${wie}`); offen.push(`${repo}/${rel}`); continue; }
     writeFileSync(t.datei, t.k.roh);
     console.log(`    ✓ nachgezogen: ${rel}  (${t.k.marke || t.k.name})`);
@@ -424,8 +499,23 @@ function cacheBump(rp, zielPfad) {
 
 /* ── 5. Schluss ───────────────────────────────────────────────────────── */
 console.log(`\n${betroffen} Repos tragen Kanon-Dateien · ${gleich} schon gleich · ` +
-            (schreiben ? `${nachgezogen} nachgezogen` : `${offen.length} haengen zurueck`));
+            (schreiben ? `${nachgezogen} nachgezogen` : `${offen.length} haengen zurueck`) +
+            (NUR_GEN !== null ? ` · ${zurueckgehalten.length} zurueckgehalten (andere Fassung)` : ""));
+
+/* ⚠ EIN FILTER, DER NICHTS TRIFFT, IST EIN BEFUND — KEIN STILLES „NICHTS ZU TUN".
+ * Ein Tippfehler im sha laesst jeden Traeger durch den Zurueckgehalten-Zweig
+ * fallen; die Schlusszeile meldete dann „0 nachgezogen", und das sieht genauso
+ * aus wie ein Netz, das schon gleich steht. Dieselbe Familie wie „0 Treffer ist
+ * erst dann eine Aussage, wenn man belegt hat, dass man ueberall hineingesehen
+ * hat" (LEHREN § 1). */
+if (NUR_GEN !== null && zurueckgehalten.length && !nachgezogen && !offen.length) {
+  console.error(`\n✗ --nur-generation ${NUR_GEN} trifft KEINEN der ${zurueckgehalten.length} zurueckhaengenden Traeger.`);
+  console.error(`  Die Fassungen, die es wirklich gibt, stehen oben unter „Fassungen im Netz".`);
+  process.exit(2);
+}
+
 if (!schreiben && offen.length) {
-  console.log(`\nZum Nachziehen:  node tools/kanon-verteilen.mjs --schreiben`);
+  console.log(`\nZum Nachziehen:  node tools/kanon-verteilen.mjs --schreiben` +
+              (NUR_GEN !== null ? ` --nur-generation ${NUR_GEN}` : ""));
 }
 process.exit(!schreiben && offen.length ? 1 : 0);
