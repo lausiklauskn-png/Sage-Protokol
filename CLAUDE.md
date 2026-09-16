@@ -52,6 +52,27 @@ Hilfsmittel: `node tools/zweig-pruefen.mjs <zweig>`, Skill `veroeffentlichung-pr
 **Merksatz:** eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten
 hinsehen musst.
 
+⚠ **UND DER ZWEIG WIRD ERST GEHOBEN, WENN DER MERGE BELEGT IST — gemessen am
+2026-09-16.** Beim Rollout über 19 Repos lief **ein** Merge in einen `502`; die
+Wiederholung meldete „Merge already in progress". Ich habe danach alle Zweige
+mit `git checkout -B <zweig> origin/main` + `--force-with-lease` nachgezogen —
+**bevor** ich nachgesehen hatte, ob dieser eine wirklich durchging. Er war es
+nicht: der Zweig stand damit leer auf `main`, GitHub schloss den PR **von
+selbst**, und die Änderung war weg.
+
+**Gefunden hat es nicht die Meldung, sondern das Nachzählen auf `main`** — 18
+Repos trugen die neue Zeile, eines nicht. Das ist dieselbe Familie wie „ein PR
+wurde als merged gemeldet, ohne eine Zeile zu enthalten", nur von der anderen
+Seite: dort war der PR leer, hier hat der Aufräum-Schritt ihn geleert.
+
+**Die Reihenfolge ist die ganze Abhilfe:** erst auf `main` nachsehen, was
+wirklich angekommen ist, **dann** die Zweige heben.
+
+```bash
+git fetch origin --quiet
+git grep -c "<eine Zeile aus der Änderung>" origin/main -- <pfad>   # 0 = NICHT da
+```
+
 ---
 
 ## ⏰ Stichtage — von selbst ansprechen
