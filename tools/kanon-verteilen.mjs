@@ -70,6 +70,13 @@ const NUR = nuri >= 0 && args[nuri + 1] ? args[nuri + 1] : null;
  * ⚠ DIE UEBERSICHT BLEIBT VOLLSTAENDIG. Wuerde der Filter auch sie
  * beschneiden, meldete ein gefilterter Lauf „eine Fassung im Netz", waehrend
  * vier draussen liegen — die Auskunft, wegen der es den Filter ueberhaupt gibt. */
+/* ⚠ DER WEG AN DER HERKUNFTS-PRUEFUNG VORBEI, UND ER IST ABSICHTLICH LANG.
+ * Nach einem Umzug (Handarbeit gesichert, Fachworte in den app-eigenen Glue
+ * gehoben) MUSS die Kopie ueberschrieben werden — sonst waere der Riegel eine
+ * Sackgasse. Er heisst deshalb nicht `--force`: wer ihn tippt, hat die
+ * Handarbeit gesehen und entschieden. */
+const HANDARBEIT_OK = args.includes("--handarbeit-gesichert");
+
 const geni = args.indexOf("--nur-generation");
 const NUR_GEN = geni >= 0 && args[geni + 1] ? String(args[geni + 1]).trim().toLowerCase() : null;
 if (NUR_GEN !== null && !/^[0-9a-f]{8,64}$/.test(NUR_GEN)) {
@@ -197,6 +204,88 @@ const repos = readdirSync(NACHBARN).filter((r) => {
  *
  * Es wird NICHTS nachgezogen. Ein Automat, der fremde Arbeitsbaeume bewegt,
  * koennte ungepushte Arbeit ueberfahren — gemeldet, nicht angefasst. */
+/* ── Woher stammt eine Kopie? ──────────────────────────────────────────────
+ * ERGAENZT AM 2026-09-16, NACH DEM TEUERSTEN FUND DES MODUL-15-ROLLOUTS.
+ *
+ * Vier von zwanzig Traegern hatten ihre byte-1:1-Kopie VON HAND GEAENDERT:
+ * Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium und family-project trugen
+ * je eine eigene Synonym-Karte (MR_/MX_/FP_QUERY_SYNONYMS, 16/16/12/11
+ * Eintraege) mitten in Modul 15. Ein blindes Nachziehen haette alle vier
+ * LAUTLOS geloescht — kein Fehler, keine rote Zeile, nur ein stiller Rueckfall
+ * auf den reinen Cosinus-Pfad. Derselbe Fall wie BookLedgerPro am 2026-07-11,
+ * dreifach wiederholt und nie bemerkt.
+ *
+ * Gefunden hat es damals ein Blick von Hand, kein Werkzeug — und „eine Regel,
+ * an die man sich erinnern muss, ist keine". Deshalb steht sie jetzt hier.
+ *
+ * DIE FRAGE IST NICHT „ist die Kopie alt?", SONDERN „war sie je Kanon?".
+ * Gepruefte Antwort: steht der sha der Kopie in SAGES EIGENER Historie? Jede
+ * Fassung, die der Kanon je hatte, steht dort. Steht er nicht darin, ist die
+ * Kopie nie so aus Sage herausgegangen — dort liegt Handarbeit.
+ *
+ * ⚠ DREI AUSGAENGE, NICHT ZWEI: bekannt · Handarbeit · NICHT PRUEFBAR. Der
+ * dritte ist der Grund, warum das hier vorsichtig gebaut ist — siehe FLACH. */
+
+/* Alle Pfade, unter denen eine Kanon-Datei je lag. Modul 15 lag vor
+ * `src/modules/` in `sbkim-bundle/modules/`; wer nur den heutigen Pfad
+ * durchsucht, findet die aelteren Generationen nicht und meldet sie als
+ * Handarbeit. Genau dieser Fehler ist am 2026-09-16 beim Messen passiert:
+ * der erste Lauf meldete ALLE VIER als unbekannt, auch die eine, die es nicht
+ * war. Gefunden hat es eine Kontrolle mit BEKANNTER Antwort. */
+function historischePfade(name) {
+  try {
+    return String(execFileSync("git", ["-C", WURZEL, "log", "--all", "--pretty=format:",
+      "--name-only", "--", "*/" + name, name],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024 }))
+      .split("\n").map((z) => z.trim()).filter((z) => z && z.endsWith(name));
+  } catch { return []; }
+}
+
+/* ⚠ DER KLON IST FLACH (gemessen am 2026-09-16: `is-shallow-repository` = true).
+ * Was hinter der Abschneide-Grenze liegt, sieht diese Pruefung NICHT — eine
+ * echte Kanon-Generation von damals saehe dann aus wie Handarbeit. Der Befund
+ * wird deshalb als VERDACHT gemeldet, nie als Tatsache, und die Flachheit
+ * steht dabei. Eine Warnung, die ihre eigene Grenze verschweigt, ist genau die
+ * Sorte, die beim naechsten Mal jemand ueberliest. */
+let FLACH = false;
+try {
+  FLACH = String(execFileSync("git", ["-C", WURZEL, "rev-parse", "--is-shallow-repository"],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })).trim() === "true";
+} catch { /* kein git — dann ist unten ohnehin nichts pruefbar */ }
+
+/* sha256 jeder Fassung, die diese Datei in Sages Historie je hatte.
+ * Gerechnet wird ueber die BLOB-Kennung und dedupliziert: zwei Commits mit
+ * unveraendertem Inhalt zeigen auf denselben Blob, und den zweimal zu lesen
+ * kostet nur Zeit. Je Modul einmal, dann gemerkt. */
+const herkunftCache = new Map();
+function bekannteFassungen(name) {
+  if (herkunftCache.has(name)) return herkunftCache.get(name);
+  const blobs = new Set();
+  for (const pfad of new Set(historischePfade(name))) {
+    let commits = [];
+    try {
+      commits = String(execFileSync("git", ["-C", WURZEL, "rev-list", "--all", "--", pfad],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024 }))
+        .split("\n").filter(Boolean);
+    } catch { continue; }
+    for (const c of commits) {
+      try {
+        blobs.add(String(execFileSync("git", ["-C", WURZEL, "rev-parse", `${c}:${pfad}`],
+          { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })).trim());
+      } catch { /* in diesem Commit gab es die Datei (noch) nicht */ }
+    }
+  }
+  const shas = new Set();
+  for (const b of blobs) {
+    try {
+      shas.add(sha(execFileSync("git", ["-C", WURZEL, "cat-file", "-p", b],
+        { stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024 })));
+    } catch { /* Blob nicht da (flacher Klon) — faellt unter NICHT PRUEFBAR */ }
+  }
+  herkunftCache.set(name, shas);
+  return shas;
+}
+
 const veraltet = [];
 const unmessbar = [];   // Depot da, aber kein Vergleichs-Zweig zu finden
 
@@ -254,6 +343,8 @@ if (unmessbar.length) {
 
 let gleich = 0, nachgezogen = 0, betroffen = 0;
 const zurueckgehalten = [];   // vom --nur-generation-Filter uebergangen
+const handarbeit = [];        // Kopien, deren sha NICHT in Sages Historie steht
+const unpruefbar = [];        // Module, zu denen die Historie nichts hergibt
 /* ⚠ HIER OBEN, NICHT BEI cacheBump. Ein `const` unterhalb seiner Verwendung
  * liegt in der toten Zone — der erste Lauf starb mit „Cannot access
  * 'schonGebumpt' before initialization", nachdem er eine Datei geschrieben
@@ -333,6 +424,30 @@ for (const repo of repos) {
       console.log(`    ⤳ zurueckgehalten: ${rel}  (${modName}) — Fassung ${t.ist.slice(0, 12)}, nicht ${NUR_GEN}${wie}`);
       zurueckgehalten.push(`${repo}/${rel}`);
       continue;
+    }
+
+    /* ── Der Herkunfts-Riegel ───────────────────────────────────────────
+     * Gefragt wird NICHT „ist die Kopie alt?", sondern „war sie je Kanon?".
+     * Steht ihr sha nicht in Sages Historie, ist sie nie so aus Sage
+     * herausgegangen — dort liegt Handarbeit, und die waere beim Nachziehen
+     * lautlos weg. */
+    const bekannt = bekannteFassungen(t.k.name);
+    if (bekannt.size === 0) {
+      /* DRITTER AUSGANG. Kein Urteil moeglich — und das wird gesagt, statt
+       * die Kopie stillschweigend als unbedenklich durchzuwinken. */
+      if (!unpruefbar.includes(modName)) unpruefbar.push(modName);
+    } else if (!bekannt.has(t.ist)) {
+      handarbeit.push({ wo: `${repo}/${rel}`, modName, ist: t.ist });
+      console.log(`    ⛔ HANDARBEIT VERMUTET: ${rel}  (${modName}) — Fassung ${t.ist.slice(0, 12)} steht NICHT in Sages Historie`);
+      console.log(`       erst ansehen, was hier drinsteht:`);
+      console.log(`       diff <(git -C ${relative(process.cwd(), WURZEL) || "."} show HEAD:${relative(WURZEL, t.k.pfad)}) ${relative(process.cwd(), t.datei)}`);
+      /* ⚠ ZURUECKGEHALTEN WIRD NUR BEIM SCHREIBEN. Im Nachsehen-Gang wird
+       * nichts angefasst, also gibt es nichts zurueckzuhalten — dort ist der
+       * Befund die ganze Leistung. Ein `continue` hier haette den Traeger aus
+       * der Schlusszeile fallen lassen, und eine Zahl, die einen gemeldeten
+       * Fall nicht mitzaehlt, widerspricht der Zeile darueber. */
+      if (schreiben && !HANDARBEIT_OK) { console.log(`       → nicht angefasst.`); continue; }
+      if (schreiben) console.log(`       → trotzdem nachgezogen (--handarbeit-gesichert).`);
     }
 
     if (!schreiben) { console.log(`    ⚠ haengt zurueck: ${rel}  (${modName})${wie}`); offen.push(`${repo}/${rel}`); continue; }
@@ -497,10 +612,35 @@ function cacheBump(rp, zielPfad) {
   }
 }
 
+/* ── 4c. Herkunft: wo liegt Handarbeit? ───────────────────────────────── */
+if (handarbeit.length) {
+  console.log(`\n⛔ HANDARBEIT IN EINER byte-1:1-KOPIE — ${handarbeit.length} Stelle(n):`);
+  for (const h of handarbeit) console.log(`  ${h.wo}  (${h.modName})  Fassung ${h.ist.slice(0, 12)}`);
+  console.log(`  Der sha steht NICHT in Sages Historie — diese Fassung ist nie so aus Sage`);
+  console.log(`  herausgegangen. Ein blindes Nachziehen loescht die Arbeit LAUTLOS.`);
+  console.log(`  Der Weg: ansehen, was drinsteht · die MECHANIK gehoert in den Kanon, die`);
+  console.log(`  FACHWORTE in den app-eigenen Glue · dann --handarbeit-gesichert setzen.`);
+  if (FLACH) {
+    /* ⚠ DIE GRENZE STEHT DANEBEN, nicht im Kleingedruckten. Ein Verdacht, der
+     * seine eigene Unsicherheit verschweigt, wird beim dritten Mal ueberlesen. */
+    console.log(`  ⚠ ACHTUNG, FLACHER KLON: was hinter der Abschneide-Grenze liegt, sieht`);
+    console.log(`     diese Pruefung nicht. Eine sehr alte Kanon-Generation kann hier`);
+    console.log(`     faelschlich als Handarbeit erscheinen — mit \`git fetch --unshallow\``);
+    console.log(`     nachpruefen, bevor jemand einen Umzug baut, den es nicht braucht.`);
+  }
+}
+if (unpruefbar.length) {
+  console.log(`\n⊘ HERKUNFT NICHT PRUEFBAR — Sages Historie gibt zu diesen Modulen nichts her:`);
+  for (const m of unpruefbar) console.log(`  ${m}`);
+  console.log(`  Weder „war Kanon" noch „Handarbeit" — hier sagt der Riegel NICHTS aus.`);
+}
+
 /* ── 5. Schluss ───────────────────────────────────────────────────────── */
 console.log(`\n${betroffen} Repos tragen Kanon-Dateien · ${gleich} schon gleich · ` +
             (schreiben ? `${nachgezogen} nachgezogen` : `${offen.length} haengen zurueck`) +
-            (NUR_GEN !== null ? ` · ${zurueckgehalten.length} zurueckgehalten (andere Fassung)` : ""));
+            (NUR_GEN !== null ? ` · ${zurueckgehalten.length} zurueckgehalten (andere Fassung)` : "") +
+            (handarbeit.length ? ` · ⛔ ${handarbeit.length} mit HANDARBEIT` : "") +
+            (unpruefbar.length ? ` · ⊘ ${unpruefbar.length} Modul(e) nicht pruefbar` : ""));
 
 /* ⚠ EIN FILTER, DER NICHTS TRIFFT, IST EIN BEFUND — KEIN STILLES „NICHTS ZU TUN".
  * Ein Tippfehler im sha laesst jeden Traeger durch den Zurueckgehalten-Zweig
@@ -518,4 +658,7 @@ if (!schreiben && offen.length) {
   console.log(`\nZum Nachziehen:  node tools/kanon-verteilen.mjs --schreiben` +
               (NUR_GEN !== null ? ` --nur-generation ${NUR_GEN}` : ""));
 }
-process.exit(!schreiben && offen.length ? 1 : 0);
+/* ⚠ HANDARBEIT IST EIN BEFUND, AUCH IM SCHREIB-GANG. Ohne diese Zeile endete
+ * ein Lauf, der vier Kopien zurueckhaelt, mit 0 — und „0" heisst in jeder Kette
+ * „alles erledigt". Genau die stille Sorte, gegen die dieser Riegel gebaut ist. */
+process.exit((!schreiben && offen.length) || (!HANDARBEIT_OK && handarbeit.length) ? 1 : 0);

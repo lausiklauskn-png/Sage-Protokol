@@ -255,6 +255,72 @@ saboten "ein unmessbares Depot wird wieder still uebersprungen" \
   'if (unmessbar.length) {' \
   'if (false) {'
 
+# ── Der Herkunfts-Riegel ──────────────────────────────────────────────────
+echo
+echo "═══ H · War diese Kopie je Kanon? ═══"
+
+# Der Riegel greift gar nicht mehr — dann loescht das naechste Nachziehen jede
+# Handarbeit wieder lautlos. Genau der Schaden, gegen den er gebaut ist.
+saboten "der Herkunfts-Riegel meldet nichts mehr" \
+  tools/kanon-verteilen.mjs \
+  '    } else if (!bekannt.has(t.ist)) {' \
+  '    } else if (false) {'
+
+# Er meldet, schreibt aber trotzdem. Die stillste Sorte: die Ausgabe stimmt,
+# die Datei nicht. Nur ein Waechter auf die PLATTE faengt das.
+saboten "gemeldet wird, geschrieben trotzdem" \
+  tools/kanon-verteilen.mjs \
+  '      if (schreiben && !HANDARBEIT_OK) { console.log(`       → nicht angefasst.`); continue; }' \
+  '      if (false) { console.log(`       → nicht angefasst.`); }'
+
+# Die Gegenrichtung: er klagt JEDE aeltere Kopie an. Ein Riegel, der bei jedem
+# Lauf anschlaegt, haelt den ganzen Rollout auf und wird bald uebergangen.
+saboten "der Riegel haelt jede aeltere Kopie fuer Handarbeit" \
+  tools/kanon-verteilen.mjs \
+  '    } else if (!bekannt.has(t.ist)) {' \
+  '    } else if (true) {'
+
+# ⚠ NUR DER HEUTIGE PFAD WIRD DURCHSUCHT. Modul 15 lag frueher unter
+# `sbkim-bundle/modules/`; wer nur `src/modules/` kennt, meldet jede aeltere
+# Generation faelschlich als Handarbeit. Genau dieser Fehler ist am 2026-09-16
+# beim Messen von Hand passiert.
+saboten "die Herkunftssuche kennt nur den heutigen Pfad" \
+  tools/kanon-verteilen.mjs \
+  '      "--name-only", "--", "*/" + name, name],' \
+  '      "--name-only", "--", "src/modules/" + name],'
+
+# Der dritte Ausgang faellt weg: ohne Historie wuerde alles als Handarbeit
+# gelten statt als „nicht pruefbar".
+#
+# ⚠ BENANNTE GRENZE DER ANZEIGE, NICHT DER DECKUNG. Dieser Eingriff macht in
+# JEDEM Wegwerf-Netz ohne git jede Kopie zur Handarbeit — also faellt weiter
+# vorne schon „Rueckgabewert 0 nach dem Schreiben", und die Gegenprobe druckt
+# die ERSTE rote Zeile. Sie traegt deshalb den Namen eines Nachbarn.
+# Von Hand nachgestellt am 2026-09-16: die gemeinten zwei Zusicherungen fallen
+# sehr wohl —
+#   ✗ ohne Historie sagt der Riegel „nicht pruefbar" — das ist der dritte Ausgang
+#   ✗ …und klagt dabei NIEMANDEN der Handarbeit an
+# Enger laesst sich der Fall nicht schneiden: `bekannt.size === 0` IST der
+# dritte Ausgang, und ihn abzuschalten wirkt zwangslaeufig ueberall.
+saboten "ohne Historie gilt alles als Handarbeit" \
+  tools/kanon-verteilen.mjs \
+  '    if (bekannt.size === 0) {' \
+  '    if (false) {'
+
+# Und der Rueckgabewert: ohne ihn endet ein Lauf, der vier Kopien
+# zurueckhaelt, mit 0 — und 0 heisst in jeder Kette "alles erledigt".
+saboten "Handarbeit faellt aus dem Rueckgabewert" \
+  tools/kanon-verteilen.mjs \
+  'process.exit((!schreiben && offen.length) || (!HANDARBEIT_OK && handarbeit.length) ? 1 : 0);' \
+  'process.exit(!schreiben && offen.length ? 1 : 0);'
+
+# Der Weg daran vorbei wirkt nicht mehr — dann ist der Riegel eine Sackgasse
+# und ein Umzug liesse sich gar nicht abschliessen.
+saboten "--handarbeit-gesichert wirkt nicht mehr" \
+  tools/kanon-verteilen.mjs \
+  'const HANDARBEIT_OK = args.includes("--handarbeit-gesichert");' \
+  'const HANDARBEIT_OK = false;'
+
 echo
 echo "$gefangen gefangen · $durch durchgerutscht · $tot tote Anker"
 [ "$durch" -eq 0 ] && [ "$tot" -eq 0 ] || exit 1
