@@ -95,9 +95,38 @@ echo
 echo "═══ C · Der Cache-Bump ═══"
 # Ein Automat, der bei JEDEM Lauf hochzaehlt, zwingt jedem Nutzer bei jedem
 # Lauf einen neuen Download auf.
-saboten "der Bump prueft nicht mehr, ob die Datei im Vorrat steht" \
+# ⚠ TOTER ANKER, GEFUNDEN AM 2026-09-16: der Fall zeigte auf
+#   `if (!imVorrat) continue;` — die Bedingung heisst seitdem
+#   `if (!imVorrat && !faengtAb) continue;`. Er meldete „ANKER NICHT GEFUNDEN"
+#   und mass nichts. Nachgezogen und in DREI Faelle zerlegt, weil die Regel
+#   jetzt drei Haelften hat.
+saboten "der Bump prueft gar keine Bedingung mehr" \
   tools/kanon-verteilen.mjs \
-  '    if (!imVorrat) continue;' \
+  '    if (!imVorrat && !faengtAb) continue;' \
+  '    if (false) continue;'
+
+# ⚠ DIE TEURERE RICHTUNG: ein Sicherheits-Update, das still nicht ankommt.
+saboten "ein cache-first-Worker wird wieder uebersehen" \
+  tools/kanon-verteilen.mjs \
+  '    if (!imVorrat && !faengtAb) continue;' \
+  '    if (!imVorrat) continue;'
+
+# ⚠ Und die Gegenrichtung: ohne Geltungsbereich fliegt der Vorrat jeder
+#   Unter-App im selben Depot mit.
+saboten "der Geltungsbereich wird nicht mehr geprueft" \
+  tools/kanon-verteilen.mjs \
+  '    const faengtAb = ziel.startsWith(bereich)' \
+  '    const faengtAb = true'
+
+# ⚠ Und ohne das Gedaechtnis bumpt ein Repo mit ZWEI Kopien zweimal — der
+#   zweite Bump wirft den Vorrat weg, den der erste gerade angelegt hat.
+#   Gefangen wird das von der Zusicherung „v2 → v3": ohne das Gedaechtnis
+#   steht dort v4. App-Eins traegt zwei Kanon-Dateien (Modul 16 und Modul 20),
+#   deshalb misst der Fall hier wirklich etwas — mit nur einer Kopie waere er
+#   immer „nicht gefangen".
+saboten "zwei Kopien im selben Repo bumpen zweimal" \
+  tools/kanon-verteilen.mjs \
+  '    if (schonGebumpt.has(sw)) continue;' \
   '    if (false) continue;'
 
 echo

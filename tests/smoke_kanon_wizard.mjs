@@ -79,8 +79,16 @@ const tabelle = iTab >= 0 && iTabEnde > iTab ? src.slice(iTab, iTabEnde) : "";
 const eintraege = literale(tabelle).map((l) => l.text);
 ok(`TEXTE_DE ist eine Daten-Tafel mit Einträgen (${eintraege.length})`, eintraege.length > 40);
 
-/* Alle T()/Tf()-Argumente im Code (also ohne die Tabelle selbst). */
-const code = src.slice(0, iTab) + src.slice(iTabEnde);
+/* Die englische Tafel — sie ist Daten wie TEXTE_DE, kein Code. */
+const iEn = src.indexOf("var TEXTE = { en: {");
+const iEnEnde = src.indexOf("\n  } };", iEn);
+const enBlock = iEn >= 0 && iEnEnde > iEn ? src.slice(iEn, iEnEnde + 7) : "";
+
+/* Alle T()/Tf()-Argumente im Code (also ohne die zwei Tabellen selbst).
+   ⚠ BEIDE müssen heraus. Nimmt man nur TEXTE_DE heraus, meldet Wächter 3
+   die ganze englische Fassung als „geht nicht durch T()" — rot, ohne dass
+   eine Zusicherung gefallen wäre. */
+const code = (src.slice(0, iTab) + src.slice(iTabEnde)).replace(enBlock, " ");
 const benutzt = literale(code).filter(durchT).map((l) => l.text);
 
 /* WÄCHTER 1 — prüft, was da ist. */
@@ -105,6 +113,49 @@ ok("die Ausnahme-Liste trägt genau die eine benannte Ausnahme",
   AUSNAHMEN.length === 1 && AUSNAHMEN[0] === "use strict");
 ok(`JEDER Anzeigetext geht durch T()${vorbei.length ? " — vorbei: " + JSON.stringify(vorbei.slice(0, 3)) : ""}`,
   vorbei.length === 0);
+
+console.log("\nDie englische Fassung — eine halbe Tafel ist die schlimmere Sorte\n");
+
+/* ⚠ TAFEL-EVOLUTIONS-KLAUSEL: bis zum 2026-09-16 lautete die Zusicherung
+   „es gibt keine Tabelle, also bleibt überall Deutsch". Sie ist ERSETZT,
+   nicht stillschweigend getauscht — was jetzt gilt, steht im Kopf des
+   TEXTE-Blocks im Modul und wird hier und im Browser-Teil gemessen. */
+const EN_AUSNAHMEN = ["nodeId: {0}"];   // Feldname, kein Satz
+let EN_TAB = null;
+try { EN_TAB = new Function("return (" + enBlock.replace("var TEXTE = ", "").replace(/;\s*$/, "") + ").en")(); }
+catch (e) { EN_TAB = null; }
+ok("die englische Tafel lässt sich lesen", !!EN_TAB && typeof EN_TAB === "object");
+
+/* ⚠ DER WÄCHTER, AUF DEN ES ANKOMMT. Eine Tabelle mit 40 von 83 Einträgen
+   sieht aus wie eine englische Oberfläche und streut deutsche Sätze
+   dazwischen — schlimmer als gar keine Übersetzung, weil sie wie eine
+   aussieht. */
+const ohneEn = EN_TAB ? eintraege.filter((t) => typeof EN_TAB[t] !== "string" || !EN_TAB[t]) : eintraege;
+ok(`jeder Eintrag aus TEXTE_DE hat eine englische Fassung (${eintraege.length - ohneEn.length}/${eintraege.length})${ohneEn.length ? " — fehlt: " + JSON.stringify(ohneEn.slice(0, 3)) : ""}`,
+  ohneEn.length === 0);
+
+/* ⚠ UND DIE ZWEITE HÄLFTE: ein hineinkopierter deutscher Satz erfüllt den
+   Wächter darüber tadellos. Gemessen wird deshalb, dass die Fassung wirklich
+   eine ANDERE ist. */
+const wortgleich = EN_TAB
+  ? eintraege.filter((t) => EN_TAB[t] === t && !EN_AUSNAHMEN.includes(t)) : [];
+ok(`keine englische Fassung ist wortgleich mit der deutschen${wortgleich.length ? " — " + JSON.stringify(wortgleich.slice(0, 3)) : ""}`,
+  wortgleich.length === 0);
+
+/* Die Gegenrichtung: eine Übersetzung zu einem Satz, den es nicht mehr gibt,
+   ist toter Text — dieselbe Frage wie Wächter 2, nur für die andere Tafel. */
+const toteEn = EN_TAB ? Object.keys(EN_TAB).filter((t) => !eintraege.includes(t)) : [];
+ok(`kein englischer Eintrag ohne deutsche Entsprechung${toteEn.length ? " — tot: " + JSON.stringify(toteEn.slice(0, 3)) : ""}`,
+  toteEn.length === 0);
+
+/* ⚠ Platzhalter sind ein VERTRAG, kein Text. Ein \{0}, das in der Übersetzung
+   fehlt, verschluckt die nodeId — und das sieht aus wie ein leeres Feld. */
+const platzKaputt = EN_TAB ? eintraege.filter((t) => {
+  const z = (x) => [...String(x).matchAll(/\{(\d+)\}/g)].map((m) => m[1]).sort().join(",");
+  return z(t) !== z(EN_TAB[t] || "");
+}) : [];
+ok(`die Platzhalter stimmen in beiden Fassungen überein${platzKaputt.length ? " — " + JSON.stringify(platzKaputt.slice(0, 2)) : ""}`,
+  platzKaputt.length === 0);
 
 console.log("\nWas beim Zusammenführen gewonnen wurde\n");
 
@@ -300,8 +351,15 @@ async function browserTeil() {
       erfunden: window.SbkimSiegelTexte ? window.SbkimSiegelTexte.T("Gibt es nicht") : null,
     }));
     ok("bei <html lang=\"en\"> wird die Sprache auch so gelesen", e.sprache === "en");
-    ok("… und trotzdem steht überall Deutsch, weil es keine Tabelle gibt",
-      /Eigene Identität/.test(e.knopf) && e.probe === "Schließen");
+    /* ⚠ HIER STAND BIS ZUM 2026-09-16: „… und trotzdem steht überall Deutsch,
+       weil es keine Tabelle gibt." Die Zusicherung war richtig, solange es
+       keine gab. Sie ist ERSETZT, nicht gestrichen — gemessen wird jetzt,
+       dass die Tabelle bei lang="en" WIRKLICH greift. */
+    ok("bei lang=\"en\" steht die englische Fassung da",
+      /own identity/i.test(e.knopf) && e.probe === "Close");
+    /* ⚠ FAIL-SOFT IST DIE TRAGENDE HÄLFTE: ein Satz ohne Eintrag fällt auf
+       Deutsch zurück, statt leer zu bleiben. Ohne diesen Wächter wäre eine
+       Tabelle grün, die alles Unbekannte verschluckt. */
     ok("T() auf einen unbekannten Satz gibt ihn unverändert zurück", e.erfunden === "Gibt es nicht");
 
     const f = await hole("englisch.html", () => {

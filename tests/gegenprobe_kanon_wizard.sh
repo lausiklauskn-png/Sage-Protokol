@@ -105,9 +105,14 @@ saboten "die Marke im Kopf faellt weg" \
   "SBKIM — Modul 16b — Andock-Wizard" "Andock-Wizard"
 saboten "eine App-Identitaet schleicht sich in den Kanon" \
   "  var lastSpore = null;" '  var HEIMLICH = { nodeName: "Sage" };\n  var lastSpore = null;'
+# ⚠ TOTER ANKER, GEFUNDEN AM 2026-09-16. Der Fall zeigte auf
+#   `return base + "_spore_" + stamp + ".json"` — seit Stufe 2 steht dort
+#   zusaetzlich `kennungsTeil(nodeId)`. Er meldete „ANKER NICHT GEFUNDEN" und
+#   mass seitdem nichts. Wer eine Zeile aendert, auf die ein Fall zeigt, zieht
+#   den Fall mit.
 saboten "eine App-Adresse steht im Kanon" \
-  '    return base + "_spore_" + stamp + ".json";' \
-  '    if (base === "x") base = "https://lausiklauskn-png.github.io/Sage-Protokol/";\n    return base + "_spore_" + stamp + ".json";'
+  '    return base + "_spore_" + stamp + kennungsTeil(nodeId) + ".json";' \
+  '    if (base === "x") base = "https://lausiklauskn-png.github.io/Sage-Protokol/";\n    return base + "_spore_" + stamp + kennungsTeil(nodeId) + ".json";'
 saboten "die Konfiguration wird beim LADEN eingefangen statt beim Injizieren" \
   "  var lastSpore = null;" "  var FRUEH = window.SBKIM_SIEGEL_WIZ;\n  var lastSpore = null;"
 
@@ -182,6 +187,33 @@ saboten1 "die Kopie haengt hinter dem Kanon zurueck" assets/sbkim-andock-wizard.
   '  var lastSpore = null;' '  var lastSpore = null; /* abgewandelt */'
 saboten1 "index.html laedt den Kanon nicht mehr" index.html \
   '  <script src="assets/sbkim-andock-wizard.js"></script>' '  <!-- weg -->'
+
+echo
+echo "═══ F · Die englische Tafel (2026-09-16) ═══"
+# ⚠ EINE HALB UEBERSETZTE TAFEL IST DIE SCHLIMMERE SORTE: sie sieht aus wie
+#   eine englische Oberflaeche und streut deutsche Saetze dazwischen.
+saboten "ein Eintrag verliert seine englische Fassung" \
+  '    "Schließen":
+      "Close",' '    "Schließen":
+      "",'
+saboten "eine englische Fassung ist in Wahrheit der deutsche Satz" \
+  '    "Schließen":
+      "Close",' '    "Schließen":
+      "Schließen",'
+# ⚠ EIN PLATZHALTER IST EIN VERTRAG, KEIN TEXT. Faellt {0} weg, verschluckt
+#   die Zeile die nodeId — und das sieht aus wie ein leeres Feld.
+saboten "ein Platzhalter faellt aus der Uebersetzung" \
+  '    "Fehler: {0}":
+      "Error: {0}",' '    "Fehler: {0}":
+      "Error",'
+# ⚠ Die Gegenrichtung zu Waechter 2, nur fuer die andere Tafel.
+saboten "eine Uebersetzung ohne deutschen Satz bleibt liegen" \
+  '  var TEXTE = { en: {' '  var TEXTE = { en: {
+    "Gibt es so nicht mehr": "Gone",'
+# ⚠ DER BROWSER-TEIL: die Tafel muss bei lang="en" WIRKLICH greifen. Ohne
+#   diesen Fall waere auch eine Tafel gruen, die dasteht und nie gelesen wird.
+saboten "die Tafel steht da, wird aber nie gelesen" \
+  '    var tab = TEXTE[sprache()];' '    var tab = TEXTE["xx"];'
 
 echo
 echo "── $gefangen gefangen · $durch durchgerutscht · $tot tote Anker ──"

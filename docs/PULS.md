@@ -31,6 +31,60 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-16 · Die Ordner-Zählung, die englische Tafel und ein zu enger Bump
+
+**1 · Zwei Stellen zählten dieselbe Sache verschieden.** Klaus mit Bild: *„Sushi
+steht in den Ordnern mit null Rezepten, obwohl mindestens sechs drin sind. Oben
+in der Kategorie-Leiste bei Rezepte steht Sushi mit sechs."* Beide Zahlen waren
+richtig gerechnet — die Leiste über `katVonRezept`, der Ordner-Baum über das
+**rohe** Feld `r.cat`. Dieselbe Lücke traf „Ohne Kategorie". Eine Zeile tiefer
+dasselbe: die Ordner-Gruppe zählte nur `r.folder`, die Ordner-Pille
+`r.folder ODER r.cat==='fld_…'`.
+
+Umgestellt in allen drei Apps; der Wächter misst die **Übereinstimmung** beider
+Ansichten Gruppe für Gruppe, nicht eine feste Zahl. Gemessen:
+**Mein Rezeptbuch 46 grün · Mein Mixarium 56 · Muttis 49**, je `0 ROT`;
+Gegenproben **29 / 31 / 29 gefangen**, je `0 durchgerutscht · 0 falsch · 0 tot`.
+Benannte Grenze im Mixarium: die Leiste zählt mit `alcAllowed`, bei
+eingeschaltetem Alkohol-Filter zeigt sie mit Absicht weniger.
+
+**2 · `TEXTE.en` — 83 von 83 Einträgen.** Die alte Zusicherung „OHNE EINSTELLUNG
+ÄNDERT SICH NICHTS" ist **ersetzt, nicht stillschweigend getauscht**: ohne
+`lang`-Angabe bleibt alles Deutsch, bei `lang="en"` kommt Englisch, ein Satz
+ohne Eintrag fällt weiter fail-soft auf Deutsch zurück. Vier neue Wächter
+(Vollständigkeit · nicht wortgleich · keine tote Übersetzung · **Platzhalter
+stimmen überein**), fünf Gegenprobe-Fälle, jeder einzeln nachgestellt.
+
+**3 · Der Bump-Riegel des Verteil-Automaten war zu eng.** Er bumpte nur, wo die
+Datei im Installations-Vorrat steht. **Gemessen an drei Repos — PWA-Toolpoint,
+Tomys-Hub, family-project —** liegt der Wizard dort in keinem Vorrat und wird
+trotzdem **cache-first** aus dem Speicher bedient: ein Update, das still nicht
+ankommt. Gebumpt wird jetzt, sobald der Worker `fetch` abfängt, die Cache-API
+benutzt und sein **Geltungsbereich** die Datei erreicht — einmal je Worker je
+Lauf, und `SW_VERSION` gehört ins Muster.
+
+Drei Schärfungen kamen erst durchs Messen: die erste Fassung bumpte in
+Tomys-Hub **fünf** fremde Unter-Apps · PWA-Toolpoint bumpte **zweimal** ·
+Mein Mixarium bekam **gar keinen** Bump („kein Bump möglich", weil es
+`SW_VERSION` heißt).
+
+**Gemessen.** Sage `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
+lauffähig**, Rückgabewert 0 (ohne Pipe gelesen) · `smoke_kanon_wizard` **62 grün
+· 0 ROT** · `gegenprobe_kanon_wizard` **29 gefangen · 0 durchgerutscht · 0 tote
+Anker** · `gegenprobe_kanon_verteilen` **7 gefangen · 0 · 0** ·
+`wizard-laedt-pruefen` → alle **21** Seiten liefern Konfiguration UND Kanon aus.
+Verteilt: **19 Kopien in 18 Repos**, 16 Cache-Bumps.
+
+⚠ **Ein toter Anker gefunden und nachgezogen:** der Gegenprobe-Fall „eine
+App-Adresse steht im Kanon" zeigte seit Stufe 2 auf eine Zeile, die es so nicht
+mehr gab — er meldete „ANKER NICHT GEFUNDEN" und maß nichts.
+
+**Nächster Schritt.** Klaus' Sichttest im Siegel von Mein Rezeptbuch: steht dort
+die Zeile „Dein Vektor kommt aus deinen eigenen Inhalten (N Einträge)"? — und,
+neu, die Ordner-Liste: steht Sushi dort jetzt mit derselben Zahl wie oben?
+
+---
+
 ## Stand 2026-09-15 (Haupt-Sitzung, vierter Teil) · ⚠ DER SIEGEL-WEG ZERSTÖRTE DEN INHALTS-VEKTOR
 
 **Der Befund.** Es gibt **zwei Wege zur Spore**, und sie betteten Verschiedenes
@@ -114,14 +168,10 @@ das Einbettungs-Modell ist in dieser Umgebung ein **16K-Platzhalter**, und
 huggingface antwortet mit **HTTP 000**. Eine geratene Schwelle erzeugt entweder
 eine Warnung, die man nicht mehr los wird, oder eine, die nie kommt.
 
-**Offen.** Der Drift-Hinweis (braucht Klaus' Browser für die Schwelle) · die
-Übersetzung (`TEXTE.en`, 76 Einträge) · `sbkim/15_membran.js` in family-project
-hängt eine Generation zurück · Privat-Brains vier vorbestehende rote Zeilen ·
-der Rezept-Export trägt die Spore **nicht** mit (benannter Befund, eigener
-Vorgang).
-
-**Nächster Schritt.** Klaus' Sichttest im Siegel von Mein Rezeptbuch: steht dort
-die Zeile „Dein Vektor kommt aus deinen eigenen Inhalten (N Einträge)"?
+**Offen.** Der Drift-Hinweis (braucht Klaus' Browser für die Schwelle) ·
+`sbkim/15_membran.js` in family-project hängt eine Generation zurück ·
+Privat-Brains vier vorbestehende rote Zeilen · der Rezept-Export trägt die Spore
+**nicht** mit (benannter Befund, eigener Vorgang).
 
 ---
 
@@ -609,106 +659,11 @@ gemeldet und nicht nachgezogen.
 **Nächster sinnvoller Schritt:** Klaus sieht sich ein Siegel an; danach
 `TEXTE.en`.
 
-## Stand 2026-09-14 (Haupt-Sitzung, Nacht) · ✅ DER ROLLOUT VERTEILT SICH SELBST — UND 44 DATEIEN HÄNGEN ZURÜCK
+## Eine Sitzung vom 2026-09-14 (Nacht, Rollout-Automat) — ausgelagert am 2026-09-16
 
-**Rolle:** Haupt-Sitzung. Klaus hat nach dem Ziel gefragt, gemerkt, dass sich
-die Sitzungen aneinanderreihen, und daraufhin **den automatischen Rollout
-beauftragt** — statt der nächsten Übersetzung.
-
-**Der Anlass, in einer Zahl:** am selben Tag kostete eine Kanon-Änderung
-**23 Pull Requests für zwei übersetzte Wörter**. Nicht die Änderung war teuer,
-sondern das Verteilen — und der Preis fiel bei jeder weiteren wieder an.
-
-### Was gebaut wurde
-
-`tools/kanon-verteilen.mjs` — findet die Träger selbst, vergleicht Prüfsummen,
-zieht nach, was zurückhängt, samt sha-Pins (alle drei Längen) und
-`CACHE_VERSION` nur dort, wo das Modul wirklich im Vorrat steht.
-
-⚠ **DIE LISTE WIRD GEFUNDEN, NICHT GEPFLEGT.** Das ist die eine Entscheidung,
-an der alles hängt, und sie folgt aus dem Schaden vom selben Tag:
-**BookLedgerPro fiel aus dem Rollout**, weil nach der *erwarteten*
-Vorgänger-Fassung gesucht wurde. Eine gepflegte Liste hätte denselben Fehler
-gemacht, nur dauerhaft. Eine neue App ist dabei, **sobald sie ein Modul trägt**
-— Apps und Internetseiten gleichermaßen (gemessen: Mein-Workfloh-Page trägt 13
-Kanon-Dateien und ist damit genauso betroffen wie eine App).
-
-⚠ **ERKANNT WIRD AM INHALT.** Jedes Modul trägt `SBKIM — Modul NN` im Kopf.
-Damit lösen sich die drei Siegel-Dateien von SB-KIMTool-Point von selbst
-auseinander — die Kopie trägt die Marke, der Loader und die Fassung des Modells
-nicht. Eine Namens-Suche hätte alle drei getroffen. **Der Automat wäre heute
-nicht in die Falle gelaufen, in die ich fast gelaufen wäre.**
-
-### ⚠ Der gefährlichste Fund kam beim Bauen
-
-Die erste Fassung verteilte **`siegel-inhalt.js` mit** — und die trägt die
-**komplette App-Identität**: `nodeName`, `domainDescription`, `domainKeywords`,
-`stammCategories`, `backupPrefix`. Ein Überschreiben hätte **jeder App Sages
-Namen und Sages Bedeutungs-Vektor gegeben** — der Schaden vom 2026-08-16 in
-Alis Moderaum, nur zwanzigfach und ohne dass jemand hinsieht.
-
-Gefunden hat es nicht das Nachdenken, sondern **ein Diff zweier Repos**, bevor
-das Werkzeug zum ersten Mal schreiben durfte. Sie steht jetzt in `NIE_VERTEILEN`
-und ist durch zwei Riegel gedeckt.
-
-### Der Befund: 44 Dateien im Netz hängen zurück
-
-| | |
-|---|---|
-| Repos mit Kanon-Dateien | **22** |
-| Kopien schon gleich | **282** |
-| **hängen zurück** | **44** |
-
-Einzelne um über 300 Zeilen (`15_membran.js` in Tomys-Hub und Privat-Brain:
-361 · `03_embedding.js` in SB-KIMTool-Point: 367). **Das hat vorher niemand
-gesehen** — der Drift-Guard sagt „unverändert", nicht „aktuell".
-
-⚠ Ein Generationen-Sprung wird deshalb **als solcher benannt** (ab 50 Zeilen).
-Eine Meldung, die zwei und zweihundert Zeilen gleich schreibt, lädt dazu ein,
-beides gleich zu behandeln — und ein Sprung braucht einen Probenlauf im
-Ziel-Repo.
-
-### ⚠ VIER VON FÜNF GEGENPROBE-FÄLLEN RUTSCHTEN BEIM ERSTEN LAUF DURCH
-
-Und keiner davon war ein Fehler im Werkzeug — **alle vier waren Lücken im
-Wegwerf-Netz der Probe**:
-
-| Fall | warum er nichts maß |
-|---|---|
-| Sperrliste ausgebaut | die Identitäts-Datei lag außerhalb des Kanon-Pfades — der Riegel kam nie dran |
-| zweiter Riegel ausgebaut | der erste deckte ihn |
-| Doppelpunkt-Marke verengt | im Test-Netz gab es kein Modul mit `:` (Modul 20 hat eins) |
-| Vorrat-Prüfung ausgebaut | es gab nur **einen** Worker, und die Datei stand drin |
-
-Das Netz trägt jetzt ein Modul mit Doppelpunkt, eine Ziel-Datei **mit** Marke,
-die Identitäts-Datei **im** Kanon-Pfad und einen zweiten Worker **ohne** die
-Datei im Vorrat. Danach fangen alle.
-
-⚠ **Und ein Fall ist ersatzlos entfallen, als benannte Grenze:** beide Riegel
-lesen dieselbe Liste, der erste Fall nimmt sie weg und fängt damit beide. Ein
-Fall nur für den zweiten blieb zu Recht grün — *er hätte bewiesen, was er nicht
-misst.* Dieselbe Lehre wie bei `umask` + `chmod` im Schlüssel-Ablagefach.
-
-⚠ **Ein gerades Anführungszeichen hat die Probe zerlegt** — dieselbe Falle wie
-in `manual_check.html`, wo zwei Panels elf Tage lang tot dastanden.
-
-**Gemessen:** `smoke_kanon_verteilen.mjs` **20 grün** (fährt das echte Werkzeug
-an einem Wegwerf-Netz, liest es nicht) · `gegenprobe_kanon_verteilen.sh`
-**4 gefangen, 0 durchgerutscht, 0 tote Anker** · voller Lauf **104 Proben grün,
-0 rot, 0 nicht lauffähig**.
-
-### Was offen bleibt
-
-- **Die 44 Rückstände sind nicht nachgezogen.** Das Werkzeug meldet sie; das
-  Nachziehen ist eine bewusste Entscheidung mit Probenlauf je Repo — besonders
-  bei den Generationen-Sprüngen.
-- **Der Automat öffnet keine PRs.** Er tut die Datei-Arbeit; Branch, Commit und
-  PR bleiben ein eigener Schritt. Eine GitHub Action, die ihn zeitgesteuert
-  ruft, bräuchte ein Token mit Schreibrecht auf alle Repos — **Klaus'
-  Entscheidung, nicht meine.**
-- **A18** (Wizard zusammenführen, dann übersetzen) unberührt.
-
----
+Der Bau von `tools/kanon-verteilen.mjs` und der Befund „44 Kanon-Dateien im
+Netz hängen zurück". Vollständig und wortgleich in
+[`sessions/archiv/2026-09_puls-auslagerung-13.md`](sessions/archiv/2026-09_puls-auslagerung-13.md).
 
 ## Eine Sitzung vom 2026-09-14 (Nacht, Lampen) — ausgelagert am 2026-09-15
 

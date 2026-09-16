@@ -413,8 +413,57 @@ liegt er als `sbkim-andock-wizard.js` daneben. `siegel-inhalt.js` trägt nur noc
 verschiedene Code-Fassungen im Netz. Danach: **19 Kopien, alle gleich.**
 Werkzeuge für den einmaligen Umbau: `tools/wizard-trennen.mjs` (trennt in einem
 Nachbar-Klon) und `tools/wizard-trennung-pruefen.mjs` (misst das Ergebnis im
-echten Browser). **Die Übersetzung steht noch aus** — der Rahmen (`T()`,
-`TEXTE_DE`) ist gebaut und ändert ohne Tabelle nichts.
+echten Browser).
+
+✅ **Die Übersetzung ist seit dem 2026-09-16 da — 83 von 83 Einträgen.**
+Hier stand: *„Die Übersetzung steht noch aus — der Rahmen ist gebaut und ändert
+ohne Tabelle nichts."* Der Satz war richtig, solange es keine Tabelle gab.
+
+⚠ **TAFEL-EVOLUTIONS-KLAUSEL, AUSDRÜCKLICH BENANNT.** Die alte Zusicherung
+lautete **„OHNE EINSTELLUNG ÄNDERT SICH NICHTS"** und meinte: es gibt keine
+Tabelle, also bleibt überall Deutsch — auch bei `<html lang="en">`. Ersetzt,
+nicht stillschweigend getauscht:
+
+| | vorher | nachher |
+|---|---|---|
+| `lang` fehlt / `de` | Deutsch | **Deutsch, Zeichen für Zeichen** |
+| `lang="en"` | Deutsch | **Englisch** |
+| ein Satz **ohne** Eintrag | — | fällt weiter **fail-soft auf Deutsch** zurück |
+
+⚠ **EINE HALB ÜBERSETZTE TAFEL IST DIE SCHLIMMERE SORTE** — sie sieht aus wie
+eine englische Oberfläche und streut deutsche Sätze dazwischen. Vier Wächter
+halten sie zusammen: jeder Eintrag hat eine englische Fassung (83/83) · keine
+ist **wortgleich** mit der deutschen (Ausnahme: `nodeId: {0}`, ein Feldname) ·
+keine Übersetzung ohne deutschen Satz · **die Platzhalter stimmen überein**
+(ein fehlendes `{0}` verschluckt die nodeId, und das sieht aus wie ein leeres
+Feld). Fünf Gegenprobe-Fälle, jeder einzeln nachgestellt.
+
+⚠ **UND DER BUMP-RIEGEL DES AUTOMATEN WAR ZU ENG — gemessen am 2026-09-16.**
+Er bumpte nur, **wo die Datei im Installations-Vorrat steht**. Ein Worker, der
+gleich-ursprüngliche GETs **cache-first** beantwortet, legt sie aber beim ersten
+Abruf **selbst** ab und liefert danach die alte Fassung weiter. Gemessen an drei
+Repos — **PWA-Toolpoint, Tomys-Hub, family-project**: der Wizard steht dort in
+keinem Vorrat und wurde trotzdem aus dem Speicher bedient. *Ein
+Sicherheits-Update, das still nicht ankommt, ist der teuerste Fall.*
+
+**Es wird nicht geraten, ob ein Pfad cache-first läuft** — das ist aus dem
+Quelltext nicht verlässlich zu lesen, und eine geratene Erkennung wäre genau der
+stille Fehler, den sie verhindern soll. Gebumpt wird, sobald der Worker `fetch`
+abfängt **und** die Cache-API benutzt **und** sein Geltungsbereich die Datei
+überhaupt erreicht. **Die Kosten sind einseitig:** ein überflüssiger Bump kostet
+einmal die Schale neu laden, ein ausgelassener ein Update, das niemand bemerkt.
+
+⚠ **Drei Schärfungen kamen erst durch Messen dazu, nicht durchs Nachdenken:**
+der **Geltungsbereich** (die erste Fassung bumpte in Tomys-Hub **fünf**
+Unter-Apps, von denen keine den Wizard je sieht) · **einmal je Worker je Lauf**
+(PWA-Toolpoint hat zwei Kopien und bumpte zweimal — der zweite Bump wirft weg,
+was der erste angelegt hat) · **`SW_VERSION` gehört ins Muster** (Mein Mixarium
+nennt seine Nummer so; der Automat meldete dort „kein Bump möglich" und ging
+weiter — *eine Meldung, die niemand liest, ist kein Bump*).
+
+⚠ **Und `const schonGebumpt` stand zuerst UNTER seiner Verwendung.** Tote Zone:
+der Lauf starb mit `Cannot access 'schonGebumpt' before initialization` —
+**nachdem er bereits eine Datei geschrieben hatte.**
 
 ⚠ **Wer an einer Nachlade-Kette etwas ANHÄNGT, prüft die Zeile DAVOR.** Am
 2026-09-15 hat ein fehlendes Komma sieben Apps getroffen, **vier davon ohne

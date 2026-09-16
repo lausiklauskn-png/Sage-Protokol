@@ -135,6 +135,12 @@ const repos = readdirSync(NACHBARN).filter((r) => {
 }).sort();
 
 let gleich = 0, nachgezogen = 0, betroffen = 0;
+/* ⚠ HIER OBEN, NICHT BEI cacheBump. Ein `const` unterhalb seiner Verwendung
+ * liegt in der toten Zone — der erste Lauf starb mit „Cannot access
+ * 'schonGebumpt' before initialization", nachdem er eine Datei geschrieben
+ * hatte. Einmal je Worker je LAUF: zwei Kopien im selben Repo sind kein
+ * zweiter Grund, den Vorrat wegzuwerfen. */
+const schonGebumpt = new Set();
 const offen = [];
 
 for (const repo of repos) {
@@ -177,7 +183,7 @@ for (const repo of repos) {
     console.log(`    ✓ nachgezogen: ${rel}  (${t.k.marke || t.k.name})`);
     nachgezogen++;
     pinsNachziehen(rp, t.ist, t.k.sha);
-    cacheBump(rp, basename(t.datei));
+    cacheBump(rp, t.datei);
   }
   gleich += treffer.length - zurueck.length;
 }
@@ -220,21 +226,58 @@ function pinsNachziehen(rp, altSha, neuSha) {
   }
 }
 
-/* ── 4. CACHE_VERSION — nur wo die Datei im Installations-Vorrat steht ────
+/* ── 4. CACHE_VERSION — wo der Worker die Datei ueberhaupt ausliefern kann ──
  * ⚠ GEMESSEN, NICHT GERATEN: am 2026-09-14 brauchten 11 von 20 Repos einen
  * Bump, neun nicht — dort bewegt er nichts. Und die neue Nummer entsteht aus
  * der Datei, die gerade danebenliegt; wer sie gegen den eigenen alten Stand
  * zaehlt statt gegen den aktuellen, vergibt dieselbe Nummer zweimal
- * (Kimhub-Befund 2026-09-07: zwei Sitzungen, beide „v26"). */
-function cacheBump(rp, dateiname) {
+ * (Kimhub-Befund 2026-09-07: zwei Sitzungen, beide „v26").
+ *
+ * ⚠ DIE BEDINGUNG WAR ZU ENG — GEMESSEN AM 2026-09-16. Bis dahin hiess sie
+ * „nur wo die Datei im Installations-Vorrat steht". Ein Worker, der
+ * gleich-urspruengliche GETs CACHE-FIRST beantwortet, legt sie aber beim
+ * ersten Abruf SELBST ab und liefert danach die alte Fassung weiter — auch
+ * wenn sie in keiner Vorrats-Liste stand. Gemessen an drei Repos
+ * (PWA-Toolpoint, Tomys-Hub, family-project): sbkim-andock-wizard.js steht
+ * dort in keinem Vorrat, und alle drei bedienen ihn aus dem Speicher.
+ * Ein Sicherheits-Update, das still nicht ankommt, ist der teuerste Fall.
+ *
+ * ⚠ ES WIRD NICHT GERATEN, OB EIN PFAD CACHE-FIRST LAEUFT. Das ist aus dem
+ * Quelltext nicht verlaesslich zu lesen (Ausnahmen, Zweige, Reihenfolge), und
+ * eine geratene Erkennung waere genau der stille Fehler, den sie verhindern
+ * soll. Gebumpt wird deshalb, sobald der Worker ueberhaupt fetch abfaengt.
+ * DIE KOSTEN SIND EINSEITIG: ein ueberfluessiger Bump kostet einmal die
+ * Schale neu laden, ein ausgelassener kostet ein Update, das niemand bemerkt.
+ * Betrifft 6 der 18 Repos; drei davon brauchten ihn wirklich. */
+function cacheBump(rp, zielPfad) {
+  const dateiname = basename(zielPfad);
+  const ziel = zielPfad.replace(/\\/g, "/");
+  /* ⚠ DER GELTUNGSBEREICH ENTSCHEIDET, NICHT DAS REPO. Ein Worker unter
+   * bookledger/sw.js kann eine Datei unter sbkim/ gar nicht ausliefern — ihn
+   * zu bumpen wirft den Vorrat einer FREMDEN Unter-App weg. Gemessen am
+   * 2026-09-16: die erste Fassung dieser Regel bumpte in Tomys-Hub FUENF
+   * Unter-Apps, von denen keine den Wizard je sieht. */
   for (const sw of jsDateien(rp).filter((p) => /(^|\/)[a-z-]*sw\.js$/.test(p.replace(/\\/g, "/")))) {
+    if (schonGebumpt.has(sw)) continue;
     let s; try { s = readFileSync(sw, "utf8"); } catch { continue; }
+    const bereich = dirname(sw).replace(/\\/g, "/") + "/";
     const imVorrat = new RegExp(`["'\`][^"'\`]*${dateiname.replace(/\./g, "\\.")}["'\`]`).test(s);
-    if (!imVorrat) continue;
-    const m = s.match(/(var|const|let)\s+(CACHE_VERSION|CACHE)\s*=\s*(['"`])([^'"`]*?)(\d+)\3/);
+    /* ⚠ EIN fetch-LISTENER ALLEIN IST KEIN VORRAT. `sbkim/sbkim-sw.js` faengt
+     * POSTs ab und leitet sie an die Seite weiter — es legt NICHTS ab. Ohne
+     * diese Bedingung meldete der Automat dort dreimal „kein Bump moeglich":
+     * eine Warnung, die immer kommt, verdeckt die eine, auf die es ankommt. */
+    const faengtAb = ziel.startsWith(bereich)
+      && /addEventListener\s*\(\s*["'`]fetch["'`]/.test(s)
+      && /\bcaches\s*\./.test(s);
+    if (!imVorrat && !faengtAb) continue;
+    /* ⚠ SW_VERSION GEHOERT DAZU. Mein Mixarium nennt seine Nummer so — bis zum
+     * 2026-09-16 meldete der Automat dort „kein Bump moeglich" und ging weiter.
+     * Eine Meldung, die niemand liest, ist kein Bump. */
+    const m = s.match(/(var|const|let)\s+(CACHE_VERSION|CACHE|SW_VERSION)\s*=\s*(['"`])([^'"`]*?)(\d+)\3/);
     if (!m) { console.log(`        ⚠ ${relative(rp, sw)}: kein Bump moeglich (Muster nicht gefunden)`); continue; }
     const neu = m[0].slice(0, -(m[5].length + 1)) + (Number(m[5]) + 1) + m[3];
     writeFileSync(sw, s.slice(0, m.index) + neu + s.slice(m.index + m[0].length));
+    schonGebumpt.add(sw);
     console.log(`        ↳ Cache-Bump: ${relative(rp, sw)}  ${m[4]}${m[5]} → ${m[4]}${Number(m[5]) + 1}`);
   }
 }
