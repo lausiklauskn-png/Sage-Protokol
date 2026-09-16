@@ -72,6 +72,20 @@ function netzBauen() {
     /* ⚠ EIN ZWEITER WORKER, in dessen Vorrat die Datei NICHT steht. Ohne ihn
      * aendert ein ausgebauter Vorrat-Riegel nichts, und der Fall misst nichts. */
     "extra-sw.js": `var CACHE_VERSION = "extra-v3";\nvar CORE = ["index.html"];\n`,
+    /* ⚠ EIN WORKER, DER DIE DATEI NICHT FUEHRT UND SIE TROTZDEM AUSLIEFERT.
+     * Cache-first: er legt jede gleich-urspruengliche Antwort selbst ab und
+     * bedient sie danach aus dem Speicher — auch was in keinem Vorrat stand.
+     * Gemessen am 2026-09-16 an PWA-Toolpoint, Tomys-Hub und family-project:
+     * dort blieb der Wizard genau so haengen. */
+    "laufzeit-sw.js": `var CACHE_VERSION = "laufzeit-v2";\n`
+      + `self.addEventListener("fetch", function (e) {\n`
+      + `  e.respondWith(caches.match(e.request).then(function (h) { return h || fetch(e.request); }));\n});\n`,
+    /* ⚠ UND DIE GEGENRICHTUNG: derselbe Worker, aber in einem Unterordner.
+     * Sein Geltungsbereich ist `unterapp/` — `modules/…` kann er gar nicht
+     * ausliefern. Ihn zu bumpen wirft den Vorrat einer FREMDEN Unter-App weg. */
+    "unterapp/sw.js": `var CACHE_VERSION = "unterapp-v5";\n`
+      + `self.addEventListener("fetch", function (e) {\n`
+      + `  e.respondWith(caches.match(e.request).then(function (h) { return h || fetch(e.request); }));\n});\n`,
   });
   /* App 2: schon gleich — darf NICHT angefasst werden. */
   app("App-Zwei", { "sbkim/16_siegel.js": modul(16, "var NEU = 2;") });
@@ -143,12 +157,30 @@ console.log("\nMit --schreiben:");
   const sw = readFileSync(join(w, "App-Eins", "sw.js"), "utf8");
   ok(/app-eins-v8/.test(sw), "CACHE_VERSION wurde erhoeht (v7 → v8)", sw.slice(0, 60));
 
-  /* ⚠ UND DER WORKER, DER DIE DATEI NICHT FUEHRT, BLEIBT STEHEN. Ein Bump
-   * ohne Vorrat-Pruefung zwaenge jedem Nutzer einen Download auf, obwohl sich
-   * in DIESEM Vorrat nichts geaendert hat. */
+  /* ⚠ UND DER WORKER, DER DIE DATEI WEDER FUEHRT NOCH ABLEGT, BLEIBT STEHEN.
+   * Ein Bump ohne jede Bedingung zwaenge jedem Nutzer einen Download auf,
+   * obwohl sich in DIESEM Vorrat nichts geaendert hat.
+   * ⚠ TAFEL-EVOLUTIONS-KLAUSEL: bis zum 2026-09-16 hiess diese Zusicherung
+   * „ein Worker OHNE die Datei im Vorrat wird NICHT gebumpt". Das war zu weit
+   * — ein cache-first-Worker liefert sie auch dann aus. Ersetzt, nicht
+   * stillschweigend getauscht; die neue Haelfte steht gleich darunter. */
   const extra = readFileSync(join(w, "App-Eins", "extra-sw.js"), "utf8");
   ok(/extra-v3/.test(extra),
-     "ein Worker OHNE die Datei im Vorrat wird NICHT gebumpt", extra.slice(0, 40));
+     "ein Worker, der die Datei weder fuehrt noch ablegt, wird NICHT gebumpt", extra.slice(0, 40));
+
+  /* ⚠ DIE NEUE HAELFTE, UND SIE IST DIE TEURERE. Ein Sicherheits-Update, das
+   * still nicht ankommt, kostet mehr als ein ueberfluessiger Download. */
+  const laufzeit = readFileSync(join(w, "App-Eins", "laufzeit-sw.js"), "utf8");
+  ok(/laufzeit-v3/.test(laufzeit),
+     "ein cache-first-Worker wird gebumpt, auch ohne die Datei im Vorrat (v2 → v3)",
+     laufzeit.slice(0, 40));
+
+  /* ⚠ UND DER GELTUNGSBEREICH BEGRENZT DAS. Sonst wirft ein Kanon-Nachzug den
+   * Vorrat jeder Unter-App im selben Depot weg — gemessen am 2026-09-16:
+   * die erste Fassung dieser Regel bumpte in Tomys-Hub FUENF davon. */
+  const unter = readFileSync(join(w, "App-Eins", "unterapp/sw.js"), "utf8");
+  ok(/unterapp-v5/.test(unter),
+     "ein Worker in einem FREMDEN Geltungsbereich wird NICHT gebumpt", unter.slice(0, 40));
 
   /* ⚠ MODUL 20 TRAEGT EINEN DOPPELPUNKT statt des Gedankenstrichs. Wer das
    * Muster darauf verengt,
