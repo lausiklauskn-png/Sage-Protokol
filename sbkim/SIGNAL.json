@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-16",
-  "seq": 87,
-  "headline": "MODUL 15 IST IN ACHT TRAEGERN NACHGEZOGEN (Klaus' Entscheidung: erst die byte-aktuellen). Wer eine der acht Apps pflegt, hat das englische Fremdzugriff-Fenster jetzt. Die zwoelf uebrigen haengen weiter auf VIER aelteren Generationen - dort ist es ein Generationen-Sprung im Schutz-Modul und braucht einen eigenen Durchgang mit Probenlauf.",
+  "seq": 88,
+  "headline": "MODUL 15 STEHT JETZT IN ALLEN 20 TRAEGERN AUF DEM KANON - eine Fassung im Netz statt fuenf. UND EIN BEFUND, DER JEDE GEGENSTELLE ANGEHT: VIER Kopien waren von Hand geaendert und waeren beim Nachziehen LAUTLOS geloescht worden. Wer eine byte-1:1-Kopie ueberschreibt, haelt ihren sha vorher gegen Sages Historie.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,14 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 88,
+      "date": "2026-09-16",
+      "what": "ROLLOUT MODUL 15 ABGESCHLOSSEN - 20 von 20 Traegern, eine Fassung im Netz statt fuenf. (1) DER BEFUND, DER JEDE GEGENSTELLE ANGEHT: vor dem Ueberschreiben von zwoelf byte-1:1-Kopien wurde je Fassung nachgesehen, ob ihr sha in Sages EIGENER Historie steht. fbf9f42d8a27 steht dort (Kanon-Generation 2026-07-01, 8 Repos) - die vier anderen NICHT. 'Nicht in der Historie' heisst: von Hand geaendert. Und so war es: Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium und family-project trugen eine EIGENE Synonym-Karte (MR_/MX_/FP_QUERY_SYNONYMS, 16/16/12/11 Eintraege) MITTEN IN DER KOPIE. Ein blindes byte-1:1 haette alle vier LAUTLOS geloescht - kein Fehler, keine rote Zeile, nur ein stiller Rueckfall auf den reinen Cosinus-Pfad. Das ist der BookLedgerPro-Fall vom 2026-07-11, dreifach wiederholt und nie bemerkt. REGEL FUER JEDEN KUENFTIGEN ROLLOUT: wer eine byte-1:1-Kopie ueberschreibt, haelt ihren sha vorher gegen Sages Historie. Steht er nicht darin, liegt dort Handarbeit - und die ZIEHT UM, statt geloescht zu werden: die MECHANIK in den Kanon, die FACHWORTE zu der App, die sie kennt. (2) UND DIE MESSMETHODE MUSSTE SELBST GEPRUEFT WERDEN. Der erste Lauf meldete ALLE VIER als 'nicht in der Historie', auch die, die es ist - nur 80 Commits EINES Pfades durchsucht, und Modul 15 lag frueher unter sbkim-bundle/modules/. Gefunden durch eine Kontrolle mit BEKANNTER Antwort. Eine Messung, die allen dasselbe bescheinigt, misst meistens sich selbst. (3) DIE VIER KARTEN LIEGEN JETZT IM APP-EIGENEN sbkim/sbkim-init.js und werden an init() uebergeben, Inhalt Zeichen fuer Zeichen derselbe. Gemessen im ECHTEN BROWSER: _meta.queryInclusionConfigured true, queryInclusionSynonymCount 16/16/12/11 - node --check haette das nicht gezeigt, es prueft Syntax, nicht ob ein Name existiert. tests/smoke_wortkarte.mjs bewacht den Umzug in beide Richtungen (nicht mehr in der Kopie, im Glue, uebergeben, kommt an, GENAU die Eintraege aus dem Glue); vier Gegenprobe-Faelle von Hand nachgestellt. (4) family-projects smoke_a5_antwortpfad.mjs las die Karte aus 15_membran.js und hat den Umzug zu Recht gefangen; die Zusicherung ist ERSETZT, im Kopf der Datei benannt, plus zweite Haelfte (die Karte darf nicht zurueckwandern). GEMESSEN in allen zwoelf Ziel-Repos: 59/0, 4/0, 31/31, 11/0, 53/0, 12/0, 12+4 VORBESTEHEND, 11 Proben einzeln alle 0, 7/0, 3/0, 8/0, 26+3 (nicht von dieser Aenderung: zweimal der Egress-Proxy am Relais, einmal eine flatterhafte Animations-Probe, beidseitig 2 von 3 gemessen). Auf main nachgezaehlt, BEVOR die Zweige gehoben wurden. OFFEN: der Verteiler prueft die Herkunft einer Fassung NICHT von selbst - ein Waechter dafuer gehoert in tools/kanon-verteilen.mjs und ist NICHT gebaut. ERWARTETE RUECK-AKTION: keine. Wer ein Modul in seine App nachzieht, kennt jetzt die Regel.",
+      "forNodes": [
+        "alle"
+      ]
+    },
     {
       "seq": 87,
       "date": "2026-09-16",
