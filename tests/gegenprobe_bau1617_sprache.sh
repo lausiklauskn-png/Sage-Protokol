@@ -27,6 +27,7 @@ mkdir -p "$KOPIE/src/modules" "$KOPIE/tests" "$KOPIE/docs"
 # Kopie SCHON OHNE EINGRIFF rot, und dann misst die ganze Gegenprobe nichts.
 # Genau so beim ersten Lauf passiert; die Ausgangslage-Pruefung hat es gefangen.
 frisch() {
+  cp "$WURZEL/src/modules/15_membran.js"         "$KOPIE/src/modules/"
   cp "$WURZEL/src/modules/16_siegel.js"          "$KOPIE/src/modules/"
   cp "$WURZEL/src/modules/17_floating_widget.js" "$KOPIE/src/modules/"
   cp "$WURZEL/tests/smoke_bau1617_sprache.mjs"   "$KOPIE/tests/"
@@ -63,6 +64,7 @@ else
   grep '✗' /tmp/gp1617_0.txt | head -3; exit 1
 fi
 
+M15=src/modules/15_membran.js
 M16=src/modules/16_siegel.js
 M17=src/modules/17_floating_widget.js
 PROBE=tests/smoke_bau1617_sprache.mjs
@@ -248,6 +250,56 @@ saboten "src/modules/16_siegel.js" \
 # auf Deutsch ein replace(">X<", ">X<") — dasselbe Ergebnis, byte-genau. Der
 # Fall waere IMMER „nicht gefangen", ohne dass der Waechter etwas falsch
 # macht. Ein Fall, der nichts messen kann, sieht aus wie Deckung.
+
+echo; echo "═══ F · Modul 15 · das Fremdzugriff-Fenster ═══"
+# Der stille Verfall: ein deutscher Satz aendert sich, der Eintrag bleibt.
+saboten "$M15" "15: ein deutscher Satz aendert sich, der Eintrag bleibt" \
+  'T("Aufräumen")' 'T("Leeren")'
+# Die Gegenrichtung: ein neuer Anzeigetext ohne englische Fassung.
+saboten "$M15" "15: ein T()-Aufruf ohne englische Fassung" \
+  'T("Aufräumen")' 'T("Aufräumen") + T("Ein Satz ohne Uebersetzung")'
+# Ein Anzeigetext, der gar nicht erst durch T() geht — das, was vor dem
+# 2026-09-16 der Normalfall war.
+saboten "$M15" "15: ein NEUER Anzeigetext geht nicht durch T()" \
+  'tip.textContent = T("Tipp: leere Tabelle = Lampe geht aus.");' \
+  'tip.textContent = T("Tipp: leere Tabelle = Lampe geht aus."); tip.title = "Ein neuer Hinweis ohne T";'
+# Die Datentafeln: ein Abweis-Grund ohne englische Fassung. Genau der Fall,
+# der bei der naechsten Schutz-Modul-Pflege eintritt.
+saboten "$M15" "15: ein GRUND_TEXT-Eintrag ohne englische Fassung" \
+  '    "gedrosselt": "Es kam zu viel auf einmal von dieser Herkunft"' \
+  '    "gedrosselt": "Es kam zu viel auf einmal von dieser Herkunft und wurde gedrosselt"'
+saboten "$M15" "15: ein ABSENDER_TEXT-Eintrag ohne englische Fassung" \
+  '    "anderes-fenster": "ein anderes Fenster",' \
+  '    "anderes-fenster": "irgendein anderes Fenster",'
+# Die Erklaer-Zeile entsteht aus MEHREREN Eintraegen. Ein Waechter auf das
+# Woerterbuch allein waere gruen, waehrend im Fenster ein halb deutscher
+# Satz stuende — deshalb wird hier die ANZEIGE sabotiert, nicht die Tabelle.
+saboten "$M15" "15: die Erklaer-Zeile setzt einen Teil unuebersetzt ein" \
+  '        ABSENDER_TEXT[d.absender] ? T(ABSENDER_TEXT[d.absender]) : d.absender));' \
+  '        ABSENDER_TEXT[d.absender] ? ABSENDER_TEXT[d.absender] : d.absender));'
+# Die tragende Zusicherung in der anderen Richtung: OHNE EINSTELLUNG
+# AENDERT SICH NICHTS. Wer T() auf Englisch festnagelt, bricht sie.
+saboten "$M15" "15: die Sprache faellt nicht mehr auf Deutsch zurueck" \
+  '    if (sprache() !== "en") return de;' \
+  '    if (false) return de;'
+# Und die Rangfolge: init({lang}) muss <html lang> schlagen.
+saboten "$M15" "15: init({lang}) wird still verschluckt" \
+  '    if (opts.lang === "de" || opts.lang === "en") optLang = opts.lang;' \
+  '    if (false) optLang = opts.lang;'
+# Der Protokoll-Wert darf NICHT mitwandern.
+saboten "$M15" "15: ein Protokoll-Wert wird mituebersetzt" \
+  '    tr.children[4].textContent = entry.decision;' \
+  '    tr.children[4].textContent = entry.decision === "ignored" ? "verworfen" : entry.decision;'
+# Der Vorbedingungs-Waechter: faellt das Fenster-Oeffnen weg, darf der
+# Abschnitt NICHT still gruen bleiben.
+saboten "$PROBE" "die Probe oeffnet das Fenster nicht mehr (Abschnitt misst nichts)" \
+  '    lampe.click();                           // öffnen wie ein Finger' \
+  '    /* kein Klick */'
+# Und der Markup-Filter: er darf echten Anzeigetext im Markup NICHT
+# durchlassen. (Von Hand am 2026-09-16 in beide Richtungen nachgestellt.)
+saboten "$M15" "15: ein Anzeigetext steht im Markup statt in textContent" \
+  'tr.innerHTML = "<td colspan=\"5\" style=\"padding:0 0.4rem 0.55rem;border-bottom:1px solid rgba(255,255,255,0.06);"' \
+  'tr.innerHTML = "<td colspan=\"5\" style=\"padding:0 0.4rem 0.55rem;border-bottom:1px solid rgba(255,255,255,0.06);\">Erklärung zum Eintrag"'
 
 frisch
 echo
