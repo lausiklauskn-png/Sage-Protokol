@@ -307,6 +307,43 @@ async function browserTeil() {
   writeFileSync(join(basis, "stempel-mit23.html"), SEITE_STEMPEL(true));
   writeFileSync(join(basis, "stempel-ohne23.html"), SEITE_STEMPEL(false));
 
+  /* ⚠ SCHRITT 2 — DIE ERST-SIGNATUR IM SIEGEL. Bis zum 2026-09-16 bettete sie
+     ausschliesslich die App-Beschreibung ein, waehrend die stille Anmeldung und
+     der Knopf „neu signieren" den INHALT nahmen. Beide Wege schreiben in
+     dasselbe Fach — dieselbe Kennung, dieselbe Spore, aber je nach gedruecktem
+     Knopf ein anderes Thema im Netz.
+     ⚠ GEMESSEN WIRD, WAS `generateOwnSpore` WIRKLICH BEKOMMT. Ein Waechter auf
+     „vektorFuerSpore steht in der Datei" waere auch dann gruen, wenn der Aufruf
+     nie erreicht wird. Der Stub schreibt die uebergebenen Felder mit. */
+  const STUBS_FUER_S2 =
+    "window.__meta = null; window.__proben = 0;" +
+    "window.SbkimSpore = {" +
+    "  getActiveIdentityKey: function () { return Promise.resolve('main'); }," +
+    "  getOrCreateIdentity: function () { return Promise.resolve({ nodeId: 'PRUEFKENNUNG123' }); }," +
+    "  listIdentities: function () { return Promise.resolve(['main']); }," +
+    "  generateOwnSpore: function (meta) { window.__meta = meta;" +
+    "    return Promise.resolve({ id: 'PRUEFKENNUNG123' }); }" +
+    "};" +
+    "window.SbkimEmbedding = {" +
+    "  init: function () { return Promise.resolve(); }," +
+    "  embedPassage: function () { return Promise.resolve(new Float32Array(384)); }," +
+    "  embedContentVector: function (p) { window.__proben = p.length;" +
+    "    return Promise.resolve({ vector: new Float32Array(384) }); }," +
+    "  embedSnippets: function () { return Promise.resolve([]); }" +
+    "};";
+  const SEITE_S2 = (rumpf) => [
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>',
+    '<div id="sbkim-siegel-modal"><div role="dialog"><p id="alt">Siegel</p></div></div>',
+    skript(STUBS_FUER_S2),
+    skript("window.SBKIM_SIEGEL_WIZ = Object.assign(" + JSON.stringify(KONFIG) +
+      ", { sampleContent: function () { " + rumpf + " } });"),
+    '<script src="wizard.js">' + ZU,
+    "</body></html>",
+  ].join("\n");
+  writeFileSync(join(basis, "s2-inhalt.html"),
+    SEITE_S2("return ['Kuchen Apfelkuchen','Sushi Maki','Suppe Linsen'];"));
+  writeFileSync(join(basis, "s2-ohne.html"), SEITE_S2("return [];"));
+
   const PORT = 8830 + (process.pid % 40);
   const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1"],
     { cwd: basis, stdio: "ignore" });
@@ -530,6 +567,70 @@ async function browserTeil() {
     ok("ohne Modul 23 sichert das Siegel trotzdem",
       stOhne.pw === "geheim12345" && /aufbewahren/.test(stOhne.meldung));
     ok("… und ruft nichts ins Leere", stOhne.gerufen === 0);
+
+    console.log("\nSchritt 2 — der Inhalt schlaegt die Selbstbeschreibung\n");
+    const schrittZwei = async (datei) => {
+      const s = await browser.newPage();
+      s.on("pageerror", (e) => fehler.push(datei + ": " + String(e).slice(0, 120)));
+      await s.goto(`http://127.0.0.1:${PORT}/${datei}`, { waitUntil: "load" });
+      await s.waitForFunction(() => !!document.querySelector("#sbwiz-s2"), { timeout: 8000 })
+        .catch(() => { /* der Aufrufer misst das Ergebnis, nicht die Frist */ });
+      const r = await s.evaluate(async () => {
+        const b = document.querySelector("#sbwiz-s2");
+        if (!b) return { knopf: false };
+        b.disabled = false;      // Schritt 2 haengt sonst an Schritt 1
+        b.click();
+        /* Auf die BEDINGUNG warten, nicht auf die Uhr — der Weg laeuft ueber
+           vier Promises, die Schlussmeldung steht erst danach. */
+        for (let i = 0; i < 300; i++) {
+          const t = (document.querySelector("#sbwiz-o2") || {}).textContent || "";
+          if (/committen|Fehler/.test(t)) break;
+          await new Promise((r2) => setTimeout(r2, 10));
+        }
+        const d = document.getElementById("sbkim-si-wizard");
+        return {
+          knopf: true,
+          quelle: window.__meta ? window.__meta.embeddingSource : null,
+          proben: window.__proben,
+          meldung: (document.querySelector("#sbwiz-o2") || {}).textContent || "",
+          dialog: d ? d.textContent : "",
+        };
+      });
+      await s.close();
+      return r;
+    };
+
+    const s2a = await schrittZwei("s2-inhalt.html");
+    ok("Schritt 2 laesst sich druecken", s2a.knopf === true);
+    ok("… und signiert wirklich (Modul 02 bekommt die Felder)", s2a.quelle !== null);
+    ok("… hat die App eigene Inhalte, kommt der Vektor DARAUS", s2a.quelle === "content");
+    /* ⚠ Die ZAHL wird mitgemessen. Ein Weg, der `embedContentVector` mit einer
+       LEEREN Liste ruft, traegt auch „content" ein und haette nichts gemessen. */
+    ok("… und zwar aus allen drei Schnipseln", s2a.proben === 3);
+    ok("… die Meldung nennt die Zahl", /\b3\b/.test(s2a.meldung));
+
+    /* ⚠ DIE GEGENRICHTUNG, und sie ist hier die wichtigere: ohne sie waere der
+       Waechter darueber auch dann gruen, wenn der Inhalts-Weg IMMER griffe —
+       also auch in Buchhaltung und Firmen-Seiten, wo der Inhalt nichts ueber
+       den Nutzer sagt. Genau das hat Klaus am 2026-09-16 ausgeschlossen. */
+    const s2b = await schrittZwei("s2-ohne.html");
+    ok("ohne eigene Inhalte bleibt es bei der Beschreibung", s2b.quelle === "description");
+    ok("… und die Meldung behauptet dann keine eigenen Inhalte",
+      /committen/.test(s2b.meldung) && !/eigenen Inhalten/.test(s2b.meldung));
+    ok("… `embedContentVector` wird dabei gar nicht erst gerufen", s2b.proben === 0);
+
+    console.log("\nEinmal signieren, einmal sichern — es steht dran\n");
+    /* ⚠ GEMESSEN WIRD DER TEXT IM FENSTER, nicht im Quelltext. Der Satz ist die
+       ganze Lieferung; steht er nur in der Datei und nie auf dem Schirm, hat
+       ihn niemand. */
+    ok("Schritt 2 sagt, dass es dieselbe Spore wie im Verbinden-Fenster ist",
+      /dieselbe Spore wie im Verbinden-Fenster/i.test(s2a.dialog));
+    ok("… und dass einmal signieren genuegt",
+      /hier ODER dort, nicht in beiden/.test(s2a.dialog));
+    ok("Schritt 3 sagt, dass es dieselbe Sicherung ist",
+      /dieselbe Sicherung wie im Verbinden-Fenster/i.test(s2a.dialog));
+    ok("… und was zweimal druecken ergibt",
+      /zwei Dateien mit gleichem Inhalt/.test(s2a.dialog));
 
     ok(`kein Skript-Fehler im Browser${fehler.length ? " — " + fehler[0] : ""}`, fehler.length === 0);
   } finally {
