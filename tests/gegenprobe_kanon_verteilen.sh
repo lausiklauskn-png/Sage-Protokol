@@ -36,7 +36,11 @@ PY
   if (cd "$KOPIE" && timeout 180 node tests/smoke_kanon_verteilen.mjs > /tmp/gpkv.txt 2>&1); then
     echo "  ✗ $was → gruen geblieben, NICHT GEFANGEN"; durch=$((durch+1))
   else
-    echo "  ✓ $was → rot: $(grep -m1 '✗' /tmp/gpkv.txt | sed 's/^ *//' | cut -c1-88)"; gefangen=$((gefangen+1))
+    # ⚠ NUR DIE EIGENE MARKE DER PROBE. Das Werkzeug schreibt selbst Zeilen
+    # mit ✗ auf stderr (der Leer-Treffer-Riegel), und die standen hier als
+    # „rote Zeile" da — der Fall trug dann den Namen einer FREMDEN Meldung.
+    # Die Probe markiert ihre eigenen Fehlschlaege mit zwei Leerzeichen davor.
+    echo "  ✓ $was → rot: $(grep -m1 '^  ✗' /tmp/gpkv.txt | sed 's/^ *//' | cut -c1-88)"; gefangen=$((gefangen+1))
   fi
 }
 
@@ -178,6 +182,78 @@ saboten "jeder Arbeitsbaum wird als veraltet gemeldet" \
   tools/kanon-verteilen.mjs \
   '    if (n > 0) veraltet.push({ repo: r, n });' \
   '    veraltet.push({ repo: r, n });'
+
+# ── Der Fassungs-Filter (--nur-generation) ────────────────────────────────
+echo
+echo "═══ F · Nur EINE Fassung nachziehen ═══"
+
+# Der Filter greift gar nicht mehr — dann schreibt „ganz oder gar nicht"
+# wieder in ALLE Repos, und der Generationen-Sprung im Schutz-Modul geht
+# ungefragt mit.
+saboten "der Filter haelt nichts mehr zurueck" \
+  tools/kanon-verteilen.mjs \
+  '    if (NUR_GEN !== null && !t.ist.startsWith(NUR_GEN)) {' \
+  '    if (false) {'
+
+# Die Gegenrichtung: er haelt ALLES zurueck. Dann meldet der Lauf brav
+# „zurueckgehalten" und zieht nie etwas nach — ein Werkzeug, das nichts tut
+# und dabei zufrieden aussieht.
+saboten "der Filter haelt ALLES zurueck" \
+  tools/kanon-verteilen.mjs \
+  '    if (NUR_GEN !== null && !t.ist.startsWith(NUR_GEN)) {' \
+  '    if (NUR_GEN !== null) {'
+
+# ⚠ ER HAELT ZURUECK UND SCHREIBT TROTZDEM. Das ist der stillste der drei:
+# die Meldung stimmt, die Datei nicht. Nur der Waechter, der die PLATTE misst,
+# faengt ihn — einer auf die Meldung waere hier gruen.
+saboten "zurueckgehalten wird gemeldet, aber trotzdem geschrieben" \
+  tools/kanon-verteilen.mjs \
+  '      zurueckgehalten.push(`${repo}/${rel}`);
+      continue;' \
+  '      zurueckgehalten.push(`${repo}/${rel}`);'
+
+# Die Uebersicht wird vom Filter beschnitten — dann meldete ein gefilterter
+# Lauf „eine Fassung im Netz", waehrend vier draussen liegen. Genau die
+# Auskunft, wegen der es den Filter ueberhaupt gibt.
+saboten "die Fassungs-Uebersicht wird mitgefiltert" \
+  tools/kanon-verteilen.mjs \
+  '    gm.get(gkey).push(`${repo}/${rel}`);' \
+  '    if (NUR_GEN === null || t.ist.startsWith(NUR_GEN)) gm.get(gkey).push(`${repo}/${rel}`);'
+
+# Ein sha, der keinen Traeger trifft, geht still durch — „0 nachgezogen" sieht
+# dann genauso aus wie ein Netz, das schon gleich steht.
+saboten "ein Filter, der nichts trifft, meldet sich nicht mehr" \
+  tools/kanon-verteilen.mjs \
+  'if (NUR_GEN !== null && zurueckgehalten.length && !nachgezogen && !offen.length) {' \
+  'if (false) {'
+
+# Und der Riegel gegen den Tippfehler im sha.
+saboten "ein Unfug-sha wird stillschweigend angenommen" \
+  tools/kanon-verteilen.mjs \
+  'if (NUR_GEN !== null && !/^[0-9a-f]{8,64}$/.test(NUR_GEN)) {' \
+  'if (false) {'
+
+# ── Der Standard-Zweig ────────────────────────────────────────────────────
+echo
+echo "═══ G · Der Standard-Zweig wird gefragt, nicht geraten ═══"
+
+# Zurueck zum Raten: „nicht main, also master". Ein Depot mit `trunk` faellt
+# damit wieder stumm aus der Veraltet-Pruefung.
+# ⚠ GETROFFEN WIRD DAS FRAGEN, NICHT DIE KANDIDATENLISTE. Mein erster Anlauf
+# strich "master" aus der Liste — und rutschte durch, zu Recht: `git clone`
+# setzt `origin/HEAD`, also antwortet schon das symbolic-ref, und die Liste
+# kam nie an die Reihe. Eine Sabotage muss treffen, was der Waechter misst.
+saboten "der Standard-Zweig wird wieder geraten statt gefragt" \
+  tools/kanon-verteilen.mjs \
+  '    if (h.startsWith("origin/")) return h.slice(7);' \
+  '    if (false) return h.slice(7);'
+
+# Der dritte Ausgang faellt weg: ein Depot ohne Vergleichs-Zweig wird
+# stillschweigend uebersprungen statt als NICHT MESSBAR benannt.
+saboten "ein unmessbares Depot wird wieder still uebersprungen" \
+  tools/kanon-verteilen.mjs \
+  'if (unmessbar.length) {' \
+  'if (false) {'
 
 echo
 echo "$gefangen gefangen · $durch durchgerutscht · $tot tote Anker"
