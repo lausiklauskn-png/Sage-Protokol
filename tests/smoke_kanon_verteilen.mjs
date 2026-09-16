@@ -492,5 +492,137 @@ console.log("\nDer Standard-Zweig wird gefragt, nicht geraten:");
   rmSync(w, { recursive: true, force: true });
 }
 
+/* ══ Der Herkunfts-Riegel ═══════════════════════════════════════════════
+ * ERGAENZT AM 2026-09-16, NACH DEM TEUERSTEN FUND DES MODUL-15-ROLLOUTS.
+ * Vier von zwanzig Traegern hatten ihre byte-1:1-Kopie VON HAND GEAENDERT (je
+ * eine eigene Synonym-Karte mitten im Modul). Ein blindes Nachziehen haette
+ * alle vier LAUTLOS geloescht. Gefunden hat es damals ein Blick, kein Werkzeug.
+ *
+ * ⚠ DIESE PROBE BAUT EINE ECHTE HISTORIE. Ohne sie gaebe `bekannteFassungen`
+ * eine leere Menge zurueck, alles landete im dritten Ausgang („nicht
+ * pruefbar"), und der Riegel waere von seinem Fehlen nicht zu unterscheiden. */
+console.log("\nDer Herkunfts-Riegel — war diese Kopie je Kanon?");
+{
+  const w = mkdtempSync(join(tmpdir(), "kanon-herkunft-"));
+  const sage = join(w, "Sage-Protokol");
+  mkdirSync(join(sage, "src", "modules"), { recursive: true });
+  mkdirSync(join(sage, "tools"), { recursive: true });
+  writeFileSync(join(sage, "tools", "kanon-verteilen.mjs"), readFileSync(werkzeug));
+  const modul = (nr, inhalt) => `/*\n * SBKIM — Modul ${nr} — Probe\n */\n${inhalt}\n`;
+
+  const git = (cwd, ...a) => execFileSync("git", ["-C", cwd, ...a],
+    { stdio: "pipe", env: { ...process.env, GIT_AUTHOR_NAME: "p", GIT_AUTHOR_EMAIL: "p@p",
+                            GIT_COMMITTER_NAME: "p", GIT_COMMITTER_EMAIL: "p@p" } });
+
+  /* Sage bekommt eine echte Historie mit ZWEI alten Generationen — und die
+   * zweite liegt unter einem ANDEREN PFAD. Genau das ist Modul 15 passiert
+   * (frueher `sbkim-bundle/modules/`); wer nur den heutigen Pfad durchsucht,
+   * meldet die aeltere Generation faelschlich als Handarbeit. */
+  git(sage, "init", "--initial-branch=main", ".");
+  mkdirSync(join(sage, "sbkim-bundle", "modules"), { recursive: true });
+  writeFileSync(join(sage, "sbkim-bundle/modules/16_siegel.js"), modul(16, "var URALT = 0;"));
+  git(sage, "add", "-A"); git(sage, "commit", "-m", "Generation 0, alter Pfad");
+  writeFileSync(join(sage, "src/modules/16_siegel.js"), modul(16, "var ALT = 1;"));
+  git(sage, "add", "-A"); git(sage, "commit", "-m", "Generation 1, neuer Pfad");
+  writeFileSync(join(sage, "src/modules/16_siegel.js"), modul(16, "var NEU = 2;"));
+  git(sage, "add", "-A"); git(sage, "commit", "-m", "Generation 2, heute");
+
+  const app = (name, dateien) => {
+    const p = join(w, name);
+    for (const [rel, inhalt] of Object.entries(dateien)) {
+      mkdirSync(join(p, dirname(rel)), { recursive: true });
+      writeFileSync(join(p, rel), inhalt);
+    }
+    mkdirSync(join(p, ".git"), { recursive: true });
+    return p;
+  };
+  app("App-Kanon",  { "sbkim/16_siegel.js": modul(16, "var ALT = 1;") });      // war Kanon
+  app("App-Uralt",  { "sbkim/16_siegel.js": modul(16, "var URALT = 0;") });    // war Kanon, alter Pfad
+  app("App-Hand",   { "sbkim/16_siegel.js": modul(16, "var ALT = 1;\nvar MEINE_KARTE = { a: 1 };") });
+
+  const shaVon = (f) => createHash("sha256").update(readFileSync(f)).digest("hex");
+  const handVorher = shaVon(join(w, "App-Hand/sbkim/16_siegel.js"));
+
+  const r = lauf(sage, w, ["--nur", "16_siegel", "--schreiben"]);
+
+  ok(/HANDARBEIT VERMUTET/.test(r.text) && /App-Hand/.test(r.text),
+     "eine Kopie, deren sha NICHT in Sages Historie steht, wird gemeldet",
+     (r.text.match(/App-Hand[\s\S]{0,90}/) || [""])[0].trim().replace(/\n/g, " | "));
+  /* ⚠ GEMESSEN WIRD DIE DATEI, NICHT DIE MELDUNG. Ein Werkzeug, das warnt und
+   * trotzdem schreibt, saehe in der Ausgabe gleich aus — und haette die Arbeit
+   * genauso geloescht. */
+  ok(shaVon(join(w, "App-Hand/sbkim/16_siegel.js")) === handVorher,
+     "…und die Datei ist auf der Platte UNVERAENDERT");
+
+  /* GEGENRICHTUNG, und sie ist die Haelfte, auf die es ankommt: eine echte
+   * Kanon-Generation darf NICHT als Handarbeit gelten. Ein Riegel, der jede
+   * alte Kopie anklagt, haelt den ganzen Rollout auf. */
+  ok(!/App-Kanon[\s\S]{0,60}HANDARBEIT/.test(r.text),
+     "eine echte Kanon-Generation wird NICHT als Handarbeit gemeldet");
+  ok(shaVon(join(w, "App-Kanon/sbkim/16_siegel.js")) !== shaVon(join(w, "App-Hand/sbkim/16_siegel.js")) &&
+     readFileSync(join(w, "App-Kanon/sbkim/16_siegel.js"), "utf8").includes("var NEU = 2;"),
+     "…sondern ganz normal nachgezogen");
+  /* Und die aeltere Generation unter dem ALTEN PFAD ebenso — sonst sucht die
+   * Herkunftspruefung nur dort, wo die Datei heute liegt. */
+  ok(!/App-Uralt[\s\S]{0,60}HANDARBEIT/.test(r.text),
+     "auch eine Generation vom FRUEHEREN PFAD gilt als Kanon");
+  ok(readFileSync(join(w, "App-Uralt/sbkim/16_siegel.js"), "utf8").includes("var NEU = 2;"),
+     "…und wird nachgezogen");
+
+  ok(r.code === 1, "Handarbeit setzt den Rueckgabewert auf 1, auch im Schreib-Gang", `war ${r.code}`);
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* ⚠ DER DRITTE AUSGANG, UND ER WAR ZUERST NUR BEHAUPTET. „bekannt · Handarbeit
+ * · NICHT PRUEFBAR" stand im Code, gemessen wurde nur das erste und zweite —
+ * der zugehoerige Gegenprobe-Fall fiel deshalb am NACHBAR-Waechter, mit dessen
+ * Namen in der roten Zeile. Ohne Historie darf der Riegel NICHT anklagen:
+ * ein Werkzeug, das bei fehlender Auskunft „Handarbeit" meldet, haelt beim
+ * ersten frischen Klon den ganzen Rollout auf. */
+{
+  const { w, sage } = netzBauen();   // dieses Sage hat GAR KEIN git
+  const r = lauf(sage, w, ["--nur", "16_siegel"]);
+  ok(/HERKUNFT NICHT PRUEFBAR/.test(r.text),
+     "ohne Historie sagt der Riegel „nicht pruefbar\" — das ist der dritte Ausgang",
+     (r.text.match(/NICHT PRUEFBAR[\s\S]{0,70}/) || [""])[0].trim().replace(/\n/g, " | "));
+  ok(!/HANDARBEIT VERMUTET/.test(r.text),
+     "…und klagt dabei NIEMANDEN der Handarbeit an");
+  rmSync(w, { recursive: true, force: true });
+}
+
+/* Der ausdrueckliche Weg daran vorbei — ohne ihn waere der Riegel eine
+ * Sackgasse: nach einem Umzug MUSS die Kopie ueberschrieben werden. */
+{
+  const w = mkdtempSync(join(tmpdir(), "kanon-herkunft2-"));
+  const sage = join(w, "Sage-Protokol");
+  mkdirSync(join(sage, "src", "modules"), { recursive: true });
+  mkdirSync(join(sage, "tools"), { recursive: true });
+  writeFileSync(join(sage, "tools", "kanon-verteilen.mjs"), readFileSync(werkzeug));
+  const modul = (nr, inhalt) => `/*\n * SBKIM — Modul ${nr} — Probe\n */\n${inhalt}\n`;
+  const git = (cwd, ...a) => execFileSync("git", ["-C", cwd, ...a],
+    { stdio: "pipe", env: { ...process.env, GIT_AUTHOR_NAME: "p", GIT_AUTHOR_EMAIL: "p@p",
+                            GIT_COMMITTER_NAME: "p", GIT_COMMITTER_EMAIL: "p@p" } });
+  git(sage, "init", "--initial-branch=main", ".");
+  writeFileSync(join(sage, "src/modules/16_siegel.js"), modul(16, "var NEU = 2;"));
+  git(sage, "add", "-A"); git(sage, "commit", "-m", "heute");
+  const p = join(w, "App-Hand");
+  mkdirSync(join(p, "sbkim"), { recursive: true });
+  mkdirSync(join(p, ".git"), { recursive: true });
+  writeFileSync(join(p, "sbkim/16_siegel.js"), modul(16, "var ALT = 1;\nvar MEINE_KARTE = { a: 1 };"));
+
+  const r = lauf(sage, w, ["--nur", "16_siegel", "--schreiben", "--handarbeit-gesichert"]);
+  ok(readFileSync(join(p, "sbkim/16_siegel.js"), "utf8").includes("var NEU = 2;"),
+     "--handarbeit-gesichert zieht die Kopie wirklich nach");
+  /* ⚠ GEMESSEN WIRD DIE AUSSAGE, NICHT DIE SCHREIBWEISE. Meine erste Fassung
+   * suchte „Handarbeit vermutet" in Kleinschreibung, waehrend das Werkzeug
+   * „HANDARBEIT VERMUTET" schreibt — rot, ohne dass eine Zusicherung gefallen
+   * waere. Ein Waechter nagelt eine Aussage fest, keine Grossbuchstaben. */
+  ok(/handarbeit vermutet/i.test(r.text) && /trotzdem nachgezogen/i.test(r.text),
+     "…sagt aber trotzdem, dass dort Handarbeit lag",
+     (r.text.match(/HANDARBEIT[\s\S]{0,140}/i) || [""])[0].trim().replace(/\n/g, " | "));
+  ok(r.code === 0, "…und der Rueckgabewert ist dann 0", `war ${r.code}`);
+  rmSync(w, { recursive: true, force: true });
+}
+
 console.log(`\nErgebnis: ${pass} bestanden, ${fail} fehlgeschlagen`);
 process.exit(fail ? 1 : 0);

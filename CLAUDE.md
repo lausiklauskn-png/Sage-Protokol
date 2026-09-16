@@ -404,7 +404,34 @@ fremdes Problem. Eine Prüfung hat drei Ausgänge, nicht zwei.
 node tools/kanon-verteilen.mjs              # nur nachsehen  (Vorgabe)
 node tools/kanon-verteilen.mjs --schreiben  # kopieren + Pins + Cache-Bump
 node tools/kanon-verteilen.mjs --nur 16_siegel
+node tools/kanon-verteilen.mjs --nur-generation <sha>   # nur EINE Fassung nachziehen
 ```
+
+⛔ **DER HERKUNFTS-RIEGEL HÄLT ZURÜCK, WAS VON HAND GEÄNDERT WURDE — seit dem
+2026-09-16.** Vor jedem Schreiben fragt der Verteiler: **steht der sha dieser
+Kopie in Sages eigener Historie?** Jede Fassung, die der Kanon je hatte, steht
+dort. Steht er nicht darin, ist die Kopie **nie so aus Sage herausgegangen** —
+dort liegt fremde Arbeit, und ein Nachziehen löschte sie lautlos.
+
+**Gemessen am Tag des Modul-15-Rollouts: vier von zwanzig Trägern** —
+Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium und family-project trugen je
+eine eigene Synonym-Karte (16 · 16 · 12 · 11 Einträge) mitten im Modul. Gefunden
+hat es an dem Tag ein Blick, kein Werkzeug; *eine Regel, an die man sich
+erinnern muss, ist keine.* Nachgestellt an genau diesen vier Fassungen: der
+Riegel meldet **die vier und nur die vier**.
+
+**Der Weg weiter ist der Umzug, nicht die Gewalt:** ansehen, was drinsteht · die
+**Mechanik** gehört in den Kanon, die **Fachworte** in den app-eigenen Glue ·
+dann `--handarbeit-gesichert` setzen. Der Schalter heißt absichtlich nicht
+`--force`.
+
+⚠ **Drei Ausgänge, nicht zwei:** war Kanon · Handarbeit · **nicht prüfbar**
+(Sages Historie gibt zu diesem Modul nichts her). Der dritte klagt niemanden an.
+
+⚠ **Und der Klon ist flach.** Was hinter der Abschneide-Grenze liegt, sieht die
+Prüfung nicht — eine sehr alte Kanon-Generation kann dort fälschlich als
+Handarbeit erscheinen. Der Lauf sagt das dazu; im Zweifel
+`git fetch --unshallow`, **bevor** jemand einen Umzug baut, den es nicht braucht.
 
 Bis zum 2026-09-14 kostete jede Kanon-Änderung **Handarbeit mal zwanzig** — an
 dem Tag 23 Pull Requests für zwei übersetzte Wörter im Wappen.
