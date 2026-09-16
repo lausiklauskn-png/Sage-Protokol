@@ -358,6 +358,41 @@ async function run() {
   record("0b/1 Hinweis kennt die Sicherung jetzt", "Letzte Sicherung",
     UI._test.idHint(), /Letzte Sicherung/.test(UI._test.idHint() || ""));
 
+  /* ── Der Vermerk gehoert diesem Modul, aber nicht nur diesem Knopf ────────
+     Klaus 2026-09-16: „Backup-Workflow und Sicherung-Workflow, ist das
+     dasselbe?" Ja — beide Wege rufen `SbkimSpore.exportBackup`. Nur der
+     Vermerk „Letzte Sicherung" wurde bis dahin ausschliesslich hier gesetzt;
+     wer im SIEGEL sicherte, sah danach weiter das alte Datum, und das sieht
+     aus, als haette er nicht gesichert. `markBackupMade()` ist der Weg, den
+     das Siegel ruft — den Schluessel baut es NICHT nach.
+     ⚠ GEMESSEN WIRD DURCH DEN LESER DES PANELS, nicht gegen einen Namen, den
+     die Probe selbst hinschreibt: `_meta.identity.backupStamp` liest ueber
+     dieselbe Funktion, die auch die Oberflaeche liest. Schriebe
+     `markBackupMade` unter einen ANDEREN Schluessel, bliebe hier `null` —
+     genau der Fehler, um den es geht. */
+  for (const k of Object.keys(_ls)) if (/^sbkim_backup_made_/.test(k)) delete _ls[k];
+  UI._test.refreshIdentityBox();
+  await sleep(10);
+  record("0b/1b Ausgangslage: der Vermerk ist weg", "kein Vermerk",
+    UI._meta.identity.backupStamp, UI._meta.identity.backupStamp === null);
+
+  /* ⚠ FEHLT DIE FUNKTION, WIRD GEMELDET STATT GEWORFEN. Der erste Anlauf rief
+     sie blind; nimmt eine Sabotage sie aus der Oberflaeche, starb die Probe mit
+     „UI.markBackupMade is not a function" — rot war es auch, nur ohne
+     Schlusszeile und ohne den Namen der Zusicherung in der roten Zeile. */
+  const marked = (typeof UI.markBackupMade === "function") ? UI.markBackupMade() : null;
+  await sleep(10);
+  const heute = new Date().toISOString().slice(0, 10);
+  record("0b/1b markBackupMade ist oeffentlich und meldet Erfolg", "true",
+    String(marked), marked === true);
+  record("0b/1b … und der Vermerk steht beim LESER des Panels", heute,
+    UI._meta.identity.backupStamp, UI._meta.identity.backupStamp === heute);
+  record("0b/1b … und zwar unter GENAU EINEM Schluessel", "1",
+    String(Object.keys(_ls).filter((k) => /^sbkim_backup_made_/.test(k)).length),
+    Object.keys(_ls).filter((k) => /^sbkim_backup_made_/.test(k)).length === 1);
+  record("0b/1b … der Hinweis im Panel zieht sofort nach", "Letzte Sicherung",
+    UI._test.idHint(), /Letzte Sicherung/.test(UI._test.idHint() || ""));
+
   // ---------- Teil 2: Wiederherstellen (die Gegenprobe des Briefs) ----------
   const sicherung = await stub.SbkimSpore.exportBackup("geheim12345");   // enthält ALT-KENNUNG-AAA
   // Verlust simulieren: leere Schublade, dann legt die App eine NEUE an.
