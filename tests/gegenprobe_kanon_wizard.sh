@@ -60,6 +60,40 @@ PY
   lauf "$was"
 }
 
+# Ein Fall, der ZWEI Zeichenketten zugleich tauscht — deutsch UND englisch.
+#
+# ⚠ WARUM ES DEN BRAUCHT, gemessen am 2026-09-16: ein Satz des Wizards steht
+# VIERMAL da — dreimal deutsch (Schluessel der englischen Tafel, Liste TEXTE_DE,
+# Aufrufstelle) und einmal als englische Fassung. Wer nur die englische tauscht,
+# bringt die UEBERSETZUNGS-Waechter zu Fall, nicht den gemeinten; wer nur die
+# deutschen tauscht, laesst eine Uebersetzung ohne deutschen Satz zurueck und
+# faellt ebenfalls anderswo. Beide Male ist es rot — nur traegt die rote Zeile
+# den falschen Namen. Zwei meiner Faelle sind genau daran zuerst gescheitert.
+saboten_paar() {
+  local was="$1" alt1="$2" neu1="$3" alt2="$4" neu2="$5"
+  frisch
+  if ! python3 - "$KOPIE" "$alt1" "$neu1" "$alt2" "$neu2" <<'PY2'
+import sys, io, os
+k = sys.argv[1]
+paare = [(sys.argv[2], sys.argv[3]), (sys.argv[4], sys.argv[5])]
+paare = [(a.replace("\\n", "\n"), n.replace("\\n", "\n")) for a, n in paare]
+getroffen = 0
+for rel in ("src/modules/16b_andock_wizard.js", "assets/sbkim-andock-wizard.js"):
+    d = os.path.join(k, rel)
+    s = io.open(d, encoding="utf-8").read()
+    vorher = s
+    for a, n in paare:
+        if a not in s: break
+        s = s.replace(a, n)
+    else:
+        io.open(d, "w", encoding="utf-8").write(s)
+        getroffen += 1
+raise SystemExit(0 if getroffen == 2 else 3)
+PY2
+  then echo "  ✗ $was → ANKER NICHT GEFUNDEN (misst nichts)"; tot=$((tot+1)); return; fi
+  lauf "$was"
+}
+
 # Ein Fall, der NUR eine Datei ausserhalb des Kanons anfasst.
 saboten1() {
   local was="$1" rel="$2" alt="$3" neu="$4"
@@ -214,6 +248,20 @@ saboten "eine Uebersetzung ohne deutschen Satz bleibt liegen" \
 #   diesen Fall waere auch eine Tafel gruen, die dasteht und nie gelesen wird.
 saboten "die Tafel steht da, wird aber nie gelesen" \
   '    var tab = TEXTE[sprache()];' '    var tab = TEXTE["xx"];'
+
+echo
+echo "═══ F · Eine Kennung, eine Spore (Klaus 2026-09-16) ═══"
+# Klaus: „Entweder signierst du im Mycel in diesem Knotennetz verbinden oder du
+# signierst im Siegel. Du musst nicht in beiden signieren." Gemessen im Code:
+# generateOwnSpore setzt slotKey = key || getActiveIdentityKey() — beide Wege
+# landen im SELBEN Fach. Es sind nicht zwei Adressen, sondern eine; genau dieser
+# Satz hat gefehlt.
+saboten_paar "der Hinweis auf die EINE Spore verschwindet" \
+  " Dieselbe Spore wie im Verbinden-Fenster: eine Kennung, ein Eintrag im Netz. Du signierst hier ODER dort, nicht in beiden." "" \
+  " The very same spore as in the connect window: one identity, one entry in the network. You sign here OR there, not in both." ""
+saboten_paar "der Hinweis auf die EINE Sicherung verschwindet" \
+  " Dieselbe Sicherung wie im Verbinden-Fenster: zweimal drücken ergibt zwei Dateien mit gleichem Inhalt." "" \
+  " The very same backup as in the connect window: pressing twice gives you two files with identical contents." ""
 
 echo
 echo "── $gefangen gefangen · $durch durchgerutscht · $tot tote Anker ──"
