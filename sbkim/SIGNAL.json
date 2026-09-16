@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-09-15",
-  "seq": 83,
-  "headline": "Brief fuer die Uebersetzung des Andock-Wizards (TEXTE.en) plus ein zweiter Auftrag: die Zeiterfassung zusammenfuehren. Befund 2026-09-15: die Commit-Spannen-Methode lief an zwei aufeinanderfolgenden Tagen in BEIDE Fehlerrichtungen (14.09.: 16h02 mit vollen Pausen; 15.09.: 0h29, weil mindestens 3h12 Arbeit nach dem letzten Commit lagen). Ausserdem: keine App traegt statisch html lang=en, aber ZEHN setzen es zur Laufzeit.",
+  "lastBuild": "2026-09-16",
+  "seq": 84,
+  "headline": "ZWEI KANON-AENDERUNGEN AM 16.09., beide netzweit verteilt und auf main nachgezaehlt. (1) 23_rendezvous_ui.js vermerkt die 'Letzte Sicherung' des Siegels auch im Verbinden-Panel. (2) EINE KENNUNG, EINE SPORE: Wizard (16b) und Verbinden-Panel (23 UI) sagen jetzt ausdruecklich, dass beide Wege DIESELBE Spore und DIESELBE Sicherung erzeugen — 'Du signierst hier ODER dort, nicht in beiden'. DER BEFUND DAHINTER, gemessen im Code: generateOwnSpore(meta,key) setzt slotKey = key || getActiveIdentityKey(), also landen BEIDE Signier-Wege im selben Fach und erzeugen dieselbe nodeId; Modul 23 UI signiert ueberhaupt nicht (kein generateOwnSpore), im Verbinden-Weg signiert der App-Klebstoff beim ersten Verbinden. Wer geglaubt hat, es seien zwei Adressen, hat zweimal signiert und zwei gleiche Dateien gesichert. Ausserdem entfiel 'Erzeuge domainVector (384) …' aus beiden Textwerken — den Aufruf gibt es seit dem Inhalts-Vektor nicht mehr. NEUE KANON-SHAS: 16b_andock_wizard.js = 0fbef6d8bcfc (vorher 119d12cd1817), 23_rendezvous_ui.js = 7de463462ae5 (vorher e8694ae55261). FUER GEGENSTELLEN MIT EIGENER KOPIE: bitte die sha vergleichen und ueber tools/kanon-verteilen.mjs nachziehen; gemessen liegen netzweit 43 byte-gleiche Kopien auf main, kein alter sha blieb stehen. ⚠ ZWEI FALLEN AUS DIESEM LAUF, die jede Gegenstelle treffen koennen: (a) MEINE VERIFIKATION HING AN EINER ZAHL ('mindestens 2 Dateien je Repo') und meldete drei vollstaendige Repos als rot — sie tragen nur EINE der beiden Kanon-Dateien. Verglichen wird die sha, nicht die Anzahl. (b) DIE ENGLISCHE TABELLE IN 23_rendezvous_ui.js hat 6 Leerzeichen fuer Schluessel und 8 fuer Werte; ein Eintrag mit 4 zerbricht den eigenen UND den folgenden Schluessel. Gefangen hat es smoke_bau23_sprache.mjs. GEMESSEN: Sage 107 Proben, 107 gruen, 0 rot; smoke_kanon_wizard 80 gruen; smoke_bau23_0b_identitaet 60 gruen. OFFEN: PWA-Toolpoints ?v= zieht nicht auf die CACHE_VERSION nach (gemessen 55 zu 50, 64 Fundstellen, bewusst nicht behoben) und Klaus' Browser-Sichttest.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 83,
+      "date": "2026-09-15",
+      "what": "Brief fuer die Uebersetzung des Andock-Wizards (TEXTE.en) plus ein zweiter Auftrag: die Zeiterfassung zusammenfuehren. Befund 2026-09-15: die Commit-Spannen-Methode lief an zwei aufeinanderfolgenden Tagen in BEIDE Fehlerrichtungen (14.09.: 16h02 mit vollen Pausen; 15.09.: 0h29, weil mindestens 3h12 Arbeit nach dem letzten Commit lagen). Ausserdem: keine App traegt statisch html lang=en, aber ZEHN setzen es zur Laufzeit."
+    },
     {
       "seq": 82,
       "date": "2026-09-14",
