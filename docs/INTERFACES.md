@@ -5121,8 +5121,33 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
 
         Der Stand wird deshalb GEMESSEN, nicht aus dem Kanon geschlossen:
         `node tools/kanon-verteilen.mjs --nur 15_membran` zählt die Fassungen
-        nach dem sha des Trägers. Am 2026-09-16 nach dem Rollout: 8 gleich,
-        12 zurück, 4 Fassungen draußen (vorher 5).
+        nach dem sha des Trägers. Am 2026-09-16 nach dem vollständigen Rollout:
+        20 Träger, 20 gleich, 0 zurück, EINE Fassung im Netz (vorher fünf).
+
+        ⚠ UND VIER KOPIEN WAREN VON HAND GEÄNDERT — das ist der teuerste Fund
+        dieses Rollouts. Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium und
+        family-project trugen eine eigene Synonym-Karte (`MR_`/`MX_`/`FP_
+        QUERY_SYNONYMS`, 16 · 16 · 12 · 11 Einträge) MITTEN IN DER byte-1:1-
+        Kopie von Modul 15. Ein blindes Nachziehen hätte alle vier LAUTLOS
+        gelöscht: kein Fehler, keine rote Zeile, nur ein stiller Rückfall auf
+        den reinen Cosinus-Pfad. Derselbe Fall wie BookLedgerPro am
+        2026-07-11, dreifach wiederholt und nie bemerkt.
+
+        GEFUNDEN HAT ES EINE PRÜFUNG DER HERKUNFT, kein Werkzeug: für jede
+        Fassung wurde nachgesehen, ob ihr sha in Sages EIGENER Historie steht.
+        `fbf9f42d8a27` steht dort (Kanon-Generation 2026-07-01) — die vier
+        anderen nicht. „Nicht in der Historie" heißt: von Hand geändert.
+
+        DARAUS FOLGT EINE REGEL FÜR JEDEN KÜNFTIGEN ROLLOUT: bevor eine
+        byte-1:1-Kopie überschrieben wird, wird ihr sha gegen Sages Historie
+        gehalten. Steht er nicht darin, liegt dort Handarbeit — und die zieht
+        um, statt gelöscht zu werden: die MECHANIK gehört in den Kanon, die
+        FACHWORTE bleiben bei der App (so steht es seit dem 2026-08-14 im Kopf
+        von `queryInclusion`). Die vier Karten liegen seitdem im app-eigenen
+        `sbkim/sbkim-init.js` und werden an `init()` übergeben; `_meta.
+        queryInclusionConfigured` und `queryInclusionSynonymCount` sind die
+        Messpunkte, an denen eine Probe das belegen kann — im Browser, nicht
+        im Quelltext.
         (Bis dahin stand hier „NOCH DEUTSCH: 16_siegel.js (47 Texte) und
         17_floating_widget.js (19). Ein Voll-Knoten ist damit heute
         gemischtsprachig." — fünf Tage lang richtig. Sie war nicht falsch,
