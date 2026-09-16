@@ -31,6 +31,140 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-16 · Acht von zwanzig — der Rollout mit Filter
+
+**Klaus' Entscheidung**, auf die Frage nach ganz oder gar nicht: *„Erst die 8
+byte-aktuellen."* Seine Rückfrage davor: *„du meinst Englisch und deutsch?"* —
+ja, beides; belegt an `15_membran.js:244`, `if (sprache() !== "en") return de;`.
+
+### Die Prämisse hielt nicht ganz, und das steht hier statt in der Erinnerung
+
+Der Brief nannte die acht einen **reinen Nachtrag**. Nachgemessen, an allen
+acht Trägern einzeln:
+
+| | |
+|---|---|
+| Unterschied zum Kanon | **+203 / −22** Zeilen, bei allen acht gleich |
+| die 22 entfallenden | **alle Anzeige-Zeilen** — Fenster-Titel, `aria-label`, Spaltenkopf „Zeit", der Tipp, die Klartext-Zeile, plus die drei Zähl-Zeilen, die zu `zaehlText()` wurden |
+| Schutz-Logik | **keine Zeile berührt** |
+
+„Reiner Nachtrag" im Sinne von *nur Zusätze* war falsch. Richtig ist: **alle
+Änderungen liegen in der Render-Schicht.** Der Unterschied ist klein und
+trotzdem einer — ein Wächter auf „nur `+`-Zeilen" wäre hier zu Recht rot
+geworden.
+
+### Der Filter: nach der Fassung, nicht nach Repo-Namen
+
+`--nur-generation <sha>` schreibt nur in die Träger mit diesem sha.
+
+⚠ **GEFILTERT WIRD NACH DEM sha DES TRÄGERS.** Eine getippte Repo-Liste wäre
+genau die gepflegte Liste, vor der der Kopf des Verteilers warnt: sie vergisst
+die App, die nach ihr gebaut wurde. Der sha steht in der Fassungs-Übersicht
+desselben Laufs — eine Messung, kein Name.
+
+Drei Riegel, jeder mit Gegenprobe-Fall:
+
+- **Zurückgehalten wird laut**, mit Repo, Fassung und Grund, und zählt in der
+  Schlusszeile mit. Ein Repo, das still aus einem Rollout fällt, ist wortgleich
+  der Schaden vom Vortag.
+- **Ein sha, der keinen Träger trifft, gibt 2 zurück.** Sonst meldete ein
+  Tippfehler „0 nachgezogen", und das sieht aus wie ein Netz, das gleich steht.
+- **Die Fassungs-Übersicht bleibt vollständig.** Beschnitte der Filter sie,
+  meldete ein gefilterter Lauf „eine Fassung im Netz", während fünf draußen
+  liegen — die Auskunft, wegen der es den Filter gibt.
+
+### Und ein stilles Überspringen, einen Tag alt und eine Zeile weiter
+
+Die Veraltet-Prüfung vom Vortag riet den Standardzweig: `catch { def =
+"master"; }`. Gibt es auch `origin/master` nicht, warf das folgende `rev-list`
+ein `fatal: ambiguous argument`, der äußere `catch` schluckte es, **und das
+Repo fiel aus der Prüfung, ohne dass eine Zeile darüber stand.** Gemessen an
+`Meine-In-and-Out-Book` (Depot ohne einen einzigen Zweig auf `origin`).
+
+Das ist derselbe Schaden, gegen den dieser Block einen Tag vorher gebaut wurde.
+Der Zweig wird jetzt **gefragt** (`origin/HEAD`, dann `main`/`master`), und es
+gibt **drei Ausgänge statt zwei**: aktuell · hängt zurück · **NICHT MESSBAR**.
+
+### BookLedgerPro ist wieder sichtbar
+
+Sein Klon stand 302 Commits / drei Monate zurück und fiel deshalb aus jedem
+Lauf. Frisch von `origin/main` aufgesetzt (der Zweig trug keinen ungepushten
+Commit — nachgesehen, nicht angenommen). Der Verteiler sieht seitdem **20
+Träger** statt 19, und BookLedgerPro gehörte zur byte-aktuellen Gruppe.
+
+### Gemessen
+
+| | vorher | nachher |
+|---|---|---|
+| Fassungen von Modul 15 im Netz | **5** bei 20 Trägern | **4** bei 12 |
+| Träger byte-gleich mit dem Kanon | 0 | **8** |
+| `smoke_kanon_verteilen.mjs` | 35 grün | **53 grün · 0 rot** |
+| `gegenprobe_kanon_verteilen.sh` | 13 gefangen | **21 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| `node tests/run_alle.mjs` | 107/107 | **107 Proben · 107 grün · 0 rot · 0 nicht lauffähig** |
+
+Proben **in den acht Ziel-Repos**, nach dem Nachziehen: Alis-Moderaum 55/55 ·
+BookLedgerPro 2182/0 · Mein-Workfloh-Page 84/0 · PWA-Toolpoint 872/872 ·
+Perfect-Skin-Beauty 14+69+18+25 grün · Perfect-Skin-Fashion 66/0 ·
+SB-KIMTool-Point 146 grün / **2 rot** · kim-hub-company 69/0.
+
+⚠ **DIE ZWEI ROTEN SIND VORBESTEHEND, UND DAS IST BELEGT statt behauptet.**
+Derselbe Lauf auf dem unveränderten Stand (Änderung weggestasht, `git status`
+leer) meldet exakt dieselben zwei — `Probe 27: Netz-Link gerendert` und
+`Probe 27: Klick öffnet URL`. Vor und nach dem Nachziehen: **148 Proben, 146
+grün, 2 rot.**
+
+Rückgabewerte **direkt** gelesen. Auf `main` nachgezählt, **bevor** die acht
+Zweige gehoben wurden: die englische Zeile steht in allen acht.
+
+### Zwei eigene Fehler, beide in der Messung
+
+| Was | Warum es nichts maß |
+|---|---|
+| ein Wächter zählte die Fassungs-**Gruppen** statt ihrer **Mitglieder** | `gm.set(gkey, [])` legt den Schlüssel weiter an: die Zahl blieb 2, die Liste war leer. Eine Übersicht, die zwei Fassungen behauptet und **kein Repo nennt**, wäre durchgegangen |
+| eine Sabotage traf die **Kandidatenliste** statt des **Fragens** | `git clone` setzt `origin/HEAD`, also antwortete schon das `symbolic-ref` — die Liste kam nie an die Reihe |
+
+⚠ **UND DIE GEGENPROBE LAS ALS „ROTE ZEILE" DIE AUSGABE DES WERKZEUGS.** Der
+neue Leer-Treffer-Riegel schreibt selbst eine `✗`-Zeile auf stderr; `grep -m1
+'✗'` fand sie zuerst. Drei Fälle trugen damit den Namen einer **fremden**
+Meldung. Gegriffen wird jetzt nur die eigene Marke der Probe (`^  ✗`).
+
+⚠ **Und ein Rückgabewert kam einmal von `tail`** — beim Prüfen meines eigenen
+Riegels. Er meldete 0, während das Werkzeug 2 gab. Dieselbe Falle, netzweit
+aufgeschrieben, in noch einem Kostüm.
+
+### Benannte Grenze
+
+Der Verteiler beschriftet die acht weiter als **„GENERATIONEN-SPRUNG, Proben im
+Ziel-Repo fahren"** — seine Schwelle ist eine reine **Zeilenzahl** (≥ 50), und
+225 Zeilen liegen darüber. Für diese acht war es eine Render-Schicht. Die
+Beschriftung ist damit vorsichtig, nicht falsch; wer sie liest, prüft mit
+`diff`, was die Zeilen wirklich sind. Nicht geändert, weil eine Schwelle, die
+den Nachtrag vom Sprung unterscheiden soll, den Inhalt messen müsste — und das
+ist ein eigener Bau.
+
+### Was offen bleibt
+
+- **Zwölf Träger auf vier älteren Generationen** (bis 657 Zeilen zurück):
+  `fbf9f42d8a27` 8× · `0f8a3f69de61` 2× · `33d6fe0c5057` 1× ·
+  `8a07567f98ce` 1× (family-project). Jeder braucht einen Probenlauf im
+  Ziel-Repo.
+- **Der Briefkasten hat sieben ungelesene Gegenstellen** (BookLedgerPro seq 23
+  > ack 18, SB-KIMTool-Point 36 > 24, Family Projekt 7 > 2, Jasons-Tresor
+  14 > 11, Mixarium 14 > 6, Rezeptbuch 13 > 5, Mein-Tresor 17 > 14). Die
+  Schlagzeilen datieren aus Juli; in dieser Sitzung nicht bearbeitet.
+- **Privat-Brains `modules/net-widget.js`** (838 Zeilen, app-eigen, 0 Treffer
+  auf `TEXTE`), **Privat-Brains 4** und **SB-KIMTool-Points 2** vorbestehende
+  rote Zeilen, der Rezept-Export ohne Spore, **Mein WorkFlohs
+  `sampleContent()`-Gerüst bleibt ausgeschaltet.**
+- **Klaus' Browser-Sichttest** — ob das Fenster auf einer englischen Seite
+  wirklich englisch dasteht, sieht nur er.
+
+**Nächster sinnvoller Schritt:** die zwölf zurückgehaltenen Träger in Gruppen
+nach ihrer Fassung nachziehen, je Gruppe mit Probenlauf im Ziel-Repo — die
+`fbf9f42d8a27`-Gruppe ist mit acht Repos die größte.
+
+---
+
 ## 2026-09-16 · Das Fenster hinter der englischen Lampe war deutsch
 
 **Klaus' Bitte:** *„verliere das Ziel Übersetzung in Mycel / Mit dem
@@ -476,232 +610,14 @@ neu, die Ordner-Liste: steht Sushi dort jetzt mit derselben Zahl wie oben?
 
 ---
 
-## Stand 2026-09-15 (Haupt-Sitzung, vierter Teil) · ⚠ DER SIEGEL-WEG ZERSTÖRTE DEN INHALTS-VEKTOR
+## Drei Sitzungen vom 2026-09-15 — ausgelagert am 2026-09-16
 
-**Der Befund.** Es gibt **zwei Wege zur Spore**, und sie betteten Verschiedenes
-ein: die stille Erst-Anmeldung (`sbkim-connect.js:88-103`) rechnete den Vektor
-aus `sampleContent()` — den **echten** Inhalten —, der Siegel-Weg
-(`16b_andock_wizard.js:353`) ausschließlich aus der App-Beschreibung.
-
-**Für einen fremden Nutzer, der Mein Rezeptbuch mit SEINEN Rezepten füllt, hieß
-das:** die erste Anmeldung war richtig, und in dem Moment, in dem er im Siegel
-neu signierte, **verlor er seinen Inhalts-Vektor** und bekam die Beschreibung
-der fremden App. Sein Knoten kündigte danach ein Thema an, das ihm nicht gehört.
-
-**Vier Änderungen am Kanon**, verteilt in 19 Kopien, 21 Depots gemergt:
-
-| | |
-|---|---|
-| **1** | **Zwei echte Wizard-Fehler.** Schritt 1 rief `getOrCreateIdentity()` ohne Argument → hart `"main"`, Schritt 2 signiert mit dem **aktiven** Fach. Nach einem Wechsel bedienten zwei Knöpfe desselben Fensters **zwei Identitäten**. Dasselbe im Neu-Signier-Weg. Und der Semantik-Block zog nach einem Wechsel nicht nach |
-| **2** | **Der Dateiname nennt die Kennung** (Klaus' eigener Vorschlag) und ein sortierbares Datum |
-| **3** | **Der Siegel-Weg rechnet aus dem Inhalt**, wenn `cfg.sampleContent` welchen liefert, und setzt `embeddingSource: "content"` |
-| **4** | **Wer zuletzt SELBST geschrieben hat, behält sein Wort** im Textfeld |
-
-**Und die drei Inhalts-Apps sind verdrahtet.** `sampleContent()` steht in
-Mein-Rezeptbuch, Muttis-Rezeptbuch und Mein-Mixarium jetzt auf **Datei-Ebene**
-statt in `__sbkimErzeugeSpore`; `siegel-inhalt.js` verweist **spät aufgelöst**
-darauf (`sbkim-init.js` wird **vor** ihr geladen). **Eine** Fassung der
-Stichprobe — zwei ergäben zwei Vektoren für denselben Knoten.
-
-**Klaus' Geltungsbereich, wörtlich:** Rezeptbuch · Muttis · Mixarium.
-Ausgeschlossen BookLedgerPro (Buchhaltung) und vorerst Mein-WorkFloh.
-⚠ **Der Bestand passte schon dazu:** BLPs `sampleContent()` liefert die **festen**
-`STANDARD_KONTO_LABELS` (bei jedem Nutzer gleich), WorkFloh hat **gar keine**.
-**Es brauchte also keine Sperre** — eine Sperre, die nichts sperrt, sieht aus
-wie Schutz.
-
-**Tafel.** `docs/INTERFACES.md` §2 trägt jetzt `embeddingSource` und
-`embeddingVersion`. Beide standen **nicht** dort, obwohl Modul 02 sie seit v0.2
-in die **signierte** Spore schreibt. Dazu die Lesart: **zwei Sporen desselben
-Knotens sind nur vergleichbar, wenn ihr `embeddingSource` derselbe ist** —
-belegt an Mixarium, dieselbe Kennung `6U3aniLM…`, 0.826040 aus dem Inhalt gegen
-0.883142 aus der Beschreibung.
-
-⚠ **EIN BLINDER WÄCHTER VON MIR, von der Gegenprobe entlarvt.** „Wirft
-`sampleContent`, bleibt es still (fail-soft)" fragte nur, ob die Vektor-Zeile
-fehlt. Nimmt man das `try/catch` heraus, entsteht der **ganze Semantik-Block**
-nicht mehr — und **genau das hätte der Wächter „fail-soft" genannt.** Er misst
-jetzt auch, dass der Block dasteht. Gefunden beim **Nachstellen von Hand**,
-nicht beim Schreiben.
-
-⚠ **EINE ZUSICHERUNG GESCHÄRFT, NICHT GELOCKERT — an drei Stellen.**
-`smoke_sage_beschreibung.mjs`, PWA-Toolpoints `smoke.mjs` (zweimal, je Knoten)
-und kim-hub-companys `smoke_knoten.mjs` verlangten „genau **eine** Zuweisung an
-`ta.value` im Lade-Pfad". Seit Punkt 4 ist das **Zählen das falsche Maß**;
-gemessen wird die **Bedingung** und die **Gegenrichtung** (dass der Vermerk beim
-Signieren wirklich gesetzt wird). Tafel-Evolutions-Klausel, ausdrücklich benannt.
-
-⚠ **ZWEI PROBEN WAREN NICHT ROT, SONDERN NICHT LAUFFÄHIG.** Kimboard meldete
-„21 von 31 ROT", Privat-Brain brach ab — beide Male fehlte `playwright-core`.
-Wer die erste Zahl genommen hätte, hätte eine fehlende Abhängigkeit als Schaden
-am Code gemeldet. Nachinstalliert: Kimboard **31/31 grün**.
-
-⚠ **UND PRIVAT-BRAIN IST VORBESTEHEND ROT.** `npm test` meldet dort
-**12 bestanden, 4 fehlgeschlagen** (das Siegel injiziert nichts). Gemessen, nicht
-vermutet: derselbe Lauf gegen `origin/main` in einem eigenen Arbeitsbaum ergibt
-**dieselben vier Zeilen, Wort für Wort**. Eigener Vorgang.
-
-**Gemessen.** `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
-lauffähig**, Rückgabewert **0** (ohne Pipe gelesen) · `wizard-laedt-pruefen.mjs`
-→ alle **21** Seiten liefern Konfiguration **und** Kanon aus ·
-`smoke_service_worker_parst.mjs` → 3 grün · **sieben Gegenproben von Hand
-nachgestellt**, alle gefangen, jede mit dem Namen ihrer eigenen Zusicherung in
-der roten Zeile · die Kette in den **echten App-Dateien** im Browser gemessen.
-Fremde Läufe: PWA-Toolpoint **871/871**, kim-hub-company **69 grün**,
-family-project **110/110**, BookLedgerPro **2182 bestanden** (Generationen-Sprung
-von 1.179 Zeilen), Alis-Moderaum 55/55, Perfect-Skin-Beauty 25, Kim-Bell,
-Kimseek, Jasons-Tresor, Mein-Tresor, Mein-Workfloh-Page, Perfect-Skin-Fashion
-grün.
-
-**NICHT GEBAUT, und der Grund ist gemessen:** der Drift-Hinweis („dein Inhalt
-hat sich von deiner Spore entfernt"). Seine Schwelle wäre zu **raten** gewesen —
-das Einbettungs-Modell ist in dieser Umgebung ein **16K-Platzhalter**, und
-huggingface antwortet mit **HTTP 000**. Eine geratene Schwelle erzeugt entweder
-eine Warnung, die man nicht mehr los wird, oder eine, die nie kommt.
-
-**Offen.** Der Drift-Hinweis (braucht Klaus' Browser für die Schwelle) ·
-`sbkim/15_membran.js` in family-project hängt eine Generation zurück ·
-Privat-Brains vier vorbestehende rote Zeilen · der Rezept-Export trägt die Spore
-**nicht** mit (benannter Befund, eigener Vorgang).
-
----
-
-## Stand 2026-09-15 (Haupt-Sitzung, dritter Teil) · ⚠ DER VIERTE IDENTITÄTS-WECHSEL EINES KNOTENS
-
-**Getan.** Klaus hat für **Mein-Rezeptbuch** über das Siegel neu signiert und die
-Spore geschickt. Geltend ist `r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI`; die
-Fassung vom 2026-07-19 liegt als `spore-vorgaenger-2026-07-19.json` daneben.
-Geprüft vor dem Ablegen: **9 Prüfungen, 0 rot** (Signatur VALID reziprok,
-`id == base64url(SHA256(rawPub))`, kein `d`, `key_ops` nur `["verify"]`,
-OKP/Ed25519, 384 Stellen, **L2 = 0.999999811**, kein `_demo`, `endpoint` gehört
-zu Mein-Rezeptbuch). Register nachgezogen: `nodeId`, `previousNodeIds` (jetzt
-**vier**), `matchScore` 0.835683 → **0.874048**, Quelle `depot-2026-09-15`.
-
-**Gemessen.** Der Text ist **byte-gleich** mit der alten Spore (851 Zeichen,
-7 Stichworte), und gegen Sage steht **exakt derselbe Wert** wie zuvor. Zweites
-Mal an einem Tag dasselbe Bild — bei Mein-WorkFloh war es 0.902126 vor und nach
-dem Wechsel. **Der Wechsel kostet die Zahl nichts, er kostet die Identität.**
-
-⚠ **Die Vorwerte sind NICHT unmittelbar vergleichbar:** 0.835683 stand gegen die
-Raum-Spore vom 2026-09-10, 0.874048 steht gegen die abgelegte. Zwei Maßstäbe,
-und deshalb trägt der Eintrag seine Quelle.
-
-⚠ **BENANNTE LÜCKE.** Für Mein-WorkFloh lag der Beleg vor, dass die alte Kennung
-verloren ist — der Identitäts-Wechsler meldete *„Genau eine Identität — sauber"*.
-**Für diesen Knoten liegt er nicht vor.** Abgelegt auf Klaus\' ausdrückliche
-Anweisung (*„damit übertragen wir das gleich auf die anderen"*); die alte Spore
-bleibt als Vorgänger liegen, falls sich das Gegenteil herausstellt.
-
-**Und daraus ist der eigentliche Befund gefallen:** `previousNodeIds` trägt für
-diesen Knoten jetzt **vier** Einträge, mehr als für jeden anderen im Netz. Die
-Ursache liegt nicht im Knoten, sondern in der **Bedienung** — Klaus hat sie
-selbst benannt: *„Dann wird im Mycel eine Sicherung angelegt, die aber auch schon
-im Siegel angelegt werden kann. Also auch wieder doppelt."* Nachgemessen: Sichern,
-Einspielen und Wechseln stehen in **Modul 23 und Modul 16b**, mit verschiedenen
-Dateinamen und verschiedenen Texten.
-
-**Vorschlag geschrieben, nicht gebaut:** `docs/VORSCHLAG_IDENTITAETS-KETTE.md`.
-Er trennt, was heute vermischt wird — `previousNodeIds` in der Spore wäre eine
-**Behauptung**, eine vom alten Schlüssel unterschriebene Nachfolge (`successorOf`)
-ein **Beweis**, und der zweite Weg geht nur dort, wo der alte Schlüssel noch lebt.
-Das ist genau **nicht** Klaus\' häufiger Fall. Sechs Punkte, nach Kosten geordnet;
-ab Punkt 3 wird `docs/INTERFACES.md` angefasst — **das entscheidet Klaus**.
-
-**⚠ DER DATEINAME TRÄGT DIE KENNUNG NICHT, und das hat heute Verwirrung
-gekostet** (Klaus: *„vielleicht über die Dateibezeichnung schon erkennt, welche
-Spore oder ID oder beides"*). Nachgemessen an den drei Stellen, die einen Namen
-bauen — `16b_andock_wizard.js:192` (`<Knotenname>_spore_<TT_MM_JJ>.json`),
-`23_rendezvous_ui.js:1176`, `16b_andock_wizard.js:573`: **keine davon nennt die
-Kennung.** Zwei Sporen derselben App am selben Tag sind damit ununterscheidbar,
-und genau das ist passiert: die zweite WorkFloh-Datei hieß `…_1.json`, die `_1`
-kam vom Browser. Welche die neuere war, stand **nur im Inhalt** (13:03 gegen
-14:04) — und an derselben Stelle schrieb Klaus *„ich glaube, ich habe es gerade
-verwechselt"*. **Der Name trug den Unterschied nicht, also musste der Mensch ihn
-tragen.**
-
-**Gemessen am Ende:** `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
-lauffähig**, Rückgabewert **0** (ohne Pipe gemessen).
-
-**Offen.** Die Übersetzung (`TEXTE.en`, 76 Einträge) · 44 nachhängende
-Kanon-Dateien · Klaus\' Entscheidung zu den sechs Punkten des Vorschlags · und
-die Frage aus § 10: soll der Identitäts-Wechsler nach **Zeitstempel** vorwählen
-statt alphabetisch? Beide Regeln haben ihren Schaden, die alphabetische ist nur
-der stillere.
-
-**Nächster Schritt.** Klaus\' Entscheid zu Punkt 1 (Dateiname) — er kostet drei
-Zeilen in zwei Kanon-Dateien, ändert kein Protokoll und wirkt sofort.
-
----
-
-## Stand 2026-09-15 (Haupt-Sitzung) · ⚠ EIN FEHLENDES KOMMA HAT VIER APPS ABGESCHALTET
-
-**Rolle:** Haupt-Sitzung. **Anlass:** Klaus meldete, im Mixarium-Siegel fehle die
-Beschreibung — *„die beschreibung ist in den anderen siegel auch zu sehen wenn
-sie bereits eine id und spore haben, im mixarium ist es anders."*
-
-**Ursache.** Der A18-Rollout hat die Wizard-Zeile an die Nachlade-Ketten
-**angehängt**. `siegel-inhalt.js` stand dort als **letztes** Feld-Element ohne
-Komma — danach fehlte es. Derselbe Fehler, zwei Sprengweiten: bei einem Feld aus
-**Paaren** ist `[…]` unter `[…]` kein Syntaxfehler, sondern ein **Zugriff** (zwei
-Einträge werden still zu einem `undefined`); bei einem Feld aus **Zeichenketten**
-ist es ein **echter Syntaxfehler** und tötet den ganzen Skript-Block.
-
-**Gemessen** (Chromium 390×844, jede Seite vorher gegen den Eltern-Stand des
-A18-Commits, nachher gegen `main`):
-
-| | vorher | nachher |
-|---|---|---|
-| Alis-Moderaum · Perfect-Skin-Beauty · Perfect-Skin-Fashion · Mein-Workfloh-Page | 01✓ 16✓ 17✓ | **01✗ 16✗ 17✗** — kein SBKIM |
-| Mein-Mixarium · Mein-Rezeptbuch · Mein-WorkFloh | 01✓ 16✓ 17✓ | Module ✓, **Konfig + Wizard ✗** |
-| Kimhub/start · zwei `jasons-bibliothek/`-Spiegel | ✗ | ✗ — **unverändert, nicht von A18** |
-
-**24 Seiten geprüft · 7 Apps betroffen · 4 davon ohne jedes SBKIM.**
-
-**Getan.** Komma in 9 Dateien (7 Repos; Mixariums Spiegel und Rezeptbuchs
-`build.py` nachgezogen und verifiziert) · `tools/wizard-trennen.mjs` setzt das
-Komma jetzt selbst · **`tools/wizard-laedt-pruefen.mjs`** neu: lädt jede Seite
-im echten Browser und fragt, ob `SBKIM_SIEGEL_WIZ` und `SbkimSiegelTexte`
-ankommen, mit benannten Ausnahmen, die in **beide** Richtungen geprüft werden ·
-**`tests/smoke_werkzeuge_parsen.mjs`** neu.
-
-**⚠ Und das Werkzeug selbst hat NIE geparst** — `tools/wizard-trennen.mjs` war
-schon in dem Commit kaputt, der es anlegte (Kommentarblock mitten im Satz
-geschlossen). Es lief aus einer Arbeitskopie; der Kommentar kam danach dazu.
-Lehre: `docs/LEHREN.md` § 12.
-
-**Nachher gemessen.** `tools/wizard-laedt-pruefen.mjs` → **alle 21 nicht
-ausgenommenen Seiten liefern Konfiguration UND Kanon aus**, echter exit 0 ·
-`node tests/run_alle.mjs` → **106 grün · 0 rot · 0 nicht lauffähig**, echter
-exit 0 · die Proben der vier betroffenen Apps mit eigener Suite: 55, 25, 66, 84
-grün.
-
-**⚠ UND DIE ERSTEN SIEBEN PULL REQUESTS WAREN LEER.** Der Push auf die
-App-Zweige wurde abgelehnt (kein Fast-Forward — der Server trug noch den
-A18-Stand), und die Fehlerausgabe war mit `-q` und `2>/dev/null` unterdrückt.
-Die PRs entstanden damit aus dem **alten** Zweig, enthielten nichts und mergten
-erfolgreich. Gemeldet hat es nicht der Merge, sondern der neue Wächter: er lief
-gegen `origin/main` und war weiter rot. Berichtigt mit `--force-with-lease` und
-**vor** jedem neuen PR mit `git diff --stat origin/main origin/<zweig>` geprüft.
-Das ist `docs/LEHREN.md` § 1 („ein PR kann erfolgreich mergen und nichts
-enthalten"), diesmal durch **unterdrückte Fehlerausgabe** ausgelöst.
-
-**Klaus' Anzeige-Frage ist damit beantwortet — es war derselbe Fehler.** Gemessen
-nach der Reparatur bei 360×740: der Wizard-Knopf steht da, das Beschreibungsfeld
-ist sichtbar und trägt **2.141 Zeichen**, die Herkunfts-Zeile nennt den Text.
-Kim-Bell und Kimboard verhalten sich gleich (221 bzw. 238 Zeichen).
-
-⚠ **Eine Zwischenmessung war falsch und steht hier, weil sie falsch war.** Ein
-Wegwerf-Skript meldete, das Siegel-Fenster stehe bei y=1963 „außerhalb des
-Sichtfelds". Das Fenster steht richtig (`fixed`, `inset 0`, 360×740); bei y=1963
-lag **scrollbarer Inhalt innerhalb** eines Scroll-Kastens (`top=74 h=592`,
-Inhalt 1970), und `getBoundingClientRect` meldet dort auch, was weggescrollt ist.
-Das Skript prüfte zudem nur `oben < 0`, nicht `oben > Schirmhöhe` — **ein
-Wächter, der nur eine Richtung misst.**
-
-**Offen.** Die zwei `jasons-bibliothek/`-Spiegel laden SBKIM nicht, weil der
-Unterordner kein eigenes `assets/` hat — **vorbestehend**, eigene Aufgabe.
-
----
+Der **Siegel-Weg, der den Inhalts-Vektor zerstörte** (`generateOwnSpore` ohne
+`contentSamples` — die Beschreibung gewann still über die Rezepte), der
+**vierte Identitäts-Wechsel eines Knotens** und das **fehlende Komma, das vier
+Apps abgeschaltet hat** (`[…]` unter `[…]` ist kein Syntaxfehler, sondern ein
+Zugriff). Alle drei vollständig und wortgleich in
+[`sessions/archiv/2026-09-16_puls-auslagerung-15-teil2.md`](sessions/archiv/2026-09-16_puls-auslagerung-15-teil2.md).
 
 ## Eine Sitzung vom 2026-09-15 (Nachtrag 2) — ausgelagert am 2026-09-16
 
