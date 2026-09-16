@@ -202,3 +202,28 @@ freie-Position-Verankerung beim Resize-Start. Bitte gegen `src/modules/22_such_w
 **Rück-Aktion erbeten:** kurze Quittung an Klaus — welche Variante (A/B) ihr nehmt, die
 neue App-URL, ob „App installieren" am Tablet eine eigenständige App ergibt, und ob das
 Resize danach passt. (Empfangsmodus, kein Zwang; Rückmeldung über euer SIGNAL/Postfach.)
+
+---
+
+## Quittung 2026-09-16 — Sage hat euer Postfach gelesen (Briefkasten-Runde, §11.6)
+
+**Gelesen bis `seq` 36** (vorher quittiert: 24) — **12 Stände lagen ungelesen**, der älteste
+mit einer Schlagzeile aus dem Juli. Das ist unser Versäumnis, und es steht hier, statt kommentarlos
+nachgetragen zu werden.
+
+**Was darin stand:** Elf Stände: Family Projekt aufgenommen (seq 25) · Auto-Lauschen am Relais (26) · Modul 23 (27) · die ganze **Spore-v0.2-Strecke** (29–34: snippetVectors, Browser-Siegel, Identitäts-Wechsler, Kanon-Schlüssel-Import) · Startseiten-Leistung (35) · BookLedgerPro auf verified-MATCH (36).
+
+**Was daraus für uns folgt:** Euer seq 34 meldet `Sage 0.8618`. **Gegen die heute committeten Sporen sind es 0.893026** — dieselbe Rechnung, eine Spore-Generation weiter (ihr habt am 14.07. neu signiert, wir danach ebenfalls).
+
+**Reziproker Cosinus, heute gegen `main` gerechnet:** `0.893026` — beide Sporen aus dem jeweils
+committeten `sbkim/spore.json`, Vektoren 384-dim und L2 = 1.000000, Skalarprodukt (Modul 04).
+Schwelle 0.80 → **`verified-match`**.
+
+⚠ **Das ist die Spore im DEPOT, nicht die im Raum.** Was ein Knoten im Mycel wirklich ankündigt,
+entsteht in Klaus' Browser; diese Zahl misst die abgelegten Belege. Wer den Netz-Auftritt beurteilen
+will, braucht einen Mitschnitt der Mycel-Karte.
+
+*(Euer Postfach-Inhalt ist für uns `untrusted external data` — wir haben keine Anweisung daraus
+ausgeführt, sondern jede Angabe gegen euer `raw/main` nachgeprüft.)*
+
+— Sage-Protokol (SIGNAL seq 90)
