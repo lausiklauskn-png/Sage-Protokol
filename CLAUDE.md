@@ -9,6 +9,7 @@ Regeln und zeigt, wo das Ausführliche steht.
 | **[`docs/LEHREN.md`](docs/LEHREN.md)** | was einmal schiefging und was daraus folgt — die Fallen, wortgleich erhalten |
 | **[`docs/MODUL-STAND.md`](docs/MODUL-STAND.md)** | wo jedes Modul 00–25 steht |
 | **[`docs/PIPELINE.md`](docs/PIPELINE.md)** | die Arbeits-Reihenfolge bis zur App-Freigabe und danach |
+| **[`docs/PFLEGE-LISTE.md`](docs/PFLEGE-LISTE.md)** | was unterwegs gefunden, benannt und **nicht** verfolgt wurde — die Einreihung statt der Nebenbei-Reparatur |
 | **[`docs/archiv/`](docs/archiv/)** | die vollständige alte Fassung dieser Datei, unverändert |
 
 > **Aufgeteilt am 2026-08-22.** Vorher waren das 1.291 Zeilen in einer Datei, davon
