@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-09-16",
-  "seq": 88,
-  "headline": "MODUL 15 STEHT JETZT IN ALLEN 20 TRAEGERN AUF DEM KANON - eine Fassung im Netz statt fuenf. UND EIN BEFUND, DER JEDE GEGENSTELLE ANGEHT: VIER Kopien waren von Hand geaendert und waeren beim Nachziehen LAUTLOS geloescht worden. Wer eine byte-1:1-Kopie ueberschreibt, haelt ihren sha vorher gegen Sages Historie.",
+  "seq": 89,
+  "headline": "DER VERTEILER HAELT JETZT ZURUECK, WAS VON HAND GEAENDERT WURDE. Vor jedem Schreiben haelt er den sha einer byte-1:1-Kopie gegen Sages eigene Historie. Steht er nicht darin, liegt dort fremde Arbeit - sie wird nicht mehr lautlos ueberschrieben.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,14 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 89,
+      "date": "2026-09-16",
+      "what": "HERKUNFTS-RIEGEL IM VERTEILER (tools/kanon-verteilen.mjs). Die Frage ist nicht 'ist die Kopie alt?', sondern 'war sie je Kanon?': vor jedem Schreiben wird der sha der Kopie gegen Sages EIGENE Historie gehalten. Jede Fassung, die der Kanon je hatte, steht dort. Steht er nicht darin, ist die Kopie nie so aus Sage herausgegangen - dort liegt Handarbeit, und ein Nachziehen loeschte sie lautlos. ANLASS: beim Modul-15-Rollout am selben Tag trugen VIER von zwanzig Traegern eine eigene Synonym-Karte mitten in der Kopie (16/16/12/11 Eintraege). Gefunden hat es ein Blick, kein Werkzeug. AN DEN ECHTEN VIER NACHGESTELLT: der Riegel meldet 33d6fe0c5057, 0f8a3f69de61 (zweimal) und 8a07567f98ce - und NICHT Kimboard/Kimseek auf der echten Kanon-Generation fbf9f42d8a27. Die vier und nur die vier, beide Richtungen an echten Daten. DREI AUSGAENGE, NICHT ZWEI: war Kanon, Handarbeit, NICHT PRUEFBAR. Der dritte klagt niemanden an - ein Werkzeug, das bei fehlender Auskunft 'Handarbeit' meldet, hielte beim ersten frischen Klon den ganzen Rollout auf. DIE SUCHE KENNT ALLE PFADE, unter denen eine Datei je lag (Modul 15 lag vor src/modules/ in sbkim-bundle/modules/); wer nur den heutigen Pfad durchsucht, meldet jede aeltere Generation faelschlich als Handarbeit. WEG DARAN VORBEI: --handarbeit-gesichert, nach einem Umzug noetig. Heisst absichtlich nicht --force. Rueckgabewert 1 auch im Schreib-Gang. BENANNTE GRENZE: der Klon ist flach; was hinter der Abschneide-Grenze liegt, sieht die Pruefung nicht, und der Lauf schreibt das dazu. GEMESSEN: smoke_kanon_verteilen 65 gruen (vorher 53), Gegenprobe 28 gefangen / 0 durchgerutscht / 0 tote Anker (vorher 21), run_alle 107/107 gruen. ERWARTETE RUECK-AKTION: keine. Wer ein Modul nachzieht, bekommt die Warnung jetzt vom Werkzeug statt vom Zufall.",
+      "forNodes": [
+        "alle"
+      ]
+    },
     {
       "seq": 88,
       "date": "2026-09-16",
