@@ -350,6 +350,18 @@ async function run() {
   record("0b/1 … und zwar die ECHTE nodeId", "Anfang der nodeId",
     kennungImNamen + " ⟷ " + String(nodeIdVorher || "").slice(0, 8),
     !!nodeIdVorher && kennungImNamen === String(nodeIdVorher).slice(0, 8));
+  /* ⚠ ZWEI KNOEPFE, EINE DATEI — und bis zum 2026-09-16 stand das nirgends.
+     Klaus: „dass nicht doppelt gespeichert wird und der Nutzer denkt, er haette
+     zwei verschiedene Dateien gespeichert, aber hat nur einen gespeichert."
+     Beide Wege rufen dasselbe `exportBackup`; wer hier und im Siegel drueckt,
+     hat zwei Dateien mit gleichem Inhalt. Gemessen wird der Satz, den der
+     Nutzer nach dem Druecken WIRKLICH liest. */
+  record("0b/1c die Erfolgsmeldung nennt die Sicherung im Siegel", "dieselbe Sicherung",
+    (UI._test.idFormText() || "").slice(-70),
+    /dieselbe Sicherung wie im Siegel/.test(UI._test.idFormText() || ""));
+  record("0b/1c … und sagt, dass eine Datei genuegt", "eine Datei genügt",
+    /eine Datei genügt/.test(UI._test.idFormText() || "") ? "gesagt" : "fehlt",
+    /eine Datei genügt/.test(UI._test.idFormText() || ""));
   record("0b/1 Passwort NICHT gespeichert", "kein Passwort im Speicher",
     Object.values(_ls).some((v) => String(v).indexOf("geheim12345") !== -1) ? "gefunden!" : "keins",
     !Object.values(_ls).some((v) => String(v).indexOf("geheim12345") !== -1));
@@ -357,6 +369,15 @@ async function run() {
   await sleep(10);
   record("0b/1 Hinweis kennt die Sicherung jetzt", "Letzte Sicherung",
     UI._test.idHint(), /Letzte Sicherung/.test(UI._test.idHint() || ""));
+  /* ⚠ EINE KENNUNG, EINE SPORE. Es gibt zwei Orte, an denen signiert wird —
+     die Anmeldung hier und Schritt 2 im Siegel —, und beide schreiben ins
+     AKTIVE Fach. Es entsteht nie ein zweiter Eintrag im Netz; der zweite Klick
+     ueberschreibt den ersten. Wer das nicht weiss, signiert zweimal und glaubt,
+     er haette zwei Knoten. */
+  record("0b/1c die Box sagt: eine Kennung, eine Spore", "einmal signieren genügt",
+    /Eine Kennung, eine Spore/.test(UI._test.idHint() || "") ? "gesagt" : "fehlt",
+    /Eine Kennung, eine Spore/.test(UI._test.idHint() || "")
+    && /Einmal genügt/.test(UI._test.idHint() || ""));
 
   /* ── Der Vermerk gehoert diesem Modul, aber nicht nur diesem Knopf ────────
      Klaus 2026-09-16: „Backup-Workflow und Sicherung-Workflow, ist das
@@ -467,6 +488,13 @@ async function run() {
   const vorher = UI._test.idHint() || "";
   record("0b/5 Ausgangslage: Panel sieht keine Kennung", "Hinweis auf fehlende Kennung",
     vorher.slice(0, 40), /Noch keine Kennung/.test(vorher));
+  /* ⚠ DIE GEGENRICHTUNG, und ohne sie waere der Waechter oben auch dann gruen,
+     wenn der Satz IMMER erschiene. Solange es keine Kennung gibt, beantwortet
+     „einmal signieren genuegt" eine Frage, die der Nutzer noch gar nicht hat —
+     und verdraengt die Zeile, die ihm sagt, was als Naechstes zu tun ist. */
+  record("0b/5 … und ohne Kennung steht „eine Kennung, eine Spore“ NICHT da", "still",
+    /Eine Kennung, eine Spore/.test(vorher) ? "steht da!" : "still",
+    !/Eine Kennung, eine Spore/.test(vorher));
   // Der Siegel-Wizard legt die Identität an (dieselbe Schublade) und Modul 02
   // feuert sbkim:alive — das Panel darf nicht auf einem alten Stand stehenbleiben.
   stub.SbkimSpore = makeSpore({ main: "IM-SIEGEL-ERZEUGT" });
