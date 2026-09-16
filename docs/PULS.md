@@ -102,13 +102,45 @@ leer), PWA-Toolpoint 2 (`?v=` gegen `CACHE_VERSION`, auf `main` schon 53 zu 50).
 gemessen 55 zu 50 nach meinem Bump, 64 Fundstellen, **bewusst nicht behoben** und
 im PR benannt; offene Frage, ob der Verteiler das künftig selbst tun soll.
 (2) Ob Mein WorkFloh ein `sampleContent()` bekommt — Auftragsdaten sind fremde
-Kundendaten, **Klaus' Entscheidung**. (3) Die sechs Gegenprobe-Fälle sind nicht
-abgelegt. (4) `docs/PULS.md` stand mit diesem Eintrag bei genau 3000 Zeilen; die drei
+Kundendaten, **Klaus' Entscheidung**. (3) ✅ **erledigt am selben Tag** — die Gegenprobe-Fälle sind abgelegt,
+siehe den Nachtrag unten. (4) `docs/PULS.md` stand mit diesem Eintrag bei genau 3000 Zeilen; die drei
 ältesten vollen Einträge (A18, 2026-09-14) sind **wortgleich** nach
 `sessions/archiv/2026-09_puls-auslagerung-14.md` ausgelagert — Stand danach
 2818 Zeilen. **Ausgelagert, nicht gekürzt.**
 
 Protokoll: [`docs/sessions/archiv/2026-09-16_eine-kennung-eine-spore.md`](sessions/archiv/2026-09-16_eine-kennung-eine-spore.md).
+
+**Nachtrag desselben Tages · die Fälle sind jetzt abgelegt.** Eine Prüfung, die
+nur im Kopf einer Sitzung stattgefunden hat, ist bei der nächsten Änderung nicht
+mehr da. **Fünf Fälle**, jeder einzeln gefahren:
+
+| Datei | Fälle | Ergebnis |
+|---|---|---|
+| `tests/gegenprobe_kanon_wizard.sh` (Abschnitt F) | 2 — die Hinweise auf die EINE Spore und die EINE Sicherung | **31 gefangen · 0 durchgerutscht · 0 tote Anker** |
+| `tests/gegenprobe_bau23_0b_identitaet.sh` (**neu**) | 3 — der Satz in der Box, der Zusatz in der Erfolgsmeldung, und die **Gegenrichtung** (ohne Kennung steht er NICHT da) | **3 gefangen · 0 durchgerutscht · 0 tote Anker** |
+
+⚠ **EIN SATZ STEHT VIERMAL DA**, und deshalb gibt es jetzt `saboten_paar`:
+dreimal deutsch (Schlüssel der englischen Tafel, `TEXTE_DE`, Aufrufstelle) und
+einmal englisch. Wer nur die englische Fassung tauscht, bringt die
+**Übersetzungs**-Wächter zu Fall statt des gemeinten; wer nur die deutschen
+tauscht, lässt eine Übersetzung ohne deutschen Satz zurück. *Rot ist es beides
+Mal — nur trägt die rote Zeile den falschen Namen.*
+
+⚠ **UND ZWEI FEHLER STECKTEN IM PRÜFWERKZEUG, keiner im Code.** Beide beim
+ersten Lauf der neuen Datei gefunden, beide nicht durch Nachdenken:
+
+- **Ein gerades `"` in einem Fall-Label beendet die bash-Zeichenkette.** Das
+  Label lautete `„eine Kennung, eine Spore"` mit geradem Schlusszeichen; die
+  Argumente verrutschten und **ein Fall verschwand ganz** — gemeldet wurden 2
+  statt 3, mit einer leeren roten Zeile daneben. Gefunden hat es **die Zahl, die
+  nicht stimmte**.
+- **Der Helfer übersetzt `\n` in einen echten Umbruch** (damit sich Zeilen
+  einfügen lassen) — im Quelltext steht dort aber ein **wörtliches**
+  Backslash-n in einer JS-Zeichenkette. Der Fall meldete „ANKER NICHT GEFUNDEN"
+  und maß nichts. Neu gestellt **ohne** `\n` im Anker, und der Satz wird gegen
+  einen anderen harmlosen getauscht statt gegen nichts.
+
+Gemessen danach: `node tests/run_alle.mjs` → **107 Proben · 107 grün · 0 rot**.
 
 ## 2026-09-16 · Die Ordner-Zählung, die englische Tafel und ein zu enger Bump
 
