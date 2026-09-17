@@ -1,0 +1,3282 @@
+{
+ "art": "mycel-karte-wiedergabe",
+ "hinweis": "Abgeleitet aus echten Mitschnitten. GEKÜRZT auf die Felder, die die Karte beim Zeichnen liest. Die 384 Zahlen jedes Vektors und die Signaturen stehen NUR in den Originalen unter Sage-Protokol/sbkim/mitschnitte/ — hier stehen von jedem Vektor nur seine Länge (Stellen) und seine Norm, aus dem echten Vektor gerechnet. Jede Spore liegt EINMAL unter `sporen`; die Ereignisse verweisen mit `sporeRef` darauf.",
+ "erzeugt": "2026-09-10T19:49:30.017Z",
+ "gestartet": "2026-09-10T12:12:03.859Z",
+ "beendet": "2026-09-10T16:29:04.026Z",
+ "quellen": [
+  {
+   "datei": "2026-09-10_mycel-karte-analyse.json",
+   "gestartet": "2026-09-10T12:11:14.306Z",
+   "beendet": "2026-09-10T12:18:37.599Z",
+   "ereignisse": 8
+  },
+  {
+   "datei": "2026-09-10T1433_mycel-karte-analyse.json",
+   "gestartet": "2026-09-10T14:02:31.279Z",
+   "beendet": "2026-09-10T14:33:13.299Z",
+   "ereignisse": 136
+  },
+  {
+   "datei": "2026-09-10T1516_mycel-karte-analyse.json",
+   "gestartet": "2026-09-10T15:09:35.592Z",
+   "beendet": "2026-09-10T15:16:51.568Z",
+   "ereignisse": 20
+  },
+  {
+   "datei": "2026-09-10T1606_mycel-karte-analyse.json",
+   "gestartet": "2026-09-10T15:23:06.689Z",
+   "beendet": "2026-09-10T16:06:25.828Z",
+   "ereignisse": 25
+  },
+  {
+   "datei": "2026-09-10T1630_mycel-karte-analyse.json",
+   "gestartet": "2026-09-10T16:28:51.110Z",
+   "beendet": "2026-09-10T16:30:07.054Z",
+   "ereignisse": 2
+  }
+ ],
+ "sporen": {
+  "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA": {
+   "id": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+   "nodeName": "Sage",
+   "domain": "Mycel-Bibliothek",
+   "domainDescription": "Sage-Protokol ist der Spezifikations- und Bau-Hub des SBKIM-Protokolls und zugleich ein eigener Endknoten im Mycel — Hub und Knoten in einem (Knotentyp hybrid).",
+   "domainKeywords": [
+    "SBKIM-Glossar",
+    "Mycel-Vokabular",
+    "Protokoll-Doku",
+    "Heilige Tafeln",
+    "Karten",
+    "Schwesternetz-Beobachtungen"
+   ],
+   "stammCategories": [
+    "Protokoll-Doku",
+    "Mycel-Vokabular",
+    "Heilige Tafeln",
+    "Karten",
+    "INTERFACES",
+    "ARCHITEKTUR"
+   ],
+   "guestCategories": [
+    "Glossar-Wartung",
+    "Schwesternetz-Beobachtungen",
+    "Sitzungs-Briefe",
+    "Übergabeprotokolle"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Sage-Protokol/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-02T20:37:44.039Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999999266353106
+  },
+  "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70": {
+   "id": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+   "nodeName": "Family Projekt",
+   "domain": "family-projekt.de",
+   "domainDescription": "Family Projekt bündelt brauchbare Werkzeuge und Apps an einem Ort: ein freies, neutrales Netzwerk (Mycel-Knoten), Klaus' eigene Werkzeuge mit eigenen Seiten und einen Marktplatz, auf dem andere ihre Apps eintragen. Semantische Suche nach Bedeutung, mehrsprachig, datenschutzfreundlich und offline-fähig.",
+   "domainKeywords": [
+    "Werkzeuge",
+    "Apps",
+    "Netzwerk",
+    "Marktplatz",
+    "Mycel",
+    "semantische Suche",
+    "Familie",
+    "PWA",
+    "offline",
+    "Datenschutz"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://family-projekt.de/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-02T20:41:22.955Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000001950355828
+  },
+  "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg": {
+   "id": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+   "nodeName": "SB-KIMTool-Point",
+   "domain": "SBKIM-Werkzeug-Point",
+   "domainDescription": "Werkzeugkiste + headless Modell-Lauf für das SBKIM-Protokoll.",
+   "domainKeywords": [
+    "Werkzeugkiste",
+    "SBKIM",
+    "Mycel",
+    "Marktplatz",
+    "Observatorium",
+    "Modell",
+    "Knoten"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:04:22.002Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.000000245870302
+  },
+  "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw": {
+   "id": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+   "nodeName": "Jasons Tresor",
+   "domain": "Jasons-Tresor-Bibliothek",
+   "domainDescription": "Jasons-Tresor ist Jasons eigener Endknoten im SBKIM-Mycel zum sicheren Verwahren: er verschlüsselt und speichert JSON-Dateien und SBKIM-Schlüssel offline im Browser (AES-256-GCM), Tresor und Bibliothek zugleich. Backups lassen sich passwortgeschützt exportieren und auf einem anderen Gerät zurückspielen; der private Schlüssel verlässt den Browser nie. Schwester-Knoten von Mein-Tresor, angedockt ans Netz aus Sage, SB-KIMTool-Point, Rezeptbuch und Mixarium.",
+   "domainKeywords": [
+    "Tresor",
+    "Bibliothek",
+    "JSON",
+    "SBKIM-Schlüssel",
+    "Verschlüsselung",
+    "Endknoten"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:05:14.808Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000002503423162
+  },
+  "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0": {
+   "id": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+   "nodeName": "Mein Tresor",
+   "domain": "Mein-Tresor-Bibliothek",
+   "domainDescription": "Mein-Tresor ist ein Endknoten im SBKIM-Mycel zum sicheren Verwahren: er verschlüsselt und speichert JSON-Dateien und SBKIM-Schlüssel offline im Browser (AES-256-GCM), Tresor und Bibliothek zugleich. Backups lassen sich passwortgeschützt exportieren und auf einem anderen Gerät zurückspielen; der private Schlüssel verlässt den Browser nie. Verwandt mit dem Schwester-Tresor Jasons-Tresor und angedockt ans Netz aus Sage, SB-KIMTool-Point, Rezeptbuch und Mixarium.",
+   "domainKeywords": [
+    "Tresor",
+    "Bibliothek",
+    "JSON",
+    "SBKIM-Schlüssel",
+    "Verschlüsselung",
+    "Endknoten"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Mein-Tresor/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:06:38.126Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999999663068728
+  },
+  "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58": {
+   "id": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+   "nodeName": "WorkFloh",
+   "domain": "Werbetechnik-Auftragsabwicklung",
+   "domainDescription": "WorkFloh ist ein Endknoten im SBKIM-Mycel und arbeitet auf Grundlage des Sage-Protokolls — semantisch verbunden mit den verwandten Knoten Tomys Hub (Digitaldruck und Werbeartikel), BookLedgerPro (Buchhaltung, Angebot und Rechnung), Kimseek (Bedeutungs-Suche) und dem SB-KIMTool-Point. Sein Kern ist der digitale Auftragszettel eines Betriebs: von der Kundenannahme über die Produktion (Schilder, Folierung, Beschriftung, Druck) bis zur Übergabe, samt Zeiterfassung sowie Angebot und Rechnung. Zugleich ist WorkFloh ein wandelbares Arbeitstool, nicht auf eine Branche festgelegt: jede Firma installiert ihren eigenen, firmenspezifischen Auftragszettel — aus dem Werbetechnik-Zettel wird ebenso der Werkstatt-, Handwerks-, Montage-, Reinigungs- oder Dienstleistungs-Auftrag. Wie die Schwester-Knoten Rezeptbuch und Mixarium ein Baukasten: Kategorien umbenennen, Felder anpassen, ein neues Auftrags-Paket laden. Server-los, offline direkt im Browser, ohne Anmeldung, mit eigenem SBKIM-Siegel und eigener Identität im Knotennetz.",
+   "domainKeywords": [
+    "Werbetechnik",
+    "Auftrag",
+    "Auftragszettel",
+    "Kundenannahme",
+    "Produktion",
+    "Übergabe",
+    "Zeiterfassung",
+    "Angebot",
+    "Rechnung",
+    "Handwerk",
+    "Werkstatt",
+    "Dienstleistung",
+    "SBKIM",
+    "Knotennetz",
+    "Sage-Protokoll"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Mein-WorkFloh/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:07:51.221Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.000000002478936
+  },
+  "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU": {
+   "id": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+   "nodeName": "BookLedgerPro",
+   "domain": "BookLedgerPro-Buchhaltung",
+   "domainDescription": "Offline-first, verschlüsselte Buchhaltung: Belege, Konten, USt/EÜR, GoBD, Aufträge.",
+   "domainKeywords": [
+    "Buchhaltung",
+    "Beleg",
+    "Konto",
+    "Rechnung",
+    "USt",
+    "EÜR",
+    "GoBD",
+    "Kostenstelle",
+    "Offline",
+    "Verschlüsselung"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/BookLedgerPro/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "embeddingSource": "content",
+   "createdAt": "2026-09-10T14:08:30.460Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000000019864257
+  },
+  "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM": {
+   "id": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+   "nodeName": "Kimboard",
+   "domain": "Pinnwand/Notizen/Merken",
+   "domainDescription": "Kimboard — semantische Pinnwand: Fragen und Notizen an ein geborgtes „dummes Brett“ (Nostr) heften, geräteübergreifend und nach Bedeutung sortiert. Merken, Notizen, Frage-Antwort — server-los direkt im Browser, ohne Server und ohne Konto.",
+   "domainKeywords": [
+    "Pinnwand",
+    "Notizen",
+    "Merken",
+    "Frage-Antwort",
+    "Nostr",
+    "Bedeutungs-Sortierung",
+    "SBKIM",
+    "Mycel"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Kimboard/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:11:20.796Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000000770887751
+  },
+  "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY": {
+   "id": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+   "nodeName": "Kimseek",
+   "domain": "Semantische Bedeutungs-Suche",
+   "domainDescription": "Kimseek — semantisches Such-Werkzeug, das die Bedeutung und Absicht hinter einer Frage versteht (nicht nur Stichwörter). Ordnet Treffer nach Bedeutungs-Nähe, server-los im Browser; optional Spracheingabe, Bild-/Handschrift-Erkennung (OCR) und eine KI-Brücke mit Web-Suche.",
+   "domainKeywords": [
+    "Semantische Suche",
+    "Bedeutung",
+    "Absicht",
+    "Embedding",
+    "Sprachsuche",
+    "OCR",
+    "SBKIM",
+    "Mycel"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Kimseek/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:12:14.745Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999997682714624
+  },
+  "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg": {
+   "id": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+   "nodeName": "Tomys Hub",
+   "domain": "lausiklauskn-png.github.io",
+   "domainDescription": "Tomys Hub ist der Werkzeug-Verbund für personalisierten Digitaldruck, Stickerei und Werbeartikel: Druckvorlagen für Tassen, T-Shirts, Handtücher, Kissen und Fotopuzzles selbst gestalten, Aufträge im WorkFloh verwalten, Angebote im BookLedger erstellen und Prompt-Vorlagen für Sublimationsdruck bauen.",
+   "domainKeywords": [
+    "Digitaldruck",
+    "Sublimationsdruck",
+    "Stickerei",
+    "Werbeartikel",
+    "Tassen",
+    "T-Shirts",
+    "Handtücher",
+    "Druckvorlagen",
+    "Aufträge",
+    "Angebote"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Tomys-Hub/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-05T21:02:48.685Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999998154963762
+  },
+  "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU": {
+   "id": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+   "nodeName": "Kim-Bell",
+   "domain": "SBKIM-Netz-Glocke",
+   "domainDescription": "Kim-Bell — die Glocke, mit der man sich sauber im gemeinsamen SBKIM-Raum anmeldet.",
+   "domainKeywords": [
+    "Netz-Anmeldung",
+    "Rendezvous",
+    "SBKIM",
+    "Mycel",
+    "Identität",
+    "Glocke",
+    "Knoten"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Kim-Bell/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:14:23.087Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.000000042822058
+  },
+  "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc": {
+   "id": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+   "nodeName": "Muster Werbetechnik",
+   "domain": "Vorlage/Werbetechnik-Website/PWA",
+   "domainDescription": "Muster Werbetechnik — firmenneutrale Gestaltungs-Vorlage für die Website eines Werbetechnik-Betriebs, als installierbare PWA zum Kopieren und Anpassen. Zeigt Aufbau, Leistungs-Seiten und Kontaktweg eines Handwerksbetriebs: Beschriftung, Folierung, Schilder, Textil, Digitaldruck. Alle Namen und Kontaktdaten sind Platzhalter — es ist eine Vorlage, kein Betrieb. Website-Vorlage, Werbetechnik, Handwerk, Schaufenster, PWA.",
+   "domainKeywords": [
+    "Website-Vorlage",
+    "Werbetechnik",
+    "Beschriftung",
+    "Folierung",
+    "Schilder",
+    "Textildruck",
+    "Digitaldruck",
+    "Handwerksbetrieb",
+    "PWA",
+    "Schaufenster-Seite"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Mein-Workfloh-Page/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:15:20.347Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000001557692504
+  },
+  "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo": {
+   "id": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo",
+   "nodeName": "Perfect Skin Beauty",
+   "domain": "Kosmetik/Sugaring/Hautpflege",
+   "domainDescription": "Perfect Skin Beauty — Kosmetikstudio in Hamburg für Sugaring, Waxing und apparative Kosmetik: dauerhafte Haarentfernung, Gesichtsbehandlungen, Hautpflege und Beratung, mit ausgewiesenen Qualifikationen. Haarentfernung, Kosmetik, Hautpflege, Termin, Studio, Hamburg.",
+   "domainKeywords": [
+    "Kosmetik",
+    "Sugaring",
+    "Waxing",
+    "Haarentfernung",
+    "Gesichtsbehandlung",
+    "Hautpflege",
+    "apparative Kosmetik",
+    "Studio",
+    "Hamburg",
+    "Termin"
+   ],
+   "stammCategories": [
+    "Sugaring & Waxing",
+    "Gesichtsbehandlung",
+    "Hautpflege-Beratung"
+   ],
+   "guestCategories": [
+    "Spore-Erzeugung",
+    "Backup",
+    "Handshake"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://perfectskinbeauty.de/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-08-17T16:41:08.386Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.99999990941619
+  },
+  "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4": {
+   "id": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+   "nodeName": "Perfect Skin Fashion",
+   "domain": "Mode/Onlineshop/Warenwirtschaft",
+   "domainDescription": "Perfect Skin Fashion — Online-Modeshop für hochwertige, limitierte junge Mode aus Italien, dazu ein Design-Studio zum Selbstgestalten und eine eigene Warenwirtschaft für Bestand, Wareneingang und Kasse. Kleidung, Mode, Shop, Einkauf, Lager — offline im Browser, ohne Konto.",
+   "domainKeywords": [
+    "Mode",
+    "Onlineshop",
+    "italienische Mode",
+    "Design-Studio",
+    "Selbstgestalten",
+    "Warenwirtschaft",
+    "Lager",
+    "Wareneingang",
+    "Kasse"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Perfect-Skin-Fashion/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:18:32.863Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000000817320398
+  },
+  "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8": {
+   "id": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+   "nodeName": "Alis Moderaum",
+   "domain": "Mode/Boutique/Warenwirtschaft",
+   "domainDescription": "Alis Moderaum — europäische Damenboutique im Stil von Quiet Luxury: Kleider, Dessous, Taschen, Accessoires und Parfüm, dazu eine eigene Warenwirtschaft für Bestand, Wareneingang und Kasse. Kleidung, Mode, Boutique, Einkauf, Lager, Kasse — offline im Browser, ohne Konto.",
+   "domainKeywords": [
+    "Mode",
+    "Damenbekleidung",
+    "Boutique",
+    "Dessous",
+    "Taschen",
+    "Accessoires",
+    "Parfüm",
+    "Warenwirtschaft",
+    "Lager",
+    "Kasse",
+    "Quiet Luxury"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Alis-Moderaum/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:20:01.064Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999999191872644
+  },
+  "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g": {
+   "id": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g",
+   "nodeName": "Private Brain",
+   "domain": "Privates Daten-Gehirn",
+   "domainDescription": "Private Brain — dein privates zweites Gehirn: durchsucht deine eigenen Daten (Mails, Dokumente, Fotos, Notizen) nach Bedeutung, offline, ohne dass Originale bewegt werden.",
+   "domainKeywords": [
+    "Datei",
+    "Dokument",
+    "Bedeutungssuche",
+    "Mail",
+    "Foto",
+    "Notiz",
+    "privat",
+    "Ordnung",
+    "Katalog"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Privat-Brain/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T14:21:10.667Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000000513170553
+  },
+  "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM": {
+   "id": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+   "nodeName": "Auslieferungsprüfer",
+   "domain": "Auslieferung/Datenschutz/Werkzeug",
+   "domainDescription": "Prüft, was eine Internetseite wirklich ins Netz gibt, statt was sie zu geben vorgibt. Er findet fremde Adressen, von denen eine Seite ungefragt nachlädt, versehentlich mitgelieferte Server-Dateien, offene Zugangsdaten und Schlüssel, und Personenbezug, der dort nicht hingehört: Kontonummern werden nachgerechnet, Telefonnummern brauchen eine Ländervorwahl, und wo sich ein echtes Etikett nicht von einem vergessenen Platzhalter unterscheiden lässt, meldet er nichts. Er läuft in zwei Fassungen — eine im Browser, eine als Textleser ohne Browser — und der Unterschied zwischen beiden ist selbst ein Befund: was der Browser lädt und der Textleser nicht sieht, ist ein Versteck. Ein Link, den ein Mensch anklickt, ist kein Abruf und steht deshalb nicht in der Fundliste.",
+   "domainKeywords": [
+    "Auslieferung prüfen",
+    "was gibt meine Seite heraus",
+    "fremde Hosts",
+    "offene Geheimnisse",
+    "Zugangsdaten im Quelltext",
+    "Datenschutz",
+    "Personenbezug",
+    "IBAN",
+    "Telefonnummer",
+    "Platzhalter",
+    "statischer Server",
+    "GitHub Pages",
+    "Caddy",
+    "zwei Fassungen ein Ergebnis",
+    "Werkzeug für Betreiber"
+   ],
+   "stammCategories": [
+    "Auslieferung",
+    "Befund",
+    "Datenschutz"
+   ],
+   "guestCategories": [
+    "Fremde Adresse",
+    "Offenes Geheimnis",
+    "Personenbezug"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://pwa-toolpoint.de/auslieferungspruefer.html",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-09T11:00:01.309Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999998472582535
+  },
+  "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM": {
+   "id": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+   "nodeName": "Kim Hub Company",
+   "domain": "Werkstatt/KI-Rollen/Auftrag",
+   "domainDescription": "Kim Hub Company ist eine Werkstatt für brauchbare Werkzeuge. ZWECK: aus einer Idee in eigenen Worten in einem Durchgang einen ausgearbeiteten Auftrag, ein geprüftes Werkstück und ein Übergabe-Blatt zu machen — einen Auftrag in Worten, den man an ein großes Sprachmodell weiterreichen kann. Damit auch jemand, der nicht programmiert, am Ende ein Werkzeug in der Hand hält, das er wirklich benutzen kann, statt einer Antwort, mit der er nichts anfangen kann. FORSCHUNG: Kim Hub Company ist ein Endknoten im SBKIM-Mycel und Bestandteil der Sage-Forschung am SBKIM-Protokoll — Semantisches Bidirektionales KI-Matching. Untersucht wird, ob agentenbasiertes Matching brauchbare Werkzeuge hervorbringt: Knoten, die einander über Bedeutungs-Vektoren finden statt über Stichwörter, und Rollen, die einen Auftrag gemeinsam bearbeiten statt eines einzelnen Modells. Untersucht wird ebenso, wie Regeln und Grundsätze eine Arbeit steuern — die Arbeitsweise selbst ist der Gegenstand. Jede Schicht wird gemessen und dokumentiert, auch die misslungene; die Messungen sind offen einsehbar. Semantisch verbunden mit Kimhub (der Werkstatt, in der diese App gebaut und geprüft wird), Sage-Protokol (Hub und Bibliothek des Protokolls), SB-KIMTool-Point (Werkzeugkiste), Kimseek (Bedeutungs-Suche), Kimboard (semantische Pinnwand), BookLedgerPro (Buchhaltung, Angebot, Rechnung), Mein WorkFloh (Auftragsabwicklung) und dem offenen Marktplatz PWA Toolpoint. WIE ES ARBEITET: acht benannte Rollen arbeiten nacheinander an einem Auftrag. Eine schlägt vor, was gebaut wird. Eine schärft den Vorschlag mit Bau- und Entwurfserfahrung. Eine baut es. Eine prüft gegen ein vorher genanntes Merkmal. Eine sucht, was daran kaputtgeht. Eine sieht auf Gestaltung und Bedienung. Eine benutzt es wie jemand, der es täglich benutzt. Eine schreibt auf, wo es steht. Das Ganze läuft im Browser auf dem eigenen KI-Zugang des Nutzers; der Schlüssel bleibt verschlüsselt auf dem Gerät und wird an niemanden weitergegeben. Ein Trockenlauf zeigt den vollständigen Ablauf ohne Schlüssel und ohne Kosten. Jede Fahrt hat einen Geldeckel, eine Uhr und einen Notaus, und jede trägt sich in ein Fahrtenbuch ein — auch die abgebrochene, denn was bis dahin hinausging, ist bezahlt. Kim Hub Company ist dabei nicht auf ein Fach festgelegt: was die acht Rollen ausarbeiten, kann eine App, ein Text, ein Plan oder eine Entscheidung sein. Ein Baukasten wie die Schwester-Knoten — Rollen umbenennen, Grundsätze anpassen, einen eigenen Auftrag laden. Server-los, offline im Browser, ohne Anmeldung, mit eigenem SBKIM-Siegel und eigener Identität im Knotennetz.",
+   "domainKeywords": [
+    "Werkstatt",
+    "Auftrag",
+    "Werkzeug bauen",
+    "brauchbares Werkzeug",
+    "acht Rollen",
+    "Rollen-Kette",
+    "Agenten",
+    "agentenbasiertes Matching",
+    "SBKIM",
+    "SBKIM-Protokoll",
+    "Semantisches Bidirektionales KI-Matching",
+    "Sage-Protokoll",
+    "Mycel",
+    "Knotennetz",
+    "Endknoten",
+    "Bedeutungs-Vektor",
+    "semantische Suche",
+    "Forschung",
+    "Messung",
+    "Prüfmerkmal",
+    "Gegenprobe",
+    "Übergabe-Blatt",
+    "Prompt für ein großes Modell",
+    "KI-Zugang",
+    "BYOK",
+    "eigener Schlüssel",
+    "Trockenlauf",
+    "Geldeckel",
+    "Notaus",
+    "Fahrtenbuch",
+    "Kostenkontrolle",
+    "offline",
+    "server-los",
+    "ohne Anmeldung",
+    "Siegel",
+    "Kim Hub Company"
+   ],
+   "stammCategories": [
+    "Auftrag",
+    "Uebergabe-Blatt",
+    "Fahrtenbuch"
+   ],
+   "guestCategories": [
+    "Rollen-Befund",
+    "Gegenpruefung",
+    "Messung"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/kim-hub-company/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T01:26:24.500Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000003562840176
+  },
+  "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI": {
+   "id": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+   "nodeName": "Rezeptbuch Klaus",
+   "domain": "lausiklauskn-png.github.io",
+   "domainDescription": "Klaus' Rezeptbuch ist ein Endknoten im SBKIM-Mycel für hausgemachte Kochrezepte — von Vorspeisen, Suppen, Fleisch, Fisch und vegetarischen Gerichten über Kuchen und Desserts bis zu Saucen und Beilagen, vom Hefeteig bis zur fertigen Sauce. Dazu passende Begleitgetränke (Limonaden, Tees, Mocktails, alkoholfreie Cocktails) und kleine Knabbereien als Überraschungs-Plus. Zugleich ein wandelbarer Rezept-Baukasten: nicht auf ein Thema festgelegt — lade ein neues Rezept-Paket herein, benenne Kategorien um, und aus dem Kochbuch wird deine eigene Bar (Backstube, Grill-Buch, Frühstücksbar, Salatbar, Pasta-Werkstatt). Jedes Rezept ist Zutaten plus Schritte — bis hin zu den Zutaten eines Chemiebaukastens. Teil des SBKIM-Knotennetzes rund um Sage-Protokoll und SB-KIMTool-Point, semantisch verbunden mit verwandten Knoten wie dem Cocktail-Knoten Mixarium.",
+   "domainKeywords": [
+    "Rezept",
+    "Kochen",
+    "Essen",
+    "Hauptgang",
+    "Beilage",
+    "Backen",
+    "Saucen"
+   ],
+   "stammCategories": [
+    "Vorspeisen",
+    "Suppen",
+    "Fleisch",
+    "Fisch",
+    "Vegetarisch",
+    "Kuchen",
+    "Desserts"
+   ],
+   "guestCategories": [
+    "Getränke",
+    "Smoothies & Shakes",
+    "Mocktails",
+    "Alkfr. Cocktails",
+    "Limonaden",
+    "Tees & Kaffees",
+    "Cocktails",
+    "Bowlen",
+    "Sirup & Basis",
+    "Knabbereien",
+    "Fingerfood"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "embeddingSource": "content",
+   "createdAt": "2026-09-05T21:09:44.134Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000000010749703
+  },
+  "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8": {
+   "id": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+   "nodeName": "Muttis Rezeptbuch",
+   "domain": "lausiklauskn-png.github.io",
+   "domainDescription": "Muttis Rezeptbuch ist ein Endknoten im SBKIM-Mycel für hausgemachte Kochrezepte — von Vorspeisen, Suppen, Fleisch, Fisch und vegetarischen Gerichten über Kuchen und Desserts bis zu Saucen und Beilagen, vom Hefeteig bis zur fertigen Sauce. Dazu passende Begleitgetränke (Limonaden, Tees, Mocktails, alkoholfreie Cocktails) und kleine Knabbereien als Überraschungs-Plus. Zugleich ein wandelbarer Rezept-Baukasten: nicht auf ein Thema festgelegt — lade ein neues Rezept-Paket herein, benenne Kategorien um, und aus dem Kochbuch wird deine eigene Bar (Backstube, Grill-Buch, Frühstücksbar, Salatbar, Pasta-Werkstatt). Jedes Rezept ist Zutaten plus Schritte — bis hin zu den Zutaten eines Chemiebaukastens. Teil des SBKIM-Knotennetzes rund um Sage-Protokoll und SB-KIMTool-Point, semantisch verbunden mit verwandten Knoten wie dem Cocktail-Knoten Mixarium.",
+   "domainKeywords": [
+    "Rezept",
+    "Kochen",
+    "Essen",
+    "Hauptgang",
+    "Beilage",
+    "Backen",
+    "Saucen"
+   ],
+   "stammCategories": [
+    "Vorspeisen",
+    "Suppen",
+    "Fleisch",
+    "Fisch",
+    "Vegetarisch",
+    "Kuchen",
+    "Desserts"
+   ],
+   "guestCategories": [
+    "Getränke",
+    "Smoothies & Shakes",
+    "Mocktails",
+    "Alkfr. Cocktails",
+    "Limonaden",
+    "Tees & Kaffees",
+    "Cocktails",
+    "Bowlen",
+    "Sirup & Basis",
+    "Knabbereien",
+    "Fingerfood"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "embeddingSource": "description",
+   "createdAt": "2026-09-10T14:00:35.371Z",
+   "vektorStellen": 384,
+   "vektorNorm": 0.9999999162162808
+  },
+  "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ": {
+   "id": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+   "nodeName": "Mixarium Klaus",
+   "domain": "lausiklauskn-png.github.io",
+   "domainDescription": "Mein Mixarium ist ein persönliches Getränke-Labor als offline-fähige App (PWA) — eine digitale Werkstatt und Sammlung rund um alles Trinkbare. Der Schwerpunkt liegt ausschließlich auf Getränken: alkoholische und alkoholfreie Cocktails, Mocktails, Smoothies und Shakes, Limonaden und Erfrischungsgetränke, Tees und Kaffees, Bowlen und Punsche sowie selbstgemachte Sirupe und Basis-Zutaten. Eigene Rezepte lassen sich anlegen, sammeln, in Ordnern und Kategorien sortieren, bewerten und mehrsprachig führen. Über die Anbindung an eine öffentliche Cocktail-Datenbank kann man bekannte Drinks entdecken und übernehmen; ein KI-gestütztes Labor erzeugt auf Wunsch neue, experimentelle Getränke-Rezepte samt Zutaten, Zubereitungsschritten, Glastyp, Alkohol-Angabe und Geschmacksprofil, die man verkosten, bewerten und ins eigene Buch aufnehmen oder verwerfen kann. Ein Wochen- und Menüplan hilft, Drinks für Anlässe und Gäste zusammenzustellen. Als kleine Begleitung zu den Getränken gibt es zusätzlich Knabbereien und Fingerfood — Essen ist aber ausdrücklich nicht das Thema. Gedacht ist die App für Hobby-Mixologen, Gastgeber und alle, die gern neue Drinks ausprobieren, mischen, dokumentieren und offline griffbereit haben. Im Kern ist Mein Mixarium ein Organisations- und Kategorisierungs-Werkzeug — sammeln, ordnen, benennen, bewerten und wiederfinden — hier ausgeprägt für das Thema Getränke; dasselbe Grundgerüst trägt auch verwandte Apps (z. B. Rezept- und Verwahr-Werkzeuge). SBKIM-PROTOKOLL: Mein Mixarium ist zugleich ein eigener Endknoten im SBKIM-Mycel — dem server-losen Netz aus dem Sage-Protokol, in dem kleine Web-Apps einander nach BEDEUTUNG finden statt nach Stichwörtern. Es trägt eine eigene signierte Spore und meldet sich im gemeinsamen Rendezvous-Raum an; der private Schlüssel bleibt im Browser, es gibt keinen zentralen Vermittler und kein Konto. Semantisches Bidirektionales KI-Matching heißt, dass beide Seiten dasselbe Verfahren benutzen — der Suchende und der Gefundene rechnen ihre Bedeutung mit demselben Modell, und der Vergleich läuft im Browser. Wer im Mycel steht, wird von den anderen Knoten von selbst gefunden.",
+   "domainKeywords": [
+    "Cocktail",
+    "Drink",
+    "Mocktail",
+    "Limonade",
+    "Smoothie",
+    "Aperitif",
+    "Sake",
+    "SBKIM",
+    "SBKIM-Protokoll",
+    "Mycel",
+    "Knoten",
+    "Endknoten",
+    "Sage-Protokol",
+    "Spore",
+    "Rendezvous",
+    "semantisches Matching",
+    "Bedeutung statt Stichwort",
+    "server-los",
+    "offline",
+    "PWA",
+    "Getränke-Labor",
+    "Rezepte"
+   ],
+   "stammCategories": [
+    "Cocktails",
+    "Mocktails",
+    "Alkfr. Cocktails",
+    "Smoothies & Shakes",
+    "Limonaden",
+    "Tees & Kaffees",
+    "Bowlen",
+    "Sirup & Basis"
+   ],
+   "guestCategories": [
+    "Knabbereien",
+    "Fingerfood"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://lausiklauskn-png.github.io/Mein-Mixarium/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "embeddingSource": "content",
+   "createdAt": "2026-09-10T16:28:15.095Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000000019984048
+  },
+  "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4": {
+   "id": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+   "nodeName": "PWA Toolpoint",
+   "domain": "Offener-PWA-Marktplatz",
+   "domainDescription": "PWA Toolpoint ist der offene Marktplatz für Progressive Web Apps — und zugleich ein eigener Endknoten im SBKIM-Mycel. ZWECK: kleinen, eigenständigen Web-Anwendungen einen Ort geben, an dem man sie findet, ohne App-Store, ohne Konto und ohne einen Vermittler, der mitliest. Wer etwas sucht, sucht hier nach BEDEUTUNG statt nach Stichwörtern; wer etwas anbietet, trägt es selbst ein. FORSCHUNG UND PROTOKOLL: Toolpoint gehört zum SBKIM-Protokoll (Semantisches Bidirektionales KI-Matching), der offenen Spezifikation aus dem Sage-Protokol, und ist selbst ein Knoten darin: eigene signierte Spore, eigene Kennung, Anmeldung im gemeinsamen Rendezvous-Raum. Bidirektional heißt, dass beide Seiten dasselbe Verfahren benutzen — der Suchende und der Gefundene rechnen ihre Bedeutung mit demselben Modell, und der Vergleich läuft server-los im Browser, ohne zentralen Vermittler. Wer im Mycel steht, wird von den anderen Knoten von selbst gefunden; niemand muss dafür einen Katalog pflegen. Genau das ist der Grund, aus dem dieser Marktplatz ein Knoten ist und nicht bloß eine Liste. WAS HIER STEHT: knapp dreißig installierbare Web-Apps, die meisten aus dem SBKIM-Netz selbst — Rezept- und Getränke-Sammlungen für die Küche, verschlüsselte Tresore für eigene Dateien, Buchhaltung nach deutschem Recht, Auftragszettel und Zeiterfassung für einen Handwerksbetrieb, eine semantische Suche, eine Pinnwand, die lebende Netz-Karte des Mycels, Websites und Shops kleiner Betriebe, ein privates zweites Gehirn für die eigenen Daten, dazu Werkzeuge für Betreiber wie der Auslieferungsprüfer, der nachsieht, was eine Seite wirklich ins Netz gibt. Alle laufen offline nach dem ersten Besuch, alle behalten ihre Daten auf dem Gerät. WAS NACHPRÜFBAR IST: jeder Eintrag wird gemessen — Ladezeit, Barrierefreiheit, ob die App wirklich installierbar ist und ohne Netz läuft. Jede Zahl trägt ihr Datum, auch die schlechten. Ein Wächter meldet, wenn eine Seite von fremden Adressen nachlädt. Ein Eintrag lässt sich sperren; die Sperre steht sichtbar an der Karte, mit Grund, und gelöst wird sie nur von Hand. WAS ES NICHT IST: kein Bezahlvorgang, keine Provision, keine Preise — Toolpoint zeigt und misst, es handelt nicht. Kein Konto, keine Anmeldung, keine Meldung darüber, wer was benutzt hat. FÜR WEN: für Leute, die eine kleine, ehrliche Anwendung suchen statt einer großen Plattform, und für Entwickler kleiner Werkzeuge, die einen Ort brauchen, an dem ihre Arbeit gefunden wird. Zweite Instanz derselben Software ist family-projekt.de für den inneren Geschäftskreis; Toolpoint ist die offene, für Fremde.",
+   "domainKeywords": [
+    "SBKIM",
+    "SBKIM-Protokoll",
+    "Semantisches Bidirektionales KI-Matching",
+    "Sage-Protokol",
+    "Mycel",
+    "Knoten",
+    "Endknoten",
+    "Spore",
+    "Rendezvous",
+    "semantisches Matching",
+    "Bedeutungs-Suche",
+    "Bedeutung statt Stichwort",
+    "server-los",
+    "dezentral",
+    "ohne zentralen Vermittler",
+    "Marktplatz",
+    "Progressive Web App",
+    "PWA",
+    "App finden",
+    "App anbieten",
+    "Verzeichnis",
+    "installierbar",
+    "offline",
+    "ohne App-Store",
+    "ohne Konto",
+    "Datenschutz",
+    "Daten bleiben auf dem Gerät",
+    "gemessen",
+    "Ladezeit",
+    "Barrierefreiheit",
+    "nachprüfbar",
+    "Wächter",
+    "fremde Adressen",
+    "Auslieferungsprüfer",
+    "Werkzeug für Betreiber",
+    "kleine Web-Anwendung",
+    "Open Source"
+   ],
+   "stammCategories": [
+    "Marktplatz",
+    "App-Verzeichnis",
+    "Bedeutungs-Suche"
+   ],
+   "guestCategories": [
+    "Eintrag",
+    "Messung",
+    "Siegel"
+   ],
+   "nodeType": "hybrid",
+   "endpoint": "https://pwa-toolpoint.de/",
+   "embeddingModel": "Xenova/multilingual-e5-small",
+   "createdAt": "2026-09-10T15:58:27.674Z",
+   "vektorStellen": 384,
+   "vektorNorm": 1.0000002387399705
+  }
+ },
+ "ereignisse": [
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T12:12:03.859Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "nodeName": "Kim Hub Company · Klaus",
+     "sporeRef": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T12:12:48.251Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "nodeName": "Sage-Protokoll · Klaus",
+     "sporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T12:12:58.296Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T12:18:26.401Z",
+   "data": {
+    "content": {
+     "fromNodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.863578618148134
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T12:18:26.480Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "nodeName": "Auslieferungsprüfer · Klaus",
+     "sporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T12:18:26.566Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T12:18:26.653Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T12:18:26.701Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "nodeName": "Auslieferungsprüfer · Klaus",
+     "sporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:02:46.723Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "nodeName": "Sage-Protokoll · Klaus",
+     "sporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:03:01.011Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "nodeName": "Family Projekt · Klaus Tablet",
+     "sporeRef": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:03:37.319Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "nodeName": "Family Projekt · Klaus Tablet",
+     "sporeRef": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:04:28.257Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "nodeName": "SB-KIMTool-Point · Klaus",
+     "sporeRef": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:04:39.266Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:04:40.324Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:04:41.457Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:05:15.174Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "nodeName": "Jasons Tresor · Klaus",
+     "sporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:27.615Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:28.604Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:29.798Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:33.792Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:37.234Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:38.860Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:05:41.296Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:06:38.640Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "nodeName": "Mein Tresor · Klaus",
+     "sporeRef": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:06:47.042Z",
+   "data": {
+    "content": {
+     "fromNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "senderSporeRef": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:06:47.263Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "outcome": "established",
+     "score": 0.9867776323521706
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:06:48.093Z",
+   "data": {
+    "content": {
+     "fromNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:06:50.596Z",
+   "data": {
+    "content": {
+     "fromNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:06:51.462Z",
+   "data": {
+    "content": {
+     "fromNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:06:53.939Z",
+   "data": {
+    "content": {
+     "fromNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:07:51.358Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "nodeName": "WorkFloh · Klaus",
+     "sporeRef": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:01.088Z",
+   "data": {
+    "content": {
+     "fromNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "senderSporeRef": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:02.009Z",
+   "data": {
+    "content": {
+     "fromNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "senderSporeRef": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:03.373Z",
+   "data": {
+    "content": {
+     "fromNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "toNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "senderSporeRef": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+    },
+    "d": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:04.580Z",
+   "data": {
+    "content": {
+     "fromNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:08.278Z",
+   "data": {
+    "content": {
+     "fromNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:08:30.552Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "nodeName": "BookLedgerPro · Klaus",
+     "sporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:39.666Z",
+   "data": {
+    "content": {
+     "fromNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "senderSporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:08:39.979Z",
+   "data": {
+    "content": {
+     "fromNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "outcome": "established",
+     "score": 0.8316290411150051
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:43.068Z",
+   "data": {
+    "content": {
+     "fromNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "senderSporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:44.634Z",
+   "data": {
+    "content": {
+     "fromNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:46.037Z",
+   "data": {
+    "content": {
+     "fromNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:48.110Z",
+   "data": {
+    "content": {
+     "fromNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:08:48.766Z",
+   "data": {
+    "content": {
+     "fromNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:09:39.671Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "outcome": "established",
+     "score": 0.9867776323521706
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:09:39.722Z",
+   "data": {
+    "content": {
+     "fromNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "outcome": "established",
+     "score": 0.8509225795656858
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:10:35.955Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "outcome": "established",
+     "score": 0.8414672245373518
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:10:35.997Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "outcome": "established",
+     "score": 0.8460082118031013
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:11:21.095Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "nodeName": "Kimboard · Klaus",
+     "sporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:11:25.522Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "nodeName": "Kimboard · Klaus",
+     "sporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:33.051Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:33.918Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:38.107Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:38.897Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:40.001Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:41.982Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:43.560Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:11:45.773Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:12:15.064Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "nodeName": "Kimseek · Klaus",
+     "sporeRef": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:12:26.160Z",
+   "data": {
+    "content": {
+     "fromNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "toNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "senderSporeRef": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+    },
+    "d": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:12:26.971Z",
+   "data": {
+    "content": {
+     "fromNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:12:28.327Z",
+   "data": {
+    "content": {
+     "fromNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "senderSporeRef": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:12:29.591Z",
+   "data": {
+    "content": {
+     "fromNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "senderSporeRef": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:12:30.497Z",
+   "data": {
+    "content": {
+     "fromNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "senderSporeRef": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:13:16.875Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "nodeName": "Tomys Hub · Klaus",
+     "sporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:25.834Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:13:26.643Z",
+   "data": {
+    "content": {
+     "fromNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "outcome": "established",
+     "score": 0.8118188919310462
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:26.919Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:27.776Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:28.560Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:37.583Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:38.926Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:42.834Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:13:44.393Z",
+   "data": {
+    "content": {
+     "fromNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:14:23.340Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "nodeName": "Kim-Bell · Klaus",
+     "sporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:35.613Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:37.092Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:39.501Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:40.972Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:44.684Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:45.421Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:47.676Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:49.836Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:52.254Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:14:53.687Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:15:20.613Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "nodeName": "Muster Werbetechnik · Klaus",
+     "sporeRef": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:15:33.843Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "senderSporeRef": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:15:36.490Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "toNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "senderSporeRef": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+    },
+    "d": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:15:37.703Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "senderSporeRef": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:15:39.550Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "toNodeId": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58",
+     "senderSporeRef": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+    },
+    "d": "LEIbBDaSseCDmgHvtLj830a6uON2mMw22zeVwRQ3H58"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:15:49.214Z",
+   "data": {
+    "content": {
+     "fromNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:16:52.373Z",
+   "data": {
+    "content": {
+     "fromNodeId": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:17:17.265Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo",
+     "nodeName": "Perfect Skin Beauty · Tablet Klaus",
+     "sporeRef": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:17:39.574Z",
+   "data": {
+    "content": {
+     "fromNodeId": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:18:33.235Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "nodeName": "Perfect Skin Fashion · Klaus",
+     "sporeRef": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:18:42.587Z",
+   "data": {
+    "content": {
+     "fromNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "toNodeId": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo",
+     "senderSporeRef": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+    },
+    "d": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:18:52.686Z",
+   "data": {
+    "content": {
+     "fromNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:19:01.748Z",
+   "data": {
+    "content": {
+     "fromNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:20:01.244Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "nodeName": "Alis Moderaum · Klaus",
+     "sporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:10.425Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:15.077Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:18.901Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:23.728Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:27.370Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:28.551Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:20:42.852Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:21:16.815Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g",
+     "nodeName": "Private Brain · Klaus",
+     "sporeRef": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:33:03.477Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "outcome": "established",
+     "score": 0.8848412240644542
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:33:03.497Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "outcome": "established",
+     "score": 0.8090700231733442
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:33:03.498Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "outcome": "established",
+     "score": 0.8635761737946582
+    },
+    "d": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T14:33:03.520Z",
+   "data": {
+    "content": {
+     "fromNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "toNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "outcome": "established",
+     "score": 0.8121736174278118
+    },
+    "d": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.523Z",
+   "data": {
+    "content": {
+     "fromNodeId": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "senderSporeRef": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g"
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.530Z",
+   "data": {
+    "content": {
+     "fromNodeId": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:33:03.531Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "nodeName": "Alis Moderaum · Klaus",
+     "sporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.558Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.593Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.595Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.596Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.597Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.606Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.614Z",
+   "data": {
+    "content": {
+     "fromNodeId": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8",
+     "toNodeId": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4",
+     "senderSporeRef": "k1BtjVE0wfLWdBK-CTvKRBJ5EC2jC9RuPPlySoBNwH8"
+    },
+    "d": "hYE5nOrlFHtlFK-bWClV8vztkAl00PHlaw3uGlWrTG4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:33:03.671Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "nodeName": "Auslieferungsprüfer · Klaus Marktplatz",
+     "sporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.704Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.756Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.794Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:03.948Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.026Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "RgD-Wyj6EmgHpJ5lnziiDJw-K2z59Yb0Opna5mXfJqU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.036Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.115Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.141Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.156Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "Z3Ik1xpvsfK5wsmUURGDv8oeLbCPIGBPtl4FDOJ9g70"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.200Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.222Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "6XeA7pH-jW-t9k2gi7nc9K9cNiBlzOk8PftJnsrMggg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.273Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "7hKifINJmzYzLlWUncKWCbeNVjCtGkcH--Z6zA9g5sw"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.294Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "aVSfqRg73NsqKsMA5vlFybaD9zXphICXuwyq6XS7bc0"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.324Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "-U1ifWxOQnmtg0o7dMOswGiksUOsYOz6uJlIdx4gGEY"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.370Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "GI0XZfDxaBWw77I8693Ro7M-WNRsQWQ_PGIlQ3QmYiM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.548Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "HQOpoaYBBaIw8JWF8tprVIdKVE3W9FYMR8RYZdt5EEg"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.590Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "k-WabRG_XYNTskKVMcI0KSfERMgyQbFWREKYuqfliBU"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.627Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "Gq_Mt8o_QCDBU-vTcQFAmJzHA2el8ATwISSMq6_w_uc"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.655Z",
+   "data": {
+    "content": {
+     "fromNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "toNodeId": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g",
+     "senderSporeRef": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+    },
+    "d": "98gAXH_iv0jPfFB7MLmLEv4gX0DNbcKzuwuflNP1o6g"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:33:04.743Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "nodeName": "Kim Hub Company · Klaus",
+     "sporeRef": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T14:33:04.828Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "nodeName": "Kim Hub Company · Klaus",
+     "sporeRef": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T14:33:04.918Z",
+   "data": {
+    "content": {
+     "fromNodeId": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM",
+     "toNodeId": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM",
+     "senderSporeRef": "eNxEFbgof9x69RyVABOCMGExEb66iwuLtqBxXtfeGnM"
+    },
+    "d": "yF1ONN8LQskao9MoTyRADywKYIHLr0BM9CUXQj5X9GM"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T15:10:19.027Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "nodeName": "Mein Rezeptbuch · Mein Rezeptbuch · Klaus",
+     "sporeRef": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T15:10:49.019Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "nodeName": "Sage-Protokoll · Klaus",
+     "sporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:10:59.176Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T15:10:59.297Z",
+   "data": {
+    "content": {
+     "fromNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.8356830072186656
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T15:12:26.951Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "nodeName": "Muttis Rezeptbuch · Klaus",
+     "sporeRef": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:12:37.647Z",
+   "data": {
+    "content": {
+     "fromNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:12:38.839Z",
+   "data": {
+    "content": {
+     "fromNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T15:12:59.541Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "outcome": "established",
+     "score": 0.8702486975474675
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:13:05.397Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T15:13:05.501Z",
+   "data": {
+    "content": {
+     "fromNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.8702486975474675
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T15:13:37.409Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "nodeName": "Mein Mixarium · Klaus",
+     "sporeRef": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:13:47.549Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "toNodeId": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8",
+     "senderSporeRef": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+    },
+    "d": "T5XAxkT4v5kVrXEuX5gcGF8CQUDgrIHYJvA6thaEdx8"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:13:48.758Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T15:13:49.629Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "outcome": "established",
+     "score": 0.8260395952735293
+    },
+    "d": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:13:50.996Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T15:16:40.385Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:16:40.415Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "senderSporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:16:40.452Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:16:40.483Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T15:16:40.493Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI",
+     "senderSporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": "r-k1NyHeLWpLphP5O2uJKtiIyYNXABm8YOAlqQR3PcI"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:00:08.100Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:00:08.479Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:00:09.109Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:00:46.254Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:00:47.808Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:01:02.540Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:01:03.847Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:01:21.680Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:02:22.858Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:02:24.187Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:02:35.649Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:03:48.485Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:04:02.709Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:04:18.546Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:04:33.482Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "nodeName": "Sage-Protokoll · Klaus",
+     "sporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:04:37.231Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "nodeName": "Sage-Protokoll · Klaus",
+     "sporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:04:47.235Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:04:48.589Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:05:01.250Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "nodeName": "PWA Toolpoint · Klaus Marktplatz",
+     "sporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:05:20.087Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "senderSporeRef": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:05:21.896Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:05:48.475Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:05:48.840Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "nodeName": "Sage-Protokoll · Klaus",
+     "sporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:06:00.470Z",
+   "data": {
+    "content": {
+     "fromNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis-reply",
+   "t": "2026-09-10T16:06:01.814Z",
+   "data": {
+    "content": {
+     "fromNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "toNodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
+     "outcome": "established",
+     "score": 0.9175501500545508
+    },
+    "d": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-rdv",
+   "t": "2026-09-10T16:29:03.741Z",
+   "data": {
+    "content": {
+     "kind": "sbkim-presence",
+     "nodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "nodeName": "Mein Mixarium · Klaus",
+     "sporeRef": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+    },
+    "d": ""
+   }
+  },
+  {
+   "source": "relais",
+   "kind": "sbkim-anastomosis",
+   "t": "2026-09-10T16:29:04.026Z",
+   "data": {
+    "content": {
+     "fromNodeId": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ",
+     "toNodeId": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4",
+     "senderSporeRef": "6U3aniLM3RpsmjPMV1nTYTPBaNP7C19Frvd5ZLCoaTQ"
+    },
+    "d": "WJ14jzCKnqlzXxFqmWPX4EhP2S_wudtR5H_Qa2ocQI4"
+   }
+  }
+ ]
+}
