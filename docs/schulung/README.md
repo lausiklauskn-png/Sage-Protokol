@@ -7,14 +7,17 @@ Stände, und der zweite sieht aus wie der erste.
 
 | Datei | Was es ist |
 |---|---|
-| `EU_AI_Act_Art4_KI_Schulung.html` | Interne KI-Kompetenzschulung nach **Art. 4 EU AI Act**, für Firmen. Eine einzige Datei: Schulungstext (10 Abschnitte) · Wissenstest mit 15 Fragen und Auswertung · Teilnahmebescheinigung zum Ausdrucken · Lösungsschlüssel. Stand der Unterlage: **20.08.2026**. |
+| `EU_AI_Act_Art4_KI_Schulung.html` | Interne KI-Kompetenzschulung nach **Art. 4 EU AI Act**, für Firmen. Eine einzige Datei: Schulungstext (10 Abschnitte) · Wissenstest mit 16 Fragen und Auswertung · Teilnahmebescheinigung zum Ausdrucken · Lösungsschlüssel. Stand der Unterlage: **20.08.2026**. |
 
 ## Was an dieser Datei gemessen ist (2026-09-17)
 
-- **228 Zeilen, 34 093 Bytes**, `md5 7640d7a132b36ebf52ddd7d051646ca2`.
+- **233 Zeilen, 34 498 Bytes**, `md5 d5f140110a1ea4404a59b636e6fb92ed`.
   ⚠ **Bis zum 2026-09-17 stand hier `cc9f4b2b…` bei 190 Zeilen** — die Fassung, wie
-  Klaus sie geschickt hat. Geändert wurde seitdem **nur der Druck-Umbruch**, siehe
-  unten; am Text der Schulung, am Test und an der Bescheinigung ist nichts angefasst.
+  Klaus sie geschickt hat. Geändert wurden seitdem der **Druck-Umbruch** und die
+  **Sprache** (Umlaute, Gedankenstriche), siehe unten. Inhaltlich ist eine einzige
+  Zahl berichtigt: die Überschrift des Wissenstests sagte **15 Fragen**, im Formular
+  und in der Auswertung stehen **16**. Am Schulungstext, an den Fragen selbst und an
+  der Bescheinigung ist nichts angefasst.
 - **Keine Laufzeit-Abhängigkeit im Browser**: kein `<script src>`, kein
   `<link rel=stylesheet>`, keine Schriftart von außen. Alles steht in der Datei.
 - **Zwei Verweise nach draußen**, beide `<a href>` und beide amtlich:
@@ -135,3 +138,77 @@ versehentlich mitverteilen. **Wer am Druck-Stil baut, prüft das nach.**
 in PWA Toolpoint nach** — so hinterlässt ein neuer Stand eine Spur, statt still
 auseinanderzulaufen. Übergabeprotokoll:
 `docs/sessions/archiv/2026-09-17_ki-schulung-veroeffentlicht.md`.
+
+---
+
+## Umlaute, Gedankenstriche und eine Zahl, die sich selbst widersprach (Klaus 2026-09-17)
+
+Klaus nach dem Ausdruck: *„Du hast wieder viel zu viele Bindestriche eingefügt …
+Und die Umlaute hast du nicht beachtet, die in ganz normaler Art und Weise
+darstellen, wie zum Beispiel Lösungsschlüssel."* Er hat dabei eine Stelle beim
+Namen genannt: *„Emotionserkennung am Arbeitsplatz und in Bildungseinrichtungen
+— verboten"*.
+
+Die Regel steht im Skill `menschlich-schreiben`: **höchstens ein Gedankenstrich
+auf drei bis vier Absätze**, und Wichtiges wird fett, nicht angestrichen.
+
+**Gemessen am sichtbaren Text**, nicht am Quelltext — also an dem, was ein Leser
+wirklich sieht (`innerText` im Browser, samt Knopf-Beschriftungen, `title` und
+Platzhaltern):
+
+| | vorher | nachher |
+|---|---|---|
+| Gedankenstriche | **11** | **1** |
+| Umschrift statt Umlaut | 2 (`Loesungsschluessel`, `fuer`) | **0** |
+
+Der eine verbliebene Strich steht in den **Titeln der amtlichen Quellen**
+(*„AI Literacy - Questions & Answers"*, *„Article 4 - AI literacy"*). Ein
+zitierter Titel gehört wörtlich; ihn zu glätten hiesse, die Quellenangabe falsch
+zu machen. **Benannte Grenze, kein Versehen.**
+
+⚠ **UND MEINE EIGENEN KOMMENTARE MACHTEN DENSELBEN FEHLER.** Die sieben
+Erklär-Blöcke zu den Druck-Umbrüchen waren durchgehend in Umschrift geschrieben
+(`Ueberschrift`, `laesst`, `fuer`, `groesser`) und voller Striche. Sie sind mit
+nachgezogen: in der ganzen Datei steht jetzt **keine Umschrift und kein
+Gedankenstrich** mehr.
+
+### ⚠ Die Zahl, die sich selbst widersprach
+
+Beim Durchsehen fiel etwas auf, wonach niemand gesucht hatte: die Überschrift
+sagte **„Wissenstest - 15 Fragen"**. Gemessen im Code:
+
+| | |
+|---|---|
+| `<fieldset class="q">` im Formular | **16** |
+| Einträge in der Auswertungs-Liste | **16** |
+| `certScore` auf der Bescheinigung | **`____ / 16`** |
+
+⚠ **UND DER KOMMENTAR DANEBEN VERSPRACH DIE KOPPLUNG, DIE ES NICHT GAB:**
+*„Wer eine Frage ergänzt, ändert nur die Liste oben — Text, Zeugnis und Schlüssel
+ziehen nach."* Zeugnis und Schlüssel zogen nach, die **Überschrift nicht** — sie
+stand fest im Markup. Genau daraus ist die 15 geworden.
+
+Jetzt zieht sie mit (`<span id="quizCount">`), gesetzt aus derselben `TOTAL`, aus
+der auch Bescheinigung und Richtwert kommen. Der feste Wert bleibt als **Rückfall
+ohne JavaScript** stehen — dieselbe Bauart wie bei `certScore`.
+
+### Der Wächter misst die Übereinstimmung, nicht die Zahl
+
+Eine festgenagelte 16 wäre bei der siebzehnten Frage genauso falsch wie die 15 es
+war. `PWA-Toolpoint/tests/smoke.mjs` zählt deshalb die `<fieldset>` und hält die
+Überschrift dagegen — und verlangt zusätzlich, dass die Kopplung im Code steht.
+
+### Geprüft
+
+| | |
+|---|---|
+| Toolpoint `npm test` | **927/927 · 0 rot** (vorher 923) |
+| family-project `smoke_all` | **122/122 grün** |
+| family-project `smoke_cache_version` | 12/12, Bump v121 → v122 erkannt |
+| Gegenprobe, 4 neue Fälle | **4 gefangen · 0 durchgerutscht · 0 tote Anker**, jeder von Hand nachgestellt und die rote Zeile gelesen |
+
+⚠ **Seitenumbruch gegengemessen, denn Textänderungen verschieben Zeilen.** Bei
+**14 mm** (so druckt Klaus heute) bleiben es **7 Seiten, und jede Seitengrenze ist
+identisch** — nur der Text in den Zeilen ist anders. Bei **22 mm** bleiben es
+**8 Seiten**; dort rückt ein Aufzählungspunkt von Seite 5 auf Seite 4, weil die
+geglätteten Sätze kürzer sind. Das steht hier, statt es zu verschweigen.

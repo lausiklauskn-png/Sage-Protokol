@@ -190,3 +190,59 @@ tragen soll". Cache: Toolpoint v61, family v121. `npm test` 872 → **923/923**.
 Erster Commit `7deda8a` (PWA-Toolpoint) 2026-09-17 09:38 UTC, letzter der Sage-Commit
 dieses Protokolls. Was vor dem ersten Commit lag (Lesen, Bauen, Messen) hinterlässt
 keine Spur und wird nicht mitgezählt. **Das ist nicht Klaus' Arbeitszeit.**
+
+---
+
+## Nachtrag 5 — Umlaute, Gedankenstriche und eine falsche Zahl (Klaus, am Abend)
+
+| Klaus' Worte | Was gebaut wurde | Was gemessen wurde |
+|---|---|---|
+| *„Die Urkunde fehlt. Die letzte Seite."* | **nichts.** Die angefangene Umstellung der Knopfzeile wurde zurückgenommen, nachdem Klaus selbst auflöste: *„Schulung ausdrucken heißt Schulung ausdrucken."* | erster Knopf 7 Seiten ohne Bescheinigung · *„Schulung + Bescheinigung"* 8 Seiten mit · eigener Knopf 1 Seite. Jeder Knopf tat, was draufsteht |
+| *„viel zu viele Bindestriche … die Umlaute hast du nicht beachtet"* | 10 sichtbare Stellen geglättet, `Loesungsschluessel`/`fuer` im Knopf und Tooltip ausgeschrieben, dazu sieben eigene Kommentar-Blöcke | sichtbarer Text im Browser: **11 Gedankenstriche auf 1**, **2 Umschriften auf 0** |
+| *„such mal weiter, wo es raus kann"* | die Titel der amtlichen Quellen bleiben stehen | ein zitierter Titel gehört wörtlich; ihn zu glätten machte die Quellenangabe falsch. **Benannte Grenze** |
+
+### Der Fund, nach dem niemand gesucht hatte
+
+Die Überschrift sagte **„Wissenstest - 15 Fragen"**. Gemessen im Code: **16**
+`<fieldset class="q">`, **16** Einträge in der Auswertungs-Liste, `____ / 16` auf
+der Bescheinigung.
+
+⚠ **Der Kommentar daneben versprach ausdrücklich, dass der Text nachzieht.** Er
+zog nicht nach: die Zahl stand fest im Markup, während Zeugnis und Schlüssel aus
+`TOTAL` gerechnet wurden. *Eine Zusicherung, die nur im Kommentar steht, ist
+keine.* Die Überschrift hängt jetzt an derselben `TOTAL`; der feste Wert bleibt
+als Rückfall ohne JavaScript.
+
+### Zwei eigene Fehler im Werkzeug, keiner im Dokument
+
+- **`grep -E ' [-–—] '` greift bei mehrbyte-Zeichen in einer Zeichenklasse
+  daneben.** Gemeldet wurden 4 Striche, es waren 11 — darunter ausgerechnet die
+  Stelle, die Klaus beim Namen genannt hatte. *Eine Suche, die zu wenig findet,
+  sieht genauso aus wie ein sauberer Befund.* Gezählt wird seitdem jede
+  Strichsorte einzeln.
+- **`node modus.mjs vorher.html …` ohne absoluten Pfad** ergab
+  `file://vorher.html/` und damit `ERR_INVALID_URL`. Laut gescheitert, also
+  billig.
+
+### Geprüft
+
+Toolpoint `npm test` **927/927 · 0 rot** (vorher 923) · family-project
+`smoke_all` **122/122** · `smoke_cache_version` 12/12 mit erkanntem Bump
+v121 → v122 · Gegenprobe **4 neue Fälle, 4 gefangen, 0 durchgerutscht, 0 tote
+Anker**, jeder von Hand in einer Wegwerf-Kopie nachgestellt und die rote Zeile
+gelesen. Rückgabewerte direkt gelesen, nicht hinter einer Pipe.
+
+⚠ **Seitenumbruch gegengemessen:** bei 14 mm 7 Seiten, **jede Seitengrenze
+identisch**; bei 22 mm 8 Seiten, ein Aufzählungspunkt rückt von Seite 5 auf 4.
+
+### Was dabei nebenbei geradegezogen wurde
+
+- **family-project trug `?v=121` fest verdrahtet in fünf Dateien**, obwohl
+  `ASSET_V` gerechnet wird. Nachgezogen; jede Adresse trägt dieselbe Zahl. Das
+  ist die Toolpoint-Lehre *„eine Versionsnummer gilt für jede Adresse"*, hier im
+  Nachbardepot.
+- **Der Stop-Haken meldete einen ungepushten Commit in Alis-Moderaum.** Es war
+  keiner: der Zweig existiert auf GitHub gar nicht mehr, und was lokal danach
+  aussah, war eine veraltete Fernkopie samt einem `origin/main`, das Monate alt
+  war. Aufgeräumt mit `git remote prune`. *Eine Meldung über einen veralteten
+  Klon sieht aus wie verlorene Arbeit.*
