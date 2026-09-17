@@ -74,9 +74,20 @@ wie für jede Seite.
 - **`safeImg` im Markt verlangt eine https-Adresse ohne `.svg`** — ein Karten-Bild
   aus dem Depot muss unter `https://family-projekt.de/…png` liegen.
 - **Der Cache-Bump wird gegen `origin/main` geprüft** — family-project steht auf
-  `v119`, PWA Toolpoint auf `v59`, und dort trägt jede `?v=` dieselbe Zahl.
+  `v121`, PWA Toolpoint auf `v61`, und dort trägt jede `?v=` dieselbe Zahl.
 - **Frisch von `origin/main` abzweigen**, in jedem Depot; in PWA Toolpoint committet
   der nächtliche Messwerte-Lauf von allein.
+
+## 4b · Eine Kleinigkeit mit Datum — der Sichttest der KI-Schulung
+
+Der Eintrag `eigen-ki-schulung` in `PWA-Toolpoint/assets/config/listings.js` trägt
+`sichttest: "ausstehend"`. **Sobald Klaus die Seite im Browser angesehen hat**, wird
+daraus sein Datum — nicht vorher, und nicht von einer Sitzung im Voraus gesetzt.
+Ein Wächter besteht darauf, dass dort eines der drei zulässigen Dinge steht; ein
+erfundenes Datum wäre genau die Sorte Grün, gegen die er gebaut ist.
+
+Fragen, ob er sie sich angesehen hat, statt zu warten — die Adressen stehen im
+Protokoll `docs/sessions/archiv/2026-09-17_ki-schulung-veroeffentlicht.md`.
 
 ## 5 · Offene Fragen an Klaus
 
@@ -86,8 +97,8 @@ wie für jede Seite.
 
 ## 6 · Abschluss-Befehl
 
-`docs/PULS.md` fortschreiben (Stand: 2937 von 3000 Zeilen — **auslagern, nicht
+`docs/PULS.md` fortschreiben (Stand: 2980 von 3000 Zeilen — **auslagern, nicht
 kürzen**, wenn es eng wird) · Übergabeprotokoll unter `docs/sessions/archiv/` ·
-Funde, die nicht dazugehören, in `docs/PFLEGE-LISTE.md` (neun Punkte offen) ·
+Funde, die nicht dazugehören, in `docs/PFLEGE-LISTE.md` (zehn Punkte offen) ·
 nächsten Brief als Codeblock im Chat · `SIGNAL.json` seq (91) nur erhöhen, wenn
 wirklich etwas gemeldet wurde.
