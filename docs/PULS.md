@@ -66,6 +66,28 @@ Zweite als Prüfer-Befund in der Pflege-Liste.
 in PWA Toolpoint (~1 h) · PageSpeed der neuen Seiten (kommt über die Nacht:
 Messziel `eigen-ki-schulung` in family-project angelegt, Falle 3).
 
+**Zwei Nachträge von Klaus am selben Tag, beide gemergt** (Sage #1036,
+Toolpoint #124, family #310):
+
+1. **Der Erklär-Satz zum Nicht-Übersetzen ist von beiden Seiten raus** — *„das ist
+   eine Erklärung, die du gegeben hast."* Die Entscheidung gilt weiter, ihr Grund
+   steht jetzt im Kommentar. ⚠ **Damit ist Entscheidung 3 oben überholt:** nicht
+   mehr „Deutsch mit Übersetzer-Hinweis", sondern **Deutsch, und der Weg zum
+   Browser-Übersetzer nur noch in der ENGLISCHEN Fassung** (Toolpoint an
+   `schulung_micro`, family im englischen Lead). Auf Deutsch wäre er Text ohne
+   Auskunft — wer die Datei öffnet, sieht ihre Sprache.
+2. **Punkt 2 rückt auf Seite 2 des Ausdrucks.** Vorher endete Seite 1 mit der
+   blossen Überschrift samt Unterstrich. Zwei Regeln im Druck-Stil der Unterlage:
+   eine Überschrift bleibt bei ihrem Text, und der Platz dafür kommt aus dem
+   zweiten Bogen (Abschnitte 2–5 rücken enger) statt aus Rand oder Schriftgrösse —
+   ein schmalerer Rand hätte **jede** Seite verändert. Gemessen, Seite für Seite
+   als Text verglichen: Seite 1 und 2 geändert, **Seiten 3–7 unverändert**;
+   Bescheinigung und Lösungsschlüssel unverändert. ⚠ Klaus' Ausdruck hat **neun**
+   Seiten, diese Messung sieben (andere Ränder) — die erste Regel trägt bei jeder
+   Seitenhöhe, die Zeilenverteilung bei ihm ist **nicht gemessen**.
+   Die Unterlage steht damit auf `md5 56e8c39fb5b8b2f5cb918b07cea1a172`
+   (203 Zeilen); Pin in Toolpoints Smoke nachgezogen, Cache v60 bzw. v120.
+
 **Was offen ist.** Klaus' Sichttest → danach `sichttest` auf das Datum setzen.
 Klaus' Nachträge aus dem Chat: die **Rezept-Börse** (JSON-Rezepte kostenlos über den
 Hetzner-Server teilen, mit Spendenknopf, „auch in family-projekt.de") — Brief
