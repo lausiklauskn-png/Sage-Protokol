@@ -85,8 +85,29 @@ Toolpoint #124, family #310):
    Bescheinigung und Lösungsschlüssel unverändert. ⚠ Klaus' Ausdruck hat **neun**
    Seiten, diese Messung sieben (andere Ränder) — die erste Regel trägt bei jeder
    Seitenhöhe, die Zeilenverteilung bei ihm ist **nicht gemessen**.
-   Die Unterlage steht damit auf `md5 56e8c39fb5b8b2f5cb918b07cea1a172`
-   (203 Zeilen); Pin in Toolpoints Smoke nachgezogen, Cache v60 bzw. v120.
+3. **Zwei weitere Umbrüche am selben Nachmittag** (Sage #1037, Toolpoint #125,
+   family #311): der Bereich **„Hochrisiko-Anwendungen"** bleibt als Block
+   zusammen und steht geschlossen auf dem Bogen mit 8, 9 und 10; der **Schluss**
+   („Quellen und Stand" samt Hinweis) rückt als Fußnote hoch, statt allein auf
+   einer letzten, fast leeren Seite zu stehen.
+
+   ⚠ **Für den zweiten wurde Klaus' Seitenrand NACHGESTELLT, statt über ihn zu
+   raten.** Bei 14 mm hat das Dokument sieben Seiten — dort gibt es das Problem
+   gar nicht. Ausprobiert wurden 14 · 18 · 20 · 22 · 25 mm; bei **22 mm**
+   entstehen dieselben neun Seiten wie bei ihm, und dort wurde gemessen:
+   **9 → 8 Seiten, Seiten 1–7 unverändert.** Bei 25 mm reicht es nicht — die
+   Zeile steht mit da, statt weggelassen zu werden.
+
+   ⚠ **Beide Eingriffe berühren nur die genannten Seiten, und das ist der
+   Zuschnitt:** der Block konnte rutschen, weil die Seite dahinter ohnehin mit
+   einem erzwungenen Umbruch beginnt (dem Wissenstest); die Fußnoten-Regeln
+   fassen nichts an, was vor dem Ergebnis-Feld steht — eine Straffung an den
+   Testfragen hätte die Seiten davor mitverschoben. Ein Wächter besteht auf
+   beidem.
+
+Die Unterlage steht damit auf `md5 7640d7a132b36ebf52ddd7d051646ca2`
+(228 Zeilen, angekommen war sie mit `cc9f4b2b…` und 190); Pin in Toolpoints
+Smoke nachgezogen, `npm test` 872 → **923/923**, Cache v61 bzw. v121.
 
 **Was offen ist.** Klaus' Sichttest → danach `sichttest` auf das Datum setzen.
 Klaus' Nachträge aus dem Chat: die **Rezept-Börse** (JSON-Rezepte kostenlos über den

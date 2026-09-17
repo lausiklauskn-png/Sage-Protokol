@@ -151,11 +151,39 @@ Lösungsschlüssel: unverändert.
 mit anderen Rändern. Wie die Zeilen bei ihm fallen, ist **nicht gemessen** und sieht
 nur er.
 
-Neue Kennzahlen der Unterlage: **203 Zeilen, 32 430 Bytes,
-`md5 56e8c39fb5b8b2f5cb918b07cea1a172`** (vorher `cc9f4b2b…`, 190 Zeilen). Pin in
-Toolpoints Smoke nachgezogen, dazu zwei Wächter auf das, was die Kopie **tragen**
-muss — ein Pin sagt „unverändert", nicht „trägt noch, was es tragen soll".
-Cache: Toolpoint v60, family v120.
+**3 · Zwei weitere Umbrüche am selben Nachmittag** (Sage #1037, Toolpoint #125,
+family #311).
+
+| Klaus' Wort | gebaut | gemessen |
+|---|---|---|
+| *„den Bereich Hochrisikoanwendung … auf die nächste Seite 4"* | `.training .bogen4{break-inside:avoid}` hält Überschrift, Absatz und Eskalationsregel als **ein** Block | Seite 3 endet nach „Was ein Verstoß kostet", Seite 4 beginnt mit „Hochrisiko-Anwendungen". **Seiten 1, 2 und 5–7 unverändert**, am Bildschirm jede Position auf dem Pixel gleich |
+| *„setzt du Seite 8 mit auf Seite 7 … oder als Fußnote kleiner"* | `#result` kompakter, Überschrift auf Fußnoten-Grösse, die `.ref`-Absätze auf 8,4 pt | bei **22 mm** Rand **9 → 8 Seiten**, Seiten 1–7 unverändert |
+
+⚠ **Beim zweiten wurde Klaus' Seitenrand nachgestellt, statt über ihn zu raten.**
+Sein Ausdruck hat neun Seiten, die Messung bei 14 mm sieben — dort gibt es das
+Problem gar nicht. Ausprobiert: 14 · 18 · 20 · 22 · 25 mm. Bei 22 mm entstehen
+dieselben neun Seiten wie bei ihm; dort wurde gemessen. Bei 25 mm reicht es nicht,
+und diese Zeile bleibt stehen: *eine Regel gilt unter den Bedingungen, unter denen
+sie gemessen wurde.*
+
+⚠ **Beide Eingriffe sind so zugeschnitten, dass sie nur die genannten Seiten
+berühren** — der Block konnte rutschen, weil die Seite dahinter ohnehin mit einem
+erzwungenen Umbruch beginnt, und die Fußnoten-Regeln fassen nichts an, was vor dem
+Ergebnis-Feld steht. Ein Wächter in Toolpoints Smoke besteht auf beidem.
+
+⚠ **UND EIN DOKU-COMMIT WAR DABEI FAST VERLOREN.** Der Eintrag zu den zwei
+Nachträgen war gepusht, aber **ohne PR** — dann kam die nächste Aufgabe, der Zweig
+wurde mit `checkout -B … origin/main` neu gesetzt, und der Commit hing nur noch im
+Reflog. Gefunden hat es die nächste Doku-Änderung, die ihren eigenen Anker nicht
+mehr fand (`AssertionError`), nicht ein Blick. Zurückgeholt mit `git cherry-pick`
+aus dem Reflog. *Ein Push ohne PR ist keine Veröffentlichung* — und `checkout -B`
+räumt genau das weg, was noch keinen Weg nach `main` hat.
+
+Neue Kennzahlen der Unterlage: **228 Zeilen, 34 093 Bytes,
+`md5 7640d7a132b36ebf52ddd7d051646ca2`** (angekommen war sie mit `cc9f4b2b…` und
+190 Zeilen). Pin in Toolpoints Smoke nachgezogen, dazu sechs Wächter auf das, was
+die Kopie **tragen** muss — ein Pin sagt „unverändert", nicht „trägt noch, was es
+tragen soll". Cache: Toolpoint v61, family v121. `npm test` 872 → **923/923**.
 
 ## Stundennachweis (Spanne der Sitzung, aus den Commits)
 

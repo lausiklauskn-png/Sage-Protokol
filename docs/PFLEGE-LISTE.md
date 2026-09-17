@@ -147,6 +147,23 @@ wird auch von niemandem gefahren.
 **Was zu tun wäre:** den Browser wie in `smoke_all.mjs` wählen (`executablePath`
 aus der Umgebung), damit die Probe auf jeder Maschine dasselbe misst.
 
+### 10 · Ein Push ohne PR überlebt das nächste `checkout -B` nicht
+
+**Passiert 2026-09-17.** Ein Doku-Commit in Sage war gepusht, aber ohne PR; die
+nächste Aufgabe setzte den Zweig mit `git checkout -B <zweig> origin/main` neu, und
+der Commit hing nur noch im Reflog. Zurückgeholt mit `git cherry-pick`. **Gefunden
+hat es nicht ein Blick, sondern die nächste Doku-Änderung, deren Anker nicht mehr
+da war** — ohne diesen Zufall wäre der Eintrag still verschwunden.
+
+Das ist die Familie aus `LEHREN.md` § 1 („der Zweig wird erst gehoben, wenn der
+Merge belegt ist"), nur von der dritten Seite: dort war der PR leer, hier gab es
+gar keinen.
+
+**Was zu tun wäre:** vor jedem `checkout -B` auf einem Zweig, der schon Commits
+trägt, `git log origin/main..HEAD --oneline` — ist die Liste nicht leer, geht Arbeit
+verloren. Ein Werkzeug dafür gibt es: `node tools/zweig-pruefen.mjs`. Es wurde hier
+nicht gerufen.
+
 ## Erledigt
 
 ### ✅ Rezept-Export trägt die Spur — 2026-09-16
