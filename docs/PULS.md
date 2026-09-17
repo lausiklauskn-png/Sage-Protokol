@@ -31,6 +31,51 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-17 · Die KI-Schulung steht auf beiden Seiten — hinter dem Prüfer
+
+**Rolle:** Hauptsitzung (Brief `docs/sessions/BRIEF_KI_SCHULUNG_AI_ACT.md`).
+**Repos:** PWA-Toolpoint (#123, gemergt) · family-project (#309, gemergt) · Sage (Doku).
+
+**Was getan.** Die Unterlage `docs/schulung/EU_AI_Act_Art4_KI_Schulung.html` liegt
+jetzt byte-gleich (`md5 cc9f4b2b…`, auf beiden `main` nachgezählt) unter
+`schulung/` in beiden Ziel-Depots, davor je ein Rahmen:
+**pwa-toolpoint.de/ki-schulung.html** (eigene Seite an der Wurzel, Eintrag
+`eigen-ki-schulung` am Ende der Zeitachse, `sichttest: ausstehend`, Cache v59) und
+**family-projekt.de/werkzeuge/ki-schulung.html** (FP_TOOL-Seite, Karte, Markt-Eintrag
+`markt-ki-schulung` wörtlich hinter dem Prüfer, Cache v119). Eigenes Zeichen auf
+Klaus' Wunsch: ein Blatt in Bernstein, ein Siegel mit Haken in Blau. Beide Seiten mit
+Spenden- bzw. Kaffeekassen-Knopf aus der vorhandenen Konfiguration — freiwillig,
+kein Preis (Stufe 1 hält). Die vier Fragen des Briefes wurden mit den Vorschlägen
+entschieden: Zeitachse behalten · eine Unterlage · Deutsch mit Übersetzer-Hinweis ·
+`ki-schulung.html`. Entscheidungen im Code kommentiert, nicht still.
+
+**Gemessen.** PWA Toolpoint `npm test` 872 → **915/915**, Drift-Guard 13/13,
+Gegenprobe der 13 neuen Fälle **13 gefangen · 0 blind · 0 tote Anker**, jeder von Hand
+nachgestellt (zwei fielen zusätzlich am statischen Listen-Wächter, jeder trägt
+trotzdem den Namen seiner Zusicherung). family-project alle `smoke_*.mjs` einzeln:
+`smoke_all` 110 → **121**, `cache_version` 11 → 12, `statische_listen` 30 → 32,
+`kein_sprung` 40 → 42, Rest unverändert; vorbestehend rot und identisch vorher wie
+nachher: `markt_vecpack`, `start` (Proxy sperrt den Relais-WebSocket, three.js
+headless), `wortkarte` nicht lauffähig (Playwright will Browser 1243, da ist 1194).
+**Auslieferungsprüfer** über alle vier neuen Dateien: **0 Befunde** — die zwei aus dem
+Brief vorhergesagten (EU-Links, Musterfirma-Platzhalter) meldet er gar nicht; zwei
+eigene fand er (`<a href="#">`, `og:image:alt` mit Doppelpunkt), beide behoben, das
+Zweite als Prüfer-Befund in der Pflege-Liste.
+
+**Nicht gemessen:** Klaus' Sichttest an beiden Adressen · der volle Gegenprobe-Lauf
+in PWA Toolpoint (~1 h) · PageSpeed der neuen Seiten (kommt über die Nacht:
+Messziel `eigen-ki-schulung` in family-project angelegt, Falle 3).
+
+**Was offen ist.** Klaus' Sichttest → danach `sichttest` auf das Datum setzen.
+Klaus' Nachträge aus dem Chat: die **Rezept-Börse** (JSON-Rezepte kostenlos über den
+Hetzner-Server teilen, mit Spendenknopf, „auch in family-projekt.de") — Brief
+`docs/sessions/BRIEF_REZEPT_BOERSE.md`. Pflege-Liste um vier Punkte länger (6–9).
+
+**Nächster sinnvoller Schritt.** Sichttest abwarten, dann die Rezept-Börse nach dem
+Brief bauen. `SIGNAL.json` unverändert bei seq 91 — nichts für Gegenstellen.
+
+---
+
 ## 2026-09-17 · Ein Brief, der nicht auf einen Chat-Anhang zeigt
 
 **Rolle:** Hauptsitzung (Nachtrag zum Abschluss vom 16.09.).

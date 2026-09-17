@@ -98,6 +98,55 @@ Klaus. Der Punkt steht hier, damit die Schwelle nicht unbemerkt verstreicht.
 
 ---
 
+### 6 · PWA Toolpoint: der Prüfer selbst fehlt in der Sitemap und meldet keinen Service-Worker an
+
+**Gemessen 2026-09-17.** `sitemap.xml` nennt Start, Impressum, Datenschutz (und jetzt
+`ki-schulung.html`) — `auslieferungspruefer.html` nicht. Und die Seite enthält kein
+`serviceWorker.register`; `tools/eigenschaften-pruefen.mjs` setzt deshalb `offline:
+false` auf seine Karte, während der Text „läuft auch ohne Netz" verspricht. Beides
+stimmt auf seine Weise (der Worker gilt für die ganze Adresse, sobald die Startseite
+ihn einmal angemeldet hat) — auf der Karte sieht es nach einem Widerspruch aus.
+
+**Was zu tun wäre:** die Anmeldung wie in `index.html` und `ki-schulung.html` in die
+Prüfer-Seite, die Adresse in die Sitemap, dann den nächtlichen Eigenschaften-Lauf
+nachsehen.
+
+### 7 · Der Auslieferungsprüfer liest „Wort:" in `meta content` als Adress-Schema
+
+**Gemessen 2026-09-17** an `og:image:alt="KI-Schulung: ein Blatt mit Siegel"`: beide
+Fassungen (JS und Python) melden `FREMDE-ADRESSE … holt von aussen: ki-schulung:`.
+Ein Doppelpunkt in einem beschreibenden Text ist kein Schema. Für die neue Seite
+umformuliert; der Prüfer ist unverändert.
+
+**Was zu tun wäre:** in `assets/pruefer.js` **und** dem Python-Zwilling in Kimhub den
+Adress-Fund an ein echtes Schema binden (`^[a-z][a-z0-9+.-]*://` oder eine
+bekannte Liste), mit Gegenprobe in beide Richtungen — Zwei-Fassungen-Regel.
+
+### 8 · PWA Toolpoint: die Messwerte des Prüfers stehen seit dem 2026-09-08 fest
+
+**Gemessen 2026-09-17.** Der Eintrag `eigen-toolpoint-pruefer` trägt `messung.datum:
+2026-09-08`. `tools/messwerte-holen.mjs` sucht in family-projects `messreihe.json`
+nach genau dieser Kennung; das Messziel dort ist seit dem 2026-09-13 abgeschaltet
+(„wird im Marktplatz gemessen"), und die Markt-Messung läuft unter
+`markt-auslieferungspruefer` — eine Kennung, die Toolpoint nicht kennt. Die Zahl auf
+der Karte altert also still. Für die Schulung wurde deshalb ein eigenes Ziel
+`eigen-ki-schulung` angelegt.
+
+**Was zu tun wäre:** entweder das Ziel wieder einschalten (dann die Doppelung in der
+Rangliste in Kauf nehmen) oder `messwerte-holen.mjs` einen zweiten Namen je Eintrag
+lesen lassen.
+
+### 9 · family-project: `smoke_wortkarte` ist an eine Browser-Fassung gebunden
+
+**Gemessen 2026-09-17.** Die Probe stirbt mit `Executable doesn't exist at
+…/chromium_headless_shell-1243/…`; installiert ist 1194, und `npx playwright install`
+darf in dieser Umgebung nicht laufen. Alle anderen Browser-Proben nehmen den
+vorhandenen Browser. Die Probe ist damit **nicht lauffähig, nicht rot** — aber sie
+wird auch von niemandem gefahren.
+
+**Was zu tun wäre:** den Browser wie in `smoke_all.mjs` wählen (`executablePath`
+aus der Umgebung), damit die Probe auf jeder Maschine dasselbe misst.
+
 ## Erledigt
 
 ### ✅ Rezept-Export trägt die Spur — 2026-09-16
