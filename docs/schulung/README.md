@@ -34,3 +34,15 @@ benutzt, druckt; wer sie pflegt, lässt die Felder leer.
 bei Strg+P — nur ein eigener Knopf holt ihn hervor. Das ist Absicht und steht als
 Kommentar in der Datei: wer eine Unterlage austeilt, soll die Antworten nicht
 versehentlich mitverteilen. **Wer am Druck-Stil baut, prüft das nach.**
+
+## Wo sie veröffentlicht ist (2026-09-17)
+
+| Ort | Rahmen | Kopie |
+|---|---|---|
+| PWA Toolpoint | `ki-schulung.html` (Eintrag `eigen-ki-schulung`) | `schulung/EU_AI_Act_Art4_KI_Schulung.html` — Prüfsumme in `tests/smoke.mjs` gepinnt |
+| family-projekt.de | `werkzeuge/ki-schulung.html` (Karte + Markt-Eintrag `markt-ki-schulung`) | `schulung/EU_AI_Act_Art4_KI_Schulung.html` |
+
+**Wer die Unterlage hier ändert, kopiert sie in beide Depots neu und zieht den Pin
+in PWA Toolpoint nach** — so hinterlässt ein neuer Stand eine Spur, statt still
+auseinanderzulaufen. Übergabeprotokoll:
+`docs/sessions/archiv/2026-09-17_ki-schulung-veroeffentlicht.md`.
