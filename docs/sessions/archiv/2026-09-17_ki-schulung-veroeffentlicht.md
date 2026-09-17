@@ -113,6 +113,78 @@ die Markt-Messung unter einem anderen Namen läuft · `smoke_wortkarte` in
 family-project ist an eine Browser-Fassung gebunden, die nur `npx playwright install`
 holt.
 
+## Zwei Nachträge von Klaus am selben Tag
+
+**1 · Der Erklär-Satz ist raus** (Sage #1036 nicht betroffen, Toolpoint #124,
+family #310). Klaus über „Die Unterlage ist auf Deutsch und wird bewusst nicht
+übersetzt: eine selbst gemachte englische Fassung … sähe verbindlich aus, ohne es
+zu sein": *„Das ist eine Erklärung, die du gegeben hast."*
+
+⚠ **Entscheidung 3 aus der Tabelle oben ist damit überholt und hier ersetzt, nicht
+stillschweigend getauscht.** Sie hiess „Deutsch, mit dem Übersetzer-Hinweis wie bei
+Impressum und Datenschutz". Sie heisst jetzt: **Deutsch, und der Weg zum
+Browser-Übersetzer steht nur in der ENGLISCHEN Fassung** — auf Deutsch wäre er Text
+ohne Auskunft, denn wer die Datei öffnet, sieht ihre Sprache. Die Bedienhilfe
+musste bleiben: der Sprachriegel sperrt Google, sobald jemand eine Sprache gewählt
+hat.
+
+Die Wächter nageln seitdem die **Entscheidung** fest (kein Absatz begründet das
+Nicht-Übersetzen) statt den alten Satz zu verlangen — ein Wächter am Wortlaut
+verböte genau das Richtigstellen, das ihn nötig gemacht hat.
+
+**2 · Punkt 2 rückt auf Seite 2 des Ausdrucks** (Sage #1036, Kopien in #124/#310).
+Klaus mit Bild aus der Druckvorschau: *„rückst du den Punkt 2 … mit dem Unterstrich
+auf die zweite Seite … Du veränderst keine weitere Seite, nur die Seite 1 und 2."*
+
+| | |
+|---|---|
+| `.training h2{break-after:avoid}` | eine Überschrift bleibt bei ihrem Text — holt Punkt 2 auf Seite 2, gilt bei jeder Seitenhöhe |
+| `.training h2.bogen2{…}` | die vier Überschriften der Abschnitte 2–5 rücken enger. **Der Platz kommt aus dem zweiten Bogen, nicht aus Rand oder Schriftgrösse** — ein schmalerer Rand hätte jede Seite verändert |
+
+**Gemessen** (Chromium, A4, 14 mm, alle vier Druckwege, Seite für Seite als Text
+verglichen): Schulung — Seite 1 endet nach Abschnitt 1, Seite 2 beginnt mit Punkt 2
+und endet mit derselben Zeile wie vorher, **Seiten 3–7 Zeile für Zeile
+unverändert**. Beides/Strg+P: Seiten 3–8 unverändert. Bescheinigung und
+Lösungsschlüssel: unverändert.
+
+⚠ **Klaus' Ausdruck hat NEUN Seiten, diese Messung sieben** — sein Browser druckt
+mit anderen Rändern. Wie die Zeilen bei ihm fallen, ist **nicht gemessen** und sieht
+nur er.
+
+**3 · Zwei weitere Umbrüche am selben Nachmittag** (Sage #1037, Toolpoint #125,
+family #311).
+
+| Klaus' Wort | gebaut | gemessen |
+|---|---|---|
+| *„den Bereich Hochrisikoanwendung … auf die nächste Seite 4"* | `.training .bogen4{break-inside:avoid}` hält Überschrift, Absatz und Eskalationsregel als **ein** Block | Seite 3 endet nach „Was ein Verstoß kostet", Seite 4 beginnt mit „Hochrisiko-Anwendungen". **Seiten 1, 2 und 5–7 unverändert**, am Bildschirm jede Position auf dem Pixel gleich |
+| *„setzt du Seite 8 mit auf Seite 7 … oder als Fußnote kleiner"* | `#result` kompakter, Überschrift auf Fußnoten-Grösse, die `.ref`-Absätze auf 8,4 pt | bei **22 mm** Rand **9 → 8 Seiten**, Seiten 1–7 unverändert |
+
+⚠ **Beim zweiten wurde Klaus' Seitenrand nachgestellt, statt über ihn zu raten.**
+Sein Ausdruck hat neun Seiten, die Messung bei 14 mm sieben — dort gibt es das
+Problem gar nicht. Ausprobiert: 14 · 18 · 20 · 22 · 25 mm. Bei 22 mm entstehen
+dieselben neun Seiten wie bei ihm; dort wurde gemessen. Bei 25 mm reicht es nicht,
+und diese Zeile bleibt stehen: *eine Regel gilt unter den Bedingungen, unter denen
+sie gemessen wurde.*
+
+⚠ **Beide Eingriffe sind so zugeschnitten, dass sie nur die genannten Seiten
+berühren** — der Block konnte rutschen, weil die Seite dahinter ohnehin mit einem
+erzwungenen Umbruch beginnt, und die Fußnoten-Regeln fassen nichts an, was vor dem
+Ergebnis-Feld steht. Ein Wächter in Toolpoints Smoke besteht auf beidem.
+
+⚠ **UND EIN DOKU-COMMIT WAR DABEI FAST VERLOREN.** Der Eintrag zu den zwei
+Nachträgen war gepusht, aber **ohne PR** — dann kam die nächste Aufgabe, der Zweig
+wurde mit `checkout -B … origin/main` neu gesetzt, und der Commit hing nur noch im
+Reflog. Gefunden hat es die nächste Doku-Änderung, die ihren eigenen Anker nicht
+mehr fand (`AssertionError`), nicht ein Blick. Zurückgeholt mit `git cherry-pick`
+aus dem Reflog. *Ein Push ohne PR ist keine Veröffentlichung* — und `checkout -B`
+räumt genau das weg, was noch keinen Weg nach `main` hat.
+
+Neue Kennzahlen der Unterlage: **228 Zeilen, 34 093 Bytes,
+`md5 7640d7a132b36ebf52ddd7d051646ca2`** (angekommen war sie mit `cc9f4b2b…` und
+190 Zeilen). Pin in Toolpoints Smoke nachgezogen, dazu sechs Wächter auf das, was
+die Kopie **tragen** muss — ein Pin sagt „unverändert", nicht „trägt noch, was es
+tragen soll". Cache: Toolpoint v61, family v121. `npm test` 872 → **923/923**.
+
 ## Stundennachweis (Spanne der Sitzung, aus den Commits)
 
 Erster Commit `7deda8a` (PWA-Toolpoint) 2026-09-17 09:38 UTC, letzter der Sage-Commit

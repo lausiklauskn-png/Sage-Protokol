@@ -66,6 +66,49 @@ Zweite als Prüfer-Befund in der Pflege-Liste.
 in PWA Toolpoint (~1 h) · PageSpeed der neuen Seiten (kommt über die Nacht:
 Messziel `eigen-ki-schulung` in family-project angelegt, Falle 3).
 
+**Zwei Nachträge von Klaus am selben Tag, beide gemergt** (Sage #1036,
+Toolpoint #124, family #310):
+
+1. **Der Erklär-Satz zum Nicht-Übersetzen ist von beiden Seiten raus** — *„das ist
+   eine Erklärung, die du gegeben hast."* Die Entscheidung gilt weiter, ihr Grund
+   steht jetzt im Kommentar. ⚠ **Damit ist Entscheidung 3 oben überholt:** nicht
+   mehr „Deutsch mit Übersetzer-Hinweis", sondern **Deutsch, und der Weg zum
+   Browser-Übersetzer nur noch in der ENGLISCHEN Fassung** (Toolpoint an
+   `schulung_micro`, family im englischen Lead). Auf Deutsch wäre er Text ohne
+   Auskunft — wer die Datei öffnet, sieht ihre Sprache.
+2. **Punkt 2 rückt auf Seite 2 des Ausdrucks.** Vorher endete Seite 1 mit der
+   blossen Überschrift samt Unterstrich. Zwei Regeln im Druck-Stil der Unterlage:
+   eine Überschrift bleibt bei ihrem Text, und der Platz dafür kommt aus dem
+   zweiten Bogen (Abschnitte 2–5 rücken enger) statt aus Rand oder Schriftgrösse —
+   ein schmalerer Rand hätte **jede** Seite verändert. Gemessen, Seite für Seite
+   als Text verglichen: Seite 1 und 2 geändert, **Seiten 3–7 unverändert**;
+   Bescheinigung und Lösungsschlüssel unverändert. ⚠ Klaus' Ausdruck hat **neun**
+   Seiten, diese Messung sieben (andere Ränder) — die erste Regel trägt bei jeder
+   Seitenhöhe, die Zeilenverteilung bei ihm ist **nicht gemessen**.
+3. **Zwei weitere Umbrüche am selben Nachmittag** (Sage #1037, Toolpoint #125,
+   family #311): der Bereich **„Hochrisiko-Anwendungen"** bleibt als Block
+   zusammen und steht geschlossen auf dem Bogen mit 8, 9 und 10; der **Schluss**
+   („Quellen und Stand" samt Hinweis) rückt als Fußnote hoch, statt allein auf
+   einer letzten, fast leeren Seite zu stehen.
+
+   ⚠ **Für den zweiten wurde Klaus' Seitenrand NACHGESTELLT, statt über ihn zu
+   raten.** Bei 14 mm hat das Dokument sieben Seiten — dort gibt es das Problem
+   gar nicht. Ausprobiert wurden 14 · 18 · 20 · 22 · 25 mm; bei **22 mm**
+   entstehen dieselben neun Seiten wie bei ihm, und dort wurde gemessen:
+   **9 → 8 Seiten, Seiten 1–7 unverändert.** Bei 25 mm reicht es nicht — die
+   Zeile steht mit da, statt weggelassen zu werden.
+
+   ⚠ **Beide Eingriffe berühren nur die genannten Seiten, und das ist der
+   Zuschnitt:** der Block konnte rutschen, weil die Seite dahinter ohnehin mit
+   einem erzwungenen Umbruch beginnt (dem Wissenstest); die Fußnoten-Regeln
+   fassen nichts an, was vor dem Ergebnis-Feld steht — eine Straffung an den
+   Testfragen hätte die Seiten davor mitverschoben. Ein Wächter besteht auf
+   beidem.
+
+Die Unterlage steht damit auf `md5 7640d7a132b36ebf52ddd7d051646ca2`
+(228 Zeilen, angekommen war sie mit `cc9f4b2b…` und 190); Pin in Toolpoints
+Smoke nachgezogen, `npm test` 872 → **923/923**, Cache v61 bzw. v121.
+
 **Was offen ist.** Klaus' Sichttest → danach `sichttest` auf das Datum setzen.
 Klaus' Nachträge aus dem Chat: die **Rezept-Börse** (JSON-Rezepte kostenlos über den
 Hetzner-Server teilen, mit Spendenknopf, „auch in family-projekt.de") — Brief
