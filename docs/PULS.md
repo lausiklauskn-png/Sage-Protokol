@@ -31,6 +31,63 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-17 · Das gelbe Band lag über der Knopfleiste — jetzt ist es eine Pille
+
+**Klaus mit Bild aus der eingebetteten Demo-Seite:** *„nur das große
+Erklärfenster, das gelbe, wo alles drin steht … das muss nicht sein, das kann
+weg sein, das steht ja schon in dem Text."*
+
+Er hatte **zweimal** recht. Das Band stand `position: fixed` mittig unter der
+Kopfzeile, trug drei Zeilen Erklärung — und im Rahmen der Demo-Seite lag es
+**über der Knopfleiste**: „Analyse aus" war dahinter nicht mehr zu treffen.
+
+Es ist jetzt eine kurze Pille in der Reihe neben „Kanal" und „Ereignisse":
+`▶ Mitschnitt 2026-09-10 · kein Live-Verkehr`. **Gemessen im Rahmen der
+Demo-Seite (818 px):** Pille und Knopf stehen beide bei y[49,75], und
+`elementFromPoint` auf der Knopfmitte trifft `recLbl` — der Knopf ist frei.
+
+⚠ **TAFEL-EVOLUTIONS-KLAUSEL, AUSDRÜCKLICH BENANNT.** Die alte Zusicherung
+lautete *„Das Band sagt, was es ist: echter Verkehr, von wann, gleichmäßig
+abgespielt — nicht im Originaltempo — und kein Live-Verkehr."* Sie ist **nicht
+gestrichen, sondern umgezogen**: von wann, aus wie vielen Aufzeichnungen und
+„nicht im Originaltempo" stehen jetzt in der **Start-Meldung im Protokoll** und
+im Hinweistext des Reglers. `wiedergabe.mjs` misst den Satz seitdem
+**innerhalb der `logEvent`-Zeile** — ein Umzug darf eine Zusicherung nicht
+still weicher machen.
+
+⚠ **UND DER NEUE WÄCHTER WAR BEI 1280 px BLIND.** Nachgestellt mit dem alten
+Kasten über acht Breiten: zugedeckt ist der Knopf zwischen **480 und 1000 px**;
+bei 1280 ist die Kopfzeile einreihig und bei 400 dreireihig, dort ist er frei.
+**Die Vorgabe von Playwright ist 1280** — genau die eine Breite, bei der der
+Fehler nicht auftritt. Die Ausgangslage wird deshalb gesetzt (900 px), mit
+einem Selbst-Riegel darauf, dass die Kopfzeile dort wirklich umbrochen ist.
+
+⚠ **UND DIE GEGENPROBE VON HAND MUSSTE BEIDES ZURÜCKDREHEN.** Mit dem festen
+Kasten allein blieb der Browser-Wächter grün — die kurze Pille reicht dort gar
+nicht bis zum Knopf. Erst mit festem Kasten **und** langem Text fiel er, mit
+`demoBadge` als dem, was obenauf liegt. *Wer zwei Dinge zugleich ändert und nur
+eines zurückdreht, hat seinen Wächter nicht geprüft.*
+
+**Netzweit nachgezählt, gegen `origin/main` aller 34 Repos:** die Karte mit
+Wiedergabe gibt es **zweimal** (`mycel-karte`, Sages abgeleitete Kopie), und
+**drei** Seiten binden sie ein — `sbkim-demo/index.html`, Sages **Startseite**
+(`index.html:1338`) und `family-project/mycelkarte.html`. Die ersten beiden
+zeigen auf Sages Kopie und waren vom 404 des Vortags betroffen; die dritte
+zeigt auf die eigenständige App.
+
+**Gebaut wurde im Quell-Repo** (`mycel-karte` PR #29, Cache-Bump v25 → v26),
+die Kopie hier ist **abgeleitet**, nicht von Hand geändert.
+
+**Geprüft:** `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
+lauffähig** · `gegenprobe_mycelkarte_kopie` **18 gefangen · 0 durchgerutscht ·
+0 aus falschem Grund · 0 tote Anker**. Im Quell-Repo: 63 + 76 + 7 grün, im
+Browser 40 + 37 + 12 grün, Gegenproben 35/35 und 40/40.
+
+**Offen:** die Demo-Seite sagt um den Rahmen herum *„zeigt, was wirklich
+passiert"*. Während einer Wiedergabe stimmt dieser Satz nicht; die Pille sagt
+es unmittelbar darüber. Nicht geändert — ob der Absatz nachgezogen wird,
+entscheidet Klaus.
+
 ## 2026-09-17 · Die Demo spielte nichts ab — die Aufzeichnung lag nicht neben der Kopie
 
 **Klaus auf der Demo-Seite:** *„Mitschnitt abspielen … das läuft nicht. Das
@@ -560,92 +617,13 @@ Tag), danach der Rezept-Export mit Spore.
 
 ---
 
-## 2026-09-16 · Der Wächter, der den Fund von heute ohne Zutun gemeldet hätte
+## Eine Sitzung vom 2026-09-16 (Wächter ohne Zutun) — ausgelagert am 2026-09-17
 
-**Klaus:** *„ja, bau den Herkunfts-Wächter noch ein."* Er stand als offener
-Punkt im Eintrag darunter — dass vier Kopien Handarbeit trugen, hatte ein Blick
-gefunden, kein Werkzeug.
-
-### Die Frage ist nicht „ist die Kopie alt?", sondern „war sie je Kanon?"
-
-Vor jedem Schreiben hält `tools/kanon-verteilen.mjs` den sha der Kopie gegen
-**Sages eigene Historie**. Jede Fassung, die der Kanon je hatte, steht dort.
-Steht er nicht darin, ist die Kopie nie so aus Sage herausgegangen.
-
-**An den echten vier nachgestellt** (Fassungen von vor dem Merge aus der
-Historie geholt, in einen Wegwerf-Ordner, Verteiler darauf angesetzt):
-
-| | |
-|---|---|
-| gemeldet | `33d6fe0c5057` · `0f8a3f69de61` ×2 · `8a07567f98ce` |
-| **nicht** gemeldet | Kimboard und Kimseek auf `fbf9f42d8a27` — echte Kanon-Generation |
-| Schlusszeile | `6 haengen zurueck · ⛔ 4 mit HANDARBEIT` |
-
-**Die vier und nur die vier**, beide Richtungen an echten Daten.
-
-### Drei Ausgänge, nicht zwei
-
-war Kanon · Handarbeit · **nicht prüfbar**. Der dritte ist kein Beiwerk: ein
-Werkzeug, das bei fehlender Auskunft „Handarbeit" meldet, hielte beim ersten
-frischen Klon den ganzen Rollout auf.
-
-⚠ **ER WAR ZUERST NUR BEHAUPTET.** Im Code stand er, gemessen wurden nur die
-ersten beiden — sein Gegenprobe-Fall fiel deshalb am **Nachbar**-Wächter, mit
-dessen Namen in der roten Zeile. Erst eine eigene Zusicherung hat ihn gedeckt.
-
-### ⚠ Die Suche kennt ALLE Pfade, unter denen eine Datei je lag
-
-Modul 15 lag vor `src/modules/` in `sbkim-bundle/modules/`. Wer nur den
-heutigen Pfad durchsucht, meldet jede ältere Generation als Handarbeit — genau
-dieser Fehler ist beim Messen von Hand passiert, und aufgedeckt hat ihn eine
-**Kontrolle mit bekannter Antwort**. Ein eigener Gegenprobe-Fall nagelt es fest.
-
-### Der Weg daran vorbei heißt absichtlich nicht `--force`
-
-`--handarbeit-gesichert` ist nach einem Umzug nötig, sonst wäre der Riegel eine
-Sackgasse. Der Rückgabewert ist **1**, auch im Schreib-Gang: ohne das endete ein
-Lauf, der vier Kopien zurückhält, mit 0 — und „0" heißt in jeder Kette
-„alles erledigt".
-
-### Benannte Grenze
-
-⚠ **Der Klon ist flach** (gemessen: `is-shallow-repository` = true). Was hinter
-der Abschneide-Grenze liegt, sieht die Prüfung nicht; eine sehr alte
-Kanon-Generation kann dort fälschlich als Handarbeit erscheinen. **Der Lauf
-schreibt das dazu** und nennt `git fetch --unshallow` als Gegenprobe — ein
-Verdacht, der seine eigene Unsicherheit verschweigt, wird beim dritten Mal
-überlesen.
-
-Dazu eine Grenze der **Anzeige**: der Fall zum dritten Ausgang druckt weiter die
-rote Zeile eines Nachbarn, weil `bekannt.size === 0` abzuschalten zwangsläufig
-überall wirkt. Von Hand nachgestellt, dass die gemeinten zwei Zusicherungen
-fallen; das steht im Fall daneben.
-
-### Gemessen
-
-| | vorher | nachher |
-|---|---|---|
-| `smoke_kanon_verteilen.mjs` | 53 grün | **65 grün · 0 rot** |
-| `gegenprobe_kanon_verteilen.sh` | 21 gefangen | **28 gefangen · 0 durchgerutscht · 0 tote Anker** |
-| `node tests/run_alle.mjs` | 107/107 | **107 Proben · 107 grün · 0 rot · 0 nicht lauffähig** |
-
-⚠ **Und ein eigener Wächter suchte Kleinschreibung**, während das Werkzeug
-`HANDARBEIT VERMUTET` schreibt — rot, ohne dass eine Zusicherung gefallen wäre.
-*Ein Wächter nagelt eine Aussage fest, keine Schreibweise.*
-
-### Was offen bleibt
-
-Unverändert: `smoke_hintergrund` in family-project flattert · **sieben
-Gegenstellen mit ungelesener Post** seit Juli · Privat-Brains
-`modules/net-widget.js` und seine 4 roten Zeilen · SB-KIMTool-Points 2 · der
-Rezept-Export ohne Spore · Mein WorkFlohs ausgeschaltetes
-`sampleContent()`-Gerüst · **Klaus' Browser-Sichttest**.
-
-**Nächster sinnvoller Schritt:** der Briefkasten — sieben Gegenstellen, deren
-`ack` teils zwölf Stände zurückhängt, ist der größte unbearbeitete Posten im
-Netz.
+**Der Wächter, der den Fund von heute ohne Zutun gemeldet hätte.** Volltext:
+[`docs/sessions/archiv/2026-09-17_puls-auslagerung-waechter-ohne-zutun.md`](sessions/archiv/2026-09-17_puls-auslagerung-waechter-ohne-zutun.md).
 
 ---
+
 
 ## Eine Sitzung vom 2026-09-16 (Zwanzig von zwanzig) — ausgelagert am 2026-09-17
 

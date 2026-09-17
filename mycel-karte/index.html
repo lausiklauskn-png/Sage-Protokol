@@ -234,12 +234,25 @@
   #log .e.bad b { color: var(--bad); }
   #log .e.demo { border-style: dashed; opacity: 0.85; }
 
+  /* ⚠ EINE PILLE IN DER REIHE, KEIN KASTEN DARUEBER (Klaus 2026-09-17).
+     Bis dahin lag das Band `position: fixed` mittig unter der Kopfzeile — im
+     eingebetteten Rahmen der Demo-Seite deckte es die Knopfleiste zu
+     („Analyse aus" war dahinter nicht mehr zu sehen) und lief ueber drei
+     Zeilen. Klaus: „das grosse Erklaerfenster, das gelbe … das kann weg
+     sein, das steht ja schon in dem Text."
+
+     Es ist nicht weg, es ist KURZ und steht in der Reihe neben „Kanal" und
+     „Ereignisse". Was es sagt, ist das, was man ohne Nachlesen wissen muss:
+     was laeuft und dass es NICHT live ist. Das Uebrige (von wann, aus wie
+     vielen Aufzeichnungen, nicht im Originaltempo) steht in der
+     Start-Meldung im Protokoll und im Hinweistext des Reglers — dort, wo
+     Klaus es verortet hat, und beides ist bewacht. */
   #demoBadge {
-    position: fixed; top: 3.4rem; left: 50%; transform: translateX(-50%); z-index: 11;
+    display: none; align-items: center; gap: 0.35rem; white-space: nowrap;
     background: rgba(244,180,53,0.14); border: 1px dashed var(--gold); color: var(--gold);
-    border-radius: 999px; padding: 0.25rem 0.9rem; font-size: 0.8rem; display: none;
+    border-radius: 999px; padding: 0.18rem 0.65rem; font-size: 0.8rem;
   }
-  #demoBadge.show { display: block; }
+  #demoBadge.show { display: inline-flex; }
 
   @media (prefers-reduced-motion: reduce) { #panel .head .chev { transition: none; } }
   @media (max-width: 640px) {
@@ -256,6 +269,7 @@
   <h1>🍄 Mycel-Live-Karte<span class="sub">Sage-Protokol · reine Anzeige, Empfangsmodus</span></h1>
   <span class="lamp"><span class="dot" id="chanDot"></span>Kanal <b>sbkim</b></span>
   <span class="lamp">Ereignisse <b id="evCount">0</b></span>
+  <span id="demoBadge">🎬 Probelauf · simuliert, kein echter Verkehr</span>
   <span class="lamp btn" id="themeBtn" title="Thema wechseln">◐ <b id="themeName">Dunkel</b></span>
   <span class="lamp btn" id="reloadBtn" title="Aktualisieren / Cache leeren &amp; neu laden">↻</span>
   <span class="lamp btn" id="relayBtn" title="Raum am Nostr-Relais belauschen (nur lesen, auf deinen Zuruf)"><span class="dot" id="relayDot"></span>📡 <b id="relayLbl">Relais aus</b></span>
@@ -283,7 +297,6 @@
   </div>
 </div>
 
-<div id="demoBadge">🎬 PROBELAUF — simulierte Ereignisse, kein echter Verkehr</div>
 <div id="log" aria-live="polite"></div>
 
 <div id="panel" class="open">
@@ -1356,13 +1369,25 @@ function spieleMitschnitt(daten, name) {
   replayAusgabe = 0;
   replayGeladen = true;
   var wann = (daten.gestartet || "").slice(0, 16).replace("T", " ");
+  var tag = (daten.gestartet || "").slice(0, 10);
   var quellen = (daten.quellen || []).length;
-  replayBandBasis = "▶ MITSCHNITT — echter Verkehr ab " + wann + " UTC"
-    + (quellen > 1 ? " aus " + quellen + " Aufzeichnungen" : "") + " · " + liste.length
-    + " Ereignisse, gleichmäßig abgespielt (nicht im Originaltempo) · kein Live-Verkehr";
+  /* ⚠ DAS BAND SAGT DAS EINE, WAS MAN OHNE NACHLESEN WISSEN MUSS: was
+     laeuft und dass es NICHT live ist. Alles Weitere steht eine Zeile
+     tiefer in der Start-Meldung — von wann, aus wie vielen Aufzeichnungen,
+     und dass das Originaltempo NICHT wiedergegeben wird.
+
+     TAFEL-EVOLUTIONS-KLAUSEL, ausdruecklich benannt: bis zum 2026-09-17 trug
+     das Band alle drei Angaben selbst. Die Zusicherung ist nicht gestrichen,
+     sie ist UMGEZOGEN — und an ihrem neuen Ort bewacht
+     (`tests/wiedergabe.mjs`, Abschnitt 7). Verloren geht nichts; was
+     verschwindet, ist der Kasten, der die Knoepfe zudeckte. */
+  replayBandBasis = "▶ Mitschnitt " + tag + " · kein Live-Verkehr";
   demoBadge.classList.add("show");
   logEvent("<b>▶ Wiedergabe gestartet</b> · " + liste.length + " Ereignisse aus <i>"
-    + (name || "Mitschnitt") + "</i> · rund " + liste.length + " Sekunden", "ok");
+    + (name || "Mitschnitt") + "</i>"
+    + (quellen > 1 ? " (" + quellen + " Aufzeichnungen)" : "")
+    + " ab " + wann + " UTC · gleichmäßig abgespielt, <b>nicht im Originaltempo</b>"
+    + " · rund " + liste.length + " Sekunden", "ok");
   replayWeiter();
 }
 
