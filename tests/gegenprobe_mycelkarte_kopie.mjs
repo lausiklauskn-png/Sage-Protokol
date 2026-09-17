@@ -13,7 +13,7 @@
  *
  * Lauf: node tests/gegenprobe_mycelkarte_kopie.mjs
  */
-import { readFileSync, writeFileSync, mkdtempSync, cpSync, rmSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync, cpSync, rmSync, mkdirSync, unlinkSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -26,6 +26,20 @@ mkdirSync(resolve(kopie, "tests"), { recursive: true });
 mkdirSync(resolve(kopie, "tools"), { recursive: true });
 mkdirSync(resolve(kopie, "mycel-karte"), { recursive: true });
 cpSync(resolve(wurzel, "mycel-karte/index.html"), resolve(kopie, "mycel-karte/index.html"));
+/* \u26a0 DIE AUFZEICHNUNG REIST MIT IN DIE WEGWERF-KOPIE. Ohne sie waere die
+   Ausgangslage schon ohne Eingriff rot ("die Datei liegt NEBEN der Kopie"),
+   und der ganze Lauf braeche ab \u2014 495 Faelle massen dann nichts. */
+const REPLAY_REL = (/var REPLAY_DATEI = "([^"]+)";/
+  .exec(readFileSync(resolve(wurzel, "mycel-karte/index.html"), "utf8")) || [])[1];
+if (!REPLAY_REL) {
+  console.log("  ABBRUCH \u2014 in der Kopie steht kein REPLAY_DATEI");
+  process.exit(2);
+}
+const REPLAY_QUELL = resolve(wurzel, "mycel-karte", REPLAY_REL);
+const REPLAY_ZIEL = resolve(kopie, "mycel-karte", REPLAY_REL);
+mkdirSync(dirname(REPLAY_ZIEL), { recursive: true });
+cpSync(REPLAY_QUELL, REPLAY_ZIEL);
+const REPLAY_ORIGINAL = readFileSync(REPLAY_ZIEL, "utf8");
 cpSync(resolve(wurzel, "tests/smoke_mycelkarte_kopie.mjs"),
        resolve(kopie, "tests/smoke_mycelkarte_kopie.mjs"));
 cpSync(resolve(wurzel, "tools/mycelkarte-uebernehmen.mjs"),
@@ -100,7 +114,40 @@ const FAELLE = [
 
   { was: "der Doppel-Filter faellt weg — dasselbe Ereignis zaehlt mehrfach",
     trifft: /Doppel-Filter/,
-    kaputt: (t) => t.replace("function schonGesehen", "function schonGesehenAlt") }
+    kaputt: (t) => t.replace("function schonGesehen", "function schonGesehenAlt") },
+
+  /* --- Die Aufzeichnung, die der Knopf holt (Klaus 2026-09-17) -----------
+   * \u26a0 GENAU HIER WAR DIESE PROBE BLIND. Die Faelle darueber sabotieren
+   * alle den QUELLTEXT; der Befund vom 2026-09-17 lag in einer DATEI, die
+   * daneben fehlte. Ein Fall, der nur den Text anfasst, kann das nicht
+   * treffen \u2014 deshalb koennen die folgenden auch die Aufzeichnung selbst
+   * verbiegen (`kaputtDatei`) oder sie ganz wegnehmen (`entfernen`). */
+  { was: "die Aufzeichnung fehlt neben der Kopie (der Befund vom 2026-09-17)",
+    trifft: /liegt NEBEN der Kopie/,
+    entfernen: true },
+
+  { was: "der Knopf zeigt auf einen Pfad, den es nicht gibt (umbenannt, Zeiger nicht nachgezogen)",
+    trifft: /liegt NEBEN der Kopie/,
+    kaputt: (t) => t.replace('var REPLAY_DATEI = "mitschnitt/',
+                             'var REPLAY_DATEI = "mitschnitt/anders-') },
+
+  { was: "die Aufzeichnung ist nicht mehr zu lesen (kaputtes JSON)",
+    trifft: /gueltiges JSON/,
+    kaputtDatei: (d) => "{ kaputt" + d },
+
+  { was: "in der Aufzeichnung steht kein Relais-Verkehr mehr zum Abspielen",
+    trifft: /Relais-Verkehr darin/,
+    kaputtDatei: (d) => JSON.stringify(
+      Object.assign(JSON.parse(d), { ereignisse: [] })) },
+
+  { was: "der Erklaertext verspricht mehr Ereignisse, als in der Datei stehen",
+    trifft: /Ereignis-Zahl im Text/,
+    kaputt: (t) => t.replace("191 Ereignisse aus", "999 Ereignisse aus") },
+
+  { was: "der Erklaertext verspricht mehr Aufzeichnungen, als es sind",
+    trifft: /Zahl der Aufzeichnungen ebenso/,
+    kaputt: (t) => t.replace("Ereignisse aus fünf Aufzeichnungen",
+                             "Ereignisse aus acht Aufzeichnungen") }
 ];
 
 let gefangen = 0, durch = 0, falsch = 0, tot = 0;
@@ -113,11 +160,25 @@ if (lauf().length) {
 }
 
 for (const f of FAELLE) {
-  const nachher = f.kaputt(ORIGINAL);
-  if (nachher === ORIGINAL) { tot++; console.log("  ⚠ ANKER NICHT GEFUNDEN — " + f.was); continue; }
-  writeFileSync(ZIEL, nachher);
+  /* Drei Sorten Eingriff, und der Unterschied ist kein Schoenheitsfehler:
+     am Quelltext, an der Aufzeichnung, oder die Aufzeichnung ganz weg.
+     Ein Fall, der nur den Quelltext anfassen kann, ist fuer eine fehlende
+     DATEI blind \u2014 und genau das war der Befund vom 2026-09-17. */
+  let nachher = ORIGINAL;
+  if (f.kaputt) {
+    nachher = f.kaputt(ORIGINAL);
+    if (nachher === ORIGINAL) { tot++; console.log("  \u26a0 ANKER NICHT GEFUNDEN \u2014 " + f.was); continue; }
+    writeFileSync(ZIEL, nachher);
+  }
+  if (f.kaputtDatei) {
+    const gebogen = f.kaputtDatei(REPLAY_ORIGINAL);
+    if (gebogen === REPLAY_ORIGINAL) { tot++; console.log("  \u26a0 ANKER NICHT GEFUNDEN \u2014 " + f.was); writeFileSync(ZIEL, ORIGINAL); continue; }
+    writeFileSync(REPLAY_ZIEL, gebogen);
+  }
+  if (f.entfernen) unlinkSync(REPLAY_ZIEL);
   const rot = lauf();
   writeFileSync(ZIEL, ORIGINAL);
+  writeFileSync(REPLAY_ZIEL, REPLAY_ORIGINAL);
   if (!rot.length) { durch++; console.log("  ✗ NICHT GEFANGEN — " + f.was); continue; }
   if (!rot.some((z) => f.trifft.test(z))) {
     falsch++;
@@ -139,6 +200,12 @@ try {
   readFileSync(echteQuelle);
   mkdirSync(resolve(behaelter, "mycel-karte"), { recursive: true });
   cpSync(echteQuelle, resolve(behaelter, "mycel-karte/index.html"));
+  /* Der Ableiter holt seit dem 2026-09-17 auch die Aufzeichnung. Fehlt sie im
+     gestellten Quell-Klon, bricht er ab \u2014 und dieser Fall waere „gefangen"
+     aus dem falschen Grund, naemlich schon ohne das Leerzeichen. */
+  const quellReplay = resolve(wurzel, "../mycel-karte", REPLAY_REL);
+  mkdirSync(dirname(resolve(behaelter, "mycel-karte", REPLAY_REL)), { recursive: true });
+  cpSync(quellReplay, resolve(behaelter, "mycel-karte", REPLAY_REL));
   /* Ein einziges Zeichen in der Kopie, das der Ableiter so nie erzeugt. */
   writeFileSync(ZIEL, ORIGINAL.replace("<h1>🍄 Mycel-Live-Karte",
                                        "<h1>🍄 Mycel-Live-Karte "));

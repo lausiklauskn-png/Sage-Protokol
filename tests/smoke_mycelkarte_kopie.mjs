@@ -86,6 +86,72 @@ pruef(/id="btnReplay"/.test(html) && /function spieleMitschnitt\(/.test(html),
 pruef(/id="replayTransport"/.test(html) && /id="btnSpulVor"/.test(html)
       && /function replayZurueck\(/.test(html),
   "samt Pause, Schritt und Spulen (Klaus 2026-09-10)");
+
+/* --- ⚠ UND SIE MUSS IHRE AUFZEICHNUNG AUCH FINDEN (Klaus 2026-09-17) ---
+ *
+ * Klaus auf der Demo-Seite: „Mitschnitt abspielen ... das laeuft nicht. Das
+ * sollte aber laufen, wenn jemand eine Demo betrachtet."
+ *
+ * ⚠ UND DIESE PROBE WAR DABEI GRUEN. Zwei Zeilen weiter oben steht
+ * „die Wiedergabe des echten Laufs ist da" — sie fragt nach `id="btnReplay"`
+ * und `function spieleMitschnitt(`, also danach, ob der CODE dasteht. Ob der
+ * Knopf seine DATEI findet, hat nie jemand gefragt. Sages `mycel-karte/` trug
+ * nur `index.html`; der Abruf gab 404, und die Karte meldete fail-soft „die
+ * hinterlegte Aufzeichnung ist nicht erreichbar".
+ *
+ * GEMESSEN im echten Browser am 2026-09-17, vor der Reparatur:
+ *     404 /mycel-karte/mitschnitt/mycel-lauf-2026-09-10.json
+ *     Knopf: „▶ Mitschnitt abspielen" · Transportreihe versteckt · Stand „—"
+ *
+ * *Ein Waechter auf „der Code ist da" misst nicht, ob er etwas VORFINDET.*
+ * Dieselbe Familie wie der Befund vom 2026-09-10, nur eine Ebene weiter: dort
+ * hing die Kopie zurueck, hier fehlt ihr das, worauf sie zeigt. */
+const mReplay = /var REPLAY_DATEI = "([^"]+)";/.exec(html);
+pruef(!!mReplay, "die Kopie nennt eine hinterlegte Aufzeichnung (REPLAY_DATEI)");
+if (mReplay) {
+  /* ⚠ GEFRAGT WIRD NACH DEM PFAD, DEN DIE KOPIE SELBST NENNT — nicht nach
+     einem hier abgeschriebenen. Ein zweiter Name liefe auseinander, und dann
+     bewachte diese Probe eine Datei, die niemand holt. */
+  const datei = resolve(wurzel, "mycel-karte", mReplay[1]);
+  const da = existsSync(datei);
+  pruef(da, "und die Datei liegt NEBEN der Kopie: mycel-karte/" + mReplay[1]);
+  if (da) {
+    let daten = null;
+    try { daten = JSON.parse(readFileSync(datei, "utf8")); } catch { daten = null; }
+    pruef(!!daten, "  · sie laesst sich lesen (gueltiges JSON)");
+    if (daten) {
+      /* Gefiltert wird mit der Liste, die die KOPIE benutzt — sonst misst die
+         Probe eine andere Wiedergabe als die, die der Knopf startet. */
+      const arten = {};
+      [...(/var REPLAY_ARTEN = \{([\s\S]*?)\};/.exec(html)?.[1] || "")
+        .matchAll(/"([^"]+)":\s*1/g)].forEach((m) => { arten[m[1]] = 1; });
+      pruef(Object.keys(arten).length >= 3,
+        "  · die Kopie nennt " + Object.keys(arten).length + " abspielbare Ereignis-Arten");
+      const spielbar = (daten.ereignisse || []).filter(
+        (e) => e && e.source === "relais" && arten[e.kind] && e.data && e.data.content);
+      pruef(spielbar.length > 0,
+        "  · und es steht wirklich Relais-Verkehr darin (" + spielbar.length
+        + " von " + (daten.ereignisse || []).length + " Ereignissen abspielbar)");
+
+      /* ⚠ DER SATZ AUF DER SEITE IST EIN VERSPRECHEN, UND ES WIRD GEMESSEN.
+         Die Seite nennt eine Zahl von Ereignissen und eine von Aufzeichnungen.
+         Wird die Aufzeichnung einmal ausgetauscht, stimmt der Satz still nicht
+         mehr — und eine Zahl, die niemand nachrechnet, ist eine Behauptung. */
+      const ZAHLWORT = { zwei: 2, drei: 3, vier: 4, "f\u00fcnf": 5, sechs: 6, sieben: 7, acht: 8 };
+      const mSatz = /(\d+)\s*Ereignisse aus ([a-z\u00e4\u00f6\u00fc\u00df]+) Aufzeichnungen/.exec(html);
+      pruef(!!mSatz, "  · der Erklaertext nennt Ereignis- und Aufzeichnungs-Zahl");
+      if (mSatz) {
+        pruef(Number(mSatz[1]) === spielbar.length,
+          "  · und die Ereignis-Zahl im Text stimmt mit der Datei ueberein ("
+          + mSatz[1] + " / " + spielbar.length + ")");
+        const versprochen = ZAHLWORT[mSatz[2].toLowerCase()];
+        pruef(versprochen === (daten.quellen || []).length,
+          "  · und die Zahl der Aufzeichnungen ebenso (" + mSatz[2] + " / "
+          + (daten.quellen || []).length + ")");
+      }
+    }
+  }
+}
 ["kkRaum", "kkRegister", "kkVerbindungen"].forEach((id) =>
   pruef(new RegExp('id="' + id + '"').test(html),
     "  · die Knoten-Karte hat ihren Kasten " + id));

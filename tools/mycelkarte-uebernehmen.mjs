@@ -26,7 +26,7 @@
  *
  * Vorgabe fuer den Pfad: ../mycel-karte
  */
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
@@ -66,8 +66,15 @@ const KOPF = `<!DOCTYPE html>
        4. kein Manifest, keine Service-Worker-Anmeldung — diese Fassung ist
           eingebettet und keine eigene PWA (die Dateien liegen hier nicht)
 
+     WAS NEBEN DIESER DATEI LIEGT, GEHOERT DAZU: \`mitschnitt/\` traegt die
+     Aufzeichnung, die der Knopf „\u25b6 Mitschnitt abspielen" holt \u2014 relativ
+     zu DIESER Seite. Sie ist kein Ueberbleibsel und wird nicht aufgeraeumt;
+     ohne sie gibt der Abruf 404, und die Demo fuehrt nichts vor (gemessen
+     2026-09-17). Der Ableiter bringt sie mit.
+
      \`tests/smoke_mycelkarte_kopie.mjs\` misst beides: dass die tragenden
-     Faehigkeiten da sind UND dass die vier Abweichungen stimmen.
+     Faehigkeiten da sind UND dass die vier Abweichungen stimmen \u2014 und seit
+     dem 2026-09-17, dass die Aufzeichnung wirklich danebenliegt.
 -->
 `;
 
@@ -123,12 +130,12 @@ let gefehlt = 0;
 for (const a of ABWEICHUNGEN) {
   const treffer = text.split(a.von).length - 1;
   if (treffer !== 1) {
-    console.error(`✗ ${a.name}: Anker ${treffer === 0 ? "nicht gefunden" : treffer + "-mal gefunden"} — Abbruch.`);
+    console.error(`\u2717 ${a.name}: Anker ${treffer === 0 ? "nicht gefunden" : treffer + "-mal gefunden"} \u2014 Abbruch.`);
     gefehlt++;
     continue;
   }
   text = text.replace(a.von, a.nach);
-  console.log(`  ✓ ${a.name}`);
+  console.log(`  \u2713 ${a.name}`);
 }
 if (gefehlt) {
   console.error("\nEs wurde NICHTS geschrieben. Ein Anker ist verrutscht;");
@@ -136,16 +143,84 @@ if (gefehlt) {
   process.exit(2);
 }
 
-if (text === alt) {
+/* ---------------------------------------------------------------------------
+ * DIE AUFZEICHNUNG REIST MIT (Klaus 2026-09-17)
+ *
+ * Klaus auf der Demo-Seite: „Mitschnitt abspielen ... das laeuft nicht. Das
+ * sollte aber laufen, wenn jemand eine Demo betrachtet."
+ *
+ * GEMESSEN im echten Browser, bevor gebaut wurde: der Knopf holt
+ * `mitschnitt/mycel-lauf-2026-09-10.json` RELATIV zu der Seite, in der er
+ * steht. In der eigenstaendigen App liegt die Datei da. Neben DIESER Kopie lag
+ * sie nicht — Sages `mycel-karte/` trug nur `index.html`. Der Abruf gab
+ * 404, und die Karte meldete fail-soft „die hinterlegte Aufzeichnung ist nicht
+ * erreichbar". Kein Fehler, keine rote Zeile, nur eine Demo, die nichts
+ * vorfuehrt.
+ *
+ * ⚠ DER GRUND WAR EIN WERKZEUG, DAS NUR EINE DATEI KANNTE. Es holte
+ * `index.html` und sonst nichts; wer eine neue Funktion baut, die eine DATEI
+ * braucht, haette sie von Hand nachtragen muessen. Eine Regel, an die man sich
+ * erinnern muss, ist keine — dieselbe Lehre, aus der dieses Werkzeug
+ * ueberhaupt entstanden ist, nur eine Ebene weiter.
+ *
+ * ⚠ DER PFAD WIRD AUS DER QUELLE GELESEN, NICHT ABGESCHRIEBEN. Er steht
+ * in `var REPLAY_DATEI = "..."`. Eine zweite Liste hier liefe auseinander, und
+ * die vergessene Datei waere wieder genau die, an die niemand denkt.
+ * ------------------------------------------------------------------------ */
+const ZUSATZ = [];
+const mREplay = /var REPLAY_DATEI = "([^"]+)";/.exec(text);
+if (!mREplay) {
+  console.error("\u2717 In der Quelle steht kein `var REPLAY_DATEI = \"...\";` \u2014 Abbruch.");
+  console.error("  Entweder heisst die Angabe jetzt anders, oder die Wiedergabe ist raus.");
+  console.error("  Beides gehoert hier nachgezogen, nicht uebergangen.");
+  process.exit(2);
+}
+ZUSATZ.push(mREplay[1]);
+
+/* Was mitreist, wird BYTE-GLEICH uebernommen: es sind Daten, keine Schale, und
+   die vier Abweichungen betreffen nur die Seite. */
+const mitreise = [];
+for (const rel of ZUSATZ) {
+  const von = resolve(quellRepo, rel);
+  const nach = resolve(wurzel, "mycel-karte", rel);
+  if (!existsSync(von)) {
+    console.error("\u2717 Die Quelle nennt `" + rel + "`, aber dort liegt nichts: " + von);
+    console.error("  Es wurde NICHTS geschrieben.");
+    process.exit(2);
+  }
+  const roh = readFileSync(von);
+  const gleich = existsSync(nach) && readFileSync(nach).equals(roh);
+  mitreise.push({ rel, von, nach, roh, gleich });
+  console.log((gleich ? "  = " : "  \u2260 ") + rel
+    + (gleich ? " (schon da)" : existsSync(nach) ? " (weicht ab)" : " (fehlt)"));
+}
+
+const offen = mitreise.filter((m) => !m.gleich);
+
+if (text === alt && !offen.length) {
   console.log("\n= Die Kopie ist bereits die Kopie. Nichts zu tun.");
   process.exit(0);
 }
 
 if (!schreiben) {
-  console.log("\n⚠ Die Kopie weicht ab (" + alt.length + " → " + text.length + " Zeichen).");
-  console.log("  Mit --schreiben wird sie nachgezogen.");
+  if (text !== alt) {
+    console.log("\n\u26a0 Die Kopie weicht ab (" + alt.length + " \u2192 " + text.length + " Zeichen).");
+  }
+  if (offen.length) {
+    console.log("\u26a0 " + offen.length + " mitreisende Datei"
+      + (offen.length === 1 ? "" : "en") + " fehlt bzw. weicht ab:");
+    offen.forEach((m) => console.log("    " + m.rel));
+  }
+  console.log("  Mit --schreiben wird nachgezogen.");
   process.exit(1);
 }
 
-writeFileSync(ziel, text);
-console.log("\n✓ mycel-karte/index.html nachgezogen (" + text.length + " Zeichen).");
+if (text !== alt) {
+  writeFileSync(ziel, text);
+  console.log("\n\u2713 mycel-karte/index.html nachgezogen (" + text.length + " Zeichen).");
+}
+for (const m of offen) {
+  mkdirSync(dirname(m.nach), { recursive: true });
+  writeFileSync(m.nach, m.roh);
+  console.log("\u2713 mycel-karte/" + m.rel + " nachgezogen (" + m.roh.length + " Bytes).");
+}
