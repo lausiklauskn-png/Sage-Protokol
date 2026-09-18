@@ -130,10 +130,8 @@ const rand = await page.evaluate(() => {
   for (const [name, sel, pseudo] of [
     ['vignette',   '.vignette',            null],
     ['korn',       '.korn',                null],
-    ['scene1vor',  '#scene-1',             '::before'],
     ['scene1nach', '#scene-1',             '::after'],
-    ['scene5vor',  '#scene-5',             '::before'],
-    ['scene6vor',  '#scene-6',             '::before'],
+    ['scene5nach', '#scene-5',             '::after'],
     ['papier',     '#scene-4 .paper-bg',   null],
     ['fadeOben',   '#scene-1 .scene-fade-top', null]
   ]) {
@@ -160,32 +158,68 @@ const rand = await page.evaluate(() => {
   return r;
 });
 
-// 3c. ÜBERHANG DER KAMERAFAHRTEN ------------------------------------------
-// Aus den Keyframes gerechnet, nicht aus dem Bild geraten: wie weit steht
-// das Foto an seiner knappsten Stelle über den Kasten hinaus? Ein Überhang
-// nahe 0 ist ein Haarstrich, den Teilpixel-Rundung freilegt.
-const ueberhang = await page.evaluate(() => {
-  const gesucht = ['scene1-camera', 'scene5-breath', 'scene6-drift'];
+// 3b2. DIE SEITE IST NICHT BREITER ALS DAS FENSTER -----------------------
+// Der teuerste Befund dieser Arbeit. Eine Kamerafahrt vergrößert ihre Schicht
+// und schiebt sie; was dabei über die Sektion hinausragt, zählt als
+// SCROLL-ÜBERLAUF DES DOKUMENTS. Ein Browser, der eine zu breite Seite ins
+// Fenster einpasst, zeichnet alles kleiner und linksbündig — und rechts
+// bleibt ein Streifen.
+const breite = await page.evaluate(() => {
+  const el = document.documentElement, m = document.querySelector('main');
+  const sek = {};
+  document.querySelectorAll('section.scene').forEach(s => {
+    if (s.scrollWidth > s.clientWidth + 1) sek[s.id] = s.scrollWidth - s.clientWidth;
+  });
+  const tuer = document.querySelector('section.scene-doorway');
+  return {
+    dokument: el.scrollWidth - el.clientWidth,
+    main: m.scrollWidth - m.clientWidth,
+    // Die Gegenrichtung: die Sektionen tragen den Überhang WEITERHIN. Ohne
+    // diese Hälfte wäre der Wächter auch dann grün, wenn jemand die
+    // Kamerafahrten ausgebaut hätte — dann gäbe es nichts zu clippen.
+    sektionenMitUeberhang: Object.keys(sek).length,
+    sektionen: sek,
+    // Die Tür-Bühne pinnt mit `position: sticky`. Ein `overflow` an ihrem
+    // Vorfahren macht ihn zum Scroll-Bereich; dann pinnt sie am falschen Ort.
+    tuerOverflow: tuer ? getComputedStyle(tuer).overflow : 'fehlt'
+  };
+});
+
+// 3c. DECKUNG DER KAMERAFAHRTEN — GEMESSEN, NICHT AUS DEN KEYFRAMES GERECHNET
+// Wie weit steht die Foto-Schicht an ihrer knappsten Stelle über den Kasten
+// hinaus? Gemessen wird der GEZEICHNETE Kasten: aus der Matrix, die
+// `getComputedStyle` an der laufenden Animation abliest, plus der wirklichen
+// Größe und Lage der Schicht. Eine Rechnung nur aus den Keyframes wüsste
+// nichts von `inset: -8%` — und genau dort steht der Spielraum jetzt.
+const ueberhang = await page.evaluate(async () => {
+  const ZIELE = [['#scene-1', 20], ['#scene-5', 18], ['#scene-6', 22]];
   const raus = {};
-  for (const bl of document.styleSheets) {
-    let regeln; try { regeln = bl.cssRules; } catch (e) { continue; }
-    for (const rg of regeln) {
-      if (rg.type !== CSSRule.KEYFRAMES_RULE || !gesucht.includes(rg.name)) continue;
-      let min = Infinity;
-      for (const kf of rg.cssRules) {
-        const t = kf.style.transform || '';
-        const sc = /scale\(([\d.]+)\)/.exec(t);
-        const tr = /translate\(([-\d.]+)%\s*,\s*([-\d.]+)%\)/.exec(t);
-        if (!sc) continue;
-        const S = parseFloat(sc[1]);
-        const TX = tr ? parseFloat(tr[1]) / 100 : 0;
-        const TY = tr ? parseFloat(tr[2]) / 100 : 0;
-        for (const T of [TX, TY]) {
-          min = Math.min(min, S * (0.5 - Math.abs(T)) - 0.5);
-        }
-      }
-      raus[rg.name] = +(min * 100).toFixed(2);
+  for (const [sel, dauerS] of ZIELE) {
+    const sec = document.querySelector(sel);
+    let min = Infinity;
+    // Mehrere Punkte der Fahrt anfahren, nicht nur den Ruhezustand.
+    for (const anteil of [0, 0.25, 0.5, 0.75, 1]) {
+      const st = document.createElement('style');
+      st.textContent = sel + '::before{animation-delay:' +
+        (-anteil * dauerS).toFixed(2) + 's !important;animation-play-state:paused !important;}';
+      document.head.appendChild(st);
+      sec.getBoundingClientRect();
+      const cs = getComputedStyle(sec, '::before');
+      const W = parseFloat(cs.width), H = parseFloat(cs.height);
+      const L = parseFloat(cs.left),  T = parseFloat(cs.top);
+      const m = new DOMMatrixReadOnly(cs.transform === 'none' ? '' : cs.transform);
+      // Ursprung der Verzerrung ist die Mitte der Schicht.
+      const ox = L + W / 2, oy = T + H / 2;
+      const li = ox + m.a * (L - ox) + m.e;
+      const re = ox + m.a * (L + W - ox) + m.e;
+      const ob = oy + m.d * (T - oy) + m.f;
+      const un = oy + m.d * (T + H - oy) + m.f;
+      const kw = sec.clientWidth, kh = sec.clientHeight;
+      // Überhang je Seite, in Prozent der Kastenbreite bzw. -höhe
+      min = Math.min(min, -li / kw, (re - kw) / kw, -ob / kh, (un - kh) / kh);
+      st.remove();
     }
+    raus[sel] = +(min * 100).toFixed(2);
   }
   return raus;
 });
@@ -234,7 +268,11 @@ console.log('  ⚠ benannte Grenze: .vignette und .korn stehen FEST — ihr umge
 console.log('    Kasten ist das Fenster selbst, die gestellte Rinne erreicht sie');
 console.log('    nicht. Für sie gilt dieselbe eine Zeile, gemessen ist sie nicht.');
 console.log('Tür-Bühne Δ Fenster: ', rand.buehneBreite, '(erwartet 0.0)');
-console.log('Überhang der Fahrten:', JSON.stringify(ueberhang), '(erwartet je > 2 %)');
+console.log('--- Breite ---');
+console.log('Dokument über Fenster:', breite.dokument, '· main:', breite.main, '(erwartet je 0)');
+console.log('Sektionen mit Überhang:', breite.sektionenMitUeberhang, JSON.stringify(breite.sektionen));
+console.log('Tür-Sektion overflow: ', breite.tuerOverflow, '(erwartet visible — sticky!)');
+console.log('Deckung der Fahrten: ', JSON.stringify(ueberhang), '% (gemessen an der Matrix, erwartet je > 2)');
 console.log('Korn:                ', JSON.stringify(korn));
 console.log('Rampen-Stützstellen: ', rampeStufen, '(erwartet >= 8)');
 
@@ -255,11 +293,20 @@ const checks = {
   rinneAuchAelter:     rand.webkitNull === true,
   // Pseudo-Elemente haben keine Kiste — gemessen wird der aufgelöste
   // `right`-Wert: -15px heißt, die Schicht steht um die gestellte Rinne über.
-  vollbildFotos:       ['scene1vor','scene1nach','scene5vor','scene6vor']
+  // ⚠ Die FOTO-Schichten stehen nicht mehr in dieser Liste: sie tragen seit
+  //   dem 2026-09-18 `inset: -8%` und stehen damit auf jeder Seite weit über
+  //   jede Rinne hinaus. Gemessen wird das in `ueberhangGenug` an der Matrix.
+  vollbildFotos:       ['scene1nach','scene5nach']
                          .every(k => rand.gestellt[k] === '-15px'),
   // Echte Kästen: der rechte Rand liegt AUF dem Fensterrand, nicht 15px davor.
   vollbildFlaechen:    ['papier','fadeOben'].every(k => Math.abs(parseFloat(rand.gestellt[k])) < 0.6),
   tuerBuehneVoll:      Math.abs(parseFloat(rand.buehneBreite)) < 0.6,
+
+  // --- Die Seite ist nicht breiter als das Fenster ---
+  dokumentNichtBreiter: breite.dokument === 0,
+  mainNichtBreiter:     breite.main === 0,
+  ueberhangGeclippt:    breite.sektionenMitUeberhang >= 3,
+  tuerOhneOverflow:     breite.tuerOverflow === 'visible',
 
   // --- Kamerafahrten: kein Haarstrich am Rand ---
   ueberhangDa:         Object.keys(ueberhang).length === 3,

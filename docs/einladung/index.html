@@ -416,14 +416,12 @@ em.gold { color: var(--gold); font-style: normal; }
 }
 @keyframes scene1-camera {
   /* Kamerafahrt von LINKS zur Mitte, dann sanftes Heranzoomen.
-     ⚠ DER ÜBERHANG WAR RECHNERISCH BEI 0,22 % (Klaus 2026-09-18). Bei
-     `scale(1.08) translate(-3.5%)` steht die rechte Bildkante nur 0,22 %
-     der Breite außerhalb des Kastens — bei 2560 px sind das 5,6 px, und
-     Teilpixel-Rundung legt davon einen Haarstrich frei. Die Fahrt ist
-     unverändert (gleiche Richtung, gleiche Dauer, gleiche Kurve), nur um
-     0,06 vergrößert: der geringste Überhang liegt jetzt bei 3,0 %. */
-  0%   { transform: scale(1.14) translate(-3.5%, 0.5%); }
-  100% { transform: scale(1.10) translate(0, 0); }
+     ⚠ UNVERÄNDERT SEIT DEM ERSTEN BAU. Ein Zwischenstand vom 2026-09-18 hat
+     hier 1.14/1.10 stehen lassen, um Spielraum am Rand zu schaffen — das
+     zoomte das Bild und machte die SEITE breiter als das Fenster. Der
+     Spielraum steht jetzt als `inset: -8%` am Kasten, wo er hingehört. */
+  0%   { transform: scale(1.08) translate(-3.5%, 0.5%); }
+  100% { transform: scale(1.04) translate(0, 0); }
 }
 #scene-1::after {
   /* Leichte zusätzliche Vignette auf der linken Hälfte, damit der
@@ -686,9 +684,10 @@ em.gold { color: var(--gold); font-style: normal; }
 @keyframes scene5-breath {
   /* Kamerafahrt von RECHTS zur Mitte — gegenläufig zu Sektion 1 für
      asynchrone Sektion-Wechsel beim Scrollen. Derselbe Überhang-Aufschlag
-     wie bei scene1-camera, hier an der LINKEN Kante (spiegelbildlich). */
-  0%   { transform: scale(1.14) translate(3.5%, -0.5%); }
-  100% { transform: scale(1.10) translate(0, 0); }
+     wie bei scene1-camera, hier an der LINKEN Kante (spiegelbildlich).
+     Unverändert seit dem ersten Bau — der Spielraum steht am Kasten. */
+  0%   { transform: scale(1.08) translate(3.5%, -0.5%); }
+  100% { transform: scale(1.04) translate(0, 0); }
 }
 #scene-5 .inner {
   display: grid;
@@ -826,13 +825,12 @@ section.scene-doorway .scene-fade-bot { display: none; }
 @keyframes scene6-drift {
   /* Kamerafahrt von OBEN zur Mitte + Wind-Sway: die Kamera schwebt von
      oben in die Lichtung herab, mit Wind-Stops für Bewegungs-Vielfalt. */
-  /* Geringster Überhang war UNTEN 1,15 % — plus 0,04 auf jeder Stufe
-     hebt ihn auf 3,0 %. Die Wind-Stopps bleiben, wo sie waren. */
-  0%   { transform: scale(1.14) translate(0.5%, -3.5%); }
-  25%  { transform: scale(1.12) translate(-0.4%, -2.5%); }
-  50%  { transform: scale(1.10) translate(0.6%, -1.5%); }
-  75%  { transform: scale(1.09) translate(-0.3%, -0.6%); }
-  100% { transform: scale(1.08) translate(0, 0); }
+  /* Unverändert seit dem ersten Bau — der Spielraum steht am Kasten. */
+  0%   { transform: scale(1.10) translate(0.5%, -3.5%); }
+  25%  { transform: scale(1.08) translate(-0.4%, -2.5%); }
+  50%  { transform: scale(1.06) translate(0.6%, -1.5%); }
+  75%  { transform: scale(1.05) translate(-0.3%, -0.6%); }
+  100% { transform: scale(1.04) translate(0, 0); }
 }
 /* Klaus' Befund 2026-05-28: keine Vignette mehr — Wald komplett
    sichtbar. Lesbarkeit kommt jetzt über text-stroke + text-shadow
@@ -984,6 +982,61 @@ footer.foot h4 {
   #scene-5 .key-host { aspect-ratio: 5/4; max-height: 50vh; margin: 0 auto; max-width: 36rem; }
 }
 
+/* === DER ÜBERHANG DER KAMERAFAHRTEN WIRD GECLIPPT (Klaus 2026-09-18, 2.) ===
+   ⚠ DAS IST DIE EIGENTLICHE URSACHE, und die erste Fassung dieser Datei hat
+   sie VERGRÖSSERT statt behoben.
+
+   Eine Kamerafahrt vergrößert ihre Schicht (`scale`) und schiebt sie
+   (`translate`) — der Teil, der dabei über die Sektion hinausragt, zählt als
+   SCROLL-ÜBERLAUF DES DOKUMENTS. Gemessen bei drei Fensterbreiten:
+
+   | | Seite breiter als das Fenster |
+   |---|---|
+   | vor der ersten Fassung | 7,3 % |
+   | nach der ersten Fassung (Überhang 0,22 % → 3,01 %) | 10,6 % |
+
+   Ein Browser, der eine zu breite Seite ins Fenster einpasst, zeichnet dann
+   ALLES kleiner und linksbündig — und rechts bleibt ein Streifen. Genau das
+   hat Klaus fotografiert: seine Inhaltskante in Sektion 1 lag bei 90,2 %,
+   und 100/110,6 = 90,4 %.
+
+   `overflow: clip` schneidet den Überhang ab, ohne einen Scroll-Bereich
+   anzulegen. Die Fahrten bleiben, wie sie sind — man sieht nur nicht mehr,
+   was außerhalb liegt, und genau dafür ist der Überhang da.
+
+   ⚠ NICHT AN DIE TÜR-SEKTION. Sie trägt eine `position: sticky`-Bühne, und
+   `overflow` an einem Vorfahren macht ihn zum Scroll-Bereich — dann pinnt
+   sticky dort, wo niemand es erwartet. Dieselbe Falle wie am `<body>`, die
+   weiter oben schon einmal aufgeschrieben ist. */
+#scene-1, #scene-5, #scene-6 {
+  overflow: clip;
+}
+
+/* === DER SPIELRAUM GEHÖRT IN DEN KASTEN, NICHT IN DIE BEWEGUNG ============
+   Klaus 2026-09-18: „Kannst du es nicht auch so bauen, dass sie sich
+   automatisch an die Bildschirmbreite anpassen … dass sie sich dann breiter
+   ziehen. Also sie merken, oh, ich bleibe rechts kleben."
+
+   Genau das. Die Foto-Schicht ist von vornherein auf JEDER Seite 8 % größer
+   als ihr Kasten — in Prozent, also passt sie sich jeder Bildschirmbreite
+   von selbst an. Die Kamerafahrt bewegt sich INNERHALB dieses Spielraums;
+   `overflow: clip` oben schneidet ab, was übersteht.
+
+   ⚠ WARUM DAS BESSER IST ALS EIN GRÖSSERES `scale`. Ein größeres `scale`
+   zoomt das Bild — es ändert also die Bildwirkung, nur um Spielraum zu
+   schaffen. Und es hält nur so lange, wie niemand an den Keyframes dreht:
+   wer morgen eine Fahrt weiter schiebt, holt sich den Haarstrich zurück.
+   Der Spielraum im Kasten hält unabhängig davon.
+
+   Deshalb stehen die Kamerafahrten wieder auf ihren URSPRÜNGLICHEN Werten.
+   Gemessen an der knappsten Stelle (Sektion 1, 0 %): früher 0,22 % Überhang,
+   jetzt 8,26 % — bei unveränderter Bewegung. */
+#scene-1::before,
+#scene-5::before,
+#scene-6::before {
+  inset: -8%;
+}
+
 /* Zweiter Riegel, falls ein Browser die Rinne trotz `scrollbar-width: none`
    stehen lässt: jede Voll-Schicht wird um genau diese Rinne nach rechts
    verlängert. `100%` ist die Breite des umgebenden Kastens (= clientWidth),
@@ -997,10 +1050,9 @@ footer.foot h4 {
    Schicht wird am Rand des Scroll-Bereichs abgeschnitten und zeichnet dort
    nicht. Der Griff, auf den es ankommt, ist die entfernte Rinne oben. */
 .vignette, .korn,
-#scene-1::before, #scene-1::after,
+#scene-1::after,
 #scene-4 .paper-bg,
-#scene-5::before, #scene-5::after,
-#scene-6::before,
+#scene-5::after,
 .scene-fade-top, .scene-fade-bot {
   right: min(0px, calc(100% - 100vw));
 }
