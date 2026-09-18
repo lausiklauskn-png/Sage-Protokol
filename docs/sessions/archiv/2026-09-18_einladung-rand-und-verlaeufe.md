@@ -73,6 +73,62 @@ ist leer. **Nichts daran ist kaputt; deshalb ist nichts daran geändert.**
 
 ---
 
+## ⚠ DIE BERICHTIGUNG — der erste Bau hat es verschlimmert
+
+Klaus nach dem Sichttest: *„jetzt noch schlimmer als vorher … alles zu weit
+nach links gerückt."* Er hatte recht.
+
+| `documentElement.scrollWidth` gegen `clientWidth` | |
+|---|---|
+| vor dem ersten Bau | **7,3 %** |
+| nach dem ersten Bau | **10,6 %** |
+| nach der Berichtigung | **0,0 %** |
+
+**Der Mechanismus:** eine Kamerafahrt vergrößert ihre Schicht und schiebt
+sie; was über die Sektion hinausragt, zählt als **Scroll-Überlauf des
+Dokuments**. Ein Browser, der eine zu breite Seite ins Fenster einpasst,
+zeichnet alles kleiner und linksbündig — rechts bleibt ein Streifen. Klaus'
+Inhaltskante in Sektion 1 lag bei **90,2 %**, und `100/110,6 = 90,4 %`.
+
+Ich hatte den Überhang von 0,22 % auf 3,01 % gehoben — **die Abhilfe gegen
+den Haarstrich war die Ursache des Streifens.**
+
+⚠ **KEINE PROBE KONNTE ES SEHEN.** Headless Chromium passt eine zu breite
+Seite nie ins Fenster ein. Der Streifen ist dort unsichtbar, mit und ohne
+Fehler. Gefunden hat es Klaus' Sichttest und danach eine Zahl, nach der
+vorher niemand gefragt hatte.
+
+### Klaus' eigener Vorschlag war der bessere Bau
+
+> *„Das ist ja nicht schlimm, dass die Seite breiter ist als das Fenster, wenn
+> das der Hintergrundeffekt ist … er müsste eher sogar noch breiter sein."*
+> *„Kannst du es nicht auch so bauen, dass sie sich automatisch an die
+> Bildschirmbreite anpassen … dass sie sich dann breiter ziehen."*
+
+| | |
+|---|---|
+| die **Schicht** darf und soll breiter sein | `inset: -8%` — in Prozent, passt sich jeder Bildschirmbreite an |
+| die **Seite** darf es nicht | `overflow: clip` an den drei Foto-Sektionen |
+
+Die Kamerafahrten stehen deshalb wieder auf ihren **ursprünglichen Werten**.
+Der Spielraum gehört in den Kasten, nicht in die Bewegung: ein größeres
+`scale` zoomt das Bild, um ein Randproblem zu lösen, und hält nur, solange
+niemand an den Keyframes dreht.
+
+⚠ **Nicht an die Tür-Sektion** — sie trägt eine sticky-Bühne.
+
+### Der Deckungs-Wächter misst jetzt die Matrix
+
+Die erste Fassung rechnete aus den Keyframes und hätte nach der Berichtigung
+0,22 % gemeldet, während wirklich 8,8 % gedeckt sind. Gemessen wird jetzt der
+gezeichnete Kasten (Matrix aus `getComputedStyle` an der laufenden Animation,
+plus Größe und Lage), fünf Punkte je Fahrt: **8,83 · 8,62 · 9,59 %**.
+
+⚠ **Und ein Gegenprobe-Fall war danach selbst überholt** und rutschte durch:
+er setzte EINE Fahrt auf `scale(1.0)` — seit der Spielraum am Kasten steht,
+nimmt das der Schicht ihren Überhang nicht. Gemeldet vom Lauf, nicht vom
+Nachdenken.
+
 ## Was gebaut wurde
 
 | Datei | Was |
