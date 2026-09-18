@@ -263,6 +263,19 @@ das die Regel selbst misst und umfallen kann. Und `vollbildFest` (`.vignette`,
 Rinne erreicht sie nicht. Er ist raus und steht als **benannte Grenze** da,
 statt als grüner Haken.
 
+### Im Forschungsdatensatz stehen ZWEI Einträge zu diesem Tag
+
+`Kimhub/forschung/sitzungen.json` — `2026-09-18-einladung-rand-und-verlaeufe`
+(die Runde mit der falschen Diagnose) und
+`2026-09-18-einladung-ueberlauf-berichtigung` (diese hier).
+
+⚠ **Der erste wird NICHT berichtigt, und das ist der Punkt.** Er trägt den
+Befund, aus dem diese Runde entstand; ihn im Nachhinein richtigzustellen hieße,
+den Befund durch seine Reparatur zu ersetzen. Von den elf Befunden des zweiten
+tragen **vier** die Herkunft `klaus` — sein Sichttest hat die falsche Diagnose
+umgeworfen, **und der Bau-Vorschlag kam von ihm**. Datensatz danach:
+**33 Sitzungen · 430 Befunde · 174 an blinden Wächtern (40,5 %)**.
+
 ---
 
 ## 2026-09-17 · Das gelbe Band lag über der Knopfleiste — jetzt ist es eine Pille
