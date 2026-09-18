@@ -201,3 +201,60 @@ Verlauf.*
    Frage ist in einem Griff beantwortet statt in neun Bildschirmfotos.
 3. Wenn er die leere rechte Spalte in Sektion 4 stört: Sternenfeld
    `position: sticky` mitlaufen lassen — eine Zeile. **Seine Entscheidung.**
+
+---
+
+## Nachtrag — die Forschungseinträge in Kimhub
+
+Klaus: *„nur noch den Forschungseintrag für die Dokumentation, meiner Stunden
+und die Regel grundsatz doku sowie die anderen einträge in Kimhub"*.
+
+**Zwei Einträge, nicht einer.** `Kimhub/forschung/sitzungen.json` trägt
+`2026-09-18-einladung-rand-und-verlaeufe` (die Runde mit der falschen Diagnose,
+34 min, 11 Befunde) und `2026-09-18-einladung-ueberlauf-berichtigung` (die
+Berichtigung, 58 min, 11 Befunde).
+
+⚠ **Der erste bleibt unverändert stehen.** Er trägt den Befund, aus dem die
+zweite Runde entstand. Ihn nachträglich richtigzustellen hieße, den Befund
+durch seine Reparatur zu ersetzen — dieselbe Regel, nach der neben jeder
+berichtigten Zahl die Zahl davor stehen bleibt.
+
+### Was die Herkunfts-Spalte an diesem Tag zeigt
+
+| Herkunft | im zweiten Eintrag | was sie bedeutet |
+|---|---|---|
+| `klaus` | **4 von 11** | der Betreiber hat es beanstandet oder danach gefragt |
+| `hinsehen` | 4 | niemand war verpflichtet, es zu bemerken (Grundsatz) |
+| `gegenprobe` | 1 | ein eingebauter Fehler rutschte durch und deckte einen blinden Wächter auf |
+| `regel` | 2 | eine Probe ist umgefallen (erzwungen) |
+
+**Das ist der Datenpunkt dieses Tages für Paper A:** eine **Regel**, die
+gemessen und in sich richtig war (der Überhang-Wächter aus Runde 1), hat einen
+**größeren** Schaden gebaut — und keine Probe konnte ihn sehen, weil headless
+Chromium eine überbreite Seite nicht auf die Fensterbreite schrumpft. Gefunden
+hat ihn der Mensch, der hinsah, und der bessere Bau kam von ihm.
+
+⚠ **`forschung/METHODE.md` ist dabei NICHT angefasst worden.** Die Vorhersagen
+V1 und V2 stehen dort seit dem 2026-08-26; die Git-Historie beglaubigt, dass
+sie älter sind als die Daten. Eine Methode nach Ansicht der Daten
+nachzuschärfen nähme ihr genau diese Beglaubigung. Beide halten weiter:
+V1 (`regel` 17,0 % < `hinsehen` 43,7 %), V2 (blinde Wächter 40,5 %,
+Schwelle 10 %).
+
+### Gemessen
+
+| | |
+|---|---|
+| `npm test` (Sage) | **107 grün · 0 rot · 0 nicht lauffähig** |
+| `docs/einladung/_smoke.mjs` | **24 grün · 0 ROT** |
+| `docs/einladung/_gegenprobe.sh` | **14 gefangen · 0 durchgerutscht · 0 aus falschem Grund · 0 tote Anker** |
+| `node tests/alle.mjs forschung` (Kimhub) | **86 grün · 0 ROT** |
+
+Alle Rückgabewerte **direkt** gelesen, nicht hinter einer Pipe; der Arbeitsbaum
+war vor und nach dem Gegenprobe-Lauf sauber. Kimhub-PR #200, gemergt und auf
+`main` nachgezählt.
+
+⚠ **Die Spanne ist eine Untergrenze und NICHT Klaus' Arbeitszeit.** Beide
+überschneiden sich, sind aber nicht dasselbe. Was vor dem ersten Commit lag —
+Pflichtlektüre, Bestandsaufnahme, das Lesen der Bildschirmfotos — hinterlässt
+keine Spur und ist nicht enthalten. Das steht so auch im Eintrag selbst.
