@@ -31,6 +31,151 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-18 · Der Rand rechts war die Rollbalken-Rinne — und die Verläufe bekommen Korn
+
+**Klaus:** *„Man sieht aber auf der rechten Seite immer einen Rand bei
+Vollbildansicht … Die Bewegung soll bleiben, es soll nichts verändert werden.
+Höchstens die Größe über den Bildschirmrand hinausgehen."* Und: *„bei einigen
+Bildern die Farbverläufe … sind sehr deutlich als Vektor zu sehen … nicht
+flüssig."*
+
+### Der Streifen ist gemessen, nicht geraten
+
+Neun Bildschirmfotos (2560x1440), je die größte Stelle rechts, an der noch
+Inhalt steht:
+
+| | Kante | Streifen |
+|---|---|---|
+| sieben von neun Aufnahmen | **2526** von 2560 | **33 Geräte-Pixel** |
+| zwei Aufnahmen | 2559 | 0 (dort reicht eine helle Stelle bis an den Rand) |
+
+Der Übergang ist eine **harte Stufe**, kein Verlauf: `… 29 · 24 · 4 · 4 · 4 …`.
+Drei Sachen sagen zusammen, was der Streifen ist:
+
+- er ist in zwei Aufnahmen mit **verschiedenem Inhalt und verschiedener
+  Scroll-Lage** Wert für Wert derselbe;
+- seine Helligkeit ist **nicht flach, sondern in der Mitte am höchsten**
+  (1·3·2·3 … 4·4·4 … 3·2) — ein senkrechter Verlauf;
+- genau diesen Verlauf hat das fest stehende `#stage-canvas`, das als einziges
+  `100vw` breit ist und deshalb bis an den Fensterrand reicht.
+
+**Der Streifen ist die Rinne des Rollbalkens, und was darin steht, ist das
+Canvas.** Die Sektionen werden in `clientWidth` gelegt — ohne die Rinne. Das
+Foto hört auf, der Verlauf des Canvas läuft weiter: die Kante.
+
+⚠ **DIE WERKZEUGLEISTE DES BROWSERS REICHT BIS GANZ RECHTS** (gemessen bei
+y=10…160: bis x=2558 gleichmäßig). Der Streifen beginnt erst im Seiten-Bereich.
+Damit ist ein Fensterrand oder der Schreibtisch dahinter ausgeschlossen.
+
+⚠ **UND EINE ZWISCHENMESSUNG WAR FALSCH.** Ein erster Lauf meldete die Kante
+bei 94,8 % (133 px). Das war die **Vignette**, die zum Rand hin dunkler wird —
+mein Kanten-Sucher nahm „weicht um mehr als 2 ab" und schlug im Verlauf an. Erst
+die Suche nach der harten Stufe gab die Zahl, die in allen Aufnahmen gleich ist.
+*Ein Schwellwert, der auf einen Verlauf trifft, misst den Verlauf.*
+
+### ⚠ EINE ABSOLUT GESETZTE SCHICHT KANN DIE RINNE NICHT FÜLLEN
+
+Sie wird am Rand des Scroll-Bereichs abgeschnitten; nur fest stehende Schichten
+werden dort gezeichnet — deshalb sieht man dort das Canvas und nicht das Foto.
+Die Rinne breiter zu überdecken hilft also **nicht**. Sie muss weg:
+
+```css
+html { scrollbar-width: none; }             /* Firefox + Chrome ab 121 */
+html::-webkit-scrollbar { width: 0; height: 0; }
+```
+
+⚠ **WAS ES KOSTET, und es wird nicht verschwiegen:** mit der Rinne geht die
+Anzeige, wie weit man auf acht Bildschirmlängen gekommen ist. Gescrollt wird
+weiter mit Rad, Finger, Tastatur und Trackpad. Ein eigener schmaler
+Fortschritts-Strich am Rand wäre der Ersatz — **nicht gebaut**, weil Klaus
+ausdrücklich gesagt hat, es solle sich sonst nichts ändern.
+
+Zweiter Riegel für Browser, die die Rinne trotzdem stehen lassen: jede
+Voll-Schicht wird um genau diese Rinne verlängert
+(`right: min(0px, calc(100% - 100vw))`), die Tür-Bühne über ihre Breite
+(`width: max(100%, 100vw)`), weil `right` an einem sticky-Kasten nicht greift.
+
+### Die Kamerafahrten standen auf 0,22 % Überhang
+
+Aus den Keyframes gerechnet, nicht aus dem Bild geraten:
+
+| Fahrt | knappster Überhang vorher | nachher |
+|---|---|---|
+| `scene1-camera` | **0,22 %** (rechts) | **3,01 %** |
+| `scene5-breath` | **0,22 %** (links) | **3,01 %** |
+| `scene6-drift` | **1,15 %** (unten) | **3,01 %** |
+
+0,22 % sind bei 2560 px **5,6 Pixel** — davon legt Teilpixel-Rundung einen
+Haarstrich frei. Die Fahrten sind unverändert: gleiche Richtung, gleiche Dauer,
+gleiche Kurve, nur um 0,04–0,06 vergrößert. Genau das, was Klaus erlaubt hat.
+
+### Die Stufen in den Verläufen
+
+Ein Bildschirm kennt je Kanal 256 Werte; eine lange, sehr dunkle Rampe über
+12vh hat auf 200 Pixeln vielleicht acht davon — und jeder Sprung ist eine
+Kante. Zwei Griffe, und sie wirken an verschiedenen Stellen:
+
+- die **Rampe** der Sektion-Übergänge ist ausgerollt: 12 Stützstellen statt 2,
+  unten dicht, oben weit. Das hilft **nur** den CSS-Verläufen dieser Seite.
+- ein feines **Korn** über allem (`.korn`, SVG-Rauschen als Daten-Adresse,
+  5,5 % über `mix-blend-mode: overlay`). Das hilft **auch** in den Fotos
+  selbst, deren Verläufe hier niemand ändern kann.
+
+⚠ **BENANNTE GRENZE:** dass die Stufen auf Klaus' Schirm wirklich verschwinden,
+ist **nicht gemessen** — Banding hängt an der Farbtiefe des Geräts. Gemessen
+ist, dass das Korn da ist, obenauf liegt, mischt, Rauschen trägt und keine
+Klicks abfängt.
+
+### Klaus' zweiter Befund: „die Container sind nicht mittig"
+
+**Gemessen bei vier Fensterbreiten — `.inner` ist an jeder exakt mittig**
+(Mitte des Kastens = Mitte des Fensters, auf den Pixel). Links steht die
+**Textspalte**, und das ist die Drei-Spalten-Anlage von Sektion 4
+(`Marginalie 0,8fr | Text 2,2fr | Sternenfeld 1,4fr`):
+
+| Fenster | Textspalte | Fenstermitte | Versatz |
+|---|---|---|---|
+| 1440 | 384…912 (Mitte 648) | 720 | 72 px links |
+| 1969 | 649…1177 (Mitte 913) | 985 | 72 px links |
+
+Dazu: `align-items: start` lässt das Sternenfeld (336 px hoch) oben stehen,
+während die Textspalte 528 px lang ist — **die untere Hälfte der rechten
+Spalte ist leer**. Genau die Stelle, die Klaus fotografiert hat.
+
+**Nichts daran ist kaputt, und deshalb ist nichts daran geändert.** Der
+Vorschlag steht in der Chat-Antwort: das Sternenfeld `position: sticky`
+mitlaufen lassen, dann ist die rechte Spalte nie leer. Das ist eine Änderung
+an der Komposition — die entscheidet Klaus, nicht die Sitzung.
+
+### Geprüft
+
+```bash
+PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node docs/einladung/_smoke.mjs
+bash docs/einladung/_gegenprobe.sh
+```
+
+Zuletzt gemessen (2026-09-18): **20 grün · 0 ROT** · Gegenprobe **10 gefangen ·
+0 durchgerutscht · 0 aus falschem Grund · 0 tote Anker**. Beide Rückgabewerte
+**direkt** gelesen, nicht hinter einer Pipe.
+
+⚠ **Die Zahlen davor bleiben daneben stehen, weil sie die Funde gemacht
+haben:** der erste Gegenprobe-Lauf meldete **9 gefangen · 1 toter Anker** —
+`right: min(0px, calc(100% - 100vw))` steht **zweimal** (Voll-Schicht-Regel und
+`.korn`), der Anker traf also nicht eindeutig. Und er meldete dabei
+**Rückgabewert 0**: das `trap … EXIT` gibt den Wert von `rm -rf` zurück, und
+der ist immer 0. *Eine Gegenprobe, die ihren eigenen Rückgabewert überschreibt,
+meldet Erfolg über sich selbst.* Beides berichtigt.
+
+⚠ **UND ZWEI EIGENE WÄCHTER WAREN BLIND.** `keineRinne` misst in dieser
+Umgebung **nichts** — headless Chromium hat Überlagerungs-Rollbalken, die Rinne
+ist dort immer 0, mit und ohne Regel. Daneben steht jetzt `rinneAbgestellt`,
+das die Regel selbst misst und umfallen kann. Und `vollbildFest` (`.vignette`,
+`.korn`) war trivial grün: ihr umgebender Kasten IST das Fenster, die gestellte
+Rinne erreicht sie nicht. Er ist raus und steht als **benannte Grenze** da,
+statt als grüner Haken.
+
+---
+
 ## 2026-09-17 · Das gelbe Band lag über der Knopfleiste — jetzt ist es eine Pille
 
 **Klaus mit Bild aus der eingebetteten Demo-Seite:** *„nur das große
@@ -429,193 +574,19 @@ Klaus' Sichttest; danach nennt er das Thema der nächsten Sitzung.
 
 ---
 
-## 2026-09-16 · Die Spur bleibt am Rezept — und die Kennung überlebt das Umbenennen
+## Zwei Sitzungen vom 2026-09-16 (Herkunft + Briefkasten) — ausgelagert am 2026-09-18
 
-**Sitzungs-Rolle:** Hauptsitzung (Fortsetzung). **Repos:** Mein-Rezeptbuch,
-Muttis-Rezeptbuch, Mein-Mixarium.
+> Diese zwei Einträge standen bis zum 2026-09-18 hier in voller Länge (188 Zeilen).
+> Die Datei stand bei 3.117 von 3.000; **ausgelagert, nicht gekürzt** — der Wortlaut
+> steht vollständig in [`sessions/archiv/2026-09-16_puls-eintraege-zwei-sitzungen.md`](sessions/archiv/2026-09-16_puls-eintraege-zwei-sitzungen.md).
 
-**Klaus' Bitte:** *„das Rezept Export, dass es die Spuren trägt. Denn wenn ich es
-wieder einfüge, soll die Spur mit drin bleiben."* — und sein eigener Einwand
-unmittelbar danach: *„wenn wir das hinzufügen machen, dann haben wir zwei Spuren
-drin … das könnte einen Konflikt geben."*
-
-### Der Einwand war richtig, und er löst sich an einer Unterscheidung auf
-
-| | was es ist | wie viele |
-|---|---|---|
-| **die Spore** | *wer bin ich* — die Identität der App in diesem Browser | **genau eine** je App, kommt **nie** aus einer Datei |
-| **die Herkunft** | *woher kommt dieses Rezept* | eine je Rezept, wird nur **angehängt** |
-
-Ein Rezept trägt deshalb keine Spore, sondern einen Vermerk (`r.herkunft`).
-Hundert Rezepte dürfen hundert Herkünfte tragen — das ist Auskunft, keine
-Kollision. Eine Import-Datei ist `untrusted external data`; sie darf nie ändern,
-**wer diese App ist**.
-
-### Und die eigentliche Ursache lag woanders als vermutet
-
-Klaus' doppelte Rezepte kamen nicht von der fehlenden Spur, sondern aus dem
-Import: er **warf die mitgebrachte Nummer weg** und verglich am **Namen**.
-
-| | vorher | jetzt |
-|---|---|---|
-| ein Rezept umbenannt, alte Datei importiert | kam als **zweites** dazu | an `r.uid` erkannt — **kein Doppel** |
-| zwei verschiedene Rezepte, gleicher Name | das zweite verschwand **still** | beide landen |
-| Datei ohne `uid` (alles vor v10) | — | geht weiter den alten Namens-Weg |
-
-`r.id` bleibt die lokale Nummer, `r.uid` ist die Identität des Rezepts. Zwei
-Dinge, zwei Felder. Die Kette `r.herkunft` ist auf **5** Stationen gedeckelt
-(`HERK_MAX`), ohne Wiederholung direkt hintereinander, mit `herkGekuerzt: true`
-wo gekürzt wurde; trifft dasselbe Rezept auf zwei Wegen ein, gewinnt die längere
-Kette.
-
-⚠ **NUR DIE KENNUNG, NIE EIN GERÄTENAME.** Ein Gerätename ist ein Hinweis auf
-eine **Person** und wandert mit jedem Rezept zu Fremden. NETZWEIT § 2, an einer
-neuen Tür.
-
-### ⚠ Der Befund, der eine halbe Reparatur war
-
-Es gibt **zwei** Import-Wege: `importData(e)` nennt seine Liste `imported`, der
-Tresor-Weg `importJsonFromVault(input)` nennt sie `recs`. Meine Bestandsaufnahme
-suchte nach der ersten Form — **in Mein Rezeptbuch war damit eine halbe
-Reparatur gemergt**, der Tresor-Weg verglich weiter am Namen, und genau dort
-liegen Klaus' Sicherungen. Aufgefallen beim Nachziehen nach Muttis Rezeptbuch,
-wo `existingNames` **zweimal** stand.
-
-*„0 Treffer" ist erst dann eine Aussage, wenn man belegt hat, dass man überall
-hineingesehen hat.* Repariert an der Ursache: das Zusammenführen steht jetzt an
-**einer** Stelle (`_zusammenfuehren`), beide Wege gehen hindurch, und ein Wächter
-besteht darauf, dass der Dubletten-Riegel **genau einmal** im Code steht.
-
-### ⚠ Und derselbe geerbte Riegel log in Mixarium über sich selbst
-
-Die nach Mixarium kopierte Gegenprobe prüfte ihre Ausgangslage mit
-`grep -q "0 ROT"` — und **„10 ROT" enthält „0 ROT"**. Genau der Fehler, der in
-Mixariums eigener `CLAUDE.md` schon einmal steht, nur eine Datei weiter.
-**Eine Lehre, die nur in der Doku steht, wandert beim Kopieren nicht mit.**
-
-### Gemessen
-
-| App | Probe | Gegenprobe | Bestands-Probe |
-|---|---|---|---|
-| Mein-Rezeptbuch | **37 grün · 0 ROT** | 12 · 0 · 0 · 0 | `smoke_kategorien` 145 grün |
-| Muttis-Rezeptbuch | **37 grün · 0 ROT** | 12 · 0 · 0 · 0 | `smoke_kategorien` 141 grün |
-| Mein-Mixarium | **37 grün · 0 ROT** | 12 · 0 · 0 · 0 | `smoke_kategorien` 150 grün |
-
-Alle Rückgabewerte **direkt** gelesen, nicht hinter einer Pipe. In Mixarium
-zusätzlich `md5sum` von `index.html` und QC-Datei vor und nach dem Lauf gleich
-(`a9ed2fd5…`); der Baum war nach jeder Gegenprobe sauber. Gemergt und **auf
-`main` nachgezählt**, nicht der Merge-Meldung geglaubt.
-
-### Was offen ist
-
-**Klaus' Browser-Sichttest an allen drei Apps** — er läuft nach dem Merge auf
-der Live-Seite und ist nicht ersetzbar.
-
-Vier Funde dieser Sitzung gehören **nicht** zu ihrem Auftrag und sind deshalb
-nicht verfolgt, sondern eingereiht: Privat-Brains abbrechendes `npm test` ·
-BookLedgerPros ungeklärte −0,001525 · Rezeptbuch und Mixarium, die Sage noch als
-`verified-spore` führen · family-projects flatterndes `smoke_hintergrund`. Sie
-stehen ab heute in **[`docs/PFLEGE-LISTE.md`](PFLEGE-LISTE.md)**.
-
-⚠ **Die Datei ist neu, und ihr Anlass gehört dazu.** Klaus: *„du findest immer
-wieder neue Punkte, das sollten wir dann angehen in einer Pflegesitzung. Merk
-dir die Punkte, schreib sie auf."* Die Tafel „mitziehen heißt nicht abbrechen"
-stand längst da — es fehlte der **Ort**, an dem eingereiht wird. Bis heute
-landete ein solcher Fund im Übergabeprotokoll der Sitzung, die ihn gemacht hat,
-also dort, wo ihn nur findet, wer schon davon weiß.
-
-### Nächster sinnvoller Schritt
-
-Das Thema der nächsten Sitzung nennt Klaus selbst; die groben Arbeiten an
-Mixarium, beiden Rezeptbüchern, Siegel und Mycel sind mit dieser Sitzung
-abgeschlossen.
-
----
-
-## 2026-09-16 · Vierzig Stände ungelesen — und keine einzige offene Bitte darin
-
-**Klaus:** *„dann mach jetzt den Briefkasten"*. Sieben Gegenstellen hingen mit ihren
-Quittungen zurück, die älteste Schlagzeile stammte aus dem Juli.
-
-| Gegenstelle | ihr `seq` | Sages `ack` | ungelesen |
-|---|---|---|---|
-| SB-KIMTool-Point | 36 | 24 | **12** |
-| Mein-Rezeptbuch | 13 | 5 | 8 |
-| Mein-Mixarium | 14 | 6 | 8 |
-| BookLedgerPro | 23 | 18 | 5 |
-| Family Projekt | 7 | 2 | 5 |
-| Jasons-Tresor | 14 | 11 | 3 |
-| Mein-Tresor | 17 | 14 | 3 |
-| | | | **40** |
-
-### Der Befund: die Post war alt, aber sie war nicht unerledigt
-
-Vierzig Stände, und darin **drei** ausdrückliche Bitten an Sage. Alle drei waren bereits
-erfüllt — zwei davon, ohne dass jemand etwas getan hätte:
-
-| Bitte | Stand |
+| Sitzung | Wortlaut |
 |---|---|
-| Rezeptbuch (15.07.): „Inbox auf `MT1I-y89…` aktualisieren" | **überholt** — Sage führt `r-k1NyHe…`, die nodeId aus deren **eigenem** `main` |
-| Mixarium (15.07.): „führt uns unter `dJ7H5Bpj…`" | **überholt** — Sage führt `6U3aniLM…`, ebenso |
-| Family Projekt (27.06.): „schickt die Quittung zurück" | **lag seit dem 27.06. in unserem Postfach**; deren `ack[Sage]=43` belegt, dass sie gelesen wurde |
-
-⚠ **DIE NEU-SIGNIER-WELLE HAT DIE BITTEN EINGEHOLT, DREI TAGE NACHDEM SIE GESCHRIEBEN
-WURDEN.** Beide Knoten haben am 18.–20.07. erneut signiert und dabei wieder eine andere
-nodeId bekommen. Eine Bitte, die man am 15.07. gelesen und befolgt hätte, wäre am 20.07.
-falsch gewesen. **Gegengeprüft, nicht angenommen:** für alle sieben Gegenstellen wurde die
-Live-nodeId aus deren `origin/main:sbkim/spore.json` gegen Sages `status.json` gehalten —
-**siebenmal von sieben identisch.**
-
-### Was wirklich offen war, war eine Zahl
-
-Zwei Gegenstellen haben Sage im Juli auf `verified-spore` **herabgestuft** und dabei richtig
-gerechnet: Rezeptbuch `0.792393`, Mixarium `0.766963` — beide unter 0.80, gemessen gegen die
-damaligen Sporen. Gegen die **heute** committeten Sporen beider Seiten (384-dim, L2 = 1.000000,
-Skalarprodukt, Modul 04):
-
-| Gegenstelle | cos heute | Register-Spalte | Δ |
-|---|---|---|---|
-| SB-KIMTool-Point | 0.893026 | 0.893026 | ±0.000000 |
-| Mein-Mixarium | **0.883142** | 0.817718 | **+0.065424** |
-| Mein-Rezeptbuch | 0.874048 | 0.874048 | ±0.000000 |
-| Jasons-Tresor | 0.872405 | 0.872405 | ±0.000000 |
-| Mein-Tresor | 0.866101 | 0.866101 | ±0.000000 |
-| BookLedgerPro | 0.853980 | 0.855505 | −0.001525 |
-| Family Projekt | 0.842038 | 0.842038 | ±0.000000 |
-
-**Fünf von sieben treffen die Register-Spalte auf sechs Stellen** — das ist die Gegenprobe
-zur Messung, nicht ein Zufall. **Mixarium ist erklärt:** deren Spore wurde am 2026-09-10
-ersetzt, die Commit-Nachricht nennt den Sprung selbst (0.826040 → 0.883142); 0.817718 ist
-überholt, nicht falsch gewesen.
-
-⚠ **BOOKLEDGERPROS −0.001525 IST NICHT ERKLÄRT.** Deren Spore ist seit dem 2026-06-21
-unverändert; ob Sages eigener Vektor sich am 2026-09-10 bewegt hat, war **nicht zu belegen —
-der Klon ist flach**, der Vorgänger-Stand liegt hinter der Abschneide-Grenze. Beide Zahlen
-stehen deshalb nebeneinander im NETZ-STAND. *Eine geratene Ursache klingt genau wie eine
-gemessene.*
-
-### Was getan wurde
-
-- **`ack` nachgezogen** für alle sieben (24→36 · 11→14 · 14→17 · 5→13 · 6→14 · 18→23 · 2→7).
-- **Quittung in jedes der sieben eigenen Postfächer** — mit Inhalt, Folge und dem gemessenen
-  Cosinus, und mit dem Satz, dass die Post bei uns lag. Bei Rezeptbuch und Mixarium steht die
-  **Bitte um reziproke Neu-Einstufung** dabei.
-- **NETZ-STAND.md** trägt den Befund samt Gegenprobe und der benannten Grenze.
-- `sbkim/SIGNAL.json` seq 89 → **90**.
-
-### Was offen bleibt
-
-- **Der Netz-Stand ist an zwei Stellen asymmetrisch:** Rezeptbuch und Mixarium führen Sage
-  weiter auf `verified-spore`. Die Rechnung ist symmetrisch, bei ihnen muss dasselbe
-  herauskommen — **entschieden wird das dort, nicht hier.**
-- **Sages eigene `ack` bei den Gegenstellen hängen ihrerseits zurück** (sie quittieren Sage bei
-  seq 18–46, Sage steht bei 90). Das ist deren Seite; die Quittung liegt bereit.
-- BookLedgerPros Abweichung — auflösbar mit `git fetch --unshallow`.
-
-**Nächster sinnvoller Schritt:** Private Brain zweisprachig (Klaus' Entscheidung vom selben
-Tag), danach der Rezept-Export mit Spore.
+| 2026-09-16 — 🧬 Die Spur bleibt am Rezept, und die Kennung überlebt das Umbenennen | [→ Archiv](sessions/archiv/2026-09-16_puls-eintraege-zwei-sitzungen.md) |
+| 2026-09-16 — 📬 Vierzig Stände ungelesen, und keine einzige offene Bitte darin | [→ Archiv](sessions/archiv/2026-09-16_puls-eintraege-zwei-sitzungen.md) |
 
 ---
+
 
 ## Eine Sitzung vom 2026-09-16 (Wächter ohne Zutun) — ausgelagert am 2026-09-17
 

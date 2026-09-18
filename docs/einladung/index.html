@@ -63,6 +63,39 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--bg-deep); color: var(--ink-pri); }
 html { scroll-behavior: smooth; }
+
+/* === KEIN HARTER RAND RECHTS (Klaus 2026-09-18) =============================
+   GEMESSEN an Klaus' Bildschirmfotos (2560x1440): am rechten Rand stand über
+   die ganze Höhe des Seiten-Bereichs — nicht über der Werkzeugleiste, die
+   reicht bis ganz nach rechts — ein Streifen von 33 Geräte-Pixeln. Gemessen
+   an neun Aufnahmen: sieben zeigen die Kante bei x=2526 von 2560, zwei bei
+   2559 (dort reicht eine helle Stelle bis an den Rand).
+
+   Drei Sachen an diesem Streifen, und erst zusammen sagen sie, was er ist:
+   · er ist in zwei Aufnahmen mit VERSCHIEDENEM Inhalt und verschiedener
+     Scroll-Lage Wert für Wert derselbe;
+   · seine Helligkeit ist nicht flach, sondern in der Mitte am höchsten
+     (1·3·2·3 … 4·4·4 … 3·2) — ein senkrechter Verlauf;
+   · genau diesen Verlauf hat das fest stehende `#stage-canvas`, das als
+     einziges `100vw` breit ist und deshalb bis an den Fensterrand reicht.
+
+   Der Streifen ist also die Rinne des Rollbalkens, und was darin steht, ist
+   das Canvas. Die Sektionen werden in `clientWidth` gelegt — ohne die Rinne.
+   Das Foto hört auf, der Verlauf des Canvas läuft weiter: die Kante.
+
+   ⚠ EINE ABSOLUT GESETZTE SCHICHT KANN DIE RINNE NICHT FÜLLEN. Sie wird am
+   Rand des Scroll-Bereichs abgeschnitten; nur fest stehende Schichten (das
+   Canvas) werden dort gezeichnet. Die Rinne breiter zu überdecken hilft
+   deshalb nicht — sie muss WEG. Das ist der Griff unten.
+
+   ⚠ WAS ES KOSTET, und es wird nicht verschwiegen: mit der Rinne geht die
+   Anzeige, wie weit man auf acht Bildschirmlängen gekommen ist. Gescrollt
+   wird weiter mit Rad, Finger, Tastatur und Trackpad. */
+html {
+  color-scheme: dark;
+  scrollbar-width: none;                       /* Firefox + Chrome ab 121 */
+}
+html::-webkit-scrollbar { width: 0; height: 0; }   /* ältere Chrome + Safari */
 body {
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
@@ -117,14 +150,66 @@ section.scene {
 }
 .scene-fade-top {
   top: 0;
-  background: linear-gradient(to bottom, var(--bg-deep) 0%, transparent 100%);
+  background: linear-gradient(to bottom, var(--rampe-ab));
 }
 .scene-fade-bot {
   bottom: 0;
-  background: linear-gradient(to top, var(--bg-deep) 0%, transparent 100%);
+  background: linear-gradient(to top, var(--rampe-ab));
 }
 
 .inner { max-width: 72rem; margin: 0 auto; width: 100%; }
+
+
+/* === WEICHE VERLÄUFE STATT STUFEN (Klaus 2026-09-18) =======================
+   Klaus' Befund: „die Farbverläufe sind sehr deutlich als Vektor zu sehen …
+   nicht flüssig." Das sind Stufen (Banding). Sie entstehen, weil ein
+   Bildschirm je Kanal nur 256 Werte kennt: eine lange, sehr dunkle Rampe
+   über 12vh hat auf 200 Pixeln vielleicht acht verschiedene Werte — und
+   jeder Sprung wird als Kante sichtbar.
+
+   ZWEI Griffe, und sie wirken an verschiedenen Stellen:
+   1. die RAMPE wird ausgerollt (unten viele Stützstellen, oben wenige).
+      Eine gerade Rampe verteilt ihre Stufen gleichmäßig; das Auge sieht
+      sie am dunklen Ende am deutlichsten. Das hilft NUR bei den
+      CSS-Verläufen dieser Seite.
+   2. ein feines KORN über allem (`.korn`). Es bricht die Stufen auf, indem
+      es benachbarte Werte leicht durchmischt — dasselbe, was ein Drucker
+      mit Raster tut. Das hilft AUCH in den Fotos selbst, deren Verläufe
+      niemand hier ändern kann. */
+:root {
+  --rampe-ab:
+    rgba(6, 8, 10, 1.000)  0%,
+    rgba(6, 8, 10, 0.965)  8%,
+    rgba(6, 8, 10, 0.900) 17%,
+    rgba(6, 8, 10, 0.805) 27%,
+    rgba(6, 8, 10, 0.690) 37%,
+    rgba(6, 8, 10, 0.560) 48%,
+    rgba(6, 8, 10, 0.425) 59%,
+    rgba(6, 8, 10, 0.295) 70%,
+    rgba(6, 8, 10, 0.175) 80%,
+    rgba(6, 8, 10, 0.080) 89%,
+    rgba(6, 8, 10, 0.025) 95%,
+    rgba(6, 8, 10, 0.000) 100%;
+}
+
+/* Das Korn liegt über allem und nimmt keine Klicks entgegen. Es ist ein
+   SVG-Rauschen als Daten-Adresse — kein CDN, keine zweite Datei, nichts,
+   was offline fehlen könnte. `overlay` mischt es in beide Richtungen ein:
+   im Dunklen hebt es kaum, im Hellen senkt es kaum — sichtbar wird nur,
+   dass die Stufen verschwinden. */
+.korn {
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  right: min(0px, calc(100% - 100vw));
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23k)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  background-repeat: repeat;
+}
+@media print { .korn { display: none !important; } }
 
 /* === Typografie === */
 .lede, h1, h2, h3 {
@@ -330,9 +415,15 @@ em.gold { color: var(--gold); font-style: normal; }
   animation: scene1-camera 20s ease-in-out infinite alternate;
 }
 @keyframes scene1-camera {
-  /* Kamerafahrt von LINKS zur Mitte, dann sanftes Heranzoomen. */
-  0%   { transform: scale(1.08) translate(-3.5%, 0.5%); }
-  100% { transform: scale(1.04) translate(0, 0); }
+  /* Kamerafahrt von LINKS zur Mitte, dann sanftes Heranzoomen.
+     ⚠ DER ÜBERHANG WAR RECHNERISCH BEI 0,22 % (Klaus 2026-09-18). Bei
+     `scale(1.08) translate(-3.5%)` steht die rechte Bildkante nur 0,22 %
+     der Breite außerhalb des Kastens — bei 2560 px sind das 5,6 px, und
+     Teilpixel-Rundung legt davon einen Haarstrich frei. Die Fahrt ist
+     unverändert (gleiche Richtung, gleiche Dauer, gleiche Kurve), nur um
+     0,06 vergrößert: der geringste Überhang liegt jetzt bei 3,0 %. */
+  0%   { transform: scale(1.14) translate(-3.5%, 0.5%); }
+  100% { transform: scale(1.10) translate(0, 0); }
 }
 #scene-1::after {
   /* Leichte zusätzliche Vignette auf der linken Hälfte, damit der
@@ -594,9 +685,10 @@ em.gold { color: var(--gold); font-style: normal; }
    Renderer liefern weiter die treibende Bewegungs-Schicht. */
 @keyframes scene5-breath {
   /* Kamerafahrt von RECHTS zur Mitte — gegenläufig zu Sektion 1 für
-     asynchrone Sektion-Wechsel beim Scrollen. */
-  0%   { transform: scale(1.08) translate(3.5%, -0.5%); }
-  100% { transform: scale(1.04) translate(0, 0); }
+     asynchrone Sektion-Wechsel beim Scrollen. Derselbe Überhang-Aufschlag
+     wie bei scene1-camera, hier an der LINKEN Kante (spiegelbildlich). */
+  0%   { transform: scale(1.14) translate(3.5%, -0.5%); }
+  100% { transform: scale(1.10) translate(0, 0); }
 }
 #scene-5 .inner {
   display: grid;
@@ -671,7 +763,10 @@ section.scene-doorway {
 section.scene-doorway .doorway-stage {
   position: sticky;
   top: 0;
-  width: 100%;
+  /* `right` greift an einem sticky-Kasten nicht — hier macht es die Breite.
+     Die Tür-Schicht und der Lichtschein darin hängen an `inset: 0` und
+     kommen dadurch von selbst mit. */
+  width: max(100%, 100vw);
   height: 100vh;
   overflow: hidden;
   /* Lichtungs-Foto als Hintergrund — wenn die Tür in Phase 4 transparent
@@ -731,11 +826,13 @@ section.scene-doorway .scene-fade-bot { display: none; }
 @keyframes scene6-drift {
   /* Kamerafahrt von OBEN zur Mitte + Wind-Sway: die Kamera schwebt von
      oben in die Lichtung herab, mit Wind-Stops für Bewegungs-Vielfalt. */
-  0%   { transform: scale(1.10) translate(0.5%, -3.5%); }
-  25%  { transform: scale(1.08) translate(-0.4%, -2.5%); }
-  50%  { transform: scale(1.06) translate(0.6%, -1.5%); }
-  75%  { transform: scale(1.05) translate(-0.3%, -0.6%); }
-  100% { transform: scale(1.04) translate(0, 0); }
+  /* Geringster Überhang war UNTEN 1,15 % — plus 0,04 auf jeder Stufe
+     hebt ihn auf 3,0 %. Die Wind-Stopps bleiben, wo sie waren. */
+  0%   { transform: scale(1.14) translate(0.5%, -3.5%); }
+  25%  { transform: scale(1.12) translate(-0.4%, -2.5%); }
+  50%  { transform: scale(1.10) translate(0.6%, -1.5%); }
+  75%  { transform: scale(1.09) translate(-0.3%, -0.6%); }
+  100% { transform: scale(1.08) translate(0, 0); }
 }
 /* Klaus' Befund 2026-05-28: keine Vignette mehr — Wald komplett
    sichtbar. Lesbarkeit kommt jetzt über text-stroke + text-shadow
@@ -887,6 +984,27 @@ footer.foot h4 {
   #scene-5 .key-host { aspect-ratio: 5/4; max-height: 50vh; margin: 0 auto; max-width: 36rem; }
 }
 
+/* Zweiter Riegel, falls ein Browser die Rinne trotz `scrollbar-width: none`
+   stehen lässt: jede Voll-Schicht wird um genau diese Rinne nach rechts
+   verlängert. `100%` ist die Breite des umgebenden Kastens (= clientWidth),
+   `100vw` die des Fensters (= clientWidth + Rinne); die Differenz IST die
+   Rinne. `min(0px, …)` ist die Sicherung — gibt es keine Rinne, ist der Wert
+   0 und nichts verschiebt sich. Die Kamerafahrten bleiben unberührt; nur der
+   Kasten, in dem sie laufen, endet nicht mehr vor dem Fensterrand.
+
+   ⚠ BENANNTE GRENZE: bei einer WIRKLICH stehenden Rinne greift das nur für
+   die fest stehenden Schichten (`.vignette`, `.korn`). Eine absolut gesetzte
+   Schicht wird am Rand des Scroll-Bereichs abgeschnitten und zeichnet dort
+   nicht. Der Griff, auf den es ankommt, ist die entfernte Rinne oben. */
+.vignette, .korn,
+#scene-1::before, #scene-1::after,
+#scene-4 .paper-bg,
+#scene-5::before, #scene-5::after,
+#scene-6::before,
+.scene-fade-top, .scene-fade-bot {
+  right: min(0px, calc(100% - 100vw));
+}
+
 /* === Reduced-Motion: ruhige Fallback-Variante. === */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -899,6 +1017,7 @@ footer.foot h4 {
 
 <canvas id="stage-canvas" aria-hidden="true"></canvas>
 <div class="vignette" aria-hidden="true"></div>
+<div class="korn" aria-hidden="true"></div>
 
 <!-- === Sprachenwahl === -->
 <nav class="lang-switch" aria-label="Sprache wählen">
