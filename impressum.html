@@ -136,7 +136,13 @@ nicht ins Mycel und nicht an Dritte übermittelt.</p>
 <p><strong>7. Embedding-Modell</strong><br>
 Für die semantische Match-Funktion wird ein Embedding-Modell beim ersten Gebrauch vom
 CDN (jsDelivr / Hugging Face) in den Browser geladen und läuft anschließend lokal. Beim
-Laden gelten die Datenschutzbestimmungen des jeweiligen CDN-Anbieters.</p>
+Laden gelten die Datenschutzbestimmungen des jeweiligen CDN-Anbieters.<br>
+Die Vorführ-Seiten unter <code>sbkim-demo/</code> (Demo, Knoten, Register, Netz) laden
+beim Aufruf Programmbibliotheken (PeerJS, QR-Code, QR-Leser) von <strong>cdnjs</strong>
+(Cloudflare, Inc.) und vermitteln die direkte Verbindung zwischen zwei Geräten über den
+öffentlichen <strong>PeerJS-Vermittlungsserver</strong> (<code>0.peerjs.com</code>). Dabei
+werden die technisch nötigen Verbindungsdaten (z. B. IP-Adresse) an diese Anbieter
+übertragen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Betrieb der Vorführung).</p>
 <p><strong>8. Speicherdauer</strong><br>
 Da keine zentrale Speicherung erfolgt, bestimmt der Nutzer selbst die Speicherdauer
 seiner Daten auf seinem Gerät (Löschen über die App- bzw. Browser-Funktionen).</p>
@@ -216,7 +222,13 @@ third parties.</p>
 <p><strong>7. Embedding model</strong><br>
 For the semantic match function, an embedding model is loaded into the browser from a CDN
 (jsDelivr / Hugging Face) on first use and then runs locally. The CDN provider's privacy
-terms apply during loading.</p>
+terms apply during loading.<br>
+The demo pages under <code>sbkim-demo/</code> (demo, node, register, network) load program
+libraries (PeerJS, QR code, QR reader) from <strong>cdnjs</strong> (Cloudflare, Inc.) when
+opened and broker the direct connection between two devices via the public
+<strong>PeerJS signalling server</strong> (<code>0.peerjs.com</code>). The connection data
+technically required (e.g. IP address) is transmitted to these providers. Legal basis is
+Art. 6(1)(f) GDPR (operating the demonstration).</p>
 <p><strong>8. Retention</strong><br>
 As there is no central storage, the user determines the retention of their data on their
 own device.</p>
