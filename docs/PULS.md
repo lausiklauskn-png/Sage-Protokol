@@ -31,6 +31,28 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-09-28 · Sechs Wartepunkte, die nie gewartet haben (`vorrat_wirkung.mjs`)
+
+**Rolle:** Pflege-Sitzung (Brief aus Kimhub, Stand `7aa6af6`).
+
+**Getan.** `waitForFunction` wertet das Ergebnis der Bedingung aus, und ein
+Promise ist immer wahr (gemessen: `async () => false` 100 ms,
+`() => Promise.resolve(false)` 6 ms). In `tests/vorrat_wirkung.mjs` standen
+**sechs** solche Stellen — vier `async`, zwei `.then` (der Brief nannte vier).
+Ersetzt durch `warteBis()` (fragt per `evaluate` in Abständen). Neue
+Familien-Probe `tests/smoke_warten_async.mjs` (12 Zusicherungen) + Gegenprobe
+`tests/gegenprobe_warten_async.mjs` (**7 gefangen · 0 durchgerutscht · 0 aus
+falschem Grund · 0 tote Anker**). `LEHREN.md` § 6: fünfte Art.
+
+**Gemessen:** die alte Probe war 3/3 grün und unter Last 4/4 — der Vorrat
+stand jedes Mal schon da, wenn der Worker steuerte (55–88 ms). Die Wartepunkte
+waren blind **und** überflüssig. Neue Fassung 3/3 grün. `run_alle.mjs`:
+**109 grün · 0 rot · 0 nicht lauffähig.** Netzweit auf `origin/main` von 17
+Depots gesucht: diese sechs waren die einzigen.
+
+**Offen:** `vorrat_wirkung.mjs` steht in keinem Läufer (`PFLEGE-LISTE.md` § 11).
+`laufReparaturB` wartet weiter fest 1500 ms (Sorte B, gewollt — nicht angefasst).
+
 ## 2026-09-18 · Der Rand rechts war die Rollbalken-Rinne — und die Verläufe bekommen Korn
 
 **Klaus:** *„Man sieht aber auf der rechten Seite immer einen Rand bei
@@ -557,50 +579,12 @@ Brief bauen. `SIGNAL.json` unverändert bei seq 91 — nichts für Gegenstellen.
 
 ---
 
-## 2026-09-17 · Ein Brief, der nicht auf einen Chat-Anhang zeigt
+## Eine Sitzung vom 2026-09-17 (Brief ohne Chat-Anhang) — ausgelagert am 2026-09-28
 
-**Rolle:** Hauptsitzung (Nachtrag zum Abschluss vom 16.09.).
-
-**Was getan.** Klaus hat die nächste Aufgabe benannt: die fertige Schulungs-Unterlage
-zum **EU AI Act, Artikel 4** auf **PWA Toolpoint** und **family-projekt.de**
-veröffentlichen, auf beiden Seiten hinter dem Auslieferungsprüfer. Dazu entstanden:
-
-- `docs/schulung/EU_AI_Act_Art4_KI_Schulung.html` — die Unterlage, byte-gleich wie
-  geschickt (`md5 cc9f4b2b7a7d0b6f3f69130cd7c7f795`, 190 Zeilen, 31 480 Bytes).
-- `docs/schulung/README.md` — was daran gemessen ist.
-- `docs/sessions/BRIEF_KI_SCHULUNG_AI_ACT.md` — der Brief für die nächste Sitzung.
-
-⚠ **Sie lag NICHT im Depot, obwohl sie dort vermutet wurde.** Klaus: *„Die Dokumente
-sind auf Sage-Protokoll, glaube ich zumindest."* Gesucht wurde nach Dateinamen und im
-Volltext — kein Treffer; die Datei kam aus dem Chat. Ein Brief, der auf einen
-Chat-Anhang zeigt, ist beim Öffnen wertlos, deshalb liegt sie jetzt hier.
-
-**Gemessen an der Unterlage** (2026-09-17): keine Laufzeit-Abhängigkeit im Browser
-(kein `<script src>`, kein fremdes Stylesheet) · **zwei** `<a href>` auf amtliche
-EU-Seiten, also bewusste Nutzer-Aktion und kein Nachladen · **kein** Personenbezug
-und kein Geheimnis (gesucht nach Mailadressen, Telefonnummern, `sk-…`, `ghp_…`) ·
-die Felder für Teilnehmer, Unternehmen und Datum stehen leer.
-
-**Der Widerspruch, der nicht stillschweigend aufgelöst wurde.** Klaus' Wort war
-„gleich hinter dem Auslieferungsprüfer". In family-project geht das wörtlich — die
-Karten in `werkzeuge.html` sind von Hand geordnet. In PWA Toolpoint ist die Liste
-seit dem 2026-08-15 eine **Zeitachse nach Erscheinungsdatum**, von `tests/smoke.mjs`
-bewacht; etwas heute Angelegtes landet dort **am Ende**, nicht neben dem Prüfer. Das
-steht als offene Frage 1 im Brief, mit Vorschlag (Zeitachse behalten) statt als
-stille Entscheidung.
-
-**Was offen ist.** Die vier Fragen aus § 8 des Briefes: Reihenfolge auf PWA
-Toolpoint · eine Unterlage oder mehrere · Deutsch allein oder zweisprachig · Name der
-Seite. Keine blockiert den Bau, alle vier ändern das Ergebnis.
-
-**Nächster sinnvoller Schritt.** Den Brief abarbeiten: Seite in beiden Depots
-anlegen, durch den Auslieferungsprüfer schicken (er steht daneben im Regal — zwei
-Funde sind vorhersehbar und harmlos), Klaus die Adresse im Chat hinlegen, **dann**
-den Eintrag ins Regal. Die Reihenfolge ist keine Förmlichkeit: die Sichttest-Regel
-stammt vom Prüfer selbst, der am 2026-08-21 bei 621 grünen Prüfungen ins Regal ging,
-ohne dass Klaus ihn je gesehen hatte.
-
----
+> **↓ Ausgelagert.** Der Eintrag „Ein Brief, der nicht auf einen Chat-Anhang zeigt" steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-09_puls-auslagerung-15.md`](sessions/archiv/2026-09_puls-auslagerung-15.md)
+> (45 Zeilen). Nichts gekürzt — die Schutz-Klausel oben verlangt auslagern
+> statt kürzen, und die Git-Historie trägt es ohnehin.
 
 ## Eine Sitzung vom 2026-09-16 (Einstellungs-Bildschirm) — ausgelagert am 2026-09-18
 
