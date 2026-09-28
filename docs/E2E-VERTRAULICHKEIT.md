@@ -47,7 +47,7 @@ sperrt einen anderen aus.
 | Grad | Was | Draht-Protokoll | Metadaten | Reife |
 |---|---|---|---|---|
 | **A — Klartext + Signatur** | heutiger Stand: Nutzlast lesbar, Ed25519-signiert | `0.1`, unverändert | voll sichtbar | gelebt |
-| **B — Pseudonymisiert + Signatur** | sensible Werte durch Token ersetzt (`[[KUNDE_1]]`, `[[IBAN_1]]`), Anker-Tresor separat/menschlich übergeben | `0.1`, **build-frei**, keine neue Primitive | leaken weiter | sofort möglich |
+| **B — Pseudonymisiert + Signatur** | sensible Werte durch Token ersetzt (`⟦KUNDE-1⟧`, `⟦IBAN-1⟧`; bis 2026-09-28 `[[KUNDE_1]]`), Anker-Tresor separat/menschlich übergeben | `0.1`, **build-frei**, keine neue Primitive | leaken weiter | sofort möglich |
 | **C — Versiegelter Umschlag (sealed box)** | Nutzlast X25519-verschlüsselt für genau einen Empfänger | `0.2` (neues Feld, optional) | geschützt (Nutzlast), Verkehr/Frequenz weiter sichtbar | Entwurf |
 
 ### 1.1 Grad B — Pseudonymisierung (Sofortpfad)
@@ -58,7 +58,7 @@ sperrt einen anderen aus.
 - **Build-frei**, keine neue Primitive, keine Spore-Felder, `protocolVersion`
   bleibt `0.1`.
 - **Briefkasten bleibt vollständig menschlich lesbar/auditierbar** — Token wie
-  `[[KUNDE_1]]`, `[[IBAN_1]]` sind lesbar; Struktur, Herkunft, Signatur bleiben
+  `⟦KUNDE-1⟧`, `⟦IBAN-1⟧` sind lesbar; Struktur, Herkunft, Signatur bleiben
   prüfbar (INTERFACES §11.1 kanonische Signier-Form gilt unverändert).
 - **Schlüssel/Anker-Tresor verlässt den öffentlichen Kanal nie** — separat,
   menschlich übergeben. Verletzt **keine** Regel (insb. nicht die
@@ -71,7 +71,7 @@ Korrelations-Sensibilität braucht es Grad C.
 
 **Umgesetzt 2026-07-16 (B5) — Modul 25 `SbkimPseudonym`:** Grad B ist jetzt als
 build-freier Helfer gebaut (`src/modules/25_pseudonym.js`, Karte
-`docs/components/25_pseudonym.md`, Smoke `tests/smoke_bau25_pseudonym.mjs` 36/36).
+`docs/components/25_pseudonym.md`, Smoke `tests/smoke_bau25_pseudonym.mjs` 36/36; seit 2026-09-28 Generation 2 mit dem Kern des Sende-Prüfers, 52 grün).
 `pseudonymize(text, options)` / `pseudonymizeObject(obj, options)` ersetzen sensible
 Werte (explizite Namen-Liste + eingebaut EMAIL/IBAN, TEL opt-in, eigene
 `customPatterns`) durch stabile Token, `rehydrate`/`rehydrateObject` kehren um;

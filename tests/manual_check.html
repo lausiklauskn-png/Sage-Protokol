@@ -282,10 +282,10 @@
   </script>
 
   <section class="panel" data-module="25_pseudonym">
-    <h2>25 Pseudonymisierung (E2E Grad B) <span class="status ok">Code-Stub 2026-07-16</span></h2>
+    <h2>25 Pseudonymisierung (E2E Grad B) <span class="status ok">Generation 2 · 2026-09-28</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
     <input id="panel-25-text" type="text" placeholder="Text zum Pseudonymisieren (oder Standard-Beispiel nutzen)" style="width:100%;margin:.4rem 0;padding:.4rem;" />
-    <pre class="log">— bereit. Modul 25 (Pseudonymisierung, E2E-Vertraulichkeit Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1). Der empfohlene Sofortweg: sensible Werte werden vor dem Versand durch lesbare Platzhalter-Token ersetzt ([[KUNDE_1]], [[IBAN_1]], [[EMAIL_1]]); der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. BUILD-FREI, keine Krypto, kein Spore-Feld, protocolVersion bleibt 0.1. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Knöpfe (headless-äquivalent): Round-trip (Namen+EMAIL+IBAN), gleicher Wert → gleiches Token, Objekt-Transform (Zahlen bleiben), Live: eigenen Text aus dem Feld oben pseudonymisieren. —</pre>
+    <pre class="log">— bereit. Modul 25 (Pseudonymisierung, E2E-Vertraulichkeit Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1). Der empfohlene Sofortweg: sensible Werte werden vor dem Versand durch lesbare Platzhalter-Token ersetzt (⟦KUNDE-1⟧, ⟦IBAN-1⟧, ⟦MAIL-1⟧) — seit Generation 2 der Kern des Sende-Prüfers: Schlüssel, Mail, Telefon, IBAN mit Prüfziffer, Betrag, Rechnungsnummer, Namen aus einer Liste; der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. BUILD-FREI, keine Krypto, kein Spore-Feld, protocolVersion bleibt 0.1. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Knöpfe (headless-äquivalent): Round-trip (Name+Mail+IBAN+Betrag), gleicher Wert → gleiches Token, Objekt-Transform (Zahlen bleiben), Live: eigenen Text aus dem Feld oben pseudonymisieren. —</pre>
   </section>
 
   <!-- Modul 25 — Pseudonymisierung (Bau-Sitzung 2026-07-16, B5) -->
@@ -293,29 +293,29 @@
   <script>
     (function () {
       var field = function () { return document.getElementById("panel-25-text"); };
-      var BEISPIEL = "Rechnung an Max Mustermann, E-Mail max@example.com, IBAN DE89 3704 0044 0532 0130 00, Betrag 100 EUR.";
+      var BEISPIEL = "Rechnung an Max Mustermann, E-Mail max@example.com, IBAN DE89 3704 0044 0532 0130 00, Betrag 1.248,50 EUR.";
 
-      SbkimUI.addButton("25_pseudonym", "Round-trip (Name + EMAIL + IBAN)", function () {
+      SbkimUI.addButton("25_pseudonym", "Round-trip (Name + Mail + IBAN + Betrag)", function () {
         var r = SbkimPseudonym.pseudonymize(BEISPIEL, { values: [{ value: "Max Mustermann", type: "KUNDE" }] });
         var back = SbkimPseudonym.rehydrate(r.text, r.map);
         var pass = r.text.indexOf("Max Mustermann") === -1 &&
-          r.text.indexOf("[[KUNDE_1]]") !== -1 && r.text.indexOf("[[EMAIL_1]]") !== -1 &&
-          r.text.indexOf("[[IBAN_1]]") !== -1 && back === BEISPIEL;
+          r.text.indexOf("⟦KUNDE-1⟧") !== -1 && r.text.indexOf("⟦MAIL-1⟧") !== -1 &&
+          r.text.indexOf("⟦IBAN-1⟧") !== -1 && r.text.indexOf("⟦BETRAG-1⟧") !== -1 && back === BEISPIEL;
         SbkimUI.setStatus("25_pseudonym", pass ? "ok" : "err", pass ? "Round-trip OK" : "FEHLER");
         return {
           original: BEISPIEL,
           pseudonymisiert: r.text,
           anker_tresor: r.map,
           rehydriert: back,
-          erwartung: "Name/EMAIL/IBAN als Token; Betrag bleibt; rehydrate == Original"
+          erwartung: "Name/Mail/IBAN/Betrag als Platzhalter; rehydrate == Original"
         };
       });
 
       SbkimUI.addButton("25_pseudonym", "Gleicher Wert → gleiches Token", function () {
-        var r = SbkimPseudonym.pseudonymize("a@x.de, b@x.de, a@x.de", { types: ["EMAIL"] });
-        var pass = (r.text.match(/\[\[EMAIL_1\]\]/g) || []).length === 2 && r.text.indexOf("[[EMAIL_2]]") !== -1;
+        var r = SbkimPseudonym.pseudonymize("a@x.de, b@x.de, a@x.de", { types: ["MAIL"] });
+        var pass = (r.text.match(/⟦MAIL-1⟧/g) || []).length === 2 && r.text.indexOf("⟦MAIL-2⟧") !== -1;
         SbkimUI.setStatus("25_pseudonym", pass ? "ok" : "err", pass ? "Stabile Token OK" : "FEHLER");
-        return { text: r.text, tokens: r.tokens, erwartung: "a@x.de zweimal = EMAIL_1, b@x.de = EMAIL_2" };
+        return { text: r.text, tokens: r.tokens, erwartung: "a@x.de zweimal = MAIL-1, b@x.de = MAIL-2" };
       });
 
       SbkimUI.addButton("25_pseudonym", "Objekt-Transform (Zahlen bleiben)", function () {
@@ -334,11 +334,12 @@
         // Namen sind nicht regex-erkennbar → Klaus kann sie als kommagetrennte Liste angeben.
         var namen = window.prompt("Namen (kommagetrennt), die redigiert werden sollen — leer = keine:", "");
         var values = namen ? namen.split(",").map(function (s) { return { value: s.trim(), type: "NAME" }; }).filter(function (v) { return v.value; }) : [];
-        var r = SbkimPseudonym.pseudonymize(txt, { values: values, types: ["EMAIL", "IBAN", "TEL"] });
+        var r = SbkimPseudonym.pseudonymize(txt, { values: values });
         if (f) f.value = r.text;
         SbkimUI.setStatus("25_pseudonym", "ok", r.tokens.length + " Token gesetzt");
         return {
           pseudonymisiert: r.text,
+          fundstellen: r.findings.map(function (x) { return "Zeile " + x.line + ": " + x.type; }),
           anker_tresor_NICHT_versenden: r.map,
           hinweis: "Der Anker-Tresor verlässt den öffentlichen Kanal NIE — separat/menschlich übergeben."
         };
