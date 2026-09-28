@@ -376,10 +376,11 @@ Rückgabewert der Prüfung.
 **Die `package.json` trägt bewusst kein `"type": "module"`** — mit dem Feld fallen zwei
 Proben um. `tests/smoke_package_json.mjs` bewacht das.
 
-**Vier Wege, wie eine Probe stumm wird** — eine feste Wartezeit statt einer Bedingung ·
+**Fünf Wege, wie eine Probe stumm wird** — eine feste Wartezeit statt einer Bedingung ·
 `| tail` verschluckt den Rückgabewert · eine Probe steht gar nicht im Läufer · eine
 Frist, die in **beide** Richtungen lügt (auf etwas Ausbleibendes zu kurz gewartet ergibt
-stilles Grün). **Wer eine Probe schreibt oder repariert:
+stilles Grün) · eine `waitForFunction`-Bedingung, die ein Promise liefert (`async`,
+`.then`) — sie löst sofort auf, bewacht von `tests/smoke_warten_async.mjs`. **Wer eine Probe schreibt oder repariert:
 [`docs/LEHREN.md` § 6](docs/LEHREN.md).**
 
 **Ein Wächter ohne Gegenprobe ist nur ein grüner Haken.** Wer eine Prüfung ergänzt,

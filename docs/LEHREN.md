@@ -531,6 +531,47 @@ bewacht das, samt der exakten Fassungs-Nagelung (kein `^`, sonst prüft nicht
 jeder dasselbe). Die Module selbst bleiben **build-frei**; die Datei ist nur für
 die Tests da.
 
+### ⚠ Und die fünfte: eine Warte-Bedingung, die ein Promise liefert (Befund 2026-09-28)
+
+Playwrights `waitForFunction` wartet, bis die Bedingung etwas **Wahres**
+zurückgibt — und ein Promise ist **immer** wahr. Es wird nicht abgewartet.
+Gemessen am 2026-09-28 mit playwright-core 1.62.1:
+
+| Bedingung | Ergebnis |
+|---|---|
+| `async () => false` | löst nach **100 ms** auf |
+| `() => Promise.resolve(false)` | löst nach **6 ms** auf |
+| `() => false` | scheitert an der Frist — **so ist es richtig** |
+
+Kimhub hat die Falle am selben Tag in `smoke_ansicht.mjs` gefunden (ein
+Flatterer seit dem 2026-09-26). In Sages `tests/vorrat_wirkung.mjs` standen
+**sechs** solche Wartepunkte: vier mit `async`, zwei mit `.then(…)` — die
+zweite Gestalt ist keine async-Funktion und liefert trotzdem ein Promise,
+und Kimhubs erste Familien-Probe sah sie nicht.
+
+**Nachgemessen, ob es geschadet hat — und das gehört dazu:** nein. Die
+Probe war vorher **3 von 3** grün und unter CPU-Last (8 Schleifen auf 4
+Kernen) **4 von 4**; eine eingeschobene Messzeile zeigte, dass der Vorrat
+jedes Mal **schon da war**, wenn der Worker die Seite steuerte (55–88 ms).
+Die Wartepunkte waren also nicht nur blind, sondern überflüssig — sie
+hätten erst geschadet, wenn eine App ihren Vorrat nach dem Aktivieren
+anlegt. *Ein Wartepunkt, der nie wartet, fällt erst an dem Tag auf, an dem
+er gebraucht wird.*
+
+**Was jetzt gilt:** `warteBis()` in `vorrat_wirkung.mjs` fragt die Bedingung
+per `evaluate` (das ein Promise wirklich abwartet) in Abständen, bis die
+Frist um ist — ohne `eval` in der Seite, das eine Content-Security-Policy
+still sperren könnte. `tests/smoke_warten_async.mjs` bewacht die Familie
+über `tests/`, `tools/` und `pinnwand/`: `async` vorn, `.then(`, `Promise`
+oder `await` im **ersten** Argument. Gegenprobe:
+`node tests/gegenprobe_warten_async.mjs` (7 Fälle).
+
+⚠ **BENANNTE GRENZE:** eine Bedingung, die eine Hilfsfunktion ruft, die
+ihrerseits ein Promise liefert (`() => holeWas()`), sieht keine Textsuche.
+
+⚠ **Netzweit nachgesehen, auf `origin/main` von 17 Depots:** diese sechs
+Stellen waren die einzigen.
+
 
 ---
 

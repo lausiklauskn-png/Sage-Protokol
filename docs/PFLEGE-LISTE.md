@@ -164,6 +164,20 @@ trägt, `git log origin/main..HEAD --oneline` — ist die Liste nicht leer, geht
 verloren. Ein Werkzeug dafür gibt es: `node tools/zweig-pruefen.mjs`. Es wurde hier
 nicht gerufen.
 
+### 11 · `tests/vorrat_wirkung.mjs` steht in keinem Läufer
+
+**Gemessen 2026-09-28.** `run_alle.mjs` sammelt nur `smoke_*.mjs` (und
+`_smoke*` in `pinnwand/`). `vorrat_wirkung.mjs` fährt es deshalb nie — es
+läuft nur, wer es beim Namen ruft. Dieselbe dritte Art aus `LEHREN.md` § 6
+(„eine Probe, die gar nicht im Läufer stand").
+
+**Warum es nicht nebenbei umbenannt wurde:** die Probe holt `mycel-karte` und
+`Kuechenzettel` aus Nachbar-Klonen (`git show origin/main:…`). In einem
+Behälter ohne diese Klone wäre sie **rot**, nicht „nicht lauffähig" — der
+Läufer kennt diesen dritten Ausgang nur für fehlende Pakete. Wer sie
+aufnimmt, braucht zuerst einen „Nachbar fehlt"-Ausgang. Gefahren am
+2026-09-28 von Hand: 9 grün, 3 Läufe plus 4 unter Last.
+
 ## Erledigt
 
 ### ✅ Rezept-Export trägt die Spur — 2026-09-16

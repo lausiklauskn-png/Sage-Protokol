@@ -103,6 +103,31 @@ async function warteAufWorker(seite) {
 
 const vorraete = (seite) => seite.evaluate(() => caches.keys());
 
+/** Wartet, bis `bedingung(arg)` in der Seite wahr ist — höchstens `frist` ms.
+ *  Gibt true/false zurück, wirft nie.
+ *
+ *  ⚠ NICHT `seite.waitForFunction` MIT EINER ASYNC-BEDINGUNG. Playwright
+ *  wertet deren Ergebnis aus, und ein Promise ist IMMER wahr — gemessen am
+ *  2026-09-28 mit playwright-core 1.62.1: `async () => false` löst nach
+ *  100 ms auf, `() => Promise.resolve(false)` nach 6 ms, beide statt an der
+ *  Frist zu scheitern. Bis dahin standen hier SECHS solche Wartepunkte
+ *  (vier `async`, zwei `.then`), und keiner hat je gewartet.
+ *  Kimhub hat dieselbe Falle am selben Tag in `smoke_ansicht.mjs` gefunden
+ *  (der Flatterer seit dem 2026-09-26). Die Familie bewacht
+ *  `smoke_warten_async.mjs`. */
+async function warteBis(seite, bedingung, arg, frist) {
+  /* `evaluate` wartet ein Promise wirklich ab — anders als `waitForFunction`.
+     Gefragt wird deshalb von hier aus, in Abständen, bis die Frist um ist.
+     Kein `eval` im Browser: eine Content-Security-Policy der App könnte es
+     sperren, und dann wäre auch dieser Wartepunkt still wirkungslos. */
+  const ende = Date.now() + frist;
+  for (;;) {
+    if (await seite.evaluate(bedingung, arg).catch(() => false)) return true;
+    if (Date.now() >= ende) return false;
+    await new Promise((r) => setTimeout(r, 50));
+  }
+}
+
 async function lauf(ok, { sabotiereB }) {
   rmSync(BUEHNE, { recursive: true, force: true });
   auschecken(APP_A.repo, join(BUEHNE, "a"));
@@ -139,8 +164,7 @@ async function lauf(ok, { sabotiereB }) {
     const a = await kontext.newPage();
     await a.goto(`${basis}/a/`, { waitUntil: "load" });
     await warteAufWorker(a);
-    await a.waitForFunction(async () => (await caches.keys()).length > 0,
-      null, { timeout: 20000 }).catch(() => {});
+    await warteBis(a, () => caches.keys().then((ks) => ks.length > 0), null, 20000);
     const vorher = await vorraete(a);
     const meins = vorher.filter((k) => k.includes(APP_A.vorrat));
 
@@ -206,8 +230,7 @@ async function laufSorteB(ok) {
     const a = await kontext.newPage();
     await a.goto(`${basis}/a/`, { waitUntil: "load" });
     await warteAufWorker(a);
-    await a.waitForFunction(async () => (await caches.keys()).length > 0,
-      null, { timeout: 20000 }).catch(() => {});
+    await warteBis(a, () => caches.keys().then((ks) => ks.length > 0), null, 20000);
     const vorher = (await vorraete(a)).filter((k) => k.includes(APP_OPFER.vorrat));
     if (!vorher.length) {
       ok(`AUSGANGSLAGE Sorte B: ${APP_OPFER.repo} legt einen Vorrat an — NICHT MESSBAR`, false);
@@ -230,9 +253,9 @@ async function laufSorteB(ok) {
     /* Jetzt der Knopf. Er lädt die Seite neu — abwarten, dann nachsehen. */
     await b.click(APP_KNOPF.knopf);
     await b.waitForLoadState("load").catch(() => {});
-    await b.waitForFunction(
+    await warteBis(b,
       (v) => caches.keys().then((ks) => !ks.some((k) => k.includes(v))),
-      APP_OPFER.vorrat, { timeout: 15000 }).catch(() => {});
+      APP_OPFER.vorrat, 15000);
 
     const danach = (await vorraete(b)).filter((k) => k.includes(APP_OPFER.vorrat));
     ok(`WIRKUNG Sorte B: ein Klick auf ⟳ in ${APP_KNOPF.repo} löscht den Vorrat `
@@ -277,8 +300,7 @@ export async function laufReparatur(ok, { opfer, geprueft, praefix, alterVorrat,
     const a = await kontext.newPage();
     await a.goto(`${basis}/a/`, { waitUntil: "load" });
     await warteAufWorker(a);
-    await a.waitForFunction(async () => (await caches.keys()).length > 0,
-      null, { timeout: 20000 }).catch(() => {});
+    await warteBis(a, () => caches.keys().then((ks) => ks.length > 0), null, 20000);
     const fremd = (await vorraete(a)).filter((k) => k.includes(opfer.vorrat));
     if (!fremd.length) { ok(`AUSGANGSLAGE: ${opfer.repo} hat einen Vorrat — NICHT MESSBAR`, false); return; }
 
@@ -293,8 +315,8 @@ export async function laufReparatur(ok, { opfer, geprueft, praefix, alterVorrat,
     const b = await kontext.newPage();
     await b.goto(`${basis}/b/${unterpfad}`, { waitUntil: "load" });
     await warteAufWorker(b);
-    await b.waitForFunction((n) => caches.keys().then((ks) => !ks.includes(n)),
-      alterVorrat, { timeout: 15000 }).catch(() => {});
+    await warteBis(b, (n) => caches.keys().then((ks) => !ks.includes(n)),
+      alterVorrat, 15000);
 
     const danach = await vorraete(b);
     ok(`HAELFTE 1 — fremder Vorrat BLEIBT: [${danach.filter((k) => k.includes(opfer.vorrat)).join(", ") || "nichts"}]`,
@@ -332,7 +354,7 @@ export async function laufReparaturB(ok, { opfer, geprueft, praefix, alterVorrat
     const a = await kontext.newPage();
     await a.goto(`${basis}/a/`, { waitUntil: "load" });
     await warteAufWorker(a);
-    await a.waitForFunction(async () => (await caches.keys()).length > 0, null, { timeout: 20000 }).catch(() => {});
+    await warteBis(a, () => caches.keys().then((ks) => ks.length > 0), null, 20000);
     const fremd = (await vorraete(a)).filter((k) => k.includes(opfer.vorrat));
     if (!fremd.length) { ok(`AUSGANGSLAGE: ${opfer.repo} hat einen Vorrat — NICHT MESSBAR`, false); return; }
 
