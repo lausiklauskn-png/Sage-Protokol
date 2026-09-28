@@ -1,18 +1,14 @@
 #!/usr/bin/env node
 /*
- * Smoke — Modul 25 Pseudonymisierung (E2E Grad B), Bau 2026-07-16 (B5).
+ * Smoke — Modul 25 Pseudonymisierung, Generation 2 (2026-09-28).
  *
- * Beweist die Kern-Logik headless (reiner Text-/Objekt-Transform, keine Krypto):
- *  - Round-trip: pseudonymize -> rehydrate gibt den Klartext zurück.
- *  - Stabile, aufsteigende Token pro Typ; gleicher Wert -> gleiches Token.
- *  - Kein sensibler Klartext mehr im Ergebnis-Text (Namen/EMAIL/IBAN ersetzt).
- *  - Bestehende Token werden nicht erneut/verschachtelt erkannt.
- *  - map-Fortführung über mehrere Läufe (options.map) hält Token stabil.
- *  - pseudonymizeObject/rehydrateObject: verschachteltes Objekt, Zahlen bleiben.
- *  - serializeVault/parseVault Round-trip.
- *  - rehydrate ist fail-soft bei unbekannten Token.
- *  - Aufrufer-Fehler werfen InvalidPseudonymArgError.
- *  - protocolVersion bleibt 0.1 (Grad B ändert das Draht-Protokoll NICHT).
+ * Generation 1 (2026-07-16) kannte EMAIL/IBAN/TEL und Platzhalter [[TYP_n]].
+ * Generation 2 trägt den Kern des Sende-Prüfers: sechs Sorten, Fund nach Lage,
+ * Platzhalter ⟦TYP-n⟧, findLeak. Alte [[TYP_n]] werden weiter gelesen.
+ *
+ * Gemessen wird an einem erfundenen Text (keine echten Daten). Jede Sorte hat
+ * einen Treffer UND eine Gegenrichtung, die NICHT treffen darf — sonst wäre
+ * „findet eine IBAN" auch dann grün, wenn jede Ziffernfolge eine IBAN wäre.
  *
  * Aufruf:  node tests/smoke_bau25_pseudonym.mjs   ·   Exit 0 = grün.
  */
@@ -23,94 +19,103 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const require = createRequire(import.meta.url);
-require(resolve(repoRoot, "src/modules/25_pseudonym.js")); // registriert globalThis.SbkimPseudonym
+require(resolve(repoRoot, "src/modules/25_pseudonym.js"));
 const P = globalThis.SbkimPseudonym;
 
 let pass = 0, fail = 0;
-function ok(cond, name) { if (cond) { pass++; console.log("  ok   " + name); } else { fail++; console.log("  FAIL " + name); } }
-
-console.log("== Modul 25 — Pseudonymisierung (Grad B) ==");
-
-// --- 1) Round-trip Text mit Namen (explizit) + EMAIL + IBAN ---
-const text1 =
-  "Rechnung an Max Mustermann, E-Mail max@example.com, IBAN DE89 3704 0044 0532 0130 00, Betrag 100 EUR.";
-const r1 = P.pseudonymize(text1, { values: [{ value: "Max Mustermann", type: "KUNDE" }] });
-ok(r1.text.indexOf("Max Mustermann") === -1, "1a Name ist ersetzt");
-ok(r1.text.indexOf("max@example.com") === -1, "1b EMAIL ist ersetzt");
-ok(r1.text.indexOf("DE89") === -1, "1c IBAN ist ersetzt");
-ok(r1.text.indexOf("[[KUNDE_1]]") !== -1, "1d Token [[KUNDE_1]] gesetzt");
-ok(r1.text.indexOf("[[EMAIL_1]]") !== -1, "1e Token [[EMAIL_1]] gesetzt");
-ok(r1.text.indexOf("[[IBAN_1]]") !== -1, "1f Token [[IBAN_1]] gesetzt");
-ok(r1.text.indexOf("100 EUR") !== -1, "1g Betrag bleibt (Grad-B-Grenze: Metadaten leaken)");
-const back1 = P.rehydrate(r1.text, r1.map);
-ok(back1 === text1, "1h rehydrate stellt Klartext exakt wieder her");
-
-// --- 2) Kompakte IBAN (ohne Leerzeichen) erkannt ---
-const r2 = P.pseudonymize("Konto DE89370400440532013000 bezahlt.");
-ok(r2.text.indexOf("[[IBAN_1]]") !== -1 && r2.text.indexOf("DE89") === -1, "2 kompakte IBAN erkannt");
-
-// --- 3) Gleicher Wert -> gleiches Token; aufsteigende Indizes pro Typ ---
-const r3 = P.pseudonymize("a@x.de, b@x.de, a@x.de", { types: ["EMAIL"] });
-ok((r3.text.match(/\[\[EMAIL_1\]\]/g) || []).length === 2, "3a gleicher Wert -> gleiches Token (2x EMAIL_1)");
-ok(r3.text.indexOf("[[EMAIL_2]]") !== -1, "3b zweiter EMAIL -> EMAIL_2");
-ok(r3.tokens.length === 2, "3c genau 2 neue Token erzeugt");
-
-// --- 4) Bestehende Token werden nicht erneut erkannt/verschachtelt ---
-const r4 = P.pseudonymize("[[KUNDE_1]] schreibt an c@x.de", { types: ["EMAIL"] });
-ok(r4.text.indexOf("[[KUNDE_1]]") !== -1, "4a vorhandenes Token bleibt unversehrt");
-ok((r4.text.match(/\[\[/g) || []).length === 2, "4b keine Verschachtelung (genau 2 Token-Öffnungen)");
-
-// --- 5) map-Fortführung über zwei Läufe hält Token stabil ---
-const first = P.pseudonymize("Kunde Anna Beispiel", { values: ["Anna Beispiel"], valueType: "KUNDE" });
-const second = P.pseudonymize("Erneut: Anna Beispiel und Neu: Bert Neu",
-  { values: ["Anna Beispiel", "Bert Neu"], valueType: "KUNDE", map: first.map });
-ok(second.text.indexOf(first.tokens[0]) !== -1, "5a bekannter Wert behält sein Token über Läufe");
-ok(second.text.indexOf("[[KUNDE_2]]") !== -1, "5b neuer Wert bekommt nächsten Index");
-ok(P.rehydrate(second.text, second.map) === "Erneut: Anna Beispiel und Neu: Bert Neu", "5c Round-trip mit fortgeführter Map");
-
-// --- 6) Objekt-Transform: verschachtelt, Zahlen bleiben ---
-const rec = { kunde: "Max Mustermann", mail: "max@example.com", betrag: 100, pos: ["Max Mustermann", 2] };
-const ro = P.pseudonymizeObject(rec, { values: [{ value: "Max Mustermann", type: "KUNDE" }] });
-ok(ro.data.betrag === 100, "6a Zahl bleibt Zahl");
-ok(ro.data.kunde === ro.data.pos[0], "6b gleicher Name -> gleiches Token im ganzen Objekt");
-ok(ro.data.pos[1] === 2, "6c Zahl im Array bleibt");
-ok(ro.data.mail.indexOf("[[EMAIL_1]]") !== -1, "6d EMAIL im Objekt ersetzt");
-const backObj = P.rehydrateObject(ro.data, ro.map);
-ok(JSON.stringify(backObj) === JSON.stringify(rec), "6e rehydrateObject stellt das Objekt exakt wieder her");
-
-// --- 7) Anker-Tresor serialisieren/parsen ---
-const vaultStr = P.serializeVault(r1.map);
-const parsed = P.parseVault(vaultStr);
-ok(JSON.stringify(parsed) === JSON.stringify(r1.map), "7a serializeVault/parseVault Round-trip");
-ok(vaultStr.indexOf("sbkimAnchorVault") !== -1, "7b Tresor-Umschlag erkennbar");
-
-// --- 8) rehydrate fail-soft bei unbekannten Token ---
-ok(P.rehydrate("[[FREMD_9]] bleibt", {}) === "[[FREMD_9]] bleibt", "8 unbekanntes Token bleibt stehen");
-
-// --- 9) Token-Helfer ---
-ok(P.makeToken("IBAN", 3) === "[[IBAN_3]]", "9a makeToken");
-ok(P.parseToken("[[IBAN_3]]").type === "IBAN" && P.parseToken("[[IBAN_3]]").index === 3, "9b parseToken");
-ok(P.isToken("[[EMAIL_1]]") === true && P.isToken("kein token") === false, "9c isToken");
-
-// --- 10) Custom pattern (Aktenzeichen) ---
-const r10 = P.pseudonymize("Akte AZ-2026-777 offen", {
-  types: [], customPatterns: [{ type: "AKTE", regex: /AZ-\d{4}-\d+/ }],
-});
-ok(r10.text.indexOf("[[AKTE_1]]") !== -1 && r10.text.indexOf("AZ-2026-777") === -1, "10 custom pattern greift");
-
-// --- 11) Aufrufer-Fehler werfen InvalidPseudonymArgError ---
-function throwsInvalid(fn) {
-  try { fn(); return false; } catch (e) { return e.name === "InvalidPseudonymArgError"; }
+function ok(cond, name, info) {
+  if (cond) { pass++; console.log("  ok   " + name); }
+  else { fail++; console.log("  FAIL " + name + (info ? "  → " + info : "")); }
 }
-ok(throwsInvalid(() => P.pseudonymize(123)), "11a text kein String -> wirft");
-ok(throwsInvalid(() => P.pseudonymize("x", { values: "nope" })), "11b values kein Array -> wirft");
-ok(throwsInvalid(() => P.makeToken("iban", 1)), "11c Token-Typ klein -> wirft");
-ok(throwsInvalid(() => P.parseVault("kein json")), "11d parseVault Müll -> wirft");
+function sorten(text, opt) { return P.find(text, opt).map((f) => f.type + "=" + f.value); }
 
-// --- 12) Verfassungs-Invarianten ---
-ok(P._meta.protocolVersion === "0.1", "12a protocolVersion bleibt 0.1 (kein Draht-Bruch)");
-ok(P._meta.buildFree === true, "12b build-frei markiert");
-ok(P._meta.defaultTypes.join("+") === "EMAIL+IBAN", "12c Default-Typen EMAIL+IBAN (TEL opt-in)");
+// Erfundene Testwerte. Die IBAN ist das Standard-Beispiel mit gültiger Prüfziffer.
+const IBAN = "DE89 3704 0044 0532 0130 00";
+const KEY = "sk-ant-" + "A".repeat(24);
+
+// --- 1) jede Sorte trifft, und nur sie ---
+ok(sorten("Schlüssel " + KEY + " hier")[0] === "SCHLUESSEL=" + KEY, "1a Anthropic-Schlüssel ist SCHLUESSEL");
+ok(sorten('password = "geheimgeheim12"').join() === "SCHLUESSEL=geheimgeheim12", "1b Passwort-Feld: nur der WERT, der Feldname bleibt");
+ok(sorten("Authorization: Bearer abcdefghijklmnop1234").join() === "SCHLUESSEL=abcdefghijklmnop1234", "1c Bearer-Token");
+ok(sorten("Schreib an eva.muster@beispiel.de bitte").join() === "MAIL=eva.muster@beispiel.de", "1d Mailadresse");
+ok(sorten("Ruf an: +49 170 1234567 abends").join() === "TELEFON=+49 170 1234567", "1e Telefon mit Ländervorwahl");
+ok(sorten("Kundennr. 0170 1234567").length === 0, "1f Gegenrichtung: Ziffern ohne Ländervorwahl sind kein Telefon");
+ok(sorten("IBAN " + IBAN + " ok").join() === "IBAN=" + IBAN, "1g IBAN mit stimmender Prüfziffer");
+ok(sorten("IBAN DE89 3704 0044 0532 0130 01").length === 0, "1h Gegenrichtung: falsche Prüfziffer ist keine IBAN");
+ok(sorten("Summe 1.248,50 EUR fällig").join() === "BETRAG=1.248,50 EUR", "1i Betrag mit Tausenderpunkt GANZ (Klaus 2026-09-21)");
+ok(sorten("Summe 1.234.567,89 € fällig").join() === "BETRAG=1.234.567,89 €", "1j Betrag mit zwei Tausenderpunkten ganz");
+ok(sorten("zahle € 12,00 bar").join() === "BETRAG=€ 12,00", "1k Währung vor dem Betrag");
+ok(sorten("Version 1.2 von 2026").length === 0, "1l Gegenrichtung: Zahl ohne Währung ist kein Betrag");
+ok(sorten("Rechnung RE-2026-04871 offen").join() === "RECHNUNG=RE-2026-04871", "1m freistehende Rechnungsnummer (Klaus 2026-09-21)");
+ok(sorten('{"rechnungsnummer": "A-7781"}').join() === "RECHNUNG=A-7781", "1n Rechnungsnummer als Feld: nur der Wert");
+
+// --- 2) Namen: nur aus der Liste, an Wortgrenzen, ohne Groß/klein ---
+ok(sorten("Frau Müller kommt", { values: ["Müller"] }).join() === "NAME=Müller", "2a Name aus der Liste");
+ok(sorten("in der Müllerstraße", { values: ["Müller"] }).length === 0, "2b Gegenrichtung: Müller trifft nicht Müllerstraße");
+ok(sorten("MÜLLER ruft an", { values: ["Müller"] }).join() === "NAME=MÜLLER", "2c ohne Groß/klein");
+ok(sorten("Frau Müller kommt").length === 0, "2d ohne Liste wird kein Name geraten");
+
+// --- 3) pseudonymize: Platzhalter, gleicher Wert gleicher Platzhalter, Zeilen ---
+const TEXT = "Hallo Eva Muster,\nbitte " + IBAN + " belasten: 1.248,50 EUR.\nKopie an eva.muster@beispiel.de und nochmal Eva Muster.";
+const r = P.pseudonymize(TEXT, { values: ["Eva Muster"] });
+ok(r.text.includes("⟦IBAN-1⟧") && r.text.includes("⟦BETRAG-1⟧") && r.text.includes("⟦MAIL-1⟧"), "3a Platzhalter im neuen Format ⟦TYP-n⟧");
+ok((r.text.match(/⟦NAME-1⟧/g) || []).length === 2 && !r.text.includes("⟦NAME-2⟧"), "3b derselbe Name zweimal → derselbe Platzhalter");
+ok(!r.text.includes("Eva Muster") && !r.text.includes("0532") && !r.text.includes("1.248") && !r.text.includes("@"), "3c kein Klartext mehr im Text, auch keine Ziffer des Betrags");
+ok(r.text.includes("1.⟦") === false, "3d keine führende 1. vor dem Betrags-Platzhalter");
+ok(P.rehydrate(r.text, r.map) === TEXT, "3e Hin und zurück ergibt den Text Zeichen für Zeichen");
+ok(r.findings.map((f) => f.line).join() === "1,2,2,3,3", "3f jede Fundstelle trägt ihre Zeile", r.findings.map((f) => f.line).join());
+ok(r.findings.every((f) => TEXT.slice(f.start, f.end) === f.value), "3g start/end zeigen genau auf den Wert");
+ok(P.findLeak(r.text, r.map) === null, "3h findLeak: verdeckter Text ist sauber");
+ok(P.findLeak(r.text + " Eva Muster", r.map) === "Eva Muster", "3i findLeak: ein nachgetippter Klartext wird gefunden");
+
+// --- 4) Überlappung: die Mail im Schlüssel-Feld wird nicht zerschnitten ---
+const r4 = P.find("Mail max@beispiel.de, Betrag 5,00 EUR");
+ok(r4.length === 2 && r4[0].type === "MAIL" && r4[1].type === "BETRAG", "4a zwei Sorten nebeneinander, nach Lage sortiert");
+const r4b = P.find("password=" + KEY);
+ok(r4b.length === 1 && r4b[0].value === KEY, "4b überlappende Treffer: genau einer bleibt");
+
+// --- 5) vorhandene Platzhalter werden nicht verschachtelt, alte werden gelesen ---
+const r5 = P.pseudonymize(r.text, { values: ["Eva Muster"], map: r.map });
+ok(r5.text === r.text && r5.tokens.length === 0, "5a zweiter Lauf über verdeckten Text ändert nichts");
+const r5e = P.pseudonymize("⟦IBAN-1⟧ und [[TEL_2]] Akte 42", { types: [], customPatterns: [{ type: "AKTE", regex: /\d+/ }] });
+ok(r5e.text === "⟦IBAN-1⟧ und [[TEL_2]] Akte ⟦AKTE-1⟧", "5e ein Muster, das IN einem Platzhalter träfe, lässt ihn heil", r5e.text);
+ok(P.rehydrate("Konto [[IBAN_1]]", { "[[IBAN_1]]": IBAN }) === "Konto " + IBAN, "5b alter Platzhalter [[IBAN_1]] wird weiter aufgedeckt");
+const r5c = P.pseudonymize("an eva.muster@beispiel.de", { map: { "[[EMAIL_1]]": "alt@beispiel.de" } });
+ok(r5c.text === "an ⟦MAIL-1⟧", "5c alte Zuordnung stört die neue Zählung nicht");
+ok(P.parseToken("[[IBAN_3]]").index === 3 && P.isToken("[[EMAIL_1]]"), "5d parseToken/isToken lesen das alte Format");
+
+// --- 6) Fortführung über Läufe ---
+const a = P.pseudonymize("an eva.muster@beispiel.de");
+const b = P.pseudonymize("von eva.muster@beispiel.de und max@beispiel.de", { map: a.map });
+ok(b.text === "von ⟦MAIL-1⟧ und ⟦MAIL-2⟧", "6 mit options.map: gleiche Adresse behält ihre Nummer");
+
+// --- 7) Objekte ---
+const rec = { name: "Eva Muster", betrag: 1248.5, mail: "eva.muster@beispiel.de", tags: ["Eva Muster", 3] };
+const ro = P.pseudonymizeObject(rec, { values: ["Eva Muster"] });
+ok(ro.data.name === "⟦NAME-1⟧" && ro.data.tags[0] === "⟦NAME-1⟧", "7a eine Zuordnung über alle Felder");
+ok(ro.data.betrag === 1248.5 && ro.data.tags[1] === 3, "7b Zahlen bleiben Zahlen (benannte Grad-B-Grenze)");
+ok(JSON.stringify(P.rehydrateObject(ro.data, ro.map)) === JSON.stringify(rec), "7c rehydrateObject stellt das Objekt her");
+
+// --- 8) Sortenwahl, eigene Muster, alte Sortennamen ---
+ok(sorten("eva@beispiel.de " + IBAN, { types: ["IBAN"] }).join() === "IBAN=" + IBAN, "8a types schränkt ein");
+ok(sorten("eva@beispiel.de", { types: ["EMAIL"] }).join() === "MAIL=eva@beispiel.de", "8b alter Sortenname EMAIL wird verstanden");
+ok(sorten("Akte AZ-2026-777", { types: [], customPatterns: [{ type: "AKTE", regex: /AZ-\d{4}-\d+/ }] }).join() === "AKTE=AZ-2026-777", "8c eigenes Muster (ohne g-Flag)");
+ok(P.isIban(IBAN) && !P.isIban("DE00 0000 0000 0000 0000 00"), "8d isIban rechnet die Prüfziffer");
+
+// --- 9) Tresor, Helfer, Fehler ---
+ok(JSON.stringify(P.parseVault(P.serializeVault(r.map))) === JSON.stringify(r.map), "9a Tresor hin und zurück");
+ok(P.rehydrate("⟦FREMD-9⟧ bleibt", {}) === "⟦FREMD-9⟧ bleibt", "9b unbekannter Platzhalter bleibt stehen");
+ok(P.makeToken("IBAN", 3) === "⟦IBAN-3⟧", "9c makeToken im neuen Format");
+function wirft(fn) { try { fn(); return false; } catch (e) { return e.name === "InvalidPseudonymArgError"; } }
+ok(wirft(() => P.pseudonymize(123)) && wirft(() => P.find(null)), "9d text kein String → wirft");
+ok(wirft(() => P.pseudonymize("x", { values: "nope" })), "9e values kein Array → wirft");
+ok(wirft(() => P.makeToken("iban", 1)) && wirft(() => P.parseVault("kein json")), "9f Fehlbedienung → wirft");
+
+// --- 10) Verfassung ---
+ok(P._meta.protocolVersion === "0.1" && P._meta.buildFree === true, "10a protocolVersion 0.1, build-frei");
+ok(P._meta.defaultTypes.join("+") === "SCHLUESSEL+MAIL+IBAN+BETRAG+RECHNUNG+TELEFON", "10b alle sechs Sorten standardmäßig an");
+ok(P._meta.ausgefallen.length === 0, "10c in Node fällt kein Muster aus", P._meta.ausgefallen.join());
+ok(P._meta.generation === 2, "10d Generation 2");
 
 console.log(`\n== Ergebnis: ${pass} ok, ${fail} FAIL ==`);
 process.exit(fail === 0 ? 0 : 1);
