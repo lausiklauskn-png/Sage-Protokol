@@ -119,6 +119,15 @@ selbst an der Wurzel) — nachgezogen am selben Tag.
 
 ---
 
+**Seit 2026-09-29 trägt sie den Abschnitt „Was nützt mir das?"** (Klaus: *„Wichtig ist, dass der
+Nutzen noch einmal hervorgestellt wird"*): Nutzen gegenüber Mail und Chat, drei belegte Befunde mit
+Quelle (HBR 2022, Barchard & Pace 2011, Local-first 2019), Beispiele (Firma, eigene Geräte, Verein),
+eine Grafik zum eigenen, abgeschirmten Netz und die Bausteine mit ihrem Stand. Er steht zwischen den
+Marken `NUTZEN-ANFANG`/`NUTZEN-ENDE` und ist in allen Fassungen **gleich**; Quelle ist diese Datei in
+Sages Wurzel. Wer ihn ändert, trägt ihn überall nach (dieselben Marken ersetzen). Ausnahme mit Grund:
+**family-project** — dort ist die Seite zweisprachig und hat einen Wächter gegen deutschen Text im
+Englisch-Modus; der Abschnitt braucht dort eine Übersetzung und fehlt bis dahin.
+
 ## Die vier Fallen beim Einbau
 
 Jede hat einmal Zeit gekostet. Alle vier sind heute in den Bau-Proben bewacht.
