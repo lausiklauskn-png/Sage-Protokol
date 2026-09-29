@@ -126,9 +126,11 @@ eine Grafik zum eigenen, abgeschirmten Netz und die Bausteine mit ihrem Stand. E
 Marken `NUTZEN-ANFANG`/`NUTZEN-ENDE` und ist in allen Fassungen **gleich**; dazu steht **gleich unter
 der Überschrift** ein kurzer Kasten „Was ist das — und was nützt es dir?" zwischen `NUTZEN-OBEN-ANFANG`/
 `NUTZEN-OBEN-ENDE` (Klaus: *„langen Text lese ich nur, wenn ich den Nutzen darin schon vorher sehe"*); Quelle ist diese Datei in
-Sages Wurzel. Wer ihn ändert, trägt ihn überall nach (dieselben Marken ersetzen). Ausnahme mit Grund:
-**family-project** — dort ist die Seite zweisprachig und hat einen Wächter gegen deutschen Text im
-Englisch-Modus; der Abschnitt braucht dort eine Übersetzung und fehlt bis dahin.
+Sages Wurzel. Wer ihn ändert, trägt ihn überall nach (dieselben Marken ersetzen). Sonderfall:
+**family-project** — dort ist die Seite zweisprachig, und ein Wächter verbietet deutschen Text im
+Englisch-Modus. Die Blöcke stehen dort seit 2026-09-29 mit demselben Wortlaut, aber jede Textstelle
+trägt einen `data-i18n`-Schlüssel (`nz_…`) mit englischer Fassung im Wörterbuch der Seite. Wer den
+Wortlaut hier ändert, zieht dort Deutsch UND Englisch nach.
 
 ## Die vier Fallen beim Einbau
 
