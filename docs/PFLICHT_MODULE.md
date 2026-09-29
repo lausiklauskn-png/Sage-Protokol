@@ -95,6 +95,28 @@ Kein Kanon, kein Drift-Guard: sie **müssen** pro App verschieden sein.
 | `nostr-listen-init.js` | Empfangsmodus (lauschen, nie initiieren) |
 | `siegel-inhalt.js` | den **Andock-Wizard** samt Identitäts-Wechsler |
 
+### ⚠ Und eine Seite daneben: `sicherheit.html` (Klaus 2026-09-29)
+
+Der Andock-Wizard (16b, Kanon) trägt den Knopf **„Ausführlich erklärt → So funktioniert
+das Mycel"** und legt dafür `iframe.src = "sicherheit.html"` in die Seite — **relativ**,
+also neben die Seite, die das Siegel trägt. Fehlt die Datei, zeigt das Siegel GitHubs
+**404** statt der Erklärung. Gemessen am 2026-09-29: **neun** Knoten hatten sie nicht
+(Alis-Moderaum, Auslieferung-Pruefer, Mein-Workfloh-Page, Muttis-Rezeptbuch,
+PWA-Toolpoint, Perfect-Skin-Beauty, Perfect-Skin-Fashion, kim-hub-company und Sage
+selbst an der Wurzel) — nachgezogen am selben Tag.
+
+- **Vorlage:** `sicherheit.html` an Sages Wurzel — neutral, ohne App-Namen, mit
+  `noindex` (sonst landet sie in gefundenen Sitemaps), Rückweg `./`. 1:1 kopieren.
+- **Kein Kanon, kein Drift-Guard:** wer den Text anpasst (Name, Farben), darf das.
+- **Kein Cache-Bump nötig,** solange sie nicht im Installations-Vorrat steht; offline
+  fehlt sie dann bis zum ersten Abruf. Wer sie in den Vorrat nimmt, erhöht die
+  `CACHE_VERSION`.
+- **Nachsehen, wer sie braucht** (je Depot, gegen `origin/main`):
+  `git grep -l 'iframe.src = "sicherheit.html"' origin/main` — ein Treffer ohne
+  `sicherheit.html` neben der Siegel-Seite ist ein 404.
+- **Wer eine Abschirmung trägt** (Sende-Prüfer), nimmt genau diese eigene Seite von der
+  Fremd-Meldung aus — sonst meldet das Siegel sich selbst als fremdes Fenster.
+
 ---
 
 ## Die vier Fallen beim Einbau
@@ -206,6 +228,7 @@ jedes Modul ist da, byte-1:1, und das Rezept nennt es auch. Reift ein Modul in
 - [ ] Kette in der Leerlaufpause, fail-soft
 - [ ] fünf Klebstoff-Dateien mit **eigenen** Werten (kein Vorlagen-Rest)
 - [ ] Andock-Wizard vollständig, **mit Identitäts-Wechsler**
+- [ ] `sicherheit.html` neben der Siegel-Seite — sonst 404 hinter „Ausführlich erklärt"
 - [ ] `ribbonText` gesetzt — sonst bleibt das Wappen-Band leer
 - [ ] alles im Offline-Vorrat, `CACHE_VERSION` erhöht
 - [ ] Probe **und Gegenprobe** — ein Wächter ohne Gegenprobe ist nur ein grüner Haken
