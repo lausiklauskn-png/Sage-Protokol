@@ -221,6 +221,14 @@ Daten, nie Programme … dein privater Schlüssel verlässt diesen Browser nie")
 Knopf **„Ausführlich erklärt →"**, der `sicherheit.html` als **In-Page-Overlay**
 (`<iframe>`, ✕/Backdrop/Esc) öffnet — **kein** neuer Tab.
 
+**Die Seite wird KOPIERT, nicht neu geschrieben:** Vorlage ist `sicherheit.html` an
+Sages Wurzel (neutral, ohne App-Namen). Ganz oben steht der Kasten „Was ist das — und
+was nützt es dir?" (`NUTZEN-OBEN-ANFANG`/`-ENDE`), darunter der ausführliche Abschnitt
+„Was nützt mir das?" mit Quellen, Beispielen und Grafik (`NUTZEN-ANFANG`/`-ENDE`).
+Beide Blöcke sind in allen Kopien wortgleich — geändert wird in Sage, dann weitergetragen
+(Klaus 2026-09-29: *„langen Text lese ich nur, wenn ich den Nutzen darin schon vorher
+sehe"*). Einzelheiten: `docs/PFLICHT_MODULE.md` § `sicherheit.html`.
+
 ### (4) ⛨ Fremden Knoten andocken (wo vorhanden — Sage)
 „Fremden Knoten verbinden — ohne KI, direkt im Browser: Repo-/App-URL eingeben →
 Spore prüfen → Match → Handshake." Lädt die fremde `sbkim/spore.json`
@@ -270,7 +278,7 @@ Modal, bevor es fertig geladen hat.**
       domainKeywords/stamm-+guestCategories`, `allowedOrigins`, `repoUrl`, `dbSuffix`.
 - [ ] **`ribbonText: "<App-Name>"`** in `SbkimSiegel.init(...)` — sonst bleibt das
       Wappen-Band LEER (kein Auto-Slug). Jede App graviert ihren eigenen Namen ein.
-- [ ] `sicherheit.html` vorhanden (für den Schutz-Overlay) — oder Block ohne Overlay-Link.
+- [ ] `sicherheit.html` aus Sages Wurzel kopiert (Nutzen-Kasten oben + „Was nützt mir das?") und im Offline-Vorrat — sonst 404 hinter „Ausführlich erklärt".
 - [ ] SW: neue Dateien in `APP_SHELL`, `CACHE_VERSION` erhöht.
 - [ ] **Modell-Ladefortschritt** (Prozent-Balken aus `sbkim:embedding-progress`)
       in Wizard-Schritt 2 **und** ✍ Semantik — überall, wo das ~30-MB-Modell lädt.
