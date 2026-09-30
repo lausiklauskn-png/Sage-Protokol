@@ -7117,6 +7117,33 @@ nächsten Laden sprang die Blase in die Leiste zurück. Wer das Lösen umbaut,
 erneuert danach den Capture (`setPointerCapture`), und misst den **ganzen**
 Kreislauf, nicht den Anfangszustand.
 
+#### Oben einrasten — egal welche Leiste (Klaus 2026-09-30)
+
+> „Lässt sich das so machen, dass es sich automatisch verankert, wenn ich das
+> oben an die Navi-Leiste hänge, egal welche, egal welches Betriebssystem, so
+> dass ich das dann auch wieder abnehmen kann."
+
+Gilt für **Modul 17 (Siegel-Widget)** und **Modul 23 (Mycel-Knopf)**.
+
+| | |
+|---|---|
+| **Loslassen oben** | Unterkante der Leiste + 24 px (`OBEN_FANG_PX`) → es rastet ein |
+| **Mit `data-sbkim-mycel-platz`** | der Mycel-Knopf geht wie oben beschrieben **hinein** |
+| **Sonst** | es **schwebt fest über** der Leiste, mittig zu ihr; gemerkt wird `{seite: links\|rechts, abstand}` zum nächsten Rand, die Höhe kommt bei jedem Zeichnen aus der Leiste |
+| **Welche Leiste** | `data-sbkim-leiste` · sonst ein `fixed`/`sticky` oben stehendes Element über ≥ 50 % Breite und 20–200 px Höhe · sonst die Fensteroberkante |
+| **Abnehmen** | wegziehen, unterhalb der Leiste loslassen |
+| **Marke** | `data-sbkim-oben="links\|rechts"` am eingerasteten Element |
+| **Gespeichert** | 17: `oben` im Positions-Eintrag · 23: `oben` in `sbkim_rdv_ui_pos` |
+
+⚠ **TAFEL-EVOLUTION, BENANNT.** „Das Modul sucht sich keine Stelle aus" gilt
+weiter fürs **Hineinhängen**. Fürs **Schweben über** einer Leiste sucht das
+Modul sie seit diesem Tag selbst, weil Klaus es „egal welche" will; in die
+fremde Leiste wird dabei nichts gehängt. Eine Leiste, die nicht klebt
+(scrollt weg), wird nicht erkannt — dann rastet es an der Fensteroberkante ein.
+
+Geprüft: `tests/smoke_andocken_oben.mjs` (echter Browser) ·
+`tests/gegenprobe_andocken_oben.sh`.
+
 #### Was zu prüfen ist
 
 `tests/smoke_bau23_mycel_platz.mjs` misst es im echten Browser — ein
