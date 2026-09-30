@@ -18,7 +18,10 @@
   <meta name="description" content="SBKIM — Semantisches Bidirektionales KI-Matching. Spec- und Bau-Hub für ein peer-to-peer Mycel-Protokoll, das kleine PWAs miteinander reden lässt — ohne zentralen Index.">
   <meta name="color-scheme" content="dark">
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <!-- Echtes Manifest (Klaus 2026-09-30): ohne eines legt Chrome auf Android nur eine
+       Verknüpfung mit Chrome-Zeichen an, keine App. -->
+  <link rel="manifest" href="manifest.webmanifest">
   <!-- Schriften SELBST GEHOSTET (2026-08-04). Vorher hing hier ein
        <link rel="stylesheet"> auf fonts.googleapis.com. Der blockierte das
        erste Zeichnen um rund 750 ms: die Seite malte GAR NICHTS, bis das
@@ -4990,6 +4993,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="sbkim/sage-suchkorpus.js"></script>
   <script src="sbkim/sage-knoten-korpus.js"></script>
   <script src="sbkim-init.js"></script>
+  <script src="assets/installieren.js?v=1" data-name="Sage·Protokol" data-vor="hard-reload-btn"></script>
   <script>
   // Einladung-Türschwelle (2026-05-28): Feenstaub am Cursor, Klick öffnet
   // /docs/einladung/ mit kurzer Tür-Öffnungs-Animation (Glow + Bewegung).
