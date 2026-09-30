@@ -20,6 +20,11 @@
   var me = document.currentScript;
   var NAME = (me && me.getAttribute("data-name")) || document.title;
   var VOR = (me && me.getAttribute("data-vor")) || "";
+  /* data-fest: der Knopf steht fest oben rechts ÜBER allem. Nötig in den Tresoren —
+     dort liegt beim Öffnen der Eingang (Safe, Tür) über der Kopfleiste und verdeckte
+     ihn (Klaus 2026-09-30: „kein Installieren-Button gewesen“). */
+  var FEST = !!(me && me.hasAttribute("data-fest"));
+  var OBEN = 2147483000;
 
   function alsApp() {
     try {
@@ -38,7 +43,7 @@
       m = document.createElement("div");
       m.id = "install-meldung";
       m.setAttribute("role", "status");
-      m.style.cssText = "position:fixed;right:12px;top:64px;z-index:60;max-width:min(420px,calc(100vw - 24px));" +
+      m.style.cssText = "position:fixed;right:12px;top:64px;z-index:" + (OBEN + 1) + ";max-width:min(420px,calc(100vw - 24px));" +
         "background:var(--flaeche,#fff);color:inherit;border:1px solid var(--linie,#ccc);border-radius:12px;" +
         "padding:12px 14px;box-shadow:0 10px 30px rgb(0 0 0/.2);font-size:.9rem;line-height:1.4;white-space:pre-line";
       var zu = document.createElement("button");
@@ -114,6 +119,7 @@
     k.appendChild(z); k.appendChild(t);
     k.addEventListener("click", klick);
     vor.parentNode.insertBefore(k, vor);
+    if (FEST) { k.style.position = "fixed"; k.style.top = "10px"; k.style.right = "10px"; k.style.left = "auto"; k.style.bottom = "auto"; k.style.margin = "0"; k.style.zIndex = String(OBEN); k.setAttribute("data-fest", ""); }
     /* Die Sprache kann nach dem Laden wechseln — dann neu beschriften. */
     try { new MutationObserver(knopfZeichnen).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (_e) {}
     knopfZeichnen();
