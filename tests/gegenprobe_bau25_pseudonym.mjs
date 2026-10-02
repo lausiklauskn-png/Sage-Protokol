@@ -50,8 +50,18 @@ const FAELLE = [
     alt: "if (isString(w) && w.length && text.indexOf(w) !== -1) return w;", neu: "" },
   { was: "alter Sortenname EMAIL wird ignoriert", trifft: "8b alter Sortenname",
     alt: "var ALIAS = { EMAIL: \"MAIL\", TEL: \"TELEFON\" };", neu: "var ALIAS = {};" },
-  { was: "Telefon standardmäßig aus (wie Generation 1)", trifft: "10b alle sechs Sorten",
+  { was: "Telefon standardmäßig aus (wie Generation 1)", trifft: "10b alle sieben Sorten",
     alt: "var DEFAULT_TYPES = ORDER.slice();", neu: "var DEFAULT_TYPES = ORDER.filter(function (t) { return t !== \"TELEFON\"; });" },
+  { was: "Datum ohne Prüfung des Tages", trifft: "1v Gegenrichtung",
+    alt: "var TAG = \"(?:0?[1-9]|[12]\\\\d|3[01])\"", neu: "var TAG = \"(?:\\\\d{1,2})\"" },
+  { was: "Datum frisst Versionsnummern", trifft: "1u Gegenrichtung",
+    alt: "\"\\\\.(?:\\\\d{4}|\\\\d{2})(?![\\\\d]|[.,/]\\\\d)\"", neu: "\"\\\\.(?:\\\\d{4}|\\\\d{2})\"" },
+  { was: "Monatsnamen fallen weg", trifft: "1s Datum mit Monatsnamen",
+    alt: "[DATUM_ZAHL, DATUM_STRICH, DATUM_ISO, DATUM_WORT]", neu: "[DATUM_ZAHL, DATUM_STRICH, DATUM_ISO]" },
+  { was: "ISO-Datum fällt weg", trifft: "1q Datum ISO",
+    alt: "DATUM_STRICH, DATUM_ISO, DATUM_WORT", neu: "DATUM_STRICH, DATUM_WORT" },
+  { was: "DATUM standardmäßig aus", trifft: "1o Datum TT.MM.JJJJ",
+    alt: "var DEFAULT_TYPES = ORDER.slice();", neu: "var DEFAULT_TYPES = ORDER.filter(function (t) { return t !== \"DATUM\"; });" },
 ];
 
 const kopie = mkdtempSync(join(tmpdir(), "sage-bau25-"));

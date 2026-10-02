@@ -3,7 +3,7 @@
  * Smoke — Modul 25 Pseudonymisierung, Generation 2 (2026-09-28).
  *
  * Generation 1 (2026-07-16) kannte EMAIL/IBAN/TEL und Platzhalter [[TYP_n]].
- * Generation 2 trägt den Kern des Sende-Prüfers: sechs Sorten, Fund nach Lage,
+ * Generation 2 trägt den Kern des Sende-Prüfers: sieben Sorten (DATUM seit 2026-10-02), Fund nach Lage,
  * Platzhalter ⟦TYP-n⟧, findLeak. Alte [[TYP_n]] werden weiter gelesen.
  *
  * Gemessen wird an einem erfundenen Text (keine echten Daten). Jede Sorte hat
@@ -48,6 +48,21 @@ ok(sorten("zahle € 12,00 bar").join() === "BETRAG=€ 12,00", "1k Währung vor
 ok(sorten("Version 1.2 von 2026").length === 0, "1l Gegenrichtung: Zahl ohne Währung ist kein Betrag");
 ok(sorten("Rechnung RE-2026-04871 offen").join() === "RECHNUNG=RE-2026-04871", "1m freistehende Rechnungsnummer (Klaus 2026-09-21)");
 ok(sorten('{"rechnungsnummer": "A-7781"}').join() === "RECHNUNG=A-7781", "1n Rechnungsnummer als Feld: nur der Wert");
+
+// --- 1b) Datum (Klaus 2026-10-02, Grenzen-Liste Punkt 4) ---
+ok(sorten("Geboren am 12.03.1985 in Kiel").join() === "DATUM=12.03.1985", "1o Datum TT.MM.JJJJ");
+ok(sorten("Frist 1.3.26 beachten").join() === "DATUM=1.3.26", "1p Datum kurz T.M.JJ");
+ok(sorten("Stand 2026-03-12 laut Akte").join() === "DATUM=2026-03-12", "1q Datum ISO");
+ok(sorten("Brief vom 12/03/2026 liegt bei").join() === "DATUM=12/03/2026", "1r Datum mit Schrägstrich");
+ok(sorten("am 3. Mai 2026 und am 24. Dezember").join() === "DATUM=3. Mai 2026,DATUM=24. Dezember", "1s Datum mit Monatsnamen, Jahr frei");
+ok(sorten("bis 1. Jan. zahlen").join() === "DATUM=1. Jan.", "1t Datum mit abgekürztem Monat");
+ok(sorten("Version 1.10.12.5, IP 192.168.1.1, 12.30 Uhr, 3.5 Sterne").length === 0, "1u Gegenrichtung: Version, IP, Uhrzeit sind kein Datum");
+ok(sorten("Tag 32.01.2026 und Monat 13.13.2026").length === 0, "1v Gegenrichtung: ungültiger Tag oder Monat ist kein Datum");
+ok(sorten("Summe 1.248,50 EUR").join() === "BETRAG=1.248,50 EUR", "1w Gegenrichtung: ein Betrag wird nicht zum Datum");
+ok(P.find("Ende 12.03.2026.")[0].value === "12.03.2026", "1x Satzpunkt nach dem Datum gehört nicht dazu");
+const fr = P.pseudonymize("Zahlen Sie bis 15.11.2026.");
+ok(P.rehydrate("Bitte bis " + fr.findings[0].token + " überweisen.", fr.map) === "Bitte bis 15.11.2026 überweisen.", "1y eine Frist kommt beim Zurückholen wieder");
+ok(sorten("am 12.03.2026", { types: ["MAIL"] }).length === 0, "1z wer DATUM nicht in types nennt, bekommt kein Datum");
 
 // --- 2) Namen: nur aus der Liste, an Wortgrenzen, ohne Groß/klein ---
 ok(sorten("Frau Müller kommt", { values: ["Müller"] }).join() === "NAME=Müller", "2a Name aus der Liste");
@@ -113,7 +128,7 @@ ok(wirft(() => P.makeToken("iban", 1)) && wirft(() => P.parseVault("kein json"))
 
 // --- 10) Verfassung ---
 ok(P._meta.protocolVersion === "0.1" && P._meta.buildFree === true, "10a protocolVersion 0.1, build-frei");
-ok(P._meta.defaultTypes.join("+") === "SCHLUESSEL+MAIL+IBAN+BETRAG+RECHNUNG+TELEFON", "10b alle sechs Sorten standardmäßig an");
+ok(P._meta.defaultTypes.join("+") === "SCHLUESSEL+MAIL+IBAN+BETRAG+RECHNUNG+TELEFON+DATUM", "10b alle sieben Sorten standardmäßig an");
 ok(P._meta.ausgefallen.length === 0, "10c in Node fällt kein Muster aus", P._meta.ausgefallen.join());
 ok(P._meta.generation === 2, "10d Generation 2");
 

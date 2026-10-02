@@ -14,7 +14,7 @@ Klaus. **Spec:** `docs/E2E-VERTRAULICHKEIT.md §1.1`.
 | | Generation 1 (2026-07-16) | Generation 2 (2026-09-28) |
 |---|---|---|
 | Platzhalter | `[[IBAN_1]]` | **`⟦IBAN-1⟧`** — alte werden von `rehydrate`, `parseToken` und einer mitgegebenen `map` weiter gelesen |
-| Sorten | EMAIL, IBAN (TEL opt-in) | **SCHLUESSEL · MAIL · TELEFON · IBAN · BETRAG · RECHNUNG**, alle an; Namen über `values` (Sorte NAME) |
+| Sorten | EMAIL, IBAN (TEL opt-in) | **SCHLUESSEL · MAIL · TELEFON · IBAN · BETRAG · RECHNUNG · DATUM**, alle an (DATUM seit 2026-10-02); Namen über `values` (Sorte NAME) |
 | IBAN | Form | Form **und Prüfziffer** (ISO 13616) |
 | Betrag | blieb stehen | wird verdeckt, **mit Tausenderpunkt ganz** (Klaus' Befund 2026-09-21: aus `1.248,50 EUR` blieb `1.` stehen) |
 | Telefon | lange Ziffernfolge | nur mit **Ländervorwahl** oder `tel:` |
@@ -67,8 +67,14 @@ Punkt B6, X25519 → ECDH → HKDF → AES-GCM). Grad B ist tragbar, solange der
 - **Namen und andere Werte aus einer Liste**: `values: ["Eva Muster"]` (Sorte
   `NAME`) oder `values: [{ value: "Eva Muster", type: "KUNDE" }]`. Namen rät das
   Modul nie — ohne Liste wird kein Name gemeldet.
-- **Eingebaute Sorten** (`types`, Vorgabe alle sechs; `EMAIL`/`TEL` werden als
-  alte Namen verstanden): SCHLUESSEL · MAIL · TELEFON · IBAN · BETRAG · RECHNUNG.
+- **Eingebaute Sorten** (`types`, Vorgabe alle sieben; `EMAIL`/`TEL` werden als
+  alte Namen verstanden): SCHLUESSEL · MAIL · TELEFON · IBAN · BETRAG · RECHNUNG · DATUM.
+- **DATUM** (Klaus 2026-10-02, Grenzen-Liste Punkt 4: Geburtsdaten): `12.03.2026`,
+  `1.3.85`, `2026-03-12`, `12/03/2026`, `12. März 2026`, `3. Jan.`. Tag und Monat
+  müssen gültig sein; Versionsnummern, IP-Adressen und Uhrzeiten bleiben stehen.
+  Eine Frist kommt über `rehydrate` zurück; rechnen kann die KI mit einem
+  verdeckten Datum nicht — wer das braucht, lässt DATUM in `types` weg.
+  Nicht erkannt: „März 2026" ohne Tag, englische Schreibweisen.
 - **Eigene Muster** (`customPatterns: [{ type, regex }]`), z. B. Aktenzeichen.
 
 Gefunden wird alles, dann **nach Lage** sortiert: bei Überlappung gewinnt die
