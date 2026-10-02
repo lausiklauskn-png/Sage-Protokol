@@ -132,5 +132,21 @@ ok(P._meta.defaultTypes.join("+") === "SCHLUESSEL+MAIL+IBAN+BETRAG+RECHNUNG+TELE
 ok(P._meta.ausgefallen.length === 0, "10c in Node fällt kein Muster aus", P._meta.ausgefallen.join());
 ok(P._meta.generation === 2, "10d Generation 2");
 
+// --- 11) Namensvorschläge — nur ein Vorschlag (Grenzen-Liste 4c) ---
+const NV = "Sehr geehrte Frau Dr. Schmidt,\nsehr geehrte Damen und Herren,\nbitte Herrn Meier Bescheid geben.\n" +
+  "Hallo Petra,\nHallo Team,\nFrau Petra Lange, bitte\nViele Grüße\nKlaus Berger\n\nMit freundlichen Grüßen\nIhr Team\nLG Anna";
+const nv = P.suggestNames(NV);
+const nvN = nv.map(x => x.name);
+ok(nvN.includes("Schmidt") && nvN.includes("Meier"), "11a nach Herr/Frau (auch mit Dr.) wird vorgeschlagen", nvN.join());
+ok(nvN.includes("Meier") && !nvN.some(n => /Bescheid/.test(n)), "11b nach Herr nur EIN Wort, wenn der Satz weitergeht", nvN.join());
+ok(nvN.includes("Petra Lange"), "11c zwei Wörter, wenn danach der Satzteil endet", nvN.join());
+ok(nv.find(x => x.name === "Petra")?.grund === "begruessung", "11d aus der Begrüßung „Hallo Petra,“");
+ok(nv.find(x => x.name === "Klaus Berger")?.grund === "grussformel" && nvN.includes("Anna"), "11e aus der Grußformel, nächste Zeile und gleiche Zeile", nvN.join());
+ok(!nvN.some(n => /^(Team|Damen|Herren|Ihr Team)$/.test(n)), "11f Team, Damen, Herren werden NICHT vorgeschlagen", nvN.join());
+ok(nv.every(x => NV.slice(x.start, x.end) === x.name) && nv.find(x => x.name === "Klaus Berger")?.line === 8, "11g jede Fundstelle trägt Lage und Zeile");
+ok(!P.suggestNames(NV, { values: ["meier"] }).some(x => x.name === "Meier"), "11h schon bekannte Namen werden nicht noch einmal vorgeschlagen");
+ok(P.find(NV).length === 0 && !P.pseudonymize(NV).text.includes("⟦NAME"), "11i ein Vorschlag verdeckt NICHTS — find und pseudonymize bleiben unberührt");
+ok(wirft(() => P.suggestNames(null)), "11j text kein String → wirft");
+
 console.log(`\n== Ergebnis: ${pass} ok, ${fail} FAIL ==`);
 process.exit(fail === 0 ? 0 : 1);
