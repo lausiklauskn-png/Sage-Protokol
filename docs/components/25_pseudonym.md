@@ -76,6 +76,18 @@ Punkt B6, X25519 → ECDH → HKDF → AES-GCM). Grad B ist tragbar, solange der
   verdeckten Datum nicht — wer das braucht, lässt DATUM in `types` weg.
   Nicht erkannt: „März 2026" ohne Tag, englische Schreibweisen.
 - **Eigene Muster** (`customPatterns: [{ type, regex }]`), z. B. Aktenzeichen.
+- **Namensvorschläge** (`suggestNames(text, {values})`, Klaus 2026-10-02, Grenzen-Liste
+  Punkt 4c: „gut, solange es ein Vorschlag bleibt"). Gefunden werden Namen nach
+  Herr/Frau (auch mit Dr./Prof.), aus einer Begrüßung („Hallo Petra,") und aus einer
+  Grußformel („Viele Grüße" + nächste Zeile, „LG Anna"). Rückgabe
+  `[{name, start, end, line, grund}]`, `grund` anrede · begruessung · grussformel.
+  ⚠ **Ein Vorschlag verdeckt NICHTS** — `find` und `pseudonymize` bleiben unberührt;
+  verdeckt wird ein Name erst, wenn der Aufrufer ihn in `values` übernimmt.
+  Nach Herr/Frau nur EIN Wort, ein zweites nur, wenn danach der Satzteil endet
+  („Herrn Meier Bescheid" → Meier). Stoppwörter (Team, Damen, Herren, Kollegen, Mama …)
+  werden nicht vorgeschlagen. Grenzen: Namen ohne Anrede, Gruß oder Grußformel
+  fallen durch; ein großgeschriebenes Wort hinter „Hallo" wird vorgeschlagen, auch
+  wenn es kein Name ist — deshalb nur ein Vorschlag.
 
 Gefunden wird alles, dann **nach Lage** sortiert: bei Überlappung gewinnt die
 frühere Fundstelle, bei gleichem Anfang die längere. Gleicher Wert derselben Sorte
