@@ -22,6 +22,7 @@
 7. [Aufräumen — der erste Lauf hat die Annahme umgeworfen](#7)
 8. [Die Pinnwand hängt am selben Brett wie Kimboard](#8)
 9. [Die Spore im Netz ist nicht die Spore im Depot](#9)
+13. [„Installieren" steht da, aber keine App erscheint](#13)
 
 ---
 
@@ -991,3 +992,60 @@ Drei Sätze daraus:
 > **Der allgemeine Satz:** ein Werkzeug, dem man den Mund zuhält, meldet auch
 > das, was man hören müsste. `2>/dev/null` gehört an Stellen, wo man den Fehler
 > **kennt** — nicht an Stellen, wo man ihn nicht sehen will.
+
+---
+
+<a id="13"></a>
+
+# 13. „Installieren" steht da, aber auf dem Tablet erscheint keine App (2026-10-03)
+
+**Zweimal passiert, und beim zweiten Mal wusste keine Sitzung mehr, wie es beim
+ersten Mal gelöst wurde.** Klaus (2026-10-03, Kim-sync): *„im Chrome-Browser
+steht installieren mit dem richtigen Icon, taucht die App nicht auf dem Desktop
+auf. Und das ist auch schon das zweite Mal."* Das erste Mal war am 2026-09-30
+im Sende-Prüfer (*„App konnte nicht geöffnet werden"*, das Symbol war nur eine
+Chrome-Verknüpfung). Die Lösung stand nur im Kopf der Datei
+`assets/installieren.js`, also an einer Stelle, die niemand liest, bevor er sie
+schon gefunden hat.
+
+### Was beim ersten Mal half (am Tablet bestätigt, Sende-Prüfer #38, Auslieferungsprüfer #24)
+
+1. **Ein eigener Knopf „Installieren"** in der App: `assets/installieren.js`
+   (dieselbe Datei in Sage, Sende-Prüfer, Auslieferungsprüfer, SB-KIMTool-Point,
+   Mein-Tresor, Jasons-Tresor). Er fängt `beforeinstallprompt` ab und öffnet
+   Chromes **echten** Installations-Dialog. Das ergab am Tablet eine echte App,
+   wo Chromes Menü vorher nur eine Verknüpfung anlegte.
+2. **Bietet Chrome es nicht an, sagt der Knopf warum.** Der häufigste Grund:
+   Chrome hält die Seite schon für installiert. Trägt das Symbol ein kleines
+   Chrome-Zeichen, ist es nur eine **Verknüpfung**.
+3. **Der Weg, den Klaus gegangen ist:** Symbol lange drücken → Entfernen bzw.
+   Deinstallieren · Seite neu laden · dann den Knopf „Installieren" tippen.
+   Hilft das nicht: Chrome ⋮ → Einstellungen → Websiteeinstellungen → die
+   Seite → Daten löschen, dann neu installieren.
+4. **Ein Manifest mit `id`, `start_url`, `scope` und `display: standalone`** —
+   SB-KIMTool-Point hatte am 2026-09-30 gar keins, Chrome legte dort nur eine
+   Verknüpfung an.
+
+### Was daraus für jede neue App folgt
+
+- **Wer eine installierbare PWA baut, baut `installieren.js` gleich mit ein**
+  (`<script src="assets/installieren.js" data-name="…" data-vor="<knopf-id>">`),
+  nicht erst, wenn Klaus meldet, dass es nicht geht. Kim-sync hatte ihn am
+  2026-10-03 nicht.
+- **Die Meldung „installiert" sagt nichts darüber, wo die App liegt.** Sie kann
+  in der App-Liste stehen und nicht auf dem Startbildschirm.
+
+### Was NICHT gemessen ist
+
+- Warum Chrome am Tablet einmal eine echte App und einmal nur eine Verknüpfung
+  anlegt. Aus einem Sitzungs-Behälter ist das nicht zu messen; headless gibt es
+  kein Android-Installieren.
+- **Ungeprüfte Vermutung, nicht als Ursache ausgeben:** Samsung-Startbildschirme
+  haben eine Einstellung „Neue Apps zum Startbildschirm hinzufügen". Ist sie
+  aus, landet eine installierte App nur in der App-Liste. Im DeX-Modus liegen
+  Apps ebenfalls nicht von selbst auf dem Desktop. **Zuerst in der App-Liste
+  nachsehen**, bevor neu installiert wird.
+
+> **Der allgemeine Satz:** eine Lösung, die nur im Kopf einer Datei steht, findet
+> man erst, wenn man die Datei schon kennt. Was am Gerät des Nutzers gelöst
+> wurde, gehört an eine Stelle, die jede Sitzung ohnehin liest.
