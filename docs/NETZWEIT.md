@@ -286,6 +286,9 @@ hat ein Knopf **in der App** eine echte App erzeugt.
 Vorlagen: `Sende-Pruefer/assets/installieren.js` + `neuladen.js`, `mein-in-and-out-book/assets/installieren.js`
 (beides in einer Datei).
 
+Der Weg am Tablet, wenn schon eine Verknüpfung liegt, und die ungeprüfte Vermutung zum
+Samsung-Startbildschirm: [`LEHREN.md` § 13](LEHREN.md#13).
+
 ⚠ **Warum Chrome es so macht, ist NICHT gemessen.** Das hier ist ein Befund an Klaus' Gerät.
 Es ist keine Erklärung aus der Doku von Chrome. Sagt eine spätere Messung etwas anderes, gilt die Messung.
 
