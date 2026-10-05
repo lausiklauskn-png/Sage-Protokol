@@ -1032,6 +1032,8 @@ schon gefunden hat.
   (`<script src="assets/installieren.js" data-name="…" data-vor="<knopf-id>">`),
   nicht erst, wenn Klaus meldet, dass es nicht geht. Kim-sync hatte ihn am
   2026-10-03 nicht.
+- **Was der Knopf genau können muss** (drei Lagen, ⟳ daneben, Manifest, Worker) steht seit
+  dem 2026-10-05 als Regel in [`NETZWEIT.md` § 3b](NETZWEIT.md).
 - **Die Meldung „installiert" sagt nichts darüber, wo die App liegt.** Sie kann
   in der App-Liste stehen und nicht auf dem Startbildschirm.
 
