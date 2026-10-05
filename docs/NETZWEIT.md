@@ -260,6 +260,37 @@ App statt im Vorrat.
 
 ---
 
+## 3b · Der Installieren-Knopf gehört IN die App (Klaus 2026-10-05)
+
+Klaus: *„Das ist jetzt bei jeder App gewesen, die wir zuletzt programmiert
+haben. Wenn der Installationsbutton nicht in der App selber drin ist,
+funktioniert das Installieren nicht … dokumentiere das, dass wir das gleiche
+von der Reihe so machen."*
+
+**Was passiert ist.** Das Chrome-Menü bot die Installation an. Am Tablet blieb danach oft nur eine
+Verknüpfung, und beim Öffnen stand „App konnte nicht geöffnet werden". Belegt ist das am Sende-Prüfer
+(2026-09-30), am Auslieferungsprüfer und am In-and-Out-Book (2026-10-05). In den ersten beiden
+hat ein Knopf **in der App** eine echte App erzeugt.
+
+**Die Regel für jede neue PWA, von Anfang an:**
+
+| | |
+|---|---|
+| **Knopf in der Kopfleiste** | fängt `beforeinstallprompt` ab und ruft `prompt()` erst auf Tipp |
+| **kein Angebot** | ein Tipp nennt den Weg: Verknüpfung mit Chrome-Zeichen entfernen, neu laden, Knopf tippen |
+| **läuft als App** | Knopf weg, keine Meldung (Sende-Prüfer, Klaus 2026-10-02) |
+| **⟳ daneben** | wirft nur den **eigenen** Vorrat weg (Präfix der App — `github.io` ist geteilt), meldet den Worker ab, lädt mit `?frisch=` neu |
+| **Manifest** | `id`, `start_url`, `scope`, `display: standalone`, ein maskable-Icon |
+| **Worker** | Seiten Netz-zuerst, abgelegt wird nur Status 200 |
+
+Vorlagen: `Sende-Pruefer/assets/installieren.js` + `neuladen.js`, `mein-in-and-out-book/assets/installieren.js`
+(beides in einer Datei).
+
+⚠ **Warum Chrome es so macht, ist NICHT gemessen.** Das hier ist ein Befund an Klaus' Gerät.
+Es ist keine Erklärung aus der Doku von Chrome. Sagt eine spätere Messung etwas anderes, gilt die Messung.
+
+---
+
 ## 4 · Ton
 
 Klaus ist **kein Programmierer** (lernt gern): Antworten auf **Deutsch**, ruhig
