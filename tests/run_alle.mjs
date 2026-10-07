@@ -55,9 +55,17 @@ const FRIST = 120000;   // eine Probe, die zwei Minuten braucht, hängt
    ihrem Pfad geführt, damit man in der Ausgabe sieht, woher sie kommen. */
 const AUSSEN = ["pinnwand"];
 
+/* Proben in `tests/`, die nicht `smoke_*` heißen und trotzdem mitlaufen.
+   `vorrat_wirkung.mjs` stand bis zum 2026-10-07 in keinem Läufer (PFLEGE-
+   LISTE § 11): sie braucht Nachbar-Klone, und ohne die wäre sie ROT gewesen.
+   Seit sie „⊘ NACHBAR FEHLT" sagen kann, steht sie hier. Umbenennen wäre der
+   andere Weg — aber `gegenprobe_warten_async.mjs` und LEHREN § 6 nennen den
+   Namen, und ein Umzug bewegt jeden Verweis mit. */
+const EINZELN = ["vorrat_wirkung.mjs"];
+
 const dateien = [
   ...readdirSync(HIER)
-    .filter((f) => f.startsWith("smoke_") && f.endsWith(".mjs")),
+    .filter((f) => (f.startsWith("smoke_") || EINZELN.includes(f)) && f.endsWith(".mjs")),
   ...AUSSEN.flatMap((ordner) => {
     let liste = [];
     try { liste = readdirSync(join(HIER, "..", ordner)); } catch { return []; }
@@ -76,6 +84,15 @@ function fehltEinPaket(text) {
   return /ERR_MODULE_NOT_FOUND/.test(text) || /Cannot find package/.test(text);
 }
 
+/* Ein fehlender Nachbar-Klon ist der zweite Grund für „nicht lauffähig" —
+   und nur, wenn BEIDES stimmt: Rückgabewert 3 UND die Zeile am Zeilenanfang.
+   Eines allein bleibt ROT (siehe `vorrat_wirkung.mjs`, Abschnitt Nachbarn). */
+function fehltEinNachbar(code, text) {
+  if (code !== 3) return null;
+  const m = /^⊘ NACHBAR FEHLT: (.+?) —/m.exec(text);
+  return m ? m[1].trim() : null;
+}
+
 function lauf(datei) {
   return new Promise((fertig) => {
     execFile("node", [join(HIER, datei)], { timeout: FRIST, maxBuffer: 8 * 1024 * 1024 },
@@ -86,6 +103,8 @@ function lauf(datei) {
           const paket = (/Cannot find package '([^']+)'/.exec(text) || [, "?"])[1];
           return fertig({ datei, art: "fehlt", grund: paket });
         }
+        const nachbar = fehltEinNachbar(fehler.code, text);
+        if (nachbar) return fertig({ datei, art: "fehlt", grund: "Nachbar-Klon " + nachbar });
         if (fehler.killed) return fertig({ datei, art: "rot", grund: "Frist von " + (FRIST / 1000) + " s überschritten" });
         // Die letzte nicht-leere Zeile trägt bei diesen Proben die Summe.
         const zeilen = text.trim().split("\n").filter((z) => z.trim());
@@ -109,7 +128,7 @@ if (fehlt.length) {
   const pakete = [...new Set(fehlt.map((e) => e.grund))].join(", ");
   console.log("\nNICHT LAUFFÄHIG — ungeprüft, nicht kaputt (" + pakete + " fehlt):");
   console.log("  " + fehlt.map((e) => e.datei.replace(/^smoke_|\.mjs$/g, "")).join(" · "));
-  console.log("  Diese Proben sagen hier weder ja noch nein. Mit dem Paket laufen sie.");
+  console.log("  Diese Proben sagen hier weder ja noch nein. Mit dem, was fehlt, laufen sie.");
 }
 
 console.log(
