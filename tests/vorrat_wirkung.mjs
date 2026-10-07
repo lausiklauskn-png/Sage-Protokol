@@ -421,8 +421,41 @@ export async function lauf_(ok) {
 
 export { lauf_ as lauf };
 
+/* ── Nachbarn ──────────────────────────────────────────────────────────────
+ *
+ * Diese Probe misst an zwei ECHTEN Apps, und die liegen als Klone NEBEN Sage.
+ * Fehlt einer, ist das kein Befund über Sage — die Probe kann dann nicht
+ * messen. Ohne diesen Ausgang warf `git -C <fehlt> fetch` mitten im Lauf, und
+ * der Läufer hätte ROT gemeldet: deshalb stand sie bis zum 2026-10-07 in
+ * KEINEM Läufer (PFLEGE-LISTE § 11).
+ *
+ * ⚠ GENAU EIN AUSGANG, UND ER IST ENG. Rückgabewert NACHBAR_FEHLT_CODE und
+ * eine Zeile `⊘ NACHBAR FEHLT: …`, beides zugleich — `run_alle.mjs` nimmt nur
+ * das Paar als „nicht lauffähig". Eine rote Probe, die zufällig mit 3 endet,
+ * oder eine, die die Zeile nur druckt, bleibt ROT.
+ *
+ * ⚠ GEPRÜFT WIRD VOR DEM ERSTEN BROWSER, nicht unterwegs. Ein Nachbar, der
+ * mitten im Lauf fehlt (Netz weg beim `fetch`), ist weiter ROT — das ist eine
+ * gestörte Messung, keine fehlende Voraussetzung. */
+export const NACHBARN = [APP_A.repo, APP_B.repo];
+export const NACHBAR_FEHLT_CODE = 3;
+
+/** Welche Nachbarn fehlen? Ein Klon zählt, wenn er ein `.git` hat — außer er
+ *  steht in ARBEITSKOPIE, dann genügt der Arbeitsbaum. `netz` ist der Ordner,
+ *  in dem die Klone liegen (für die Probe einstellbar). */
+export function fehlendeNachbarn(netz = NETZ, arbeitskopie = ARBEITSKOPIE) {
+  return NACHBARN.filter((r) =>
+    !existsSync(join(netz, r, arbeitskopie.includes(r) ? "" : ".git")));
+}
+
 /* ── Kommandozeile ──────────────────────────────────────────────────────── */
 if (process.argv[1] && process.argv[1].endsWith("vorrat_wirkung.mjs")) {
+  const fehlen = fehlendeNachbarn(process.env.VORRAT_NETZ || NETZ);
+  if (fehlen.length) {
+    console.log(`⊘ NACHBAR FEHLT: ${fehlen.join(", ")} — erwartet neben Sage unter `
+      + `${process.env.VORRAT_NETZ || NETZ}. Ungeprüft, nicht kaputt.`);
+    process.exit(NACHBAR_FEHLT_CODE);
+  }
   let rot = 0;
   const ok = (was, gut) => { console.log(`  ${gut ? "✓" : "✗ ROT:"} ${was}`); if (!gut) rot++; };
   await lauf_(ok);

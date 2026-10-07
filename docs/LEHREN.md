@@ -573,6 +573,13 @@ ihrerseits ein Promise liefert (`() => holeWas()`), sieht keine Textsuche.
 ⚠ **Netzweit nachgesehen, auf `origin/main` von 17 Depots:** diese sechs
 Stellen waren die einzigen.
 
+✅ **Und die Probe steht seit dem 2026-10-07 im Läufer** — die dritte Art
+dieser Liste („eine Probe, die gar nicht im Läufer stand") an genau der Datei,
+deren Wartepunkte hier repariert wurden. Fehlen ihre Nachbar-Klone, sagt sie
+`⊘ NACHBAR FEHLT` mit Rückgabewert 3, und `run_alle.mjs` zählt das als „nicht
+lauffähig" — nur das Paar, eines allein bleibt ROT
+(`PFLEGE-LISTE.md` § 11, Wächter `smoke_laeufer_nachbar.mjs`).
+
 
 ---
 

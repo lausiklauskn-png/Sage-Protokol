@@ -164,7 +164,46 @@ trägt, `git log origin/main..HEAD --oneline` — ist die Liste nicht leer, geht
 verloren. Ein Werkzeug dafür gibt es: `node tools/zweig-pruefen.mjs`. Es wurde hier
 nicht gerufen.
 
-### 11 · `tests/vorrat_wirkung.mjs` steht in keinem Läufer
+### 12 · Zwei Proben melden ROT, wo ein Nachbar-Klon fehlt
+
+**Gemessen 2026-10-07** (Sage `a845c2a`, Behälter mit nur fünf Klonen):
+`smoke_geraetename_netzweit.mjs` meldet „NICHTS GEPRÜFT" als ROT (braucht
+mindestens einen von vier Nachbarn), `smoke_service_worker_parst.mjs` meldet
+„es gibt Service-Worker zu pruefen (6)" als ROT (verlangt ≥ 10). Beide haben
+mit keiner Änderung zu tun; sie sind in **jedem** Behälter ohne die
+Nachbar-Klone rot. `run_alle.mjs`: **110 grün · 2 rot · 0 nicht lauffähig.**
+
+Der Grund, „nichts geprüft" nicht grün zu nennen, ist richtig und bleibt.
+Falsch ist nur die Spalte: es ist **nicht lauffähig**, nicht ein Befund. Seit
+§ 11 hat der Läufer dafür einen Ausgang (Rückgabewert 3 **und** die Zeile
+`⊘ NACHBAR FEHLT: … —` am Zeilenanfang). Die zwei darauf umzustellen ist eine
+Pflegearbeit — nicht nebenbei gemacht, weil sie die Schwelle von
+`service_worker_parst` (≥ 10) mit entscheidet: ab wie vielen Nachbarn misst
+sie etwas?
+
+## Erledigt
+
+### ✅ 11 · `tests/vorrat_wirkung.mjs` steht im Läufer — 2026-10-07
+
+Die Probe sagt jetzt **vor** dem ersten Browser, ob ihre Nachbarn
+(`mycel-karte`, `Kuechenzettel`) daliegen. Fehlt einer: Rückgabewert 3 und
+`⊘ NACHBAR FEHLT: <genau die fehlenden> —`. `run_alle.mjs` nimmt sie über
+`EINZELN` mit und zählt **nur das Paar** aus Code und Zeile als „nicht
+lauffähig"; eines allein bleibt ROT. Umbenannt wurde sie nicht —
+`gegenprobe_warten_async.mjs` und `LEHREN.md` § 6 nennen den Namen.
+
+Wächter: `tests/smoke_laeufer_nachbar.mjs` (11 Zusicherungen, ohne Browser);
+Gegenprobe `tests/gegenprobe_laeufer_nachbar.mjs` **6 gefangen · 0
+durchgerutscht · 0 aus falschem Grund · 0 tote Anker**, jeder Fall mit der
+gemeinten Zeile als **erster** roter.
+
+⚠ **BENANNTE GRENZE:** ein fehlendes Chromium unter `/opt/pw-browsers/chromium`
+ist weiter ROT, nicht „nicht lauffähig" — wie bei allen Browser-Proben in
+Sage, die den Pfad fest setzen. Auf Klaus' Tablet und Server ungeprüft.
+
+Der ursprüngliche Eintrag, unverändert:
+
+#### 11 · `tests/vorrat_wirkung.mjs` steht in keinem Läufer
 
 **Gemessen 2026-09-28.** `run_alle.mjs` sammelt nur `smoke_*.mjs` (und
 `_smoke*` in `pinnwand/`). `vorrat_wirkung.mjs` fährt es deshalb nie — es
@@ -178,7 +217,6 @@ Läufer kennt diesen dritten Ausgang nur für fehlende Pakete. Wer sie
 aufnimmt, braucht zuerst einen „Nachbar fehlt"-Ausgang. Gefahren am
 2026-09-28 von Hand: 9 grün, 3 Läufe plus 4 unter Last.
 
-## Erledigt
 
 ### ✅ Rezept-Export trägt die Spur — 2026-09-16
 
