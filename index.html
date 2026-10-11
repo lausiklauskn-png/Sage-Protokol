@@ -1178,10 +1178,16 @@
   .vp-pwa-section { margin-top: 2.4rem; border-top: 1px solid var(--line); padding-top: 1.6rem; }
   .vp-pwa-h { font-size: 1.2rem; margin: 0 0 0.3rem; font-weight: 500; }
   .vp-pwa-sub { color: var(--muted); font-size: 0.88rem; margin: 0 0 1.3rem; line-height: 1.55; }
-  .vp-pwa-theme { margin-bottom: 1.4rem; }
-  .vp-pwa-theme-label { font-family: "Geist Mono", monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.55rem; }
-  .vp-pwa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.7rem; }
-  .vp-pwa-card { display: block; padding: 0.9rem 1rem; background: rgba(0,0,0,0.32); border: 1px dashed var(--line-strong); border-radius: 12px; text-decoration: none; color: inherit; transition: border-color .2s, transform .15s, background .2s; }
+  /* Jedes Thema traegt meist genau EINE Karte. Darum fliessen die Themen-Bloecke
+     selbst als Raster nebeneinander (vorher: ein Block je Zeile, die Karte
+     linksbuendig, rechts leer). subgrid haelt Etikett und Karte jeder Zeile
+     auf gleicher Hoehe; ohne subgrid bleibt es ein sauberes Raster. */
+  #vp-pwa-themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); column-gap: 0.9rem; row-gap: 1.2rem; align-items: stretch; }
+  .vp-pwa-theme { display: grid; grid-template-rows: auto 1fr; grid-row: span 2; min-width: 0; }
+  @supports (grid-template-rows: subgrid) { .vp-pwa-theme { grid-template-rows: subgrid; row-gap: 0; } }
+  .vp-pwa-theme-label { font-family: "Geist Mono", monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.55rem; align-self: end; overflow-wrap: anywhere; }
+  .vp-pwa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0.7rem; }
+  .vp-pwa-card { display: flex; flex-direction: column; align-items: flex-start; height: 100%; box-sizing: border-box; padding: 0.9rem 1rem; background: rgba(0,0,0,0.32); border: 1px dashed var(--line-strong); border-radius: 12px; text-decoration: none; color: inherit; transition: border-color .2s, transform .15s, background .2s; }
   .vp-pwa-card:hover { border-color: var(--accent); transform: translateY(-2px); background: rgba(110,231,211,0.04); }
   .vp-pwa-card.live { border-style: solid; border-color: var(--accent); }
   .vp-pwa-card.repo { border-style: dashed; border-color: var(--gold); }
@@ -1190,7 +1196,7 @@
   .vp-pwa-pill { display: inline-block; margin-top: 0.55rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-family: "Geist Mono", monospace; font-size: 0.68rem; border: 1px solid var(--line); color: var(--muted); }
   .vp-pwa-card.live .vp-pwa-pill { color: var(--accent); border-color: var(--accent); }
   .vp-pwa-card.repo .vp-pwa-pill { color: var(--gold); border-color: var(--gold); }
-  .vp-pwa-url { margin-top: 0.45rem; font-family: "Geist Mono", monospace; font-size: 0.66rem; color: var(--dim); word-break: break-all; }
+  .vp-pwa-url { margin-top: auto; padding-top: 0.45rem; font-family: "Geist Mono", monospace; font-size: 0.66rem; color: var(--dim); word-break: break-all; }
   .vp-tile { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto auto; column-gap: 0.7rem; row-gap: 0.12rem; align-items: center; text-align: left; padding: 0.85rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--line); cursor: pointer; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .2s; }
   .vp-tile:hover, .vp-tile:focus-visible { transform: translateY(-2px); border-color: currentColor; box-shadow: 0 8px 22px rgba(0,0,0,0.35); outline: none; }
   .vp-tile.vp-dim { opacity: 0.28; filter: grayscale(0.6); }

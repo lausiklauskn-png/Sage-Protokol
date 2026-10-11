@@ -31,6 +31,31 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-11 · Truhe: die Mycel-PWAs stehen als Raster, nicht als Spalte
+
+**Rolle:** Pflege-Sitzung (Auftrag von Klaus, mit Bildschirmfoto vom Tablet).
+
+**Befund:** Im Truhe-Screen (`#vp-pwa-themes`) stand jedes Thema als eigener
+Block in einer eigenen Zeile. Alle 24 Themen tragen genau **eine** Karte, das
+Raster darin hatte also eine Karte links und daneben leere Spalten. Ergebnis:
+eine lange, linksbündige Spalte.
+
+**Getan:** nur CSS in `index.html`. Die Themen-Blöcke selbst bilden jetzt das
+Raster (`auto-fill`, mind. 260 px). Über `subgrid` stehen Etikett und Karte
+einer Zeile auf gleicher Höhe, alle Karten einer Zeile sind gleich hoch, die
+Adresse sitzt unten. Ohne `subgrid` bleibt es ein normales Raster. Kein JS
+geändert.
+
+**Gemessen** (Playwright, Chromium): 1280 px → vier Spalten, 390 px → eine
+Spalte. Kein waagerechtes Überlaufen bei beiden Breiten. `npm test`: 109 grün,
+2 rot, 1 nicht lauffähig. Die zwei roten (`smoke_geraetename_netzweit`,
+`smoke_service_worker_parst`) sind auf `origin/main` ohne diese Änderung
+genauso rot, weil die Nachbar-Repos nicht neben Sage liegen.
+`tests/manual_check.html`: ungeprüft, weil nur das Aussehen eines Screens
+geändert wurde und keine Modul-Logik.
+
+**Offen:** Sichttest am Tablet durch Klaus.
+
 ## 2026-10-07 · `vorrat_wirkung.mjs` steht im Läufer (PFLEGE-LISTE § 11)
 
 **Rolle:** Pflege-Sitzung (Brief aus Kimhub, Stand `3c8a3cc`).
