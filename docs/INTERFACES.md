@@ -7144,6 +7144,32 @@ fremde Leiste wird dabei nichts gehängt. Eine Leiste, die nicht klebt
 Geprüft: `tests/smoke_andocken_oben.mjs` (echter Browser) ·
 `tests/gegenprobe_andocken_oben.sh`.
 
+#### Die Leiste nimmt den Mycel-Knopf automatisch auf (Klaus 2026-10-11)
+
+> „… jedes Mal, wenn ich das Mycel oben in die Navi-Leiste ziehe, dass es
+> sich genau neben dem Siegel verankert. Also links/rechts, da wo Platz ist."
+
+**Befund:** Sage selbst bot keinen `data-sbkim-mycel-platz` an. Der Knopf
+schwebte deshalb nur in Pixel-Abstand über der Leiste und lag im schmalen
+Fenster unter den Lampen, als die Leiste in zwei Zeilen umbrach.
+
+**Bauplan, verbindlich für jeden Knoten mit Kopfleiste:**
+
+| | |
+|---|---|
+| **Platz** | ein `<span data-sbkim-mycel-platz>` **direkt hinter** der Lampen-/Siegel-Gruppe, im Fluss der Leiste. Bricht die Leiste um, wandert der Knopf mit |
+| **Leer** | `:empty { display:none }`, damit ein leerer Platz keine Lücke reißt |
+| **Hochziehen** | oben losgelassen → **hinein**, nicht darüber schweben |
+| **Gemerkte obere Lage** | eine früher gemerkte `oben`-Lage gilt als „in der Leiste": bietet die Seite einen Platz an, dockt der Knopf beim Laden an und die alte Lage wird gelöscht |
+| **Frei gezogen** | eine frei gemerkte Lage (`x`/`y`, ohne `oben`) gewinnt weiter, das Flying-Widget bleibt |
+
+Sage trägt den Platz seit diesem Tag in `index.html` neben `#sbkim-siegel-badge`.
+Andere Apps bekommen die Lade-Regel mit der nächsten Kanon-Verteilung von
+`23_rendezvous_ui.js`; den **Platz** muss jede App selbst in ihre Leiste setzen.
+
+Geprüft: `tests/smoke_bau23_mycel_platz.mjs` Fall 4b. Gegenprobe: Regel
+herausgenommen → beide Zeilen von 4b rot (2026-10-11).
+
 #### Was zu prüfen ist
 
 `tests/smoke_bau23_mycel_platz.mjs` misst es im echten Browser — ein

@@ -31,6 +31,28 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-11 · Mycel-Knopf dockt in Sages Leiste neben dem Siegel an
+
+**Rolle:** Pflege-Sitzung (Auftrag von Klaus, zwei Bildschirmfotos vom Tablet).
+
+**Befund:** Sage bot keinen `data-sbkim-mycel-platz` an. Hochgezogen schwebte
+der Knopf nur in Pixel-Abstand über der Leiste und lag im schmalen Fenster
+unter den Lampen.
+
+**Getan:** `index.html`: Platz direkt hinter der Lampen-/Siegel-Gruppe.
+`23_rendezvous_ui.js`: eine gemerkte `oben`-Lage plus angebotener Platz dockt
+beim Laden an, statt weiter zu schweben. Bundle-Kopien (`sbkim-bundle*/`)
+nachgezogen. Bauplan in `INTERFACES.md` („Die Leiste nimmt den Mycel-Knopf
+automatisch auf").
+
+**Gemessen:** Playwright an Sage, 1100 px und 1700 px, alte `oben`-Lage
+vorbelegt → Knopf jeweils im Platz, 32 px rechts vom Siegel-Rand.
+`smoke_bau23_mycel_platz` 19/19, Gegenprobe: 4b fällt ohne die Regel rot.
+`bauvorlagen`, `andocken_oben`, `bau23_rendezvous_ui` grün.
+
+**Offen:** Kanon-Verteilung von `23_rendezvous_ui.js` in die Apps; jede App
+braucht dazu ihren eigenen Platz in der Leiste.
+
 ## 2026-10-11 · Truhe: die Mycel-PWAs stehen als Raster, nicht als Spalte
 
 **Rolle:** Pflege-Sitzung (Auftrag von Klaus, mit Bildschirmfoto vom Tablet).

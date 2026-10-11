@@ -156,6 +156,18 @@ async function lauf() {
     const d2 = await lage();
     ok('… und sie bleibt auch nach dem Neuladen in der Leiste', d2 && d2.imPlatz);
 
+    // ── 4b · OBEN gemerkt + Platz angeboten → beim Laden HINEIN ──────────
+    /* Klaus 2026-10-11: „jedes Mal, wenn ich das Mycel oben in die Navi-Leiste
+       ziehe, verankert es sich neben dem Siegel". Eine früher gemerkte obere
+       Lage (Schweben über der Leiste in Pixel-Abstand) darf das nicht mehr
+       überstimmen, sobald die Seite einen Platz anbietet. */
+    await seite.evaluate(() => localStorage.setItem('sbkim_rdv_ui_pos',
+      JSON.stringify({ x: 300, y: 4, oben: { seite: 'links', abstand: 300 } })));
+    await start('mit.html');
+    const o1 = await lage();
+    ok('oben gemerkt + Platz da → beim Laden in der Leiste', o1 && o1.imPlatz && o1.pos === 'static');
+    ok('… und die alte obere Lage ist gelöscht', o1 && !o1.gemerkt);
+
     // ── 5 · OHNE Platz bleibt ALLES wie bisher (fail-soft) ────────────────
     /* ⚠ DIE GEGENRICHTUNG. Ohne sie wäre „sitzt in der Leiste" auch grün,
        wenn eine App ohne Leiste gar keine Blase mehr bekäme — und dann wäre

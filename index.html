@@ -175,6 +175,8 @@
   .brand-mark { font-size: 1.05rem; }
   .brand-mark .dot { color: var(--accent); margin: 0 0.18em; }
   .topbar-spacer { flex: 1; }
+  .mycel-platz { display: inline-flex; align-items: center; }
+  .mycel-platz:empty { display: none; }
   .topbar-meta { color: var(--dim); font-family: "Geist Mono", monospace; font-size: 0.78rem; letter-spacing: 0.02em; }
   .lamps { display: flex; align-items: center; gap: 0.45rem; padding: 0.32rem 0.7rem; background: rgba(0,0,0,0.45); border: 1px solid var(--line); border-radius: 999px; }
   .netz-check-btn { display: inline-flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem; padding: 0.3rem 0.7rem; font: inherit; font-size: 0.78rem; color: var(--muted); background: rgba(0,0,0,0.45); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
@@ -1270,6 +1272,12 @@
              Anker LEER — es wird kein Siegel gezeigt, nur Platz gehalten. -->
         <span id="sbkim-siegel-badge"></span>
       </div>
+      <!-- Andock-Platz fuer den Mycel-Knopf (Modul 23 UI), direkt neben dem
+           Siegel (Klaus 2026-10-11). Wer den Knopf oben an die Leiste zieht,
+           haengt ihn hier HINEIN — im Fluss der Leiste, nicht darueber
+           schwebend. Ohne diesen Platz rastete er nur in Pixel-Abstand ueber
+           der Leiste ein und lag im schmalen Fenster unter den Lampen. -->
+      <span class="mycel-platz" data-sbkim-mycel-platz></span>
       <button type="button" id="netz-check-btn" class="netz-check-btn"
               title="Briefkästen der anderen Knoten jetzt prüfen (SIGNAL.json, live im Browser)"
               aria-label="Netz-Briefkasten jetzt prüfen">📬 <span class="ncb-label">Briefkasten</span><span class="ncb-badge" id="ncb-badge" hidden></span></button>
