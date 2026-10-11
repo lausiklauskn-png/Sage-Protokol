@@ -177,13 +177,24 @@
   .topbar-spacer { flex: 1; }
   .mycel-platz { display: inline-flex; align-items: center; }
   .mycel-platz:empty { display: none; }
-  .topbar-meta { color: var(--dim); font-family: "Geist Mono", monospace; font-size: 0.78rem; letter-spacing: 0.02em; }
   .lamps { display: flex; align-items: center; gap: 0.45rem; padding: 0.32rem 0.7rem; background: rgba(0,0,0,0.45); border: 1px solid var(--line); border-radius: 999px; }
   .netz-check-btn { display: inline-flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem; padding: 0.3rem 0.7rem; font: inherit; font-size: 0.78rem; color: var(--muted); background: rgba(0,0,0,0.45); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
   .netz-check-btn:hover { color: var(--accent); border-color: var(--accent); }
   .netz-check-btn.checking { opacity: 0.65; cursor: progress; }
   .netz-check-btn.has-news { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 10px rgba(244,180,53,0.35); }
   @media (max-width: 560px) { .netz-check-btn .ncb-label { display: none; } }
+  /* Handy: zwei Zeilen statt vier (Klaus 2026-10-11). Die Lampen-Woerter
+     fallen weg; ein Tipp auf eine Lampe sagt, was sie bedeutet. */
+  @media (max-width: 560px) {
+    .topbar-inner { gap: 0.55rem 0.6rem; padding: 0.6rem 1rem; }
+    .topbar-spacer { display: none; }
+    .brand { flex: 1 1 auto; }
+    .lamps .lamp-label { display: none; }
+    #installieren .t { display: none; }   /* nur ⬇, wie Briefkasten und Frisch laden */
+    .lamps { gap: 0.55rem; padding: 0.25rem 0.6rem; }
+    .lamps .lamp { width: 12px; height: 12px; cursor: pointer; }
+  }
+  .lamp-hinweis { position: fixed; z-index: 2147483000; max-width: min(280px, calc(100vw - 32px)); padding: 0.5rem 0.7rem; border-radius: 10px; background: #0b0f1c; border: 1px solid var(--line-strong); color: var(--text); font-size: 0.82rem; line-height: 1.4; box-shadow: 0 8px 22px rgba(0,0,0,.45); }
   .netz-check-pop { position: fixed; top: 3.6rem; right: 1rem; z-index: 120; width: 360px; max-width: calc(100vw - 1.4rem); max-height: 78vh; overflow-y: auto; padding: 0.85rem 1rem; background: rgba(12,10,30,0.97); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,0.6); font-size: 0.85rem; color: var(--text); display: none; }
   .netz-check-pop.show { display: block; }
   .netz-check-pop h4 { margin: 0 0 0.5rem; font-size: 0.9rem; }
@@ -499,7 +510,6 @@
   .bar-fill.teal { background: linear-gradient(90deg, var(--accent) 0%, #34D399 100%); }
   .bar-fill.gold { background: linear-gradient(90deg, var(--gold) 0%, #FB923C 100%); }
   .bars-legend { font-family: "Geist Mono", monospace; font-size: 0.72rem; color: var(--dim); margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
-  .meta-footer { margin-top: 4rem; padding: 1.6rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--line); border-radius: var(--r); display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
   .legal-line { margin: 1rem 0 0; text-align: center; font-size: 0.78rem; color: var(--dim); font-family: "Geist Mono", monospace; }
   /* Unterstrichen, nicht nur eingefärbt: ein Verweis mitten im Fließtext, der
    * sich allein durch die Farbe abhebt, ist für farbfehlsichtige Leser kein
@@ -508,8 +518,6 @@
    * den Unterlängen weg. */
   .legal-line a { color: rgba(244,180,53,0.78); text-decoration: underline; text-underline-offset: 0.18em; }
   .legal-line a:hover { color: var(--accent); }
-  .meta-cell .k { font-family: "Geist Mono", monospace; font-size: 0.68rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.25rem; }
-  .meta-cell .v { font-family: "Geist Mono", monospace; font-size: 0.84rem; color: var(--text); word-break: break-all; }
   .section-title { margin: 0; font-size: 1.55rem; font-weight: 500; letter-spacing: -0.02em; }
   .section-sub { color: var(--muted); margin: 0.3rem 0 0; font-size: 0.95rem; }
   .section-head { margin: 0 0 1rem; }
@@ -1288,7 +1296,6 @@
       <button type="button" id="hard-reload-btn" class="netz-check-btn"
               title="Frisch laden — Zwischenspeicher leeren und neueste Fassung holen"
               aria-label="Seite frisch laden">🔄 <span class="ncb-label">Frisch laden</span></button>
-      <div class="topbar-meta mono" id="topbar-meta">—</div>
     </div>
   </header>
   <!-- ⚠ HIER STAND DAS FLYING-WIDGET (Klaus 2026-09-10: „im Sage Protokol
@@ -1844,12 +1851,6 @@
 
           </div>
         </article>
-        <div class="meta-footer span-12">
-          <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
-          <div class="meta-cell"><span class="k">Protokoll</span><span class="v" id="ft-proto">—</span></div>
-          <div class="meta-cell"><span class="k">Schema</span><span class="v" id="ft-schema">—</span></div>
-          <div class="meta-cell"><span class="k">Update</span><span class="v" id="ft-update">—</span></div>
-        </div>
         <p class="legal-line span-12">© 2026 Klaus Nitzsche · Alle Rechte vorbehalten ·
           <a href="impressum.html">Impressum, Datenschutz &amp; Urheberrecht</a></p>
       </div>
@@ -2356,8 +2357,6 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
   function renderAll() {
     const s = STATE.status;
-    renderTopbar(s);
-    renderFooter(s);
     renderTopology(s);
     renderModuleList(s);
     renderCyclePhases(s);
@@ -2544,16 +2543,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (lbl) lbl.textContent = p + ' %';
   }
 
-  function renderTopbar(s) {
-    const el = document.getElementById('topbar-meta');
-    el.textContent = (s.lastUpdated || '—') + ' · v' + (s.protocolVersion || '0.1') + ' · ' + (s.branch || '—').slice(0, 36);
-  }
-  function renderFooter(s) {
-    document.getElementById('ft-branch').textContent = s.branch || '—';
-    document.getElementById('ft-proto').textContent = s.protocolVersion || '0.1';
-    document.getElementById('ft-schema').textContent = 'v' + (s.schemaVersion || '1');
-    document.getElementById('ft-update').textContent = s.lastUpdated || '—';
-  }
+  /* Branch/Protokoll/Schema/Update standen doppelt — als Zeile in der
+     Kopfleiste und als eigener Kasten unten. Beides entfernt (Klaus
+     2026-10-11): fuer den Besucher ohne Nutzen, am Handy eine ganze Zeile. */
 
   // ====== TOPOLOGY ======
   const TOPO_LAYOUT = {
@@ -5313,6 +5305,31 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   </script>
 
 <script>
+// 💡 Lampen-Hinweis: am Handy stehen die Lampen ohne Woerter. Ein Tipp auf
+// LEBT oder VERKEHR zeigt kurz, was die Lampe bedeutet. FREMD behaelt seinen
+// eigenen Klick (oeffnet die Liste, Modul 15) und bekommt den Hinweis dazu.
+(function () {
+  var box = null, zu = null;
+  function weg() { if (box) { box.remove(); box = null; } clearTimeout(zu); }
+  document.addEventListener('click', function (ev) {
+    var l = ev.target && ev.target.closest ? ev.target.closest('.lamps .lamp') : null;
+    if (!l) { weg(); return; }
+    if (!window.matchMedia('(max-width: 560px)').matches) return;
+    var text = l.getAttribute('title') || '';
+    if (!text) return;
+    weg();
+    box = document.createElement('div');
+    box.className = 'lamp-hinweis';
+    box.setAttribute('role', 'status');
+    box.textContent = text;
+    document.body.appendChild(box);
+    var r = l.getBoundingClientRect(), w = box.offsetWidth;
+    box.style.top = Math.round(r.bottom + 8) + 'px';
+    box.style.left = Math.round(Math.max(16, Math.min(r.left - 20, innerWidth - w - 16))) + 'px';
+    zu = setTimeout(weg, 4000);
+  }, true);
+})();
+
 // 🔄 Frisch laden: Service-Worker abmelden, alle Zwischenspeicher leeren,
 // dann neu laden. Behebt das „alte Fassung haengt"-Problem per Knopfdruck,
 // ohne dass jemand eine Tastenkombination kennen muss.
