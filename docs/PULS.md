@@ -39,6 +39,10 @@ Forschungseintrag `2026-10-11-sage-truhe-raster-mycel-anker-kopfleiste` in
 Übergabeprotokoll: `docs/sessions/archiv/2026-10-11_truhe-pwa-raster.md`.
 Auf Klaus' Wunsch kein Brief für eine Folge-Sitzung.
 
+**Nachtrag:** Klaus' Sichttest des Mycel-Knopfs bestanden („klappt
+einwandfrei"). Truhe-Raster und Kopfleiste am Handy nicht ausdrücklich
+bestätigt.
+
 ## 2026-10-11 · Kopfleiste am Handy in zwei Zeilen, Meta-Angaben entfernt
 
 **Rolle:** Pflege-Sitzung (Auftrag von Klaus, Bildschirmfoto vom Handy).
