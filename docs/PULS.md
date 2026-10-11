@@ -31,6 +31,24 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-11 · Kopfleiste am Handy in zwei Zeilen, Meta-Angaben entfernt
+
+**Rolle:** Pflege-Sitzung (Auftrag von Klaus, Bildschirmfoto vom Handy).
+
+**Befund:** Branch/Protokoll/Schema/Update standen doppelt, als Zeile in der
+Kopfleiste und als eigener Kasten über dem Impressum. Am Handy brauchte die
+Kopfleiste vier Zeilen.
+
+**Getan (`index.html`):** beide Meta-Anzeigen samt `renderTopbar`/`renderFooter`
+und ihrem CSS entfernt. Unter 560 px: Lampen ohne Wörter, größere Punkte,
+„Installieren" nur als ⬇. Ein Tipp auf eine Lampe zeigt ihren Titel 4 s lang
+(FREMD behält seinen eigenen Klick dazu).
+
+**Gemessen** (Playwright): 360 · 390 · 412 px → zwei Zeilen, kein
+waagerechtes Überlaufen; der Lampen-Hinweis erscheint unter der Lampe.
+`npm test` 109 grün · 2 rot (die bekannten, Nachbar-Repos fehlen) · 1 nicht
+lauffähig.
+
 ## 2026-10-11 · Mycel-Knopf dockt in Sages Leiste neben dem Siegel an
 
 **Rolle:** Pflege-Sitzung (Auftrag von Klaus, zwei Bildschirmfotos vom Tablet).
