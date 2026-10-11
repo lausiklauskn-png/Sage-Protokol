@@ -24,3 +24,24 @@ Zeile auf gleicher Höhe, mit Rückfall auf ein normales Raster.
 
 ## Offen
 Sichttest am Galaxy Tab durch Klaus.
+
+## Nachtrag am selben Tag: zwei weitere Aufträge
+
+**Mycel-Knopf in der Leiste (PR #1067).** Sage bot keinen
+`data-sbkim-mycel-platz` an; der Knopf schwebte nur über der Leiste. Platz
+direkt hinter Lampen und Siegel gesetzt; eine gemerkte obere Lage dockt beim
+Laden an. Bauplan in `docs/INTERFACES.md` („Die Leiste nimmt den Mycel-Knopf
+automatisch auf"), Wächter `smoke_bau23_mycel_platz` Fall 4b mit Gegenprobe.
+
+**Kopfleiste am Handy (PR #1068).** Branch/Protokoll/Schema/Update oben und
+unten entfernt. Unter 560 px Lampen ohne Wörter, Tipp zeigt die Bedeutung,
+„Installieren" nur als ⬇. Gemessen bei 360/390/412 px: zwei Zeilen.
+
+**Forschungseintrag:** `Kimhub/forschung/sitzungen.json` —
+`2026-10-11-sage-truhe-raster-mycel-anker-kopfleiste` (Kimhub PR #360).
+
+## Offen
+- Sichttest am Tablet und Handy durch Klaus.
+- Kanon-Verteilung von `23_rendezvous_ui.js`; jede App braucht ihren eigenen
+  Platz in der Leiste.
+- Die zwei roten Proben brauchen die Nachbar-Repos.
