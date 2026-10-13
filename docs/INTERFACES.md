@@ -5057,6 +5057,10 @@ EIGENES NETZ (Schritt 1, 2026-10-13, Brief docs/BRIEF_2026-10-13_eigenes-netz.md
                                  einem Alphabet ohne 0/O/1/I, crypto.getRandomValues)
     checkNetSetting(s)         → { ok, setting?, reason? }  (pure Prüfung)
     loadNetwork(store?) / saveNetwork(setting, store?) / clearNetwork(store?)
+    readNetwork(store?)        → { present:false } | { present:true, ok:true, setting }
+                                 | { present:true, ok:false, value, reason } — sagt
+                                 auch, dass UNGÜLTIGES gespeichert ist (loadNetwork
+                                 gäbe null, und null hieße „öffentlich"; Schritt 2)
     applyNetwork(setting|null) → Promise<{ ok, network, relays?, reason? }>
                                  setzt 05b-Relais (configure bzw. reset) UND Code.
     _meta zusätzlich: network, encrypted, networkReason (Grund bei „ungueltig", sonst null), queryTag/tag = die GERADE geltenden.
@@ -5082,6 +5086,48 @@ EIGENES NETZ (Schritt 1, 2026-10-13, Brief docs/BRIEF_2026-10-13_eigenes-netz.md
     „intern Family Project" (`name`, Anzeige). Die Subdomain kann den Namen
     nicht wörtlich tragen (keine Leerzeichen, keine Großbuchstaben); Vorschläge
     intern.family-projekt.de oder relay-intern.family-projekt.de, Wahl offen.
+
+  EINSTELLUNG „NETZ" IN 23-UI (Schritt 2, 2026-10-13, Brief
+  docs/BRIEF_2026-10-13_eigenes-netz-schritt2.md):
+    Abschnitt „🔒 Netz" im Panel (<details data-sbkim-netz-box>; der Knopf trägt data-sbkim-netz), zugeklappt.
+    Lage-Zeile [data-sbkim-netz-lage] = oeffentlich | eigen | ungueltig |
+      wird-abgeleitet, mit Name und Relais im Klartext, nie mit dem Code.
+      Sie steht auch am Knopf selbst (Attribut data-sbkim-netz am Rendezvous-
+      Knopf), damit die Lage ohne Aufklappen zu sehen ist.
+    Felder: Name · Relais (wss://…) · Code. Knöpfe: „Code erzeugen"
+      (newNetCode) · „Übernehmen" (saveNetwork + applyNetwork) · „Zurück ins
+      öffentliche Netz" (clearNetwork + applyNetwork(null)) · „Link kopieren".
+    Beim Laden (init): liegt eine Einstellung unter sbkim_netz_<dbSuffix>, wird
+      sie angewandt; ist sie UNGÜLTIG, steht die Lage auf „ungueltig" und es wird
+      NICHT verbunden (nie still öffentlich). Mit auto:true verbindet 23-UI im
+      eigenen Netz danach selbst (onConnect, mit der Kennungs-Frage wie beim
+      Knopf — es wird keine Kennung stumm angelegt). Ohne Einstellung bleibt es
+      bei „keine Eigenanfrage beim Laden".
+    Weitergeben (Klaus 2026-10-13: „über Link, über QR-Code und notfalls von
+      Hand … am besten per Link"):
+      Link = <Adresse der App> + "#sbkim-netz=" + base64url(JSON
+        {v:1, n:name, r:relay, c:code}). Der Code steht im FRAGMENT — ein
+        Fragment wird nie an einen Server geschickt (auch nicht an GitHub Pages).
+      Öffnet eine App einen solchen Link, fragt sie im Panel „Diesem Netz
+        beitreten?" (Name, Relais sichtbar) und übernimmt erst auf „Beitreten".
+        Die Adresse wird in beiden Fällen sofort geputzt (history.replaceState),
+        damit der Code nicht in Verlauf, Lesezeichen oder einem geteilten
+        Bildschirm stehen bleibt.
+      Der Link funktioniert in JEDER App mit 23-UI, nicht nur in der, die ihn
+        erzeugt hat — die Einstellung trägt nichts App-Eigenes.
+      ⚠ BENANNTE GRENZE: der QR-Code ist in diesem Schritt NICHT gebaut (kein
+        QR-Erzeuger im Netz, ein eigener ist ein eigener Bauschritt mit eigener
+        Probe). Von Hand geht: Name, Relais und Code in die Felder tippen.
+    JEDERZEIT EIN NEUES TOOL (Klaus 2026-10-13: „Es soll jederzeit möglich
+      sein, ein neues Tool hinzuzufügen"): ein Tool tritt bei, indem es den Link
+      öffnet (oder Relais und Code eingetippt bekommt). Weder der Server noch die
+      übrigen Apps werden dafür geändert. Daraus folgt für das Firmen-Relais
+      (Schritt 2b): KEINE feste Schlüssel-Liste (pubkey_whitelist) als Riegel —
+      jede App hat ihre eigene Kennung, und eine Liste verlangte für jedes neue
+      Tool einen Eingriff auf dem Server. Der Schutz ist der Code
+      (Verschlüsselung), dazu Grenzen gegen Flut am Relais.
+    Speicher und Sprache: kein neuer Schlüssel — es gilt sbkim_netz_<dbSuffix>
+      aus Modul 23. Alle Texte über T() (DE/EN).
 
   Benannte Grenzen: der Andock-Handshake (Modul 05, Tag "sbkim-anastomosis")
     bleibt Klartext, nur sein Relais wechselt mit · wer den Code kennt, ist drin

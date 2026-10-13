@@ -189,7 +189,7 @@ function texte(el, aus = []) {
 {
   const TECHNISCH = new Set(["none","block","flex","inline","inline-block","button","div","span",
     "input","a","p","h1","h2","h3","label","select","option","textarea","img","br","hr","ul","li",
-    "strong","pre","b","i","em","small","code",
+    "strong","pre","b","i","em","small","code","details","summary",
     "click","change","submit","keydown","pointerdown","text","password","file","checkbox",
     "new-password","nearest","center","start","end","function","string","object","number","boolean",
     "use strict","application/json","true","false","null","undefined","auto","hidden","visible",

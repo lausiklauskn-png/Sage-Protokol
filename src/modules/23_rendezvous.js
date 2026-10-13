@@ -309,6 +309,21 @@
     var r = checkNetSetting(s);
     return r.ok ? r.setting : null;
   }
+  // Wie loadNetwork, sagt aber AUCH, dass etwas Ungültiges gespeichert ist.
+  // loadNetwork gibt dann null zurück — und null hieße für einen Aufrufer
+  // „öffentlich". Genau das darf eine kaputte Einstellung nie werden (Riegel).
+  function readNetwork(store) {
+    var st = netStore(store), k = netSchluessel();
+    if (!st || !k) return { present: false };
+    var roh; try { roh = st.getItem(k); } catch (_e) { return { present: false }; }
+    if (!roh) return { present: false };
+    var s; try { s = JSON.parse(roh); } catch (_e) {
+      return { present: true, ok: false, value: {}, reason: "Gespeicherte Netz-Einstellung ist nicht lesbar." };
+    }
+    var r = checkNetSetting(s);
+    return r.ok ? { present: true, ok: true, setting: r.setting }
+                : { present: true, ok: false, value: (s && typeof s === "object") ? s : {}, reason: r.reason };
+  }
   function saveNetwork(setting, store) {
     var k = netSchluessel();
     if (!k) return { ok: false, reason: "Ohne dbSuffix wird nicht gespeichert (geteilte Adresse)." };
@@ -1328,6 +1343,7 @@
     newNetCode: newNetCode,
     checkNetSetting: checkNetSetting,
     loadNetwork: loadNetwork,
+    readNetwork: readNetwork,
     saveNetwork: saveNetwork,
     clearNetwork: clearNetwork,
     applyNetwork: applyNetwork,
