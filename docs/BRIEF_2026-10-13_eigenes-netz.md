@@ -103,7 +103,16 @@ Folge heute: jeder, der eine von Klaus' Apps herunterlädt, landet über
   Relais-Programm es kann (vorher am Server prüfen).
 - Eine Anleitung „Eigenes Relais aufstellen“ für Kunden aus demselben Skript.
 
-## Offene Fragen an Klaus (vor Schritt 1 stellen)
+## Antworten von Klaus (2026-10-13)
+
+1. Relais „intern Family Project“ unter `wss://relay-intern.family-projekt.de`.
+2. Mein Rezeptbuch lauscht im öffentlichen Netz weiter selbst. Im **eigenen** Netz soll jede App
+   beim Öffnen automatisch verbinden (Schritt 2).
+3. Erster Träger: Sende-Prüfer.
+
+Schritt 1 ist gebaut (PULS 2026-10-13, Protokoll `docs/sessions/archiv/2026-10-13_eigenes-netz-schritt1.md`).
+
+## Offene Fragen an Klaus (vor Schritt 1 gestellt, oben beantwortet)
 
 1. Name und Adresse des Firmen-Relais (Subdomain)?
 2. Soll das öffentliche Netz in **Mein Rezeptbuch** weiter **selbst lauschen**,

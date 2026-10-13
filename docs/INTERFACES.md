@@ -1668,6 +1668,19 @@ Nutzt:
     sha256 via WebCrypto, Relais-URL konfigurierbar (Default
     wss://relay.family-projekt.de). 05b ist headless NICHT testbar (Relais aus
     der Bau-Sandbox unerreichbar) — Browser-Sichttest wartet auf Klaus.
+  Relais-Einstellung (05b, Eigenes Netz Schritt 1, 2026-10-13):
+    configure({ relays:[url,...] }) → { ok, relays, reason? }   (vorher: void;
+      additiv — wer den Rückgabewert nicht liest, merkt nichts)
+      · JEDE Adresse muss `wss://<host>[/pfad]` sein (≤ 200 Zeichen). Eine
+        ungültige Adresse weist die GANZE Liste ab ({ok:false, reason}), die
+        alte Liste bleibt. Nie ein stiller Teil-Wechsel, nie `ws://`/`https://`.
+      · Leere Liste oder fehlendes `relays` → keine Änderung, {ok:false}.
+      · Verbindungen zu Adressen, die nicht mehr in der Liste stehen, werden
+        GESCHLOSSEN — sonst ginge `publish` weiter auch an das alte Relais
+        (liveSockets() zählt jede offene Verbindung, nicht nur die der Liste).
+    configure({ reset:true }) → zurück auf DEFAULT_RELAYS (das öffentliche Netz).
+    _meta.defaultRelays → Kopie von DEFAULT_RELAYS.
+    Ohne configure-Aufruf: unverändert wss://relay.family-projekt.de.
 
 Storage:
   Stores (alle aus Modul 01 — als Pattern ab Brief 04 der V1-Sammelspec-
@@ -5000,6 +5013,80 @@ Bietet (öffentlich, window.SbkimRendezvous):
                                               // fail-soft (nie Throw)
   _meta                    → { version, tag, presenceKind, freshSec, listenMs,
                                nodeName, hasRelay, hasAnastomose, hasSpore, hasMatch }
+
+EIGENES NETZ (Schritt 1, 2026-10-13, Brief docs/BRIEF_2026-10-13_eigenes-netz.md):
+  Ohne Einstellung ist ALLES wie vorher: Raum "sbkim-rdv", Fragen "sbkim-qry",
+  Inhalt Klartext-JSON, Relais wss://relay.family-projekt.de — Zeichen für
+  Zeichen dieselben Ereignisse (Probe misst es).
+
+  Drei Lagen (`_meta.network`):
+    "oeffentlich" — Vorgabe. Raum sbkim-rdv / sbkim-qry, Klartext.
+    "eigen"       — Netz-Code gesetzt. Marken und Schlüssel aus dem Code,
+                    Karten, Fragen und Antworten AES-GCM-verschlüsselt.
+    "raum"        — nur eigene Raum-Marke (roomTag), KEIN Code. Trennt, schützt
+                    aber nichts: Klartext, wer die Marke kennt, liest mit.
+    dazu Zwischenlagen "wird-abgeleitet" (PBKDF2 läuft) und "ungueltig".
+
+  Ableitung (Vorbild Kim-sync raumOeffnen):
+    n        = Code ohne Leerzeichen und Bindestriche, GROSS; nur [A-Z0-9],
+               mindestens 12 Zeichen, sonst "ungueltig".
+    h        = hex(SHA-256("sbkim-netz-raum-v1:" + n))
+    Raum     = "sbkim-netz-"  + h[0..32)
+    Fragen   = "sbkim-netzq-" + h[32..64)
+    Schlüssel= AES-GCM 256 aus PBKDF2-SHA256(n, Salz "sbkim-netz-schluessel-v1",
+               150 000 Runden), nicht exportierbar.
+  Umschlag (content, nur im eigenen Netz):
+    JSON { v:1, iv:<base64, 12 Byte>, ct:<base64> }, AES-GCM mit
+    additionalData = die Raum- bzw. Fragen-Marke des Ereignisses (ein Umschlag
+    aus dem einen Raum entschlüsselt nicht im anderen). Darin genau das JSON,
+    das im öffentlichen Netz im Klartext stünde (Karte / Frage / Antwort).
+    Was sich nicht entschlüsseln lässt (falscher Code, Klartext, fremder
+    Umschlag), wird STILL verworfen — wie eine unpassende Karte heute.
+
+  ⚠ RIEGEL: ein ungültiger Code fällt NIE still ins öffentliche Netz zurück.
+    Alle Netz-Aktionen (announce, connectAndAnnounce, discover, enableAnswering,
+    askNode, fetchAnswers) antworten dann {ok:false, reason} und senden nichts.
+  ⚠ Code UND roomTag zugleich: der Code gewinnt (roomTag wird ignoriert).
+
+  Bietet zusätzlich:
+    init/configure(opts) nehmen zusätzlich
+      netCode : string|null   — null/"" = zurück ins öffentliche Netz
+      roomTag : string|null   — /^[a-z0-9][a-z0-9-]{2,63}$/, Fragen = roomTag+"-qry"
+    setNetwork({ code?, roomTag? } | null) → Promise<{ ok, network, reason? }>
+    newNetCode()               → "XXXX-XXXX-XXXX-XXXX-XXXX" (20 Zeichen aus
+                                 einem Alphabet ohne 0/O/1/I, crypto.getRandomValues)
+    checkNetSetting(s)         → { ok, setting?, reason? }  (pure Prüfung)
+    loadNetwork(store?) / saveNetwork(setting, store?) / clearNetwork(store?)
+    applyNetwork(setting|null) → Promise<{ ok, network, relays?, reason? }>
+                                 setzt 05b-Relais (configure bzw. reset) UND Code.
+    _meta zusätzlich: network, encrypted, networkReason (Grund bei „ungueltig", sonst null), queryTag/tag = die GERADE geltenden.
+
+  Netz-Einstellung (Speicher, Entscheidung der Sitzung 2026-10-13):
+    { v:1, name:<≤60 Zeichen>, relay:"wss://…", code:"…", auto:true }
+    Schlüssel "sbkim_netz_<dbSuffix>" in localStorage (oder ein injizierter
+    store mit getItem/setItem/removeItem). Ohne dbSuffix wird NICHT gespeichert
+    (github.io ist eine geteilte Adresse — ein gemeinsamer Schlüssel hieße, dass
+    eine App das Netz einer anderen umstellt).
+    ⚠ BENANNT: IndexedDB schützt hier nicht mehr als localStorage — auf
+    derselben Herkunft liest jede Geschwister-App beide. Der Schutz ist, dass
+    der Code nur auf dem Gerät liegt, nie im Repo und nie im Ereignis.
+    `auto` (Klaus 2026-10-13: „fast für automatisch verbinden, wenn es schon im
+    firmeninternen Netz ist"): Vorgabe true. Modul 23 verbindet NIE selbst —
+    `auto` ist die Anweisung an den app-eigenen Klebstoff (23-UI, Schritt 2),
+    im EIGENEN Netz nach dem Laden zu verbinden. Tafel-Evolution, benannt:
+    „keine Eigenanfrage beim Laden" gilt weiter für das öffentliche Netz; im
+    eigenen Netz geht die Anfrage an das eigene Relais der eigenen Firma.
+    Klaus 2026-10-13 bestätigt: „dass die firmeninternen Apps alle miteinander
+    verbunden werden … automatisch, wenn ich die App öffne … nur über das
+    firmeneigene Relais, wenn es vorgewählt wurde." Sein Firmen-Relais heißt
+    „intern Family Project" (`name`, Anzeige). Die Subdomain kann den Namen
+    nicht wörtlich tragen (keine Leerzeichen, keine Großbuchstaben); Vorschläge
+    intern.family-projekt.de oder relay-intern.family-projekt.de, Wahl offen.
+
+  Benannte Grenzen: der Andock-Handshake (Modul 05, Tag "sbkim-anastomosis")
+    bleibt Klartext, nur sein Relais wechselt mit · wer den Code kennt, ist drin
+    (wie ein WLAN-Passwort) · die Marke verrät nichts über den Code, aber dass
+    es einen Raum gibt · ein falscher Code liest nichts und sieht niemanden.
 
 Architektur-Wahrheit (nicht verhandelbar): das Anmelden MUSS aus dem eigenen
         Browser jeder App laufen — lebende Identität + privater Schlüssel liegen
