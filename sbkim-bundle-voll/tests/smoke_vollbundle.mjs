@@ -60,10 +60,15 @@ for (const [file, source] of Object.entries(MODULE_SOURCES)) {
 }
 
 // Der gehärtete Schutz-Stand MUSS in der Box sein (Stufe 2b + Siegel-Aspekt).
-check(
-  "Modul 23 trägt Kartenechtheit (Stufe 2b) und eigenes Netz (sha 6c25b63b)",
-  sha(join(BOX, "modules", "23_rendezvous.js")).startsWith("6c25b63b"),
-);
+// Modul 23: geprüft wird der INHALT, nicht eine sha (wie bei Modul 16 unten).
+// Bis 2026-10-13 stand hier `startsWith("6c25b63b")` — die Einstellung „Netz"
+// änderte die sha, und die Probe fiel, ohne dass ein Aspekt fehlte. Den Stand
+// sichert der byte-1:1-Guard oben; hier steht nur, WAS drin sein muss.
+{
+  const m23 = readFileSync(join(BOX, "modules", "23_rendezvous.js"), "utf8");
+  check("Modul 23 trägt Kartenechtheit (Stufe 2b)", /ECHTHEIT \(Stufe 2b\)/.test(m23));
+  check("Modul 23 trägt die Einstellung Netz (applyNetwork)", /async function applyNetwork\(/.test(m23));
+}
 // Modul 16: geprüft wird der INHALT, nicht mehr eine sha.
 //
 // Vorher stand hier `sha(…).startsWith("e67b7266")` unter dem Namen „trägt den
