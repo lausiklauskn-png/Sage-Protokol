@@ -90,6 +90,75 @@ async function run() {
   r = await E._detectModelSource();
   record("fetch wirft → remote (kein Throw)", "remote", r, r === "remote");
 
+  // ── Modell von einem anderen eigenen Server (window.SBKIM_MODEL_ROOT, 2026-10-13) ──
+  const ROOT = "https://family-projekt.de/models/";
+  const CFG = (root) => root + "Xenova/multilingual-e5-small/config.json";
+  function urlFetch(map, log) {
+    return async function (url) {
+      log.push(url);
+      const spec = map[url];
+      if (!spec) return { ok: false, headers: { get: () => "" }, text: async () => "" };
+      if (spec === "throw") throw new Error("down");
+      return { ok: true, headers: { get: (k) => (k.toLowerCase() === "content-type" ? spec.ct : "") }, text: async () => spec.body };
+    };
+  }
+  const JSONOK = { ct: "application/json", body: '{"model_type":"bert"}' };
+  const HTML = { ct: "text/html", body: "<!doctype html>" };
+  let log = [];
+
+  // 7) ohne Einstellung: genau EINE Probe, auf /models/ (Verhalten unverändert)
+  delete globalThis.SBKIM_MODEL_ROOT;
+  globalThis.fetch = urlFetch({}, log);
+  r = await E._detectModelSource();
+  record("ohne SBKIM_MODEL_ROOT: nur /models/ geprobt", CFG("/models/"), log.join(","), r === "remote" && log.length === 1 && log[0] === CFG("/models/"));
+
+  // 8) eigener Server liefert JSON → local, Wurzel = eigener Server, /models/ gar nicht gefragt
+  globalThis.SBKIM_MODEL_ROOT = ROOT; log = [];
+  globalThis.fetch = urlFetch({ [CFG(ROOT)]: JSONOK }, log);
+  r = await E._detectModelSource();
+  record("SBKIM_MODEL_ROOT mit JSON → local von dort", ROOT, E._modelRoot(), r === "local" && E._modelRoot() === ROOT && log.length === 1 && log[0] === CFG(ROOT));
+
+  // 9) eigener Server liefert die Startseite (SPA-Falle), /models/ hat das Modell → local von /models/
+  log = [];
+  globalThis.fetch = urlFetch({ [CFG(ROOT)]: HTML, [CFG("/models/")]: JSONOK }, log);
+  r = await E._detectModelSource();
+  record("eigener Server HTML → Rückfall /models/", "/models/", E._modelRoot(), r === "local" && E._modelRoot() === "/models/" && log.length === 2);
+
+  // 10) eigener Server nicht erreichbar, /models/ leer → remote (HuggingFace), kein Throw.
+  //     Vorher einmal ERFOLGREICH vom eigenen Server — sonst stünde die Wurzel schon auf /models/
+  //     und ein Riegel, der sie nicht zurücksetzt, bliebe unsichtbar (Gegenprobe 2026-10-13).
+  globalThis.fetch = urlFetch({ [CFG(ROOT)]: JSONOK }, []);
+  await E._detectModelSource();
+  log = [];
+  globalThis.fetch = urlFetch({ [CFG(ROOT)]: "throw" }, log);
+  r = await E._detectModelSource();
+  record("eigener Server wirft → remote, Wurzel zurück auf /models/", "remote", r, r === "remote" && E._modelRoot() === "/models/" && log.length === 2);
+
+  // 11) ohne Schrägstrich am Ende wird er ergänzt; Leerzeichen weg
+  globalThis.SBKIM_MODEL_ROOT = "  https://family-projekt.de/models  ";
+  record("Wurzel ohne / wird ergänzt", ROOT, E._configuredModelRoot(), E._configuredModelRoot() === ROOT);
+
+  // 12) unsichere oder fremde Formen werden NICHT angenommen
+  const boese = ["http://family-projekt.de/models/", "//family-projekt.de/models/", "javascript:alert(1)", "https://", "https://x.example/a b/", 42, ""];
+  const angenommen = boese.filter((v) => { globalThis.SBKIM_MODEL_ROOT = v; return E._configuredModelRoot() !== null; });
+  record("http, //, javascript:, leer, Zahl → nicht angenommen", "[]", JSON.stringify(angenommen), angenommen.length === 0);
+
+  // 13) abgelehnte Einstellung → nur /models/ geprobt (fällt auf das alte Verhalten)
+  globalThis.SBKIM_MODEL_ROOT = "http://family-projekt.de/models/"; log = [];
+  globalThis.fetch = urlFetch({ [CFG("http://family-projekt.de/models/")]: JSONOK }, log);
+  r = await E._detectModelSource();
+  record("http-Wurzel wird nie gefragt", CFG("/models/"), log.join(","), r === "remote" && log.length === 1 && log[0] === CFG("/models/"));
+
+  // 14) Pfad ab / ist erlaubt (eigene Adresse, anderer Ordner)
+  globalThis.SBKIM_MODEL_ROOT = "/modelle"; log = [];
+  globalThis.fetch = urlFetch({ [CFG("/modelle/")]: JSONOK }, log);
+  r = await E._detectModelSource();
+  record("Pfad /modelle → local von dort", "/modelle/", E._modelRoot(), r === "local" && E._modelRoot() === "/modelle/");
+  delete globalThis.SBKIM_MODEL_ROOT;
+
+  record("_meta.modelRootSetting = SBKIM_MODEL_ROOT", "SBKIM_MODEL_ROOT", E._meta.modelRootSetting, E._meta.modelRootSetting === "SBKIM_MODEL_ROOT");
+  record("getModelRoot exportiert, vor init null", "null", String(E.getModelRoot && E.getModelRoot()), typeof E.getModelRoot === "function" && E.getModelRoot() === null);
+
   if (origFetch === undefined) delete globalThis.fetch; else globalThis.fetch = origFetch;
 
   // Ausgabe

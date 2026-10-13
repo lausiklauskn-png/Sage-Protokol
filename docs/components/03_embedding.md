@@ -201,7 +201,19 @@ EMBEDDING_DIM        = 384
 EMBEDDING_MAX_TOKENS = 512                              // e5-small Hard-Limit
 EMBEDDING_QUERY_PREFIX   = "query: "
 EMBEDDING_PASSAGE_PREFIX = "passage: "
+LOCAL_MODEL_ROOT     = "/models/"                       // eigene Adresse (2026-07-11)
+window.SBKIM_MODEL_ROOT                                 // optional, ANDERER eigener Server (2026-10-13)
 ```
+
+**Modell vom eigenen Server, auch für Apps auf GitHub Pages (Klaus 2026-10-13).**
+Gemessen am 2026-10-13 in Termux: `https://family-projekt.de/models/Xenova/multilingual-e5-small/`
+liefert `config.json` (200, `application/json`), `onnx/model_quantized.onnx` (200, **118 308 185 Bytes**
+— nicht ~30 MB, wie an mehreren Stellen stand) und `access-control-allow-origin: *`. Eine App setzt
+`window.SBKIM_MODEL_ROOT = "https://family-projekt.de/models/"` vor dem ersten `init()`; die Reihenfolge
+der Proben ist eigener Server → `/models/` der eigenen Adresse → HuggingFace. Probe:
+`tests/smoke_a6_offline_model_source.mjs` (21; Gegenprobe von Hand: 9 Sabotagen, 9 gefangen — zwei erst
+nach Schärfen der Probe, eine davon als zwei sich deckende Riegel zusammen weggenommen).
+⚠ transformers.js selbst kommt weiter von jsDelivr. ⚠ Im Browser nicht gemessen.
 
 ---
 

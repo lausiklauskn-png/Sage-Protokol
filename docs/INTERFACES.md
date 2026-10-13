@@ -813,6 +813,16 @@ Bietet (öffentlich):
                                           // gekürzte Quell-Satz (Anzeige/Debug, KEIN PII). Fail-soft:
                                           // leerer/whitespace-Text → Promise<[]>. Reine Berechnung, KEIN
                                           // Spore-Schreibvorgang (Modul 02 assembliert daraus die Spore).
+  getModelSource()                        → "local" | "remote" | null  // (2026-07-11) woher das Modell kam
+  getModelRoot()                          → string | null              // (2026-10-13) Wurzel des eigenen Servers, nur bei "local"
+
+  Modell-Quelle (2026-10-13, ADDITIV): setzt die App VOR dem ersten init()
+    window.SBKIM_MODEL_ROOT = "https://<eigener-server>/models/"
+  probt Modul 03 zuerst dort, dann wie bisher "<origin>/models/", dann
+  HuggingFace. Angenommen nur https:// oder ein Pfad ab "/" (kein http, kein
+  "//"); der Server muss Access-Control-Allow-Origin senden. Ohne Einstellung
+  byte-gleiches Verhalten. Gleiches Modell, gleiche Vektoren — KEIN Spore-Feld,
+  KEIN PROTOCOL_VERSION-Bump, Match-Schwelle unberührt.
 
   KEIN mode-Parameter. e5-Rollen-Prefix wird intern angewandt:
     embedQuery   → "query: "   + text
