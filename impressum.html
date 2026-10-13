@@ -134,9 +134,11 @@ verschlüsselt</strong> gespeichert (Tresor: PBKDF2 + AES-GCM) und ausschließli
 Nutzer gewählten Anbieter gesendet; sie werden <strong>nicht</strong> an den Betreiber,
 nicht ins Mycel und nicht an Dritte übermittelt.</p>
 <p><strong>7. Embedding-Modell</strong><br>
-Für die semantische Match-Funktion wird ein Embedding-Modell beim ersten Gebrauch vom
-CDN (jsDelivr / Hugging Face) in den Browser geladen und läuft anschließend lokal. Beim
-Laden gelten die Datenschutzbestimmungen des jeweiligen CDN-Anbieters.<br>
+Für die semantische Match-Funktion wird ein Embedding-Modell beim ersten Gebrauch in den
+Browser geladen und läuft anschließend lokal: der Programmteil von jsDelivr, die
+Modelldateien vom Server des Betreibers (family-projekt.de); antwortet er nicht, von
+Hugging Face. Beim Laden sieht der jeweilige Server die IP-Adresse; es gelten dessen
+Datenschutzbestimmungen.<br>
 Die Vorführ-Seiten unter <code>sbkim-demo/</code> (Demo, Knoten, Register, Netz) laden
 beim Aufruf Programmbibliotheken (PeerJS, QR-Code, QR-Leser) von <strong>cdnjs</strong>
 (Cloudflare, Inc.) und vermitteln die direkte Verbindung zwischen zwei Geräten über den
@@ -220,9 +222,10 @@ browser</strong> (vault: PBKDF2 + AES-GCM) and sent only to the provider chosen 
 they are <strong>not</strong> transmitted to the operator, not into the mycelium, and not to
 third parties.</p>
 <p><strong>7. Embedding model</strong><br>
-For the semantic match function, an embedding model is loaded into the browser from a CDN
-(jsDelivr / Hugging Face) on first use and then runs locally. The CDN provider's privacy
-terms apply during loading.<br>
+For the semantic match function, an embedding model is loaded into the browser on first
+use and then runs locally: the program part from jsDelivr, the model files from the
+operator's server (family-projekt.de); if it does not answer, from Hugging Face. The
+respective server sees the IP address while loading; its privacy terms apply.<br>
 The demo pages under <code>sbkim-demo/</code> (demo, node, register, network) load program
 libraries (PeerJS, QR code, QR reader) from <strong>cdnjs</strong> (Cloudflare, Inc.) when
 opened and broker the direct connection between two devices via the public
