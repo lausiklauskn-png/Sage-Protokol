@@ -61,8 +61,8 @@ for (const [file, source] of Object.entries(MODULE_SOURCES)) {
 
 // Der gehärtete Schutz-Stand MUSS in der Box sein (Stufe 2b + Siegel-Aspekt).
 check(
-  "Modul 23 trägt die Kartenechtheit (Stufe 2b, sha 3caa0bb1)",
-  sha(join(BOX, "modules", "23_rendezvous.js")).startsWith("3caa0bb1"),
+  "Modul 23 trägt Kartenechtheit (Stufe 2b) und eigenes Netz (sha 6c25b63b)",
+  sha(join(BOX, "modules", "23_rendezvous.js")).startsWith("6c25b63b"),
 );
 // Modul 16: geprüft wird der INHALT, nicht mehr eine sha.
 //

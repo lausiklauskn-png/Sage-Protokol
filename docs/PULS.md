@@ -31,6 +31,24 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-13 · Eigenes Netz Schritt 1 · Relais und Netz-Code einstellbar (Kanon 05b + 23)
+
+**Brief:** [`docs/BRIEF_2026-10-13_eigenes-netz.md`](BRIEF_2026-10-13_eigenes-netz.md), Schritt 1. INTERFACES zuerst (05b Relais-Einstellung, 23 „EIGENES NETZ“), dann Code.
+
+**Gebaut:**
+- **05b:** `configure({relays})` nimmt nur `wss://`; ein schlechter Eintrag weist die **ganze** Liste ab. `{reset:true}` holt die Vorgabe zurück, `_meta.defaultRelays` nennt sie. Verbindungen zu Relais, die nicht mehr in der Liste stehen, werden geschlossen.
+- **23:** `setNetwork({code})` / `applyNetwork({relay, code})` / `checkNetSetting` / `newNetCode` / Speicher `sbkim_netz_<dbSuffix>` (ohne Suffix wird nichts gespeichert). Aus dem Code (normalisiert, mindestens 12 Zeichen): Raum-Marke `sbkim-netz-…`, Frage-Marke `sbkim-netzq-…` (SHA-256), Schlüssel PBKDF2-SHA256 150 000 → AES-GCM-256. Inhalt als Umschlag `{v:1, iv, ct}`, die Marke als AAD; was nicht aufgeht, fällt still weg. Lage `net.lage`: oeffentlich · eigen · raum · wird-abgeleitet · ungueltig. **Eine ungültige Einstellung fällt nie ins öffentliche Netz zurück**, der Code gewinnt über `roomTag`.
+- **Ohne Einstellung byte-gleich:** gemessen gegen `origin/main` mit eingefrorener Uhr und eingefrorenem Zufall.
+
+**Gemessen:** `tests/smoke_netz_eigen.mjs` **63 grün · 0 rot** · `tests/gegenprobe_netz_eigen.mjs` (Wegwerf-Kopie) **14 gefangen · 0 blind · 0 aus falschem Grund · 0 tote Anker**. Bündel (`sbkim-bundle`, `-voll`) nachgezogen, Pin 6c25b63b.
+
+⚠ **Benannte Grenzen:** der Handschlag `sbkim-anastomosis` (Modul 05) bleibt Klartext · noch **keine App** trägt die neue Fassung (Verteilung ist Schritt 2) · das Relais „intern Family Project“ (`wss://relay-intern.family-projekt.de`) gibt es noch nicht — DNS, Container und Caddy sind Schritt 4 · Kartenechtheit (Stufe 2b) unverändert.
+⚠ **Vorbestehend, nicht von hier:** `sbkim-bundle-voll` meldet `siegel-inhalt.js` als nicht byte-1:1 — auf `origin/main` genauso (Arbeitskopie nachgemessen).
+
+**Entschieden mit Klaus:** Relais „intern Family Project“ unter **`relay-intern.family-projekt.de`** (Klaus 2026-10-13: „Dieser Name ist okay.“) · im eigenen Netz soll die App **beim Öffnen automatisch** verbinden · Mein Rezeptbuch lauscht im öffentlichen Netz weiter selbst · erster Träger: Sende-Prüfer.
+
+**Nächster Schritt:** Schritt 2 — 23-UI: Einstellung „Netz“ (Relais + Code, Code erzeugen/zeigen), Auto-Verbinden im eigenen Netz, Verteilung an den Sende-Prüfer.
+
 ## 2026-10-13 · Mycel-Fenster netzweit · Plan „Eigenes Netz“
 
 **Gemergt (Modul 23-UI aus #1067, a1bde67, `kanon-verteilen.mjs`):** Auslieferung-Pruefer #48 · BookLedgerPro #326 · Kim-Bell #69 · Kimboard #147 · Kimseek #88 · Mein-Mixarium #243 · Mein-Rezeptbuch #431 · Mein-WorkFloh #261 · Muttis-Rezeptbuch #236 · PWA-Toolpoint #163 · Sende-Pruefer #75 · Tomys-Hub #240 · family-project #354. Die gemerkte obere Lage rastet in den Leisten-Platz ein.
@@ -563,51 +581,11 @@ passiert"*. Während einer Wiedergabe stimmt dieser Satz nicht; die Pille sagt
 es unmittelbar darüber. Nicht geändert — ob der Absatz nachgezogen wird,
 entscheidet Klaus.
 
-## 2026-09-17 · Die Demo spielte nichts ab — die Aufzeichnung lag nicht neben der Kopie
+## Eine Sitzung vom 2026-09-17 (Demo ohne Aufzeichnung) — ausgelagert am 2026-10-13
 
-**Klaus auf der Demo-Seite:** *„Mitschnitt abspielen … das läuft nicht. Das
-sollte aber laufen, wenn jemand eine Demo betrachtet."*
-
-`sbkim-demo/index.html` bindet die Karte als `<iframe src="../mycel-karte/">`
-ein — also **Sages eigene Kopie**, nicht das eigenständige Repo. Der Knopf holt
-`mitschnitt/mycel-lauf-2026-09-10.json` **relativ zu der Seite, in der er
-steht**. In `mycel-karte/` lag nur `index.html`.
-
-**Gemessen im echten Browser (playwright-core, Chromium), vor der Reparatur:**
-Abruf **404** auf `/mycel-karte/mitschnitt/mycel-lauf-2026-09-10.json` ·
-Protokoll „die hinterlegte Aufzeichnung ist nicht erreichbar" · Transportreihe
-versteckt · Stand „—". **Danach:** **200** · „▶ Wiedergabe gestartet · 191
-Ereignisse" · Stand `Ereignis 4 / 191` · Band nennt 5 Aufzeichnungen. Beides
-auch über die Demo-Seite im Rahmen gemessen, nicht nur an der Karte allein.
-
-⚠ **UND DER WÄCHTER WAR DABEI GRÜN.** `smoke_mycelkarte_kopie.mjs` fragte nach
-`id="btnReplay"` und `function spieleMitschnitt(` — also danach, ob der **Code**
-dasteht. Ob der Knopf seine **Datei** findet, hat nie jemand gefragt. *Ein
-Wächter auf „der Code ist da" misst nicht, ob er etwas vorfindet.*
-
-⚠ **UND DER ABLEITER KANNTE NUR EINE DATEI.** `tools/mycelkarte-uebernehmen.mjs`
-holte `index.html` und sonst nichts; wer eine Funktion baut, die eine **Datei**
-braucht, hätte sie von Hand nachtragen müssen. Dasselbe „eine Regel, an die man
-sich erinnern muss, ist keine", aus dem dieses Werkzeug entstanden ist — nur
-eine Ebene weiter. Der Pfad kommt jetzt aus `REPLAY_DATEI` der Quelle, statt
-hier abgeschrieben zu werden: eine zweite Liste liefe auseinander, und die
-vergessene Datei wäre wieder genau die, an die niemand denkt.
-
-**Vier neue Zusicherungen**, jede mit Gegenprobe-Fall: die Datei liegt neben der
-Kopie · sie ist lesbar · es steht wirklich Relais-Verkehr darin (gefiltert mit
-`REPLAY_ARTEN` **der Kopie**, nicht mit einer abgeschriebenen Liste) · und der
-Erklärtext der Seite stimmt mit der Datei überein (191 Ereignisse, fünf
-Aufzeichnungen). Die Gegenprobe kann seitdem auch die Aufzeichnung selbst
-verbiegen und ganz wegnehmen — ein Fall, der nur den Quelltext anfasst, ist für
-einen fehlenden **Datei**-Nachbarn blind.
-
-**Geprüft:** `node tests/run_alle.mjs` → **107 grün · 0 rot · 0 nicht
-lauffähig** · `gegenprobe_mycelkarte_kopie` **18 gefangen · 0 durchgerutscht ·
-0 aus falschem Grund · 0 tote Anker**. Beide Rückgabewerte direkt gelesen.
-
-**Offen:** ob die eingebettete Karte auf der Demo-Seite von selbst zu spielen
-anfangen soll, statt auf den Knopf zu warten. Klaus' Satz „Demo ist Demo" lässt
-beides zu; nicht entschieden und nicht gebaut.
+> **↓ Ausgelagert.** Der Eintrag „Die Demo spielte nichts ab — die Aufzeichnung lag nicht neben der Kopie" steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-10_puls-auslagerung-18.md`](sessions/archiv/2026-10_puls-auslagerung-18.md)
+> (46 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-09-17 (Umlaute, Gedankenstriche) — ausgelagert am 2026-10-13
 
