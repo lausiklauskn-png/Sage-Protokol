@@ -35,6 +35,7 @@
  *   node tools/kanon-verteilen.mjs --schreiben      # kopieren + Pins + Cache-Bump
  *   node tools/kanon-verteilen.mjs --nachbarn /pfad # wo die Klone liegen
  *   node tools/kanon-verteilen.mjs --nur 16_siegel  # ein Modul statt aller
+ *   node tools/kanon-verteilen.mjs --nur 05b,23     # mehrere, mit Komma
  *
  * Rueckgabewert: 0 wenn alles gleich ist (oder geschrieben wurde), sonst 1.
  * NICHT hinter eine Pipe haengen — `| tail` liefert den Wert von `tail`.
@@ -139,7 +140,10 @@ for (const d of ["src/modules"]) {
     kanon.push({ name: f, pfad: p, marke, sha: sha(roh), roh });
   }
 }
-const gewaehlt = NUR ? kanon.filter((k) => k.name.includes(NUR)) : kanon;
+/* `--nur 05b,23` — mehrere Teile mit Komma (2026-10-13). Zwei getrennte Laeufe
+ * haetten den Vorrat jedes Traegers ZWEIMAL gebumpt: `schonGebumpt` gilt je Lauf. */
+const NUR_TEILE = NUR ? NUR.split(",").map((t) => t.trim()).filter(Boolean) : null;
+const gewaehlt = NUR_TEILE ? kanon.filter((k) => NUR_TEILE.some((t) => k.name.includes(t))) : kanon;
 if (!gewaehlt.length) { console.error(`✗ Kein Kanon-Modul gefunden${NUR ? ` fuer „${NUR}"` : ""}.`); process.exit(1); }
 
 console.log(`Kanon: ${gewaehlt.length} Dateien aus ${relative(process.cwd(), WURZEL) || "."}`);

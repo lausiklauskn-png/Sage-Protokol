@@ -205,6 +205,9 @@
      diese Zeile stuende sie sichtbar da, obwohl `el.hidden` gesetzt ist.
      Kimhubs Lehre vom 2026-08-22, an einer anderen Tuer. */
   [hidden] { display: none !important; }
+  #netzBtn[data-netz="eigen"] { border-color: #46c08a; }
+  #netzBtn[data-netz="ungueltig"] { border-color: #e0605a; }
+  #relayPills[data-netz]:not([data-netz="oeffentlich"]) { opacity: .4; }
   /* Die Transportknoepfe sind klein und stehen NEBENEINANDER, nicht in der
      Breite der grossen. `flex: 0 0 auto` statt `flex: 1`, sonst zieht jeder
      von ihnen ein Sechstel der Reihe auf sich. */
@@ -273,6 +276,8 @@
   <span class="lamp btn" id="themeBtn" title="Thema wechseln">◐ <b id="themeName">Dunkel</b></span>
   <span class="lamp btn" id="reloadBtn" title="Aktualisieren / Cache leeren &amp; neu laden">↻</span>
   <span class="lamp btn" id="relayBtn" title="Raum am Nostr-Relais belauschen (nur lesen, auf deinen Zuruf)"><span class="dot" id="relayDot"></span>📡 <b id="relayLbl">Relais aus</b></span>
+  <span class="lamp btn" id="netzBtn" data-netz="oeffentlich" title="Firmennetz: nur per Beitritts-Link (#sbkim-netz=…)"><b id="netzLbl">🔒 Firmennetz</b></span>
+  <span class="lamp btn" id="netzWeg" hidden title="Firmennetz auf diesem Rechner vergessen">✕</span>
   <span class="lamp btn" id="recBtn" title="Analyse-Rekorder: zeichnet alle Roh-Ereignisse auf; Stopp lädt eine JSON-Datei herunter"><span class="dot" id="recDot"></span>🔬 <b id="recLbl">Analyse aus</b></span>
   <span class="spacer"></span>
   <a class="back" href="../index.html">← Sage-Page</a>
@@ -1033,6 +1038,12 @@ function relayStand() {
   var offen = offeneSocks();
   relayPills();
   if (!lauscht) { dot.classList.remove("on"); lbl.textContent = "Relais aus"; return; }
+  if (netz.modus === "ungueltig") { dot.classList.remove("on"); lbl.textContent = "Firmennetz ungültig — lauscht nicht"; return; }
+  if (netz.modus === "wird-abgeleitet") { dot.classList.remove("on"); lbl.textContent = "Firmennetz öffnet…"; return; }
+  if (netz.modus === "eigen") {
+    if (offen) { dot.classList.add("on"); lbl.textContent = "Firmennetz an"; } else { dot.classList.remove("on"); lbl.textContent = "verbinde…"; }
+    return;
+  }
   /* Alle abgewaehlt ist eine Wahl, kein Fehler — aber sie muss DRANSTEHEN,
      sonst sucht man den Fehler beim Netz statt bei der eigenen Einstellung. */
   if (!aktiveRelais.length) { dot.classList.remove("on"); lbl.textContent = "keins gewählt"; return; }
@@ -1064,6 +1075,16 @@ function relayPills() {
 /* Bringt die offenen Draehte mit der Wahl in Einklang: fehlende aufmachen,
    ueberzaehlige schliessen. Wird nach jedem Klick und beim Start gerufen. */
 function relaisAbgleichen() {
+  /* Im Firmennetz NUR das eigene Relais — die öffentlichen Poststellen bleiben
+     zu. Ungültig oder noch nicht abgeleitet: GAR NICHTS öffnen (Riegel). */
+  if (netz.modus !== "oeffentlich") {
+    for (var u in sockByUrl) {
+      if (!(netz.modus === "eigen" && lauscht && u === netz.setting.relay)) { try { sockByUrl[u].close(); } catch (e) {} delete sockByUrl[u]; }
+    }
+    if (netz.modus === "eigen" && lauscht && !sockByUrl[netz.setting.relay]) relaisOeffnen(netz.setting.relay);
+    relayStand();
+    return;
+  }
   for (var i = 0; i < RELAY_POOL.length; i++) {
     var url = RELAY_POOL[i], soll = lauscht && istAktiv(url), sock = sockByUrl[url];
     if (soll && !sock) relaisOeffnen(url);
@@ -1184,24 +1205,29 @@ function relaisOeffnen(url) {
   var sock;
   try { sock = new WebSocket(url); } catch (e) { return; }   // eine kaputte Adresse stoppt die anderen nicht
   sockByUrl[url] = sock;
+  var eigen = netz.modus === "eigen";     // der Draht gehört zu GENAU dieser Lage
   sock.onopen = function () {
     var since = Math.floor(Date.now() / 1000) - 1800;
     sock.send(JSON.stringify(["REQ", "mycelkarte-raum", {
       kinds: [1],
-      "#t": ["sbkim-rdv", "sbkim-anastomosis", "sbkim-anastomosis-reply", "sbkim-query", "sbkim-query-reply"],
+      "#t": eigen ? [netz.rdvTag, netz.qryTag, "sbkim-anastomosis", "sbkim-anastomosis-reply"]
+                  : ["sbkim-rdv", "sbkim-anastomosis", "sbkim-anastomosis-reply", "sbkim-query", "sbkim-query-reply"],
       since: since
     }]));
     /* Nur EINMAL melden, dass gelauscht wird — nicht fuenfmal. Welche
        Poststellen tragen, steht jetzt an den Pillen. */
     if (!erstesOffen) {
       erstesOffen = true;
-      relayLog("<b>Lausche</b> · Raum sbkim-rdv + Handshake-Verkehr (nur lesen)", "ok");
+      relayLog(eigen ? "<b>Lausche</b> · 🔒 Firmennetz " + netzText(netz.setting.name) + " (nur lesen)"
+                     : "<b>Lausche</b> · Raum sbkim-rdv + Handshake-Verkehr (nur lesen)", "ok");
     }
     relayStand();
   };
   sock.onmessage = function (m) {
     var arr; try { arr = JSON.parse(m.data); } catch (e) { return; }
-    if (Array.isArray(arr) && arr[0] === "EVENT" && arr[2]) handleRelayEvent(arr[2]);
+    if (!(Array.isArray(arr) && arr[0] === "EVENT" && arr[2])) return;
+    if (eigen) { if (netz.modus === "eigen") netzEmpfang(arr[2]); }
+    else if (netz.modus === "oeffentlich") handleRelayEvent(arr[2]);
   };
   /* Die Adresse NENNEN. „Relais nicht erreichbar" allein laesst offen,
      welches — und bei fuenf Poststellen ist genau das die Frage. Solange
@@ -1225,6 +1251,186 @@ function relayStop() {
   lauscht = false;
   relaisAbgleichen();   // schliesst alles, weil `lauscht` jetzt false ist
 }
+/* ---------- Eigenes Netz · „🔒 Firmennetz" (Schritt 5, Klaus 2026-10-13) ----
+ *
+ * „Ein Knopf schaltet aufs Firmennetz um." Klaus: Der Code wird NUR auf
+ * eigenen Rechnern im Firmennetz gemerkt — „Fremde sollen da nicht Eingriff
+ * haben". Also: nie als Vorgabe im Depot, nie in einer ausgelieferten Datei.
+ * Gespeichert wird lokal, nach Beitritt per Link (`#sbkim-netz=…`, dasselbe
+ * Format wie Modul 23-UI).
+ *
+ * ⚠ DIE ABLEITUNG IST WORTGLEICH DIE AUS MODUL 23 (Sage, 2026-10-13):
+ * Salze, Runden, Mindestlänge, Marken `sbkim-netz-…`/`sbkim-netzq-…`,
+ * AES-GCM mit der Marke als AAD. Weicht sie ab, hört die Karte in einem
+ * Raum, in dem niemand spricht — und es sähe aus wie Stille.
+ *
+ * ⚠ RIEGEL: eine ungültige Einstellung fällt NIE still ins öffentliche Netz.
+ * Dann wird gar nicht gelauscht, und das steht am Knopf.
+ *
+ * ⚠ DER CODE GEHT NIE IN DEN REKORDER, NIE INS PROTOKOLL. Entschlüsselte
+ * Ereignisse werden auf die öffentlichen Marken abgebildet (`sbkim-rdv`,
+ * `sbkim-query`, `sbkim-query-reply`); nicht einmal die abgeleitete Marke
+ * landet in einer Aufzeichnung. */
+var LS_NETZ = "sbkim_netz_mycelkarte";
+var NETZ_LINK_MARKE = "#sbkim-netz=";
+var NETZ_RAUM_SALZ = "sbkim-netz-raum-v1:";
+var NETZ_SCHLUESSEL_SALZ = "sbkim-netz-schluessel-v1";
+var NETZ_RUNDEN = 150000;
+var NETZ_CODE_MIN = 12;
+/* modus: oeffentlich · wird-abgeleitet · eigen · ungueltig */
+var netz = { modus: "oeffentlich", setting: null, rdvTag: null, qryTag: null, key: null, grund: "", verworfen: 0 };
+function netzCodeNorm(code) { return String(code == null ? "" : code).replace(/[\s-]+/g, "").toUpperCase(); }
+function netzPruefen(s) {
+  if (!s || typeof s !== "object") return { ok: false, grund: "Keine Netz-Einstellung." };
+  if (typeof s.relay !== "string" || !/^wss:\/\/[A-Za-z0-9.-]+(:[0-9]{1,5})?(\/[^\s]*)?$/.test(s.relay) || s.relay.length > 200)
+    return { ok: false, grund: "Relais-Adresse ungültig (nur wss://…)." };
+  var n = netzCodeNorm(s.code);
+  if (n.length < NETZ_CODE_MIN || !/^[A-Z0-9]+$/.test(n))
+    return { ok: false, grund: "Netz-Code ungültig (mindestens " + NETZ_CODE_MIN + " Zeichen, nur Buchstaben und Ziffern)." };
+  var name = (typeof s.name === "string") ? s.name.trim().slice(0, 60) : "";
+  return { ok: true, setting: { v: 1, name: name || "Eigenes Netz", relay: s.relay, code: String(s.code).trim(), auto: s.auto !== false } };
+}
+/* Drei Ausgänge: nichts gespeichert · gültig · ungültig. Ungültig ist NICHT
+   „nichts" — sonst wäre eine kaputte Einstellung still öffentlich. */
+function netzLesen() {
+  var roh; try { roh = localStorage.getItem(LS_NETZ); } catch (e) { return { present: false }; }
+  if (!roh) return { present: false };
+  var s; try { s = JSON.parse(roh); } catch (e) { return { present: true, ok: false, grund: "Gespeicherte Netz-Einstellung ist nicht lesbar." }; }
+  var r = netzPruefen(s);
+  return r.ok ? { present: true, ok: true, setting: r.setting } : { present: true, ok: false, grund: r.grund };
+}
+function netzMerken(setting) {
+  try { localStorage.setItem(LS_NETZ, JSON.stringify(setting)); return true; } catch (e) { return false; }
+}
+function netzHex(buf) { var u = new Uint8Array(buf), s = ""; for (var i = 0; i < u.length; i++) s += u[i].toString(16).padStart(2, "0"); return s; }
+function netzAusB64(b) { var s = atob(b), u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; }
+async function netzAbleiten(code) {
+  var n = netzCodeNorm(code);
+  if (n.length < NETZ_CODE_MIN || !/^[A-Z0-9]+$/.test(n)) return { ok: false, grund: "Netz-Code ungültig." };
+  if (!window.crypto || !crypto.subtle) return { ok: false, grund: "Kein WebCrypto — Netz-Code kann nicht gelesen werden." };
+  var enc = new TextEncoder();
+  var h = netzHex(await crypto.subtle.digest("SHA-256", enc.encode(NETZ_RAUM_SALZ + n)));
+  var roh = await crypto.subtle.importKey("raw", enc.encode(n), "PBKDF2", false, ["deriveKey"]);
+  var key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: enc.encode(NETZ_SCHLUESSEL_SALZ), iterations: NETZ_RUNDEN, hash: "SHA-256" },
+    roh, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  return { ok: true, rdvTag: "sbkim-netz-" + h.slice(0, 32), qryTag: "sbkim-netzq-" + h.slice(32, 64), key: key };
+}
+/* Wählt die Lage aus der GESPEICHERTEN Einstellung. `an` = der Nutzer will
+   ins Firmennetz. Ungültig gespeichert → Lage „ungueltig", nie öffentlich. */
+async function netzSetzen(an) {
+  if (!an) {
+    netz = { modus: "oeffentlich", setting: netz.setting, rdvTag: null, qryTag: null, key: null, grund: "", verworfen: 0 };
+    netzKnopf(); relaisNeu(); return;
+  }
+  var gl = netzLesen();
+  if (!gl.present) { netz.modus = "oeffentlich"; netzKnopf(); return; }
+  if (!gl.ok) {
+    netz = { modus: "ungueltig", setting: null, rdvTag: null, qryTag: null, key: null, grund: gl.grund, verworfen: 0 };
+    netzKnopf(); relaisNeu(); return;
+  }
+  var mein = { modus: "wird-abgeleitet", setting: gl.setting, rdvTag: null, qryTag: null, key: null, grund: "", verworfen: 0 };
+  netz = mein; netzKnopf(); relaisNeu();
+  var r;
+  try { r = await netzAbleiten(gl.setting.code); } catch (e) { r = { ok: false, grund: "Netz-Code konnte nicht abgeleitet werden." }; }
+  if (netz !== mein) return;                          // inzwischen umgeschaltet
+  if (!r.ok) { mein.modus = "ungueltig"; mein.grund = r.grund; }
+  else { mein.modus = "eigen"; mein.rdvTag = r.rdvTag; mein.qryTag = r.qryTag; mein.key = r.key; }
+  netzKnopf(); relaisNeu();
+}
+/* Wechsel der Lage = alle Drähte zu, dann neu nach der Lage öffnen. */
+function relaisNeu() {
+  for (var u in sockByUrl) { try { sockByUrl[u].close(); } catch (e) {} delete sockByUrl[u]; }
+  erstesOffen = false;
+  relaisAbgleichen();
+}
+function netzKnopf() {
+  var lbl = document.getElementById("netzLbl"), weg = document.getElementById("netzWeg");
+  var box = document.getElementById("relayPills");
+  if (!lbl) return;
+  var gl = netzLesen();
+  var t = netz.modus === "eigen" ? "🔒 " + netz.setting.name
+        : netz.modus === "wird-abgeleitet" ? "🔒 öffne…"
+        : netz.modus === "ungueltig" ? "🔒 ungültig"
+        : "🔒 Firmennetz";
+  lbl.textContent = t;
+  var knopf = document.getElementById("netzBtn");
+  knopf.setAttribute("data-netz", netz.modus);
+  knopf.title = netz.modus === "eigen" ? "Firmennetz aktiv (" + netz.setting.relay + ") — klicken: zurück ins öffentliche Netz"
+              : netz.modus === "ungueltig" ? "Firmennetz-Einstellung ungültig: " + netz.grund + " — es wird NICHT öffentlich gelauscht"
+              : gl.present ? "Aufs Firmennetz umschalten"
+              : "Firmennetz: nur per Beitritts-Link (#sbkim-netz=…)";
+  if (weg) weg.hidden = !gl.present;
+  if (box) box.setAttribute("data-netz", netz.modus);
+}
+/* Entschlüsseln und auf die öffentlichen Marken abbilden, dann DERSELBE Weg
+   wie öffentlicher Verkehr (`handleRelayEvent`). Was nicht passt: still weg. */
+async function netzEmpfang(evt) {
+  if (netz.modus !== "eigen" || !evt || typeof evt.content !== "string") return;
+  var tags = evt.tags || [], tt = "", dd = "";
+  for (var i = 0; i < tags.length; i++) { if (tags[i][0] === "t") tt = tags[i][1] || ""; if (tags[i][0] === "d") dd = tags[i][1] || ""; }
+  if (tt !== netz.rdvTag && tt !== netz.qryTag) {
+    /* Handschlag-Verkehr (Modul 07) läuft auch im eigenen Netz im Klartext. */
+    if (tt === "sbkim-anastomosis" || tt === "sbkim-anastomosis-reply") handleRelayEvent(evt);
+    return;
+  }
+  var key = netz.key, obj = null;
+  try {
+    var u = JSON.parse(evt.content);
+    if (!u || u.v !== 1 || typeof u.iv !== "string" || typeof u.ct !== "string") throw 0;
+    var klar = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: netzAusB64(u.iv), additionalData: new TextEncoder().encode(tt) }, key, netzAusB64(u.ct));
+    obj = JSON.parse(new TextDecoder().decode(klar));
+  } catch (e) { netz.verworfen++; return; }
+  var oeff = tt === netz.rdvTag ? "sbkim-rdv"
+           : (obj && obj.kind === "sbkim-query") ? "sbkim-query"
+           : (obj && obj.kind === "sbkim-query-res") ? "sbkim-query-reply" : "";
+  if (!oeff) return;
+  var neu = [["t", oeff]]; if (dd) neu.push(["d", dd]);
+  handleRelayEvent({ id: evt.id, tags: neu, content: JSON.stringify(obj) });
+}
+function netzB64Aus(b) {
+  var t = String(b).replace(/-/g, "+").replace(/_/g, "/");
+  while (t.length % 4) t += "=";
+  return new TextDecoder().decode(netzAusB64(t));
+}
+function netzAusLink(hash) {
+  if (typeof hash !== "string") return null;
+  var i = hash.indexOf(NETZ_LINK_MARKE);
+  if (i < 0) return null;
+  try {
+    var o = JSON.parse(netzB64Aus(hash.slice(i + NETZ_LINK_MARKE.length)));
+    if (!o || o.v !== 1) return null;
+    return { name: o.n, relay: o.r, code: o.c, auto: true };
+  } catch (e) { return null; }
+}
+/* Der Code steht im FRAGMENT — er geht nie an einen Server. Nach dem Lesen
+   wird die Adresse geputzt, damit er nicht in Verlauf und Lesezeichen bleibt. */
+function netzAdressePutzen() {
+  try { history.replaceState(null, "", String(location.href).split("#")[0]); } catch (e) { try { location.hash = ""; } catch (e2) {} }
+}
+/* Beitritt: fragt, zeigt Name und Relais — nie den Code. Gibt true zurück,
+   wenn beigetreten wurde. */
+function netzBeitreten(link) {
+  var s = netzAusLink(link);
+  if (!s) { alert("Das ist kein gültiger Beitritts-Link (#sbkim-netz=…)."); return false; }
+  var r = netzPruefen(s);
+  if (!r.ok) { alert("Beitritts-Link ungültig: " + r.grund + "\nEs wird NICHT öffentlich weitergemacht."); return false; }
+  if (!confirm("Diesem Netz beitreten?\n\n" + r.setting.name + "\n" + r.setting.relay +
+               "\n\nDer Netz-Code wird nur auf diesem Rechner gemerkt.")) return false;
+  if (!netzMerken(r.setting)) { alert("Speichern fehlgeschlagen — kein Beitritt."); return false; }
+  logEvent("<b>🔒 Firmennetz</b> · beigetreten: " + netzText(r.setting.name), "ok");
+  return true;
+}
+function netzText(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+function netzLinkBeimStart() {
+  var h = ""; try { h = String(location.hash || ""); } catch (e) {}
+  if (h.indexOf(NETZ_LINK_MARKE) !== 0) return false;
+  var ok = netzBeitreten(h);
+  netzAdressePutzen();
+  return ok;
+}
+
 /* Klick auf eine Pille. Delegiert am Kasten, weil die Leiste neu gezeichnet
    wird — ein Zuhoerer je Pille waere nach dem ersten Neuzeichnen tot. */
 (function () {
@@ -2147,6 +2353,32 @@ $("relayBtn").addEventListener("click", function () {
      der Knopf wuerde dann beim Druecken erneut STARTEN statt zu stoppen. */
   lauscht ? relayStop() : relayStart();
 });
+$("netzBtn").addEventListener("click", function () {
+  if (netz.modus === "eigen" || netz.modus === "wird-abgeleitet") {
+    var gl = netzLesen();
+    if (gl.ok) { gl.setting.auto = false; netzMerken(gl.setting); }
+    logEvent("<b>🔒 Firmennetz aus</b> · zurück im öffentlichen Raum", "");
+    netzSetzen(false); return;
+  }
+  var lage = netzLesen();
+  if (lage.present && !lage.ok) {
+    alert("Firmennetz-Einstellung ungültig: " + lage.grund + "\n\nEs wird NICHT öffentlich gelauscht. Mit ✕ vergessen oder einen neuen Beitritts-Link einfügen.");
+    netzSetzen(true); return;
+  }
+  if (!lage.present) {
+    var link = prompt("Firmennetz: Beitritts-Link einfügen (#sbkim-netz=…).\nDer Code wird nur auf diesem Rechner gemerkt.");
+    if (!link || !netzBeitreten(link)) return;
+    lage = netzLesen();
+  }
+  if (lage.ok) { lage.setting.auto = true; netzMerken(lage.setting); }
+  netzSetzen(true);
+});
+$("netzWeg").addEventListener("click", function () {
+  if (!confirm("Firmennetz auf diesem Rechner vergessen?\nDanach lauscht die Karte im öffentlichen Raum.")) return;
+  try { localStorage.removeItem(LS_NETZ); } catch (e) {}
+  logEvent("<b>🔒 Firmennetz vergessen</b>", "");
+  netzSetzen(false);
+});
 $("recBtn").addEventListener("click", function () {
   rec ? recStop() : recStart();
 });
@@ -2227,6 +2459,18 @@ applySettingsToUI();
    einschaltet. Wer beim letzten Mal drei abgewaehlt hat, saehe also seine
    eigene Wahl nicht und haelt sie fuer verloren. */
 relayPills();
+/* Beitritts-Link beim Öffnen lesen (dann Adresse putzen). Gespeichert und
+   `auto` → gleich im Firmennetz; gespeichert, aber ungültig → Lage
+   „ungueltig" (lauscht dann NICHT, statt still öffentlich). */
+(function () {
+  var beigetreten = netzLinkBeimStart();
+  var gl = netzLesen();
+  if (gl.present && (!gl.ok || gl.setting.auto || beigetreten)) netzSetzen(true); else netzKnopf();
+})();
+/* Ein Beitritts-Link, der in dieselbe offene Karte eingefügt wird, ändert nur
+   das Fragment — die Seite lädt dabei NICHT neu. Ohne diesen Zuhörer bliebe
+   der Link stehen (samt Code in der Adresszeile) und nichts geschähe. */
+window.addEventListener("hashchange", function () { if (netzLinkBeimStart()) netzSetzen(true); });
 resize();
 setTimeout(centerView, 600);
 logEvent("<b>Karte bereit</b> · lauscht auf sbkim-Ereignisse dieser Origin", "ok");
