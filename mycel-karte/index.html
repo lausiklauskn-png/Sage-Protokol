@@ -1176,6 +1176,17 @@ function handleRelayEvent(evt) {
     if (tags[i][0] === "t") tt = tags[i][1] || "";
     if (tags[i][0] === "d") dd = tags[i][1] || "";
   }
+  /* ⚠ ZWEI VERTRÄGE FÜR FRAGEN, BEIDE IN SAGES INTERFACES.MD: Modul 05 sendet
+     unter der Marke sbkim-query/-reply, Modul 23 unter EINER Marke sbkim-qry und
+     sagt die Art im Inhalt (kind sbkim-query / sbkim-query-res). Die Karte hörte
+     bis 2026-10-13 nur den ersten — die Fragen aller Apps über Modul 23 kamen
+     nie an. Gedeutet wird VOR dem Mitschnitt, damit die Wiedergabe dieselbe
+     Marke sieht wie der Live-Betrieb. Eine unbekannte Art wird nicht geraten. */
+  if (tt === "sbkim-qry") {
+    tt = content.kind === "sbkim-query" ? "sbkim-query"
+       : content.kind === "sbkim-query-res" ? "sbkim-query-reply" : "";
+    if (!tt) return;
+  }
   recEvent("relais", tt || "event", { content: content, d: dd }, null);
   if (tt === "sbkim-rdv" && content.kind === "sbkim-presence" && content.nodeId) {
     var n = nodeForLiveId(content.nodeId, content.nodeName);
@@ -1211,7 +1222,7 @@ function relaisOeffnen(url) {
     sock.send(JSON.stringify(["REQ", "mycelkarte-raum", {
       kinds: [1],
       "#t": eigen ? [netz.rdvTag, netz.qryTag, "sbkim-anastomosis", "sbkim-anastomosis-reply"]
-                  : ["sbkim-rdv", "sbkim-anastomosis", "sbkim-anastomosis-reply", "sbkim-query", "sbkim-query-reply"],
+                  : ["sbkim-rdv", "sbkim-anastomosis", "sbkim-anastomosis-reply", "sbkim-query", "sbkim-query-reply", "sbkim-qry"],
       since: since
     }]));
     /* Nur EINMAL melden, dass gelauscht wird — nicht fuenfmal. Welche
