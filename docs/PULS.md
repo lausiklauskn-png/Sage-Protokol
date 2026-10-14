@@ -31,6 +31,20 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-14 · Prüf-Reihe Sitzung 6 (Planmodus): Ist das Mycel ein Angriffspunkt?
+
+⛔ Kimhub nicht angefasst, keine Forschungseinträge in Kimhub (Gegenprobe läuft dort). Satz weitergeben, bis Klaus ihn aufhebt.
+
+**Befund:** [`sessions/archiv/2026-10-14_angriffsflaeche_mycel.md`](sessions/archiv/2026-10-14_angriffsflaeche_mycel.md), Proben daneben. Gemessen mit echten Modulen und frisch signierten Sporen:
+- Modul 23 liest `verifyForeignSpore(...) !== false`, Modul 02 liefert `{valid,reason}` → **die Kartenechtheit im Raum wirkt nicht**. Die Probe dazu stellte einen Prüfer mit `true/false`.
+- `collapseByName` vor der Prüfung → eine fremde Karte gleichen Namens verdrängt die echte.
+- Antworten (`sbkim-query-res`) sind nicht an den gefragten Knoten gebunden; ein Mithörer antwortet in dessen Namen.
+- Prüfliste vor dem Richter (04.J): klassisch DE/EN ausgeschlossen; umformuliert, Französisch, Homoglyph stehen im Prompt.
+- `domainVector` nicht an den Text gebunden; Vektor-Kopie trifft den Andock-Riegel mit 1.0.
+- Gelesen: `innerHTML` mit fremdem Namen in `mycel-karte/index.html` (Ereignis-Protokoll) und Kimboard („Kontakt senden").
+
+**Klaus' Wahl:** Punkte 1–4 freigegeben (Echtheit `.valid`, Namen nach der Prüfung zusammenfassen, Antworten binden, die zwei HTML-Stellen escapen). Module 10/11/12 nach 1–3; 14 erst danach (vergrößert sonst die Fläche).
+
 ## 2026-10-14 · Prüf-Reihe Sitzung 4: Kim-sync zeichnet empfangene Bilder neu, 04/22/24 in den letzten Trägern, Mycel-Knoten
 
 **Gebaut (Kimhub nicht angefasst):**
