@@ -45,6 +45,9 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Klaus' Wahl:** Punkte 1–4 freigegeben (Echtheit `.valid`, Namen nach der Prüfung zusammenfassen, Antworten binden, die zwei HTML-Stellen escapen). Module 10/11/12 nach 1–3; 14 erst danach (vergrößert sonst die Fläche).
 
+**Gebaut (Bau 23.R + 02.Z):** Echtheit liest `.valid`, Prüfung vor dem Zusammenfassen, `gleicherName`; Antworten mit Spore + Unterschrift, nur der gefragte Knoten, unbestätigte nicht an den Richter; Modul 02 `signDetached`/`verifyDetached`; Aspekt in Modul 16; INTERFACES zuerst. Mycel-Karte (#32 im Original, Kopie hier) und Kimboard „Kontakt senden“: fremder Name als Text — **in der alten Fassung lief in beiden ein Skript (gemessen)**. Proben: `smoke_bau23r` 18 grün · Gegenprobe 10/10 · `smoke_mycel_karte_log` alt 3 ROT/neu 4 grün. Voller Lauf: 117 grün, 1 rot (`smoke_geraetename_netzweit`: „keines der Knoten-Repos liegt neben Sage“, auch ohne diese Änderung), 1 nicht lauffähig.
+**Offen:** Rollout 02/16/23/23-UI in alle Träger (`kanon-verteilen`), `mycelknoten.html` (02/16 eingebettet, kein 23) nicht nachgezogen. Nicht am Tablet gemessen.
+
 ## 2026-10-14 · Prüf-Reihe Sitzung 4: Kim-sync zeichnet empfangene Bilder neu, 04/22/24 in den letzten Trägern, Mycel-Knoten
 
 **Gebaut (Kimhub nicht angefasst):**
