@@ -31,6 +31,15 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-14 · Prüf-Reihe Sitzung 4: Kim-sync zeichnet empfangene Bilder neu, 04/22/24 in den letzten Trägern, Mycel-Knoten
+
+**Gebaut (Kimhub nicht angefasst):**
+- **Kim-sync #18:** jedes empfangene Bild wird neu gezeichnet, bevor es gespeichert, gezeigt oder heruntergeladen wird (EXIF/XMP/PNG-Text und Angehängtes weg). Nicht zeichenbar → nicht gezeigt, nie das Original. Probe 250 grün · Gegenprobe 7 gefangen · 0 durchgerutscht.
+- **PWA-Toolpoint #166 · Kimseek #91 · SB-KIMTool-Point #184:** `kanon-verteilen --nur 04_match,24_ocr_eingabe` und danach `--nur 22_such_widget` (22 hing ebenfalls zurück und ruft 24 auf). Herkunfts-Riegel: alles Kanon. Prüfliste je Träger direkt nach 04, gepinnt, im Browser `prueflisteGeladen === true`, ohne die Zeile `false`. Kimseeks `brain.html` zeigt ausgeschlossene Kandidaten, nennt den Grund eines abgeschalteten Richters, hält bei verstecktem Text einmal an. SB-KIMTool-Point trägt die Liste auch inline in `such-werkzeug.html`.
+- **`docs/observatorium/tools/mycelknoten.html`:** Modul 04 nachgezogen, Prüfliste direkt dahinter (gespiegelt nach SB-KIMTool-Point). Im Browser alt und neu gleich: Init-Kette fertig, Siegel zertifiziert, Andocken VALID; neu `prueflisteGeladen === true`.
+
+**Offen:** die übrigen Module der Mycel-Knoten-Seite (01/02/03/05/15/16/17) stehen in einer älteren Generation — das heutige Siegel verlangt 05b, das sich nicht einbetten lässt (README dort) · BookLedgerPro-Arbeitsbaum 317 Commits hinter origin (Automat lässt ihn aus) · nichts am Tablet gemessen.
+
 ## 2026-10-14 · Prüfung vor dem KI-Richter (04.J), Reinigung vor der Texterkennung (24.R)
 
 **Anlass:** Klaus' Brief für BookLedgerPro und seine Frage, wo „dieses Tool“ noch hinein muss. Die Bestandsaufnahme über rund 30 Repos ergab den Sage-Kanon als ersten Schritt. Klaus' drei Antworten: **Ausschließen und zeigen** · **Richter aus, wenn die Prüfliste fehlt (und ich verteile sie)** · **PDF wie die Rezeptbücher**. Dazu mitten in der Arbeit: *„Die Qualität muss 100 % stimmen“* und *„nur die Segmente … neu zeichnen und die anderen 1:1“*.
