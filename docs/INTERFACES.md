@@ -1681,6 +1681,31 @@ Nutzt:
     configure({ reset:true }) → zurück auf DEFAULT_RELAYS (das öffentliche Netz).
     _meta.defaultRelays → Kopie von DEFAULT_RELAYS.
     Ohne configure-Aufruf: unverändert wss://relay.family-projekt.de.
+  Relais-Antwort (05b + 23, 2026-10-14, additiv):
+    publish(eventBody) → Promise<{ id, gesendetAn:[url,...], antwort }>
+      (vorher: Promise<void>; wer den Rückgabewert nicht liest, merkt nichts.
+      publish wartet NICHT auf die Antworten — Modul 05 bleibt gleich schnell.)
+      · antwort = Promise<{ id, relais:[{ relay, ergebnis, grund }],
+          angenommen, abgelehnt, unbekannt }>  (die drei Zahlen zählen Relais)
+      · ergebnis je Relais, aus NIP-01 `["OK", id, bool, nachricht]`:
+          "angenommen"  — OK mit true
+          "abgelehnt"   — OK mit false; grund = die Nachricht des Relais
+                          (≤ 200 Zeichen, nur Text)
+          "unbekannt"   — keine Antwort binnen Frist, oder die Verbindung ging
+                          vorher zu. NIE als „angenommen" gezählt.
+      · Es zählt die ERSTE Antwort je Relais und Ereignis; eine OK-Zeile zu
+        einem fremden Ereignis wird verworfen.
+      · Frist OK_FRIST_MS = 5000 ms — GEWÄHLT, NICHT GEMESSEN. Änderbar über
+        configure({ okFristMs: n }) (100 ≤ n ≤ 60000) → { ok, relays, okFristMs }.
+    Modul 23 doAnnounce/announce/connectAndAnnounce/repairAndReconnect tragen
+    zusätzlich `bestaetigung: { stand, relais }`:
+      stand "ja"        — mindestens EIN Relais hat true gemeldet
+      stand "nein"      — jedes Relais hat geantwortet, alle mit false →
+                          ok:false, reason nennt Relais und Grund
+      stand "unbekannt" — sonst (keine Antwort, oder ein Client ohne Antwort
+                          wie ein Test-Mock); ok bleibt true
+    Die UI sagt nur bei "ja" „✓ Du bist im Raum"; bei "unbekannt"
+    „angemeldet, Bestätigung fehlt" samt jeder Ablehnung mit Relais und Grund.
 
 Storage:
   Stores (alle aus Modul 01 — als Pattern ab Brief 04 der V1-Sammelspec-
