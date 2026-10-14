@@ -4,7 +4,9 @@
 **Art:** Planmodus. Lesen, messen, einen Plan vorlegen. **Kein Code, kein Merge.**
 
 ⛔ **Kimhub NICHT anfassen**, bis Klaus es sagt.
-⛔ **Keine Forschungseinträge.** Kimhub läuft auf dem Server noch in der Gegenprobe (Klaus 2026-10-14).
+⛔ **Keine Forschungseinträge und keine Forschungsanträge in GitHub** — weder als Datei noch als Issue,
+PR oder Kommentar, in keinem Repo. Kimhub läuft auf dem Server noch in der Gegenprobe (Klaus 2026-10-14).
+**Diesen Satz an jede Folge-Sitzung und jeden Brief weitergeben, bis Klaus ihn aufhebt.**
 Die Papers werden **gelesen und geprüft**, nicht ergänzt. Was ins Paper gehört, kommt als Vorschlag in den Plan.
 
 ---
