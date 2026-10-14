@@ -36,7 +36,7 @@ const RAW_BASE =
 // Ladereihenfolge = README-Reihenfolge. WICHTIG: 17 vor 15 vor 16.
 const MODULES = [
   "noble-secp256k1.js", "01_storage.js", "02_spore.js", "03_embedding.js",
-  "04_match.js", "05_anastomose.js", "05b_nostr_relay.js",
+  "04_match.js", "pruefer-mail.js", "05_anastomose.js", "05b_nostr_relay.js",
   "23_rendezvous.js", "23_rendezvous_ui.js",
   "17_floating_widget.js", "15_membran.js", "siegel-inhalt.js", "16_siegel.js",
   "19_andock_wizard.js", "20_schluessel_safe.js", "21_spracheingabe.js",

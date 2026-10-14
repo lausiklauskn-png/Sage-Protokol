@@ -42,7 +42,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v25";
+var CACHE_VERSION = "sbkim-pinnwand-v26";
 
 
 /* ⚠ NUR EIGENE VORRAETE AUFRAEUMEN — `caches` gehoert dem URSPRUNG, nicht dem
@@ -63,6 +63,7 @@ var APP_SHELL = [
   "./modules/noble-secp256k1.js",
   "./modules/03_embedding.js",
   "./modules/dm_crypto.js",
+  "./modules/pruefer-mail.js",
 ];
 
 self.addEventListener("install", function (event) {

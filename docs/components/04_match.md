@@ -877,6 +877,19 @@ eigenes Dokument, sondern dieser Abschnitt.
 
 ---
 
+## Bau 04.J — Prüfung vor dem Richter (Klaus 2026-10-14)
+
+Fremde Kandidaten-Texte gingen ungeprüft in den Richter-Prompt. Seitdem prüft
+`hybridMatch` Frage, Namen und jeden Kandidaten mit `window.PrueferMail`
+(assets/pruefer-mail.js, byte-1:1 aus dem Auslieferungsprüfer). Ohne Liste läuft der
+Richter nicht; ein Fund in der Frage schaltet ihn ab; ein Kandidat mit Fund geht nicht
+an die KI und steht mit `passt:false`, `sicherheit:"gefahr"`, `ausgeschlossen:
+"ki-anweisung"` im Urteil (Klaus: „Ausschließen und zeigen"). Vertrag: INTERFACES § 1
+Modul 04. Modul 22 zeigt ausgeschlossene Treffer mit ⚠ am Ende der Liste, ohne Link;
+die Pinnwand tut dasselbe an ihren Antworten. Proben: `smoke_bau04j_pruefung_vor_richter`
+(30), `smoke_bau22_such_widget` Probe 12b, `pinnwand/_smoke` Probe 9.
+⚠ Die Liste sucht feste Wendungen; eine umformulierte Anweisung fällt durch.
+
 ## Fehlerverhalten
 
 | Lage | Reaktion |

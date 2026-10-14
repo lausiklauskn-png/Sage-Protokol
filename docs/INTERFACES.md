@@ -1182,6 +1182,27 @@ Garantien für Modul 05 / 06 / 07 / 08:
     Knoten konfigurierte Richter-Call geht raus (Empfangsmodus). Anbieter-
     Abstraktion (Claude/Mistral/OpenAI/lokal) hartcodiert keinen Key;
     EU-Default „mistral" für DSGVO-Knoten (options.euOnly).
+  - Bau 04.J (Klaus 2026-10-14) — PRÜFUNG VOR DEM RICHTER. hybridMatch()
+    prüft Frage, Name des Suchenden und jeden Kandidaten (label + text)
+    mit `window.PrueferMail.pruefeMail` (assets/pruefer-mail.js, byte-1:1
+    aus dem Auslieferungsprüfer; Modul 04 trägt KEINE eigenen Muster).
+    Sperrend sind KI-ANWEISUNG, UNSICHTBARE-ZEICHEN, VERSTECKTER-TEXT;
+    ein bloßer Fachbegriff (KI-BEGRIFF) sperrt nicht. Eine Prüfung, die
+    wirft, zählt als Fund (fail-closed).
+      · Liste nicht geladen → available:false, reason „Prüfliste fehlt …"
+        (der Richter läuft NICHT; Klaus: „Richter aus").
+      · Fund in Frage/Name → available:false, nichts geht an die KI.
+      · Fund in einem Kandidaten → er steht NICHT im Prompt; sein Urteil
+        ist { passt:false, score:0, sicherheit:"gefahr", begruendung:
+        „Anweisung an eine KI im Text — nicht an die KI gegeben.",
+        ausgeschlossen:"ki-anweisung", funde:[Kennung…] } (Klaus:
+        „Ausschließen und zeigen"). verdicts bleibt index-gleich zu
+        candidates; attestation.verdicts trägt `ausgeschlossen` mit.
+      · alle ausgeschlossen → KEIN Netz-Aufruf; available:true,
+        richterGefragt:false, attestation:null.
+    Zusätzlich steht im Prompt, dass Suche und Kandidaten DATEN sind,
+    keine Anweisungen — eine Hürde, kein Schutz. Neue Felder sind additiv
+    (PROTOCOL_VERSION unverändert); alte Leser ignorieren sie.
 
 Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweiterung — Brief 03 der V1-Sammelspec-Kaskade — drei Schichten, Brücken-Feld, Stufe-A/Stufe-B-Pipeline additiv), 2026-05-19 (Bau 04.A `matchDimensions` sync), 2026-05-20 (Bau 04.B `explainMatchLLM` produktiv — Stufe-B-LLM-Pass gegen Anthropic-API, JSON-only-Output, strikte Schema-Validierung, fail-soft; zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; candidateScope:"netz" still auf "lokal" korrigiert), 2026-05-26 (Bau 04.C `queryLocal` produktiv — lokales Such-Feld-Backend, async via Modul 03 lazy, Default k=5, hartcodierte Schwelle 0.80, Korpus zwei Pfade options.corpus + setLocalCorpus-Provider, fünf neue Sync-Throws, leerer Korpus + unter-Schwelle → leere Liste ohne Throw, Cross-Knoten-Hook auf Modul 15 Sub (b) ohne Code-Update; Headless-Smoke 43/43 grün; Sichttest ungeprüft), 2026-06-20 (Bau 04.D `hybridMatch` produktiv — Match-Zeit-LLM-Richter über die Vorfilter-Kandidaten, additiv. Provider-Abstraktion Claude/Mistral/OpenAI/lokal mit EU-Default „mistral" für DSGVO-Knoten, BYOK; opt-in/fail-soft — leerer apiKey oder LLM-/Netz-/Schema-Fehler → available:false + fallbackCandidates ohne Throw; signierbares attestation-Objekt als Bezeugung; zwei sync Throws InvalidCandidatesError + InvalidProviderError; bidirectionalVerdict-Helfer Default „both" streng. Vorfilter-Default UNVERÄNDERT — kein Whitening-Flip/Schwellen-Eingriff. Headless-Smoke 62/62 grün; Sichttest ungeprüft. Siehe § 7 + Karte 04 § Hybrid-Match-Schicht.)
 

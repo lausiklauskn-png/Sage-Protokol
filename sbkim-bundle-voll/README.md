@@ -29,6 +29,7 @@ Schlüssel-Safe, semantische Suche) will, nimmt diese Box.
 | `modules/02_spore.js` | `SbkimSpore` | Identität + Spore (Ed25519) |
 | `modules/03_embedding.js` | `SbkimEmbedding` | Bedeutungs-Vektor |
 | `modules/04_match.js` | `SbkimMatch` | Bedeutungs-Match |
+| `modules/pruefer-mail.js` | `PrueferMail` | Prüfliste (byte-1:1 aus dem Auslieferungsprüfer) — ohne sie läuft der KI-Richter nicht |
 | `modules/05_anastomose.js` | `SbkimAnastomose` | Handshake (0.80-Riegel) |
 | `modules/05b_nostr_relay.js` | `SbkimNostrRelay` | server-loser Transport |
 | `modules/23_rendezvous.js` | `SbkimRendezvous` | gemeinsamer Raum + **Kartenechtheit + Flut-Deckel** |
@@ -96,6 +97,7 @@ Bundler, kein CDN).
 <script src="sbkim-bundle-voll/modules/02_spore.js"></script>
 <script src="sbkim-bundle-voll/modules/03_embedding.js"></script>
 <script src="sbkim-bundle-voll/modules/04_match.js"></script>
+<script src="sbkim-bundle-voll/modules/pruefer-mail.js"></script>  <!-- Prüfliste für den KI-Richter: ohne sie läuft er nicht (Bau 04.J) -->
 <script src="sbkim-bundle-voll/modules/05_anastomose.js"></script>
 <script src="sbkim-bundle-voll/modules/05b_nostr_relay.js"></script>
 <script src="sbkim-bundle-voll/modules/23_rendezvous.js"></script>
