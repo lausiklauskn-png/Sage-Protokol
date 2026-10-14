@@ -510,6 +510,13 @@ Bietet (öffentlich):
                                                                     // Default-Parameter key=getActiveIdentityKey(). Liefert Spore
                                                                     // der angegebenen Identität (null wenn Slot fehlt).
   verifyForeignSpore(spore)           → Promise<{ valid: boolean, reason?: string }>
+                                                                    // ⚠ liefert IMMER ein Objekt, nie `false` — Aufrufer lesen
+                                                                    // `.valid === true` (Befund 2026-10-14: Modul 23 las `!== false`
+                                                                    // und ließ damit jede Spore durch).
+  signDetached(obj, key?: string)     → Promise<string>          // Bau 02.Z (2026-10-14): base64url(Ed25519(canonicalJson(obj)))
+                                                                    // mit der Identität key (Default aktiv). Der private Schlüssel
+                                                                    // verlässt das Modul nicht. Wirft UnknownIdentityError ohne Slot.
+  verifyDetached(obj, sig, publicJwk) → Promise<boolean>         // Bau 02.Z: true nur bei gültiger Unterschrift; wirft nie.
   setActiveIdentity(key: string)      → Promise<void>            // Spec-Sitzung Multi-Identität (Brief 04).
                                                                     // Schreibt sbkim_meta["active-identity"] = key. Validiert,
                                                                     // dass key in sbkim_keys existiert — sonst UnknownIdentityError
@@ -5028,6 +5035,13 @@ Datenverträge (1:1 aus dem bewiesenen Prototyp):
       auslegen). Überzähliges wird still verworfen.
     - Der 0.80-Andock-Riegel (Modul 05) bleibt davon UNBERÜHRT — diese Prüfung
       steht davor, nicht an seiner Stelle.
+    - Bau 23.R (2026-10-14): gelesen wird `.valid === true` (ein Prüfer mit
+      nacktem Boolean wird weiter verstanden). Die Prüfung steht VOR dem
+      Zusammenfassen nach Namen (collapseByName); sonst verdrängte eine unechte
+      Karte die echte gleichen Namens und fiel danach selbst heraus.
+    - Der Name (`card.nodeName`) ist NICHT geprüft. Werden Karten gleichen Namens
+      zusammengefasst, trägt die gezeigte Karte `gleicherName: <Anzahl der
+      ausgeblendeten anderen Kennungen>`; die Oberfläche nennt es.
 
 Bietet (öffentlich, window.SbkimRendezvous):
   init(opts?)              → Promise<void>   // Konfig setzen (idempotent);
@@ -5398,6 +5412,24 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         nichts. Ed25519-Signatur der Zettel = notierter Folge-Schritt
         (Modul-02-Sign-Pfad), bevor Fremde außerhalb von Klaus' Netz
         mitspielen.
+    ✅ Bau 23.R (2026-10-14) — der Folge-Schritt für den ANTWORT-Zettel:
+        Antwort-Zettel v2 = v1 + { spore: <eigene Spore des Antworters>,
+        sig: Modul 02 signDetached(<Zettel ohne sig>) }. Anlass: ein Mithörer
+        antwortete im Namen des gefragten Knotens (Befund 2026-10-14, N1).
+        Der Frager prüft: fromNodeId === gefragter Knoten · spore.id ===
+        fromNodeId · verifyForeignSpore(spore).valid · verifyDetached(…,
+        spore.publicKey). Ergebnis je Antwort:
+          bestätigt   → genommen; schlägt jede unbestätigte (askNode sofort,
+                        fetchAnswers unabhängig von ts)
+          unbestätigt → v1-Zettel ohne spore/sig (ältere Fassung, oder Modul 02
+                        ohne signDetached); askNode nimmt ihn erst, wenn binnen
+                        RDV_UNBESTAETIGT_WARTE_MS (3000) keine bestätigte kommt
+          falsch      → verworfen, gezählt in _meta.antwortVerworfen
+        Rückgaben tragen `bestaetigt: boolean`. Eine unbestätigte Antwort geht
+        NICHT an den KI-Richter (Modul 23-UI). results[].label ≤ RDV_LABEL_MAX
+        (200) Zeichen. fetchAnswers(qids) nimmt Strings ODER {qid, toNodeId} —
+        mit toNodeId nur die Antwort genau dieses Knotens.
+        Der FRAGE-Zettel bleibt unsigniert (er gatet nichts beim Antworter).
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]

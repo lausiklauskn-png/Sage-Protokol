@@ -740,7 +740,7 @@ function migrateLiveNode(oldNode, seed, nodeId) {
   seed.live = true;
   recEvent("fusion", "nachfusion", { nodeId: nodeId, von: oldNode.label, nach: seed.label },
            "verspaeteter Name — Pille samt Faeden in Seed-Pille verschmolzen");
-  logEvent("<b>Fusion</b> · " + oldNode.label + " → " + seed.label + " (Name kam nach)", "ok");
+  logEvent("<b>Fusion</b> · " + sicher(oldNode.label) + " → " + sicher(seed.label) + " (Name kam nach)", "ok");
 }
 
 function nodeForLiveId(nodeId, name) {
@@ -842,6 +842,10 @@ function recStop() {
 var evCount = 0;
 var logEl = document.getElementById("log");
 var evCountEl = document.getElementById("evCount");
+/* ⚠ `html` wird als HTML gesetzt. Jeder fremde Wert (Kartenname, outcome,
+   Relais-Adresse, Dateiname) geht vorher durch sicher() — Befund Sage 2026-10-14:
+   ein Name aus einem fremden Presence-Event (≤ 28 Zeichen) reichte für
+   `<img src=x onerror=…>`. tests/browser_protokoll.mjs bewacht es. */
 function logEvent(html, cls) {
   evCount++; evCountEl.textContent = String(evCount);
   var div = document.createElement("div");
@@ -892,8 +896,8 @@ function onHandshake(fromId, toId, outcome, source, isDemo) {
     if (ok) { e.active = true; e.heat = 1; }   // etabliert: Faden bleibt stark
     a.pulse = 1; b.pulse = 1;
   }
-  logEvent((isDemo ? "🎬 " : "") + "<b>" + (ok ? "✓ Handshake" : "✗ " + (outcome || "abgelehnt")) + "</b> · " +
-           (a ? a.label : "?") + " → " + (b ? b.label : "?") + " <i>(" + source + ")</i>",
+  logEvent((isDemo ? "🎬 " : "") + "<b>" + (ok ? "✓ Handshake" : "✗ " + sicher(outcome || "abgelehnt")) + "</b> · " +
+           sicher(a ? a.label : "?") + " → " + sicher(b ? b.label : "?") + " <i>(" + sicher(source) + ")</i>",
            (ok ? "ok" : "bad") + (isDemo ? " demo" : ""));
   if (ok) SOUND.established(); else SOUND.rejected();
 }
@@ -901,7 +905,7 @@ function onRequest(fromId, toId, isDemo) {
   var a = fromId ? nodeForLiveId(fromId) : null;
   var b = toId ? nodeForLiveId(toId) : null;
   if (a && b) { var e = addEdge(a.id, b.id); e.flash = 1; e.flashColor = null; e.heat = Math.max(e.heat, 0.7); a.pulse = 1; }
-  logEvent((isDemo ? "🎬 " : "") + "<b>Anfrage</b> · " + (a ? a.label : "?") + " → " + (b ? b.label : "?") +
+  logEvent((isDemo ? "🎬 " : "") + "<b>Anfrage</b> · " + sicher(a ? a.label : "?") + " → " + sicher(b ? b.label : "?") +
            " <i>(Kanal sbkim)</i>", isDemo ? "demo" : "");
   SOUND.request();
 }
@@ -911,7 +915,7 @@ function onRequest(fromId, toId, isDemo) {
 window.addEventListener("sbkim:alive", function (ev) {
   var d = (ev && ev.detail) || {};
   var n = nodeForLiveId(d.nodeId); if (n) n.pulse = 1;
-  logEvent("<b>LEBT</b> · " + (n ? n.label : "eigener Knoten") + " <i>(Fenster)</i>", "ok");
+  logEvent("<b>LEBT</b> · " + sicher(n ? n.label : "eigener Knoten") + " <i>(Fenster)</i>", "ok");
   SOUND.alive();
 });
 window.addEventListener("sbkim:handshake", function (ev) {
@@ -942,7 +946,7 @@ try {
     if (d.type === "SBKIM_ANASTOMOSE_REQUEST" && d.payload) {
       onRequest(d.payload.fromNodeId, d.payload.toNodeId, false);
     } else if (d.type === "SBKIM_ANASTOMOSE_RESPONSE" && d.payload) {
-      logEvent("<b>Antwort</b> · " + (d.payload.outcome || "?") + " <i>(Kanal sbkim)</i>",
+      logEvent("<b>Antwort</b> · " + sicher(d.payload.outcome || "?") + " <i>(Kanal sbkim)</i>",
                d.payload.outcome === "established" ? "ok" : "");
       if (d.payload.outcome === "established") SOUND.established();
     }
@@ -1191,7 +1195,7 @@ function handleRelayEvent(evt) {
   if (tt === "sbkim-rdv" && content.kind === "sbkim-presence" && content.nodeId) {
     var n = nodeForLiveId(content.nodeId, content.nodeName);
     if (n) { n.pulse = 1; merkeRaumSpore(n, content.spore, content.nodeId); }
-    relayLog("<b>Hier bin ich</b> · " + (n ? n.label : "?") + " ist im Raum", "ok");
+    relayLog("<b>Hier bin ich</b> · " + sicher(n ? n.label : "?") + " ist im Raum", "ok");
     SOUND.alive();
   } else if (tt === "sbkim-anastomosis") {
     onRequest(content.fromNodeId || null, content.toNodeId || dd || null, false);
@@ -1204,7 +1208,7 @@ function handleRelayEvent(evt) {
     var ok = content.outcome === "established";
     if (ok && dd) { var m = nodeForLiveId(dd); if (m) m.pulse = 1; }
     merkeMessung(content, dd);
-    relayLog("<b>" + (ok ? "✓ Handshake" : "Antwort: " + (content.outcome || "?")) + "</b>", ok ? "ok" : "");
+    relayLog("<b>" + (ok ? "✓ Handshake" : "Antwort: " + sicher(content.outcome || "?")) + "</b>", ok ? "ok" : "");
     if (ok) SOUND.established();
   } else if (tt === "sbkim-query" || tt === "sbkim-query-reply") {
     relayLog("<b>" + (tt === "sbkim-query" ? "Frage" : "Antwort") + "</b> · Cross-Knoten-Suche unterwegs");
@@ -1244,7 +1248,7 @@ function relaisOeffnen(url) {
      welches — und bei fuenf Poststellen ist genau das die Frage. Solange
      eine andere traegt, ist es kein Fehler, sondern eine Randnotiz. */
   sock.onerror = function () {
-    relayLog("<b>" + url.replace(/^wss:\/\//, "") + " nicht erreichbar</b> · die übrigen tragen weiter");
+    relayLog("<b>" + sicher(url.replace(/^wss:\/\//, "")) + " nicht erreichbar</b> · die übrigen tragen weiter");
   };
   sock.onclose = function () {
     if (sockByUrl[url] === sock) delete sockByUrl[url];
@@ -1601,7 +1605,7 @@ function spieleMitschnitt(daten, name) {
   replayBandBasis = "▶ Mitschnitt " + tag + " · kein Live-Verkehr";
   demoBadge.classList.add("show");
   logEvent("<b>▶ Wiedergabe gestartet</b> · " + liste.length + " Ereignisse aus <i>"
-    + (name || "Mitschnitt") + "</i>"
+    + sicher(name || "Mitschnitt") + "</i>"
     + (quellen > 1 ? " (" + quellen + " Aufzeichnungen)" : "")
     + " ab " + wann + " UTC · gleichmäßig abgespielt, <b>nicht im Originaltempo</b>"
     + " · rund " + liste.length + " Sekunden", "ok");

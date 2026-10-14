@@ -103,3 +103,21 @@ Keiner der vier deckt die gemessenen Lücken: die falsch gelesene Echtheitsprüf
 - Ein Mithörer gewinnt das Rennen um die erste Antwort im echten Netz regelmäßig.
 - Ob ein Richter-Modell der durchgerutschten Anweisung tatsächlich folgt, ist nicht gemessen, denn die KI war gestellt.
 - Was ein über den kopierten Vektor „established" gewordener Geschwister-Knoten darf, ist nicht nachgesehen.
+
+---
+
+## 6. Gebaut am selben Tag (Klaus: Punkte 1–4 freigegeben)
+
+| Punkt | was jetzt gilt | belegt durch |
+|---|---|---|
+| 1 Echtheit | Modul 23 liest `.valid === true`. Kaputte und nachträglich veränderte Sporen werden verworfen. | `smoke_bau23r_echtheit_antworten.mjs` B1, B2 · Gegenprobe gefangen |
+| 2 Namen | Die Prüfung steht vor dem Zusammenfassen; eine unechte Karte verdrängt die echte nicht mehr. Ein gültig signierter Namensvetter verdrängt weiter (der Name ist ungeprüft), die Karte sagt es (`gleicherName`). | B3, B4 |
+| 3 Antworten | Antwort-Zettel tragen Spore + Unterschrift (Modul 02 `signDetached`). Genommen wird nur der gefragte Knoten; eine bestätigte schlägt jede unbestätigte (auch mit späterer Zeit). Unbestätigte (ältere Fassung) erscheinen mit „⚠ unbestätigt“ und gehen nicht an den KI-Richter. Titel ≤ 200 Zeichen. | C1–C5, D1–D3 · Gegenprobe 10/10 |
+| 4 HTML | Mycel-Karte (Original #32 und Kopie in Sage) und Kimboard „Kontakt senden“. **Jetzt gemessen statt vermutet:** in beiden lief in der alten Fassung ein Skript aus dem fremden Namen. | `smoke_mycel_karte_log.mjs` (alt 3 ROT, neu 4 grün) · Kimboard `smoke_kontakt_senden_name.mjs` (alt 3 ROT, neu 4 grün) |
+
+**Benannte Grenzen nach dem Bau:**
+- Der Frage-Zettel bleibt unsigniert (er gatet beim Antworter nichts).
+- Ein gültig signierter Namensvetter wird weiter gezeigt, statt des echten, wenn er neuer ist. Die Karte nennt es; entscheiden kann nur, wer die Kennung kennt.
+- Bis alle Träger die neue Fassung haben, kommen Antworten älterer Knoten als „unbestätigt“ an und brauchen bis zu 3 s länger.
+- `docs/observatorium/tools/mycelknoten.html` trägt 02 und 16 eingebettet, aber kein 23. Es ist nicht nachgezogen.
+- Nicht angefasst: die Wortliste vor dem Richter (Umformuliertes geht weiter durch), der ungebundene Vektor (Punkt 6), Browser mit eingebauter KI.

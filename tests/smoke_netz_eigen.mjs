@@ -140,7 +140,13 @@ async function main() {
     sage(vorher.ereignisse.length > 200, "Selbst-Riegel: der Vergleichslauf hat überhaupt Ereignisse erzeugt", vorher.ereignisse.length);
     sage(vorher.ereignisse === nachher.ereignisse, "publizierte Ereignisse Zeichen für Zeichen gleich (Karte, Frage, Antwort)",
       `vorher ${vorher.ereignisse.slice(0, 160)}…\n        nachher ${nachher.ereignisse.slice(0, 160)}…`);
-    sage(vorher.ant === nachher.ant, "die Antwort auf die Frage ist gleich", nachher.ant);
+    // Bau 23.R (2026-10-14, Tafel-Evolution benannt): die Antwort trägt zusätzlich
+    // `bestaetigt`. Die gestellte Spore hier kann nicht unterschreiben → false. Verglichen
+    // wird ohne das neue Feld, und das Feld selbst wird ausdrücklich verlangt — sonst
+    // wäre ein stiller Wegfall der Bindung von „gleich" nicht zu unterscheiden.
+    const ohneBest = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "bestaetigt" ? undefined : v));
+    sage(ohneBest(vorher.ant) === ohneBest(nachher.ant), "die Antwort auf die Frage ist gleich (ohne das neue Feld bestaetigt)", nachher.ant);
+    sage(/"bestaetigt":false/.test(nachher.ant), "die Antwort sagt bestaetigt:false (gestellte Spore ohne Unterschrift)", nachher.ant);
     sage(vorher.karten === nachher.karten, "discover liefert dieselben Karten", nachher.karten);
     sage(nachher.meta[0] === "sbkim-rdv" && nachher.meta[1] === "sbkim-qry", "_meta nennt sbkim-rdv / sbkim-qry", nachher.meta.join(" / "));
   }
