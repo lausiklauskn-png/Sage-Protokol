@@ -36,3 +36,18 @@ Commit hier — die Truhe (`docs/observatorium/vorteilspack.js`) zeigt
 beim nächsten Kopier-/Download-Klick automatisch den neuen Stand. Die
 Tool-Kacheln sind in `vorteilspack.js` (`TOOLS`-Array, Tier
 `komplett`) eingetragen.
+
+## ⚠ Stand der Module in `mycelknoten.html` (2026-10-14)
+
+Nachgezogen ist **Modul 04** (Bau 04.J) und direkt dahinter die **Prüfliste** (`pruefer-mail.js`, byte-1:1 aus dem
+Auslieferungsprüfer). Damit bringt die Seite erstmals `hybridMatch` mit — und der KI-Richter läuft nur mit der
+Liste: eine Frage oder ein Kandidat mit einer Anweisung an eine KI geht nicht an die KI.
+
+⚠ **Die übrigen Module (01, 02, 03, 05, 15, 16, 17) stehen in einer älteren Generation** — „unverändert" heißt in
+der Kopfzeile jedes Blocks: unverändert gegenüber dem Kanon *zum Zeitpunkt der Einbettung*, nicht gegenüber heute.
+Sie alle hochzuziehen ist ein eigener Schritt: das heutige Siegel (16) verlangt 05b, und 05b ist ein ES-Modul, das
+sich nicht in eine Ein-Datei-Seite einbetten lässt — die Seite stünde danach als „nicht zertifiziert" da.
+
+Gemessen im Browser (alt und neu gleich): Init-Kette fertig, Siegel zertifiziert, Andocken ohne Embedding
+„✔ VALID", keine Fehler. Neu: `SbkimMatch._meta.prueflisteGeladen === true`.
+Gespiegelt in `SB-KIMTool-Point/web/tools/mycelknoten.html` (dort `dbSuffix: "toolpoint"`, sha256 in `werkzeugkiste.json`).
