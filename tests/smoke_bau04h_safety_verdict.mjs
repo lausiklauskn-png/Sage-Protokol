@@ -26,6 +26,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 
 globalThis.window = globalThis;
+// Bau 04.J: ohne Prüfliste läuft der Richter nicht — sie gehört dazu wie in jeder App.
+new Function(readFileSync(resolve(repoRoot, "assets/pruefer-mail.js"), "utf8"))();
 const src = readFileSync(resolve(repoRoot, "src/modules/04_match.js"), "utf8");
 new Function("global", "window", "globalThis", "console", src)(
   globalThis, globalThis, globalThis, console,

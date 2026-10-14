@@ -35,6 +35,7 @@ Vor `</body>` (Reihenfolge ist wichtig):
 <script src="sbkim-bundle/modules/02_spore.js"></script>
 <script src="sbkim-bundle/modules/03_embedding.js"></script>
 <script src="sbkim-bundle/modules/04_match.js"></script>
+<script src="sbkim-bundle/modules/pruefer-mail.js"></script>  <!-- Prüfliste für den KI-Richter: ohne sie läuft er nicht (Bau 04.J) -->
 <script src="sbkim-bundle/modules/05_anastomose.js"></script>
 <script type="module" src="sbkim-bundle/modules/05b_nostr_relay.js"></script>
 <script src="sbkim-bundle/modules/23_rendezvous.js"></script>
@@ -98,6 +99,7 @@ nie ein Platzhalter.
 | `modules/02_spore.js` | Identität (Ed25519-Spore), lokal |
 | `modules/03_embedding.js` | Domain-Vektor (nur bei Identitäts-Erzeugung) |
 | `modules/04_match.js` | Bedeutungs-Cosinus + 0.80-Schwelle |
+| `modules/pruefer-mail.js` | Prüfliste des Auslieferungsprüfers (byte-1:1): der KI-Richter gibt keinen Text mit Anweisung an eine KI weiter und läuft ohne sie nicht |
 | `modules/05_anastomose.js` | Handshake + `listenNostr` (Empfangsmodus) |
 | `modules/05b_nostr_relay.js` | Relais-Client (browser-only, `type=module`) |
 | `modules/noble-secp256k1.js` | Schnorr/BIP340 für 05b (lokal, kein CDN) |

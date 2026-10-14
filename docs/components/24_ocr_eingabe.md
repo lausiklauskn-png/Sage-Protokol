@@ -55,9 +55,38 @@ InvalidEuPolicyError                   -> ErrorFactory (sync throw nur bei Aufru
   Anbieter bei `bindend` nicht erlaubt / HTTP-Fehler / Netz-Fehler / Abbruch →
   `{available:false, reason:<deutsch>}`, **kein Throw**).
 
+## Bau 24.R — Reinigung vor dem Senden (Klaus 2026-10-14)
+
+Bis hierher ging die ORIGINALDATEI an Mistral/Google (Foto samt EXIF/Ort, PDF samt
+verstecktem Text). Seitdem sendet `recognize` nie das Original:
+
+| Eingang | was hinausgeht |
+|---|---|
+| JPEG | **Bildpunkte 1:1**, nur Metadaten-Abschnitte (`WFP.Reinigung.jpegOhneMeta`) und alles hinter dem Bildende weg (Klaus: „nur das Bösartige neu, den Rest 1:1") |
+| anderes Foto / JPEG nicht sauber zerlegbar / Reinigung nicht ladbar | in **voller Größe** neu gezeichnet (≤ 6000 px), PNG bleibt verlustfrei PNG (über 8 MB → JPEG 92 %) |
+| PDF | je Seite (≤ 10) mit pdf.js gezeichnet, **300 dpi nach der echten Seitengröße** (≤ 5000 px), versteckter Text in der Kopie zugedeckt, JPEG 92 % ohne Metadaten, `isEvalSupported:false` |
+| nicht lesbar / kein Browser / PDF-Leser nicht erreichbar | **nichts** (`nichtsGesendet:true`, Grund im Hinweis) |
+
+pdf.js und `reinigung.js` kommen von `/Workflow-PDF/` (gleiche Adresse auf github.io,
+wie in den Rezeptbüchern), einstellbar über `init({ pfade: { pdfjs, reinigung } })`.
+Versteckter Text → `options.onVersteckt(liste)` (false = nichts senden). Der erkannte
+Text geht durch `window.PrueferMail`: Ergebnis trägt `textGeprueft`, `kiAnweisung`
+([{zeile, kennung, inhalt}]) und `entfernt`; `ohneZeilen(text, zeilen)` nimmt die
+gemeldeten Zeilen heraus. Aufrufer (Modul 22, Pinnwand) halten je einmal per `confirm` an.
+
+**Gemessen 2026-10-14** (Tesseract auf dem Gerät als Messgerät, kleine blassgraue
+Schrift 4,5–6 pt, 20 Zeilen): 1400 px/JPEG 85 % → 9 Zeilen falsch; 2000 px/JPEG 92 % → 1;
+300 dpi/JPEG 92 % → 0; PNG ohne Gewinn (beim Scan fünfmal so groß). Mit den alten
+Einstellungen las die Probe die IBAN einer 5-pt-Zeile falsch („DESO 3708 004 …").
+⚠ Grenzen: Mistral/Google selbst sind nicht gemessen (kein Schlüssel im Behälter) ·
+Text über einem Foto bleibt · schräger Text wird nicht beurteilt · nur 10 PDF-Seiten.
+Proben: `smoke_bau24_ocr_eingabe` · `smoke_bau24r_reinigung_browser` (braucht ../Workflow-PDF) ·
+Gegenprobe `tests/gegenprobe_bau04j_24r.mjs`.
+
 ## Strikte Tabus / Leitplanken
 
 - **Kein Schlüssel im Code** (BYOK, RAM-only beim Aufrufer). **Kein PII.**
+- **Nie das Original senden** (Bau 24.R) — lieber nichts als ungereinigt.
 - Liefert **nur Text** — greift nicht in Modul 03/04/05 ein, kein Schwellen-/
   Riegel-Bezug (`PROVIDER_MIN_MATCH` / 0.80-Andock unberührt).
 - Kein Bundler, kein Laufzeit-CDN, kein `PROTOCOL_VERSION`-/`DB_VERSION`-Bump

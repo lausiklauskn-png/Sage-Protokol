@@ -180,6 +180,17 @@ function mountMatch(behavior) {
       if (behavior === "richter-failsoft") {
         return { available: false, reason: "API HTTP 429" };
       }
+      if (behavior === "ausgeschlossen") {
+        // Bau 04.J: der zweite Kandidat trug eine Anweisung an eine KI und ging nicht an die KI.
+        return {
+          available: true,
+          verdicts: candidates.map((c, i) => (i === 0
+            ? { label: c.label, anchorId: c.anchorId, passt: true, score: 0.95, begruendung: "passt direkt" }
+            : { label: c.label, anchorId: c.anchorId, passt: false, score: 0, sicherheit: "gefahr",
+                begruendung: "Anweisung an eine KI im Text — nicht an die KI gegeben.", ausgeschlossen: "ki-anweisung" })),
+          attestation: { kind: "sbkim-hybrid-match-judgment", version: 1 },
+        };
+      }
       // Erster Kandidat passt, Rest nicht — behält label/anchorId der Kandidaten.
       return {
         available: true,
@@ -320,6 +331,29 @@ async function run() {
   eq("Probe 12: Richter nicht verfügbar → semantisch (Fallback)", "semantisch", res.mode);
   eq("Probe 12: semantische Treffer bleiben (2)", "2", String(res.treffer.length));
   record("Probe 12: reason gesetzt", "true", String(!!res.reason), !!res.reason);
+
+  // ---- Probe 12b: Bau 04.J — ein ausgeschlossener Treffer steht markiert da ----
+  mountMatch("ausgeschlossen");
+  res = await W.search("lasagne");
+  eq("Probe 12b: Richter-Urteil", "richter", res.mode);
+  eq("Probe 12b: der ausgeschlossene verschwindet NICHT (2 Zeilen)", "2", String(res.treffer.length));
+  eq("Probe 12b: er steht am Ende, markiert", "ki-anweisung", String(res.treffer[1] && res.treffer[1].ausgeschlossen));
+  eq("Probe 12b: die Zahl der ausgeschlossenen", "1", String(res.ausgeschlossen));
+  // gezeichnet wird erst über den Suchknopf (runAndRender), nicht über W.search
+  const goBtn = queryFirst(root, ".sbkim-sw-search");
+  queryFirst(root, ".sbkim-sw-input").value = "lasagne";
+  goBtn.dispatchEvent({ type: "click", target: goBtn, stopPropagation: () => {} });
+  for (let w = 0; w < 50 && !queryAll(root, ".sbkim-sw-result").some((e) => e.getAttribute("data-ausgeschlossen")); w++) {
+    await new Promise((r) => setTimeout(r, 20));
+  }
+  const ausRow = queryAll(root, ".sbkim-sw-result").find((e) => e.getAttribute("data-ausgeschlossen") === "ki-anweisung");
+  record("Probe 12b: die Zeile trägt data-ausgeschlossen", "true", String(!!ausRow), !!ausRow);
+  const ausTitel = ausRow ? queryFirst(ausRow, ".sbkim-sw-result-title") : null;
+  record("Probe 12b: ohne Link, mit ⚠ im Titel", "true", ausTitel && ausTitel.textContent,
+    !!ausTitel && /^⚠ /.test(ausTitel.textContent) && !queryFirst(ausRow, ".sbkim-sw-result-link"));
+  const hint12b = queryFirst(root, ".sbkim-sw-hint");
+  record("Probe 12b: der Hinweis nennt den Ausschluss", "true",
+    hint12b && hint12b.textContent, !!hint12b && /nicht an die KI gegeben/.test(hint12b.textContent));
 
   // ---- Probe 13: queryLocal wirft → App-Bereich fängt ab → leer (kein Throw) ----
   mountMatch("wirft");
