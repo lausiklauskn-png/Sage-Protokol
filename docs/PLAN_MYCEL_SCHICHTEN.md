@@ -71,6 +71,19 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   Empfänger → „Bedeutung nicht geprüft", nie still grün. Offen zum Entscheid: Schwelle,
   und was mit `embeddingSource: "content"` geschieht (Vektor aus Inhalten, nicht aus dem
   Text — dort ist Nachrechnen nicht möglich). Entspricht dem offenen Punkt 6 der Prüf-Reihe.
+  **Entscheid (Klaus 2026-10-15):** Schwelle **0,99** (Cosinus nachgerechnet ⟷ angesagt).
+  `embeddingSource: "content"` → **„Bedeutung aus Inhalten, nicht nachprüfbar"**: sichtbar,
+  kein Abzug, kein „geprüft"; die Satz-Schnipsel (immer aus der Beschreibung) werden
+  trotzdem nachgerechnet.
+  **Gemessen vor dem Entscheid** (gespeicherte Vektoren der 11 Sporen in `sbkim/`, 55 Paare):
+  verschiedene Knoten 0,780–0,983; engste Paare Jasons-Tresor ⟷ Mein-Tresor 0,983,
+  Muttis ⟷ Rezeptbuch 0,973. **Nicht gemessen:** die Wiederholgenauigkeit desselben
+  Textes auf einem anderen Gerät (Modell im Container nicht ladbar) — vor dem
+  Scharfschalten im Browser zu messen; liegt sie unter 0,995, wird Klaus gefragt.
+  **Fund:** der Andock-Wizard bettet bei der Erst-Signatur „Beschreibung. Stichworte"
+  ein, beim Neu-Signieren nur die Beschreibung (`16b_andock_wizard.js`, `quelle` bzw.
+  `beschreibung`); die Spore sagt nicht, welcher Weg. Der Empfänger muss beide Fassungen
+  nachrechnen.
 
 - [ ] **S3 — Rechenaufwand je Zettel** (teure Balz) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Nostr NIP-13: der Sender rechnet vor dem Senden eine kleine Prüfsummen-Aufgabe. Fluten

@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · S2-Entscheid: Schwelle 0,99, Inhalts-Vektor „nicht nachprüfbar“ (Hauptsitzung)
+- **Klaus' Wort:** Schwelle **0,99**; `embeddingSource: "content"` → Weg A (sichtbar, kein Abzug, kein „geprüft“, Schnipsel trotzdem nachrechnen). Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md` S2 und im Sammel-Brief Schritt 5.
+- **Gemessen:** 55 Paare der gespeicherten Vektoren in `sbkim/`: 0,780–0,983 (engstes Paar Jasons-Tresor ⟷ Mein-Tresor 0,983).
+- **Nicht gemessen:** Wiederholgenauigkeit des Modells über Geräte (HuggingFace und family-projekt.de im Container gesperrt).
+- **Fund:** Andock-Wizard bettet Erst-Signatur „Beschreibung. Stichworte“, Neu-Signieren nur die Beschreibung — der Empfänger muss beide nachrechnen.
+
 ## 2026-10-15 · Sammel-Brief Schritt 4, 4b, 5 (S1): Fragen unterschreiben netzweit, zwei Knoten angedockt (Hauptsitzung)
 - **Schritt 4 (Klaus):** andocken Kuechenzettel und die Demo; nicht papas-aktenschrank, Kochfreunde. Für die Demo die öffentliche `sbkim-demo/` in Sage statt des privaten Repos semantic-match-demo.
 - **S1 gebaut:** Sage #1106. INTERFACES Frage-Zettel v2 (spore + sig), Modul 23 prüft Fragen: bestätigt → 6/min, unbestätigt → höchstens 2 der 6 (Klaus' Wert), falsch → nicht beantwortet, sperrt die qid nicht. Siegel-Aspekt DE/EN. `smoke_s1_fragen_signiert` 13 grün, Gegenprobe 7/7.
