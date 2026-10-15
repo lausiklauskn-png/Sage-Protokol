@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Schutzschichten freigegeben (Hauptsitzung)
+
+- **Klaus' Wort:** „Ja, S1 → S2 → S5 → S3 → S4 freigegeben“. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md` (Legende und Reihenfolge) und in der Fortschritts-Tabelle des Sammel-Briefs (Schritt 5: teilweise).
+- **Grenze:** die Freigabe gilt dem Bau; offene `Entscheid`-Werte je Schicht (Schwelle S2, Kettenlänge S5 …) fragt die Bau-Sitzung vorher ab. S6/S7 nicht freigegeben.
+- **Nächster Schritt:** unverändert Schritt 2 (Bau 23.R, Paket A1); danach Schritt 5 ohne erneute Freigabe-Frage.
+
 ## 2026-10-15 · Sammel-Brief Schritt 1: `kanon-verteilen` zieht den Cache-Stand mit (Hauptsitzung)
 
 - **Getan:** `tools/kanon-verteilen.mjs` ruft nach einem Cache-Bump `tools/cache-stand.mjs` des Trägers auf (einmal je Träger, nur bei `--schreiben`; Fehlschlag laut, Rückgabewert 1). Probe `smoke_kanon_cachestand.mjs` 15 grün, Gegenprobe 6 gefangen · 0 durch · 0 tot. Pflege-Liste #13 erledigt.

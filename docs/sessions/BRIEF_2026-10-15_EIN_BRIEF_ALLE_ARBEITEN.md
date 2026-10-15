@@ -24,7 +24,7 @@ weiter.
 | 2 | Gruppe A: Bau 23.R in die übrigen Träger nachziehen | offen |
 | 3 | Gruppe B: In-and-Out-Book, Kim-sync (Datei-Post nur nach Klaus' Ja) als Knoten andocken | offen |
 | 4 | Gruppe C: Klaus fragen, was davon andocken soll | offen |
-| 5 | Schichten: Klaus' Freigabe holen, dann S1 „Fragen unterschreiben“ bauen und in alle Träger tragen | offen |
+| 5 | Schichten: Klaus' Freigabe holen, dann S1 „Fragen unterschreiben“ bauen und in alle Träger tragen | teilweise: Freigabe erteilt (Klaus 2026-10-15: S1 → S2 → S5 → S3 → S4; S6/S7 nicht), Bau von S1 offen |
 | 6 | Paper S: Gliederung mit Klaus abstimmen (schreiben erst nach 2 und 5) | offen |
 | 7 | Nebenbei, wenn Zeit bleibt: Workflow-PDF `tests/chrome.mjs` hängt (Pflege-Liste #14) | offen |
 
