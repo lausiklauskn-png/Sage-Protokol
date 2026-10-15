@@ -355,10 +355,13 @@ engste Paar sind zwei Tresor-Anwendungen mit fast gleicher Beschreibung. Die Sch
 0,99 liegt darüber. Ein abgeschriebener Vektor fällt also auch dann auf, wenn er von
 einer sehr ähnlichen Anwendung stammt.
 
-Nicht gemessen ist, wie genau dasselbe Sprachmodell denselben Text auf einem anderen
-Gerät wiederholt. Rechnet ein Tablet nur auf 0,98 genau nach, stünde jede echte Spore
-als „passt nicht" da. Bevor S2 verteilt wird, misst der Betreiber das an seinem Gerät,
-mit einer eigenen Mess-Seite.
+Offen war, wie genau dasselbe Sprachmodell denselben Text auf einem anderen Gerät
+wiederholt. Rechnete ein Gerät nur auf 0,98 genau nach, stünde jede echte Spore als
+„passt nicht" da. Der Betreiber hat das am 2026-10-15 mit einer eigenen Mess-Seite
+gemessen: bei neun Sporen ergab der aus der Beschreibung nachgerechnete Vektor **1,0000**,
+auch bei Sporen, die auf anderen Geräten unterschrieben worden waren. Die Satz-Schnipsel
+kamen einzeln nachgerechnet auf 0,995 bis 0,997, vermutlich weil sie beim Unterschreiben
+im Stapel gerechnet werden. Auch sie liegen über der Schwelle.
 
 Zwei Fälle kann S2 nicht prüfen. Ist der Vektor aus den Inhalten einer Anwendung
 gerechnet (aus Rezepten etwa), kennt der Empfänger diese Inhalte nicht. Die Karte sagt
