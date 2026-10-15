@@ -187,6 +187,12 @@ sie etwas?
 die `npm test`-Kette ab. Auf `origin/main` (ohne Bau 23.R) 1 von 5 Läufen rot, auf dem Zweig
 2 von 9. Der Dialog hängt am Laden der Bibliothek aus IndexedDB. Ursache nicht gesucht.
 
+**Erledigt 2026-10-15 (Workflow-PDF #118).** Die Vermutung „IndexedDB“ stimmte nicht. Im
+hängenden Tab stand `readyState: interactive`, `vendor/qrcode.js` kam nie an, die `defer`-Kette
+und damit `app.js` liefen nicht (`window.__wfpdf` fehlte). Die Probe schaltete die Netz-Sperre
+erst am schon ladenden Tab ein (`tab.route`). Jetzt steht `ctx.route` vor dem Klick. Gemessen:
+vorher 3 von 17 Läufen rot, danach 0 von 40; `npm test` Rückgabewert 0. Nur die Probe geändert.
+
 ### 15 · Das Sprachmodell vom eigenen Server startet im Browser nicht — netzweit
 
 **Gemessen 2026-10-15 an Klaus' Tablet (Bilder im Chat), Siegel → „Beschreibung übernehmen → Vektor & Spore neu signieren“:**

@@ -26,8 +26,8 @@ weiter.
 | 4 | Gruppe C: Klaus fragen, was davon andocken soll | gefragt (Klaus 2026-10-15): **andocken** Kuechenzettel und semantic-match-demo; **nicht** papas-aktenschrank, Kochfreunde. Andocken selbst: offen (4b) |
 | 4b | Kuechenzettel, semantic-match-demo als Knoten andocken (wie Schritt 3, mit S1-Kanon) | erledigt (2026-10-15): Kuechenzettel #10 (Schublade `kuechenzettel`, 13 Module, feste Leiste), Sage `sbkim-demo/` statt des privaten Repos semantic-match-demo (Klaus 2026-10-15; Schublade `sbkimdemo`, lädt den Kanon direkt aus `src/modules/`, Sage-PR dieser Sitzung); Register und kim-hub-company #78 nachgezogen. Erste Sporen: am Gerät, nicht gemessen |
 | 5 | Schichten: Klaus' Freigabe holen, dann S1 „Fragen unterschreiben“ bauen und in alle Träger tragen | teilweise: Freigabe erteilt (Klaus 2026-10-15: S1 → S2 → S5 → S3 → S4; S6/S7 nicht). **S1 erledigt** (Sage #1106; 26 Träger je 1 PR, auf `main` 26/26 nachgezählt, `RDV_QUERY_UNSIGNED_MAX_PER_MIN = 2`, Siegel-Aspekt in 25 — Company-Brain trägt kein Siegel; BookLedgerPro nachgeholt in #336, zusammen mit dem Modul-03-Rückfall, der dort auch fehlte). S2-Entscheid (Klaus 2026-10-15): Schwelle 0,99, `content` → „nicht nachprüfbar“, kein Abzug. **S2 in Sage gebaut** (Probe 27 grün, Gegenprobe 14/14). Offen: S2 messen am Gerät (`tools/s2-wiederholung.html`) und in alle Träger tragen, dann S5, S3, S4 |
-| 6 | Paper S: Gliederung mit Klaus abstimmen (schreiben erst nach 2 und 5) | offen |
-| 7 | Nebenbei, wenn Zeit bleibt: Workflow-PDF `tests/chrome.mjs` hängt (Pflege-Liste #14) | offen |
+| 6 | Paper S: Gliederung mit Klaus abstimmen (schreiben erst nach 2 und 5) | offen: Bedingung „Schritt 2 und S1 auf `main`“ erfüllt; Gliederung Klaus im Chat vorgelegt (2026-10-15), Antwort steht aus |
+| 7 | Nebenbei, wenn Zeit bleibt: Workflow-PDF `tests/chrome.mjs` hängt (Pflege-Liste #14) | erledigt (Workflow-PDF #118, 2026-10-15): Netz-Sperre am Kontext vor dem Klick; vorher 3/17 rot, danach 0/40 |
 
 In die Spalte „Stand“ kommt `erledigt (PR #…, YYYY-MM-DD)`, `teilweise: …` oder
 `offen: <Grund>`. Was auf `main` nicht nachgezählt ist, gilt nicht als erledigt.
