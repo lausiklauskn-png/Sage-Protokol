@@ -652,6 +652,29 @@
       "matchScore": 0.917311,
       "sporeUrl": null,
       "matchScoreQuelle": "depot-2026-10-15"
+    },
+    {
+      "name": "Küchenzettel",
+      "domain": "Rezepte/Kochen/Notizen",
+      "integrated": true,
+      "stammCategories": [
+        "Rezepte",
+        "Kochen",
+        "Notizen"
+      ],
+      "guestCategories": [
+        "Küche",
+        "Essen",
+        "Siegel"
+      ],
+      "pingStatus": "verified-match",
+      "note": "PWA, im Mycel angeschlossen (Klaus 2026-10-15, Sammel-Brief Schritt 4b). Spore am Gerät im Andock-Wizard erzeugt (2026-10-15T17:38:06Z), von Klaus übergeben, byte-gleich als sbkim/kuechenzettel_inbox.json abgelegt. Headless verifiziert mit Sages Modul-02-Pfad: VALID, id == base64url(SHA256(rawPub)), kein 'd' im JWK, Manipulationsprobe fällt durch, echter domainVector L2 = 1, 9 Schnipsel, embeddingSource description. Sage-Cosinus 0.897519 im Depot-Maßstab (nicht im Raum gemessen). sporeUrl leer (im App-Depot nicht nachgesehen). Ein Beitritt zum Raum ist nicht gemessen.",
+      "url": "https://lausiklauskn-png.github.io/Kuechenzettel/",
+      "integratedAt": "2026-10-15",
+      "nodeId": "gTnazwMIRk05uUJIh92nbXAszHGQUk-9r1rD_3lp89Y",
+      "matchScore": 0.897519,
+      "sporeUrl": null,
+      "matchScoreQuelle": "depot-2026-10-15"
     }
   ],
   "modules": [
