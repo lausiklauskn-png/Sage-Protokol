@@ -45,6 +45,7 @@ abgeschrieben. Wer einen Knoten andockt, trägt seinen Suffix **hier** nach.
 | `kimhubcompany` | **kim-hub-company** *(neu 2026-09-08)* |
 | `kimseek` | Kimseek |
 | `kimsync` | **Kim-sync** *(neu 2026-10-15, Sammel-Brief Schritt 3)* |
+| `kuechenzettel` | **Kuechenzettel** *(neu 2026-10-15, Sammel-Brief Schritt 4b)* |
 | `meintresor` | Mein-Tresor |
 | `mixarium` | Mein-Mixarium |
 | `muttisrezeptbuch` | Muttis-Rezeptbuch |
@@ -54,6 +55,7 @@ abgeschrieben. Wer einen Knoten andockt, trägt seinen Suffix **hier** nach.
 | `pwatoolpoint` | PWA-Toolpoint — der **Marktplatz** |
 | `rezeptbuch` | Mein-Rezeptbuch |
 | `sage` | Sage-Protokol |
+| `sbkimdemo` | **Sage-Protokol `sbkim-demo/`** — die öffentliche Demo, eigener Knoten neben Sage *(neu 2026-10-15, Schritt 4b)* |
 | `tomyhub` | Tomys-Hub |
 | `toolpoint` | **SB-KIMTool-Point** |
 | `workfloh` | Mein-WorkFloh |
@@ -95,9 +97,10 @@ einer Vorlage.
 
 ## Wie geprüft wird, dass ein Suffix einmalig ist
 
-Eine Probe kann nicht in ein fremdes Depot sehen. Die Wächter in
-`kim-hub-company/tests/smoke_knoten.mjs` und `PWA-Toolpoint/tests/smoke.mjs`
-tragen deshalb eine **Kopie** dieser Liste — als benannte Doppelung, nicht als
+Eine Probe kann nicht in ein fremdes Depot sehen. Der Wächter in
+`kim-hub-company/tests/smoke_knoten.mjs` trägt deshalb eine **Kopie** dieser Liste
+(nachgezählt 2026-10-15: `PWA-Toolpoint/tests/smoke.mjs`, das hier bis dahin
+auch stand, prüft nur die **eigene** Schublade und trägt keine Liste) — als benannte Doppelung, nicht als
 zweite Wahrheit. Wer hier einträgt, trägt dort nach; wer dort einen neuen Suffix
 einführt, wird von der Probe an diese Datei erinnert.
 

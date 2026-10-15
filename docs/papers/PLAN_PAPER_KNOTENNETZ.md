@@ -119,7 +119,7 @@ Spalte „Beleg" nennt nur, was **gemessen** ist; Vermutetes steht als solches d
 |---|---|---|---|---|---|
 | Gefälschte oder nachträglich veränderte Spore im Raum | galt als echt (`!== false` gegen `{valid:false}`) | Echtheit über `.valid` | gebaut 2026-10-14, Bau 23.R | gemessen N2/N2b; Probe + 10 Gegenprobe-Fälle | prüft Herkunft, nicht Inhalt |
 | Namensvetter verdrängt echten Knoten | echte Karte ausgeblendet | Prüfung **vor** dem Zusammenfassen; „derselbe Name noch N×" | gebaut | gemessen N2 a/b | gültig signierter Vetter bleibt möglich, wird angezeigt |
-| Gefälschte Antwort im Namen eines Knotens | ging an den KI-Richter, „✓ Antwort von …" | Antworten signiert, nur der Gefragte zählt, sonst „unbestätigt" und kein Richter | gebaut | gemessen N1 | Fragen noch unsigniert (S1) |
+| Gefälschte Antwort im Namen eines Knotens | ging an den KI-Richter, „✓ Antwort von …" | Antworten signiert, nur der Gefragte zählt, sonst „unbestätigt" und kein Richter | gebaut | gemessen N1 | Fragen seit S1 (2026-10-15) ebenfalls signiert; unsignierte nur noch 2 von 6 je Minute |
 | Fremder Name/Text als HTML | Skript lief (Mycel-Karte, Kimboard) | nur als Text anzeigen | gebaut | gemessen, alt 3 ROT / neu 4 grün | jede neue Anzeige-Stelle braucht denselben Riegel |
 | Kopierter Bedeutungs-Vektor | gleiche Verwandtschaft, Andock-Riegel 1.000 | Vektor beim Empfänger nachrechnen (S2) | geplant | gemessen N2 b/c | braucht das Modell beim Empfänger |
 | Anweisung an eine KI im fremden Text | klassische Wendungen DE/EN ausgeschlossen | Prüfliste vor dem Richter (04.J) | gebaut | gemessen N1 | umformuliert, Französisch, Homoglyphen gehen durch (S7) |
@@ -177,6 +177,19 @@ was wir fürs Knotennetz vorschlagen, und warum**. Ergänzend zu den Quellen obe
 Perfect-Skin-Beauty, PWA-Toolpoint, family-projekt.de. **Alis-Moderaum nicht** (Klaus: „ist
 noch keine Internetseite"). Gemessen wird dort nur mit echtem Abruf (Skill
 `auslieferung-pruefen-und-sperren`), nicht aus dem Quelltext erschlossen.
+
+**Browser und Knotennetz** (Klaus 2026-10-15, eigener Abschnitt): *„inwiefern der Browser
+selber schon zur Sicherheit beiträgt … weil er ja auch schon Erfahrungen hat mit Internetseiten
+und Angriffen … und inwiefern sich das ergänzt oder auch gegenseitig schwächt"* und *„insbesondere
+Google, die Erfinder von Chrome … oder DuckDuckGo … Die nutzen ja schon KI … sogar schon einen
+App-Schutz bei DuckDuckGo, der im Hintergrund die App-Aktivitäten checkt."*
+Zu prüfen (Quellen nachsehen, nicht aus dem Gedächtnis): was die Plattform liefert
+(Same-Origin-Policy, Sandbox, TLS, WebCrypto, Content Security Policy) · was die Hersteller
+dazulegen (Google Safe Browsing und die Erkennung in Chrome, DuckDuckGo-Tracker- und App-Schutz)
+· wo es sich ergänzt (signierte Zettel und Empfänger-Prüfung im Netz, Schadseiten-Abwehr im
+Browser) · wo es sich reiben kann (eine gemeinsame Adresse für alle Apps auf github.io, eine
+Browser-KI oder Erweiterung sieht, was die Seite sieht, ein App-Schutz kann Relais-Verbindungen
+kappen). Gemessen ist davon im Netz noch nichts; was nur vermutet ist, heißt so.
 
 **Gegenlesen:** Klaus liest jede Fassung **vor** der Veröffentlichung gegen. Sie wird ihm
 dazu im Chat vorgelegt (Klaus 2026-10-15: *„muss das auch noch hier erscheinen"*), nicht

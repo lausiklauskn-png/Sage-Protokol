@@ -53,7 +53,7 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
 
 ## Die Schichten
 
-- [ ] **S1 — Fragen unterschreiben** · `Bau` · ⏱ ~1 Sitzung
+- [x] **S1 — Fragen unterschreiben** · `Bau` · ⏱ ~1 Sitzung
   Frage-Zettel (`sbkim-qry`, `kind: sbkim-query`) tragen `spore` + `sig` wie die Antworten
   seit Bau 23.R. Eine unsignierte Frage wird weiter beantwortet, aber als „unbestätigt"
   vermerkt (Rate-Limit strenger). Schließt die letzte offene Stelle an der Tür.
@@ -61,7 +61,8 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   **Stand 2026-10-15:** in Sage gebaut (INTERFACES Frage-Zettel v2, Modul 23, Siegel-Aspekt).
   Entscheid-Wert (Klaus 2026-10-15): unsignierte Fragen höchstens **2 der 6** Antworten je
   Minute. Probe `tests/smoke_s1_fragen_signiert.mjs` (13 grün), Gegenprobe
-  `tests/gegenprobe_s1_fragen.mjs` (7 von 7 gefangen). Abgehakt wird erst nach dem Rollout.
+  `tests/gegenprobe_s1_fragen.mjs` (7 von 7 gefangen). **Ausgerollt 2026-10-15:** 26 Träger,
+  auf `main` 26 von 26 nachgezählt; dazu Kuechenzettel und die Demo beim Andocken.
 
 - [ ] **S2 — Vektor gegen Text nachrechnen** (Fehlerkorrektur) · `Entscheid`+`Bau` · ⏱ ~2 Sitzungen
   Der Empfänger rechnet den `domainVector` aus der Selbstbeschreibung der Spore nach und
