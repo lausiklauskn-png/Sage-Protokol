@@ -5534,10 +5534,12 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
           Widerrufe wirken, sobald der Bürge im Raum ist; ist er es nicht,
           greift der Ablauf.
         Vertrauens-Wurzeln (der Leser entscheidet, nie der Raum):
-          RDV_VOUCH_ANCHORS (fest im Kanon, Klaus' Kennung — bis Klaus sie
-          nennt LEER; benannt, nicht verschwiegen: ein Anker ist eine Mitte)
-          + init({vouchAnchors}) + eigene Kontakte (saveVouchContacts, Speicher
-          "sbkim_buergen_" + dbSuffix, ohne dbSuffix nicht gespeichert).
+          der NETZADMIN des aktuellen Netzes (Teil 2, unten) + init({vouchAnchors})
+          + eigene Kontakte (saveVouchContacts, Speicher "sbkim_buergen_" +
+          dbSuffix, ohne dbSuffix nicht gespeichert). Ein Netzadmin ist eine
+          Mitte — benannt, nicht verschwiegen. (Bis Teil 2 stand hier
+          RDV_VOUCH_ANCHORS, fest im Kanon und leer; ersetzt, weil eine feste
+          Kennung im Kanon in JEDEM fremden Netz mit verankert wäre.)
         vouchTrust(cards, opts?) → Promise<cards> (neue Liste, je Karte `vouch`):
           status "anker"       → Kennung ist selbst ein Anker
                  "kontakt"     → Kennung ist eigener Kontakt
@@ -5553,18 +5555,54 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
           verliert ALLE seine Bürgschaften (zählen nicht mehr); eine
           aufgefallene Kennung ist nie „verbürgt". Wurzeln bleiben Wurzeln.
         discover() hängt je Karte `vouch` an (opts.vouchTrust:false schaltet ab).
-        REINE ANZEIGE: gatet nichts, der 0.80-Riegel bleibt, unverbürgte Karten
-        bleiben sichtbar. Ob verbürgte Karten in rankCardsByQuery Vorrang
-        bekommen, ist OFFEN (Entscheid Klaus) — bis dahin ändert S5 die
-        Reihenfolge nicht.
+        GATET NICHTS: der 0.80-Riegel bleibt, unverbürgte Karten bleiben
+        sichtbar und werden weiter gefragt. Vorrang in rankCardsByQuery:
+        Teil 2, unten.
         Ausstellen: createVouch(subjectId, {days?}) / createRevocation(subjectId)
         signieren mit der eigenen Identität (Modul 02 signDetached); fail-soft
         ok:false ohne Identität. addCarried(zettel) legt eine erhaltene
         Bürgschaft / einen eigenen Widerruf in den eigenen Vorrat (geprüft,
         Speicher wie die Kontakte); doAnnounce trägt ihn in der Karte.
-        Die Oberfläche dazu (Sicherheitsnummer vergleichen, Bürgschaft
-        weitergeben) ist Teil 2.
-        _meta: vouchChainMax, vouchTtlSec, vouchAnchors (Anzahl).
+        _meta: vouchChainMax, vouchTtlSec, vouchAnchors (Anzahl der
+        init-Anker, ohne Netzadmin), netAdmin (Kennung oder null).
+    🔧 S5 „Bürgen" — Teil 2: Netzadmin, Vorrang, Oberfläche (2026-10-15,
+        Klaus 2026-10-15: „wer ein Netz betreibt, ist dort der Netzadmin";
+        Netzadmin des offenen Mycels = Sage-Protokol; „verbürgte Karten
+        rücken nach vorne"). Im Code heißt die Rolle weiter anchor
+        (status "anker"); in Oberfläche und Doku „Netzadmin".
+        Netzadmin je Netz (der Leser entscheidet, nie der Raum):
+          öffentliches Netz (net.lage "oeffentlich") → RDV_OPEN_MYCEL_ADMIN =
+            ["BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA"] (Sage-Protokol,
+            sbkim/spore.json). Gilt NUR dort.
+          eigenes Netz / eigener Raum → das optionale Feld `admin` der
+            Netz-Einstellung (checkNetSetting: Kennung /^[A-Za-z0-9_-]{16,128}$/,
+            sonst ungültig; fehlt es → kein Netzadmin, es zählen nur init-Anker
+            und eigene Kontakte). Der Netz-Link trägt es als `a`.
+            setNetwork({code|roomTag, admin}) übernimmt es.
+          Netz wird gerade abgeleitet / ungültig → kein Netzadmin.
+          currentNetAdmin() → Kennung oder null.
+        Vorrang: rankCardsByQuery sortiert (nur mit Frage-Vektor, sonst
+          unverändert wie bisher) 1. „Bedeutung passt nicht" ans Ende (S2),
+          2. davor Karten mit vouch.status "anker" | "kontakt" | "verbuergt",
+          dann die übrigen, 3. innerhalb jeder Gruppe nach queryFit,
+          4. Eingabe-Reihenfolge. Benannter Preis: eine gut passende
+          unverbürgte Karte kann hinter einer schwächer passenden verbürgten
+          stehen. Karten ohne `vouch` zählen als unverbürgt.
+        Sicherheitsnummer: vouchSafetyNumber(fremdeSpore) → Promise<
+          {ok:true, number:"xxxxx xxxxx …" (30 Ziffern)} | {ok:false, reason}>,
+          SYMMETRISCH aus beiden spore.publicKey.x (JWK Ed25519; SHA-256 über
+          "sbkim-vouch-sas-v1|" + sortiert a + "|" + b, je Byte %100, wie B7),
+          bei beiden Seiten gleich. Ohne eigene Identität → ok:false.
+        Oberfläche (23-UI): je Karte „🤝 Bürgen" → Sicherheitsnummer, Haken
+          „stimmt überein" (vorher kein Unterschreiben und kein Kontakt),
+          „✍ Bürgschaft unterschreiben" → Text zum Weitergeben (JSON-Liste:
+          die neue Bürgschaft + eigene mitgetragene Bürgschaften, damit die
+          Kette lesbar ist), „als eigenen Kontakt merken" (Name nur lokal),
+          „↩ widerrufen" (Widerruf geht in den eigenen Vorrat, reist mit der
+          nächsten Karte). Kasten „🤝 Bürgschaften": erhaltenen Text einfügen
+          (Objekt oder Liste, höchstens 16 Zettel, jeder über addCarried
+          geprüft), eigene Kontakte sehen und entfernen, Netzadmin des Netzes
+          anzeigen. Fremde Namen und Texte nur als Text (textContent).
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
