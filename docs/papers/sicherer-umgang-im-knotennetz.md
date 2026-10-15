@@ -28,9 +28,9 @@ Gegenmaßnahmen gegenüber, die dagegen gebaut wurden. Grundlage ist ein laufend
 mit 24 eingetragenen Knoten. Am 2026-10-14 wurden dort drei Angriffe nachgestellt, mit
 den echten Modulen. Alle drei gingen durch: eine gefälschte Visitenkarte galt als echt,
 ein Mithörer konnte im Namen eines anderen Knotens antworten, und der öffentliche
-Bedeutungs-Vektor eines Knotens ließ sich kopieren. Die ersten beiden Lücken sind
-geschlossen und in alle tragenden Anwendungen verteilt. Für die dritte gibt es eine
-Prüfung beim Empfänger, die noch nicht verteilt ist.
+Bedeutungs-Vektor eines Knotens ließ sich kopieren. Alle drei Lücken sind geschlossen
+und in die tragenden Anwendungen verteilt, die dritte über eine Prüfung beim Empfänger,
+die den Vektor aus der Beschreibung nachrechnet.
 
 Zwei Gedanken tragen den Bericht. **Erstens** genügt keine einzelne Prüfung. Wirksam ist
 eine Folge von Hürden, billige zuerst, teure erst im Ernstfall. Die Natur hält Arten mit
@@ -217,7 +217,7 @@ nur, was **gemessen** ist. Vermutetes ist als solches gekennzeichnet.
 | Gefälschte Antwort im Namen eines Knotens | ging an den KI-Richter, stand als „✓ Antwort von …" da | Antworten unterschrieben, nur der Gefragte zählt; unbestätigte gehen nicht an den Richter | gebaut 2026-10-14 | N1 | ältere Knoten antworten unbestätigt, bis sie die neue Fassung tragen |
 | Gefälschte oder veränderte Frage | wurde beantwortet | Fragen unterschrieben (S1); gefälschte werden nicht beantwortet, unsignierte höchstens 2 von 6 je Minute | gebaut und verteilt 2026-10-15, 26 von 26 Anwendungen | Probe 13 grün, Gegenprobe 7 von 7 | eine echte, aber lästige Frage bleibt eine echte Frage |
 | Fremder Name oder Text als HTML | Skript lief (Mycel-Karte, Kimboard) | fremder Text nur als Text | gebaut 2026-10-14 | alte Fassung 3 rot, neue 4 grün | jede neue Anzeige-Stelle braucht denselben Riegel |
-| Kopierter Bedeutungs-Vektor | gleiche Verwandtschaft (0,504 = 0,504), Andock-Riegel 1,000 | Empfänger rechnet den Vektor aus der Beschreibung nach (S2); passt er nicht, kein Vorrang | **in Sage gebaut 2026-10-15, nicht verteilt** | N2 b/c; Probe 27 grün, Gegenprobe 14 von 14 | braucht das Sprachmodell beim Empfänger; ein Vektor aus Inhalten ist nicht nachprüfbar |
+| Kopierter Bedeutungs-Vektor | gleiche Verwandtschaft (0,504 = 0,504), Andock-Riegel 1,000 | Empfänger rechnet den Vektor aus der Beschreibung nach (S2); passt er nicht, kein Vorrang | gebaut und verteilt 2026-10-15, 28 Anwendungen | N2 b/c; Probe 27 grün, Gegenprobe 14 von 14 | braucht das Sprachmodell beim Empfänger; ein Vektor aus Inhalten ist nicht nachprüfbar |
 | Anweisung an eine KI in fremdem Text | klassische Wendungen auf Deutsch und Englisch ausgeschlossen | Prüfliste vor dem Richter (04.J) | gebaut | N1 | umformuliert, Französisch und ein kyrillisches „і" gehen durch |
 | `javascript:`-Adresse aus einer eingefügten KI-Antwort | lief über die Wege des Moduls nicht, aber nur, weil der Browser es so tut | Schema im Modul prüfen | **offen** | N3 (Chromium headless) | Android, DeX nicht gemessen |
 | Fluten des Raums | — | Grenzen am Relais (5 Nachrichten je Sekunde), je Lauf 200 Karten, je Nostr-Schlüssel 3; Rechenaufwand je Zettel (S3) | teilweise | Relais-Grenzen gemessen 2026-08-19 | ein Nostr-Schlüssel kostet nichts; Rechenaufwand trifft auch Ehrliche |
@@ -332,7 +332,7 @@ S3 → S4 freigegeben; S6 und S7 sind nicht freigegeben.
 | Schicht | Vorbild | Was sie tut | Stand am 2026-10-15 |
 |---|---|---|---|
 | S1 Fragen unterschreiben | Schlüssel und Schloss | Frage-Zettel tragen Spore und Unterschrift; gefälschte Fragen werden nicht beantwortet, unsignierte gedrosselt | gebaut, in 26 von 26 Anwendungen |
-| S2 Vektor gegen Text nachrechnen | Fehlerkorrektur bei der Paarung der Chromosomen | der Empfänger rechnet den Vektor aus der Beschreibung nach; Schwelle 0,99 | in Sage gebaut, nicht verteilt |
+| S2 Vektor gegen Text nachrechnen | Fehlerkorrektur bei der Paarung der Chromosomen | der Empfänger rechnet den Vektor aus der Beschreibung nach; Schwelle 0,99 | gebaut, in 28 Anwendungen |
 | S3 Rechenaufwand je Zettel | teure Balz | der Sender rechnet vor dem Senden eine kleine Aufgabe (Nostr NIP-13) | geplant |
 | S4 Signierte Sperrliste | Gedächtnis an Eindringlinge | nur der Betreiber sperrt; gesperrte Kennungen erscheinen nicht | geplant |
 | S5 Bürgen | Verwandtenerkennung | ein bekannter Knoten unterschreibt „diese Kennung kenne ich" | geplant |
@@ -593,7 +593,6 @@ ob Server-Dateien als Klartext zu lesen sind.
 
 ## 12 · Was offen bleibt
 
-- **S2 ist nicht verteilt.** Bis dahin gilt in den Anwendungen der kopierbare Vektor.
 - **Die Prüfliste vor dem Richter** fängt nur feste Wendungen.
 - **`javascript:`-Adressen** aus eingefügten KI-Antworten prüft das Modul nicht selbst.
 - **Browser mit eingebauter KI** sind aus der Anwendung heraus nicht zu schützen.

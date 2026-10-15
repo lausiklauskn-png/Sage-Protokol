@@ -253,6 +253,43 @@ bekamen die neue `?v=`, die Manifest-Symbole nicht; der Manifest-Wächter der Ap
 rot. Von Hand nachgezogen. Dazu derselbe Tag: Kim-sync nagelt die Cache-Version in
 einer Probe fest (`kimsync-v15`, dann `-v16`) — jeder Bump macht sie rot.
 
+**Zum dritten Mal am 2026-10-15 (S2-Rollout):** wieder beide, In-and-Out-Book `?v=10` im
+Manifest, Kim-sync `kimsync-v17` in `tests/smoke.mjs`. Beide von Hand nachgezogen, die Proben
+der Apps haben es gefunden.
+
+### 19 · Apps mit eigenem Mycel-Fenster bekommen neue Anzeigen aus 23-UI nicht von selbst
+
+**Gemessen 2026-10-15 (S2-Rollout).** Privat-Brain zeigt den Raum in einem eigenen Fenster
+(`modules/net-widget.js`), nicht über 23-UI. Die Bedeutungs-Prüfung aus Modul 23 kam dort an
+(Vorrang-Entzug über `isRelated` und `rankCardsByQuery` wirkt), die Anzeige nicht, und die
+Auswahl beim Nachfragen nahm die höchste Verwandtschaft ohne Blick auf `meaning`. Im selben PR
+nachgezogen (Privat-Brain #108). Der Siegel-Satz von Bau 23.R („trägt eine andere Kennung
+denselben Namen, steht das an der Karte“) gilt dort ebenso nicht: das Fenster zeigt
+`gleicherName` nicht an. **Nicht nachgezogen.** Company-Brain hat ein eigenes Panel und kein
+Siegel, ist also nicht betroffen, zeigt S2 aber auch nicht.
+
+### 20 · Gemeinsamer Paket-Ordner für Repos ohne `package.json`
+
+**Gemessen 2026-10-15.** Mein-Mixarium, Muttis-Rezeptbuch, Tomys-Hub und family-project haben
+kein `package.json`; ihre Proben suchen `playwright-core`, `pdf-lib`, `fake-indexeddb` im
+Ordner über den Klonen. Fehlt das Paket, melden sie „nicht lauffähig“ (Rückgabe 2, ehrlich).
+Passend zum vorhandenen Chromium 1194 ist `playwright-core@1.56.1`; die neuere Fassung sucht
+ein anderes Chromium (S1-Rollout). Ein Vergleichsordner im Scratchpad sieht den Paket-Ordner
+nicht — `smoke_stufe2_sporen` in family-project meldete dort „nicht lauffähig“ mit Rückgabe 0
+und sah aus wie grün. Neben den Klonen gemessen ist sie auch auf `main` rot (8 Zeilen).
+Ebenso auf `main` rot: Workflow-Needs `browser.mjs`, drei Zeilen (ANSICHT, zweimal BEISPIELE).
+
+### 21 · Idee (Klaus 2026-10-15): BookLedgerPro im eigenen Firmennetz
+
+Klaus: BookLedgerPro nur im **eigenen Netz** (Firmen-Code, eigenes Relais) andocken, damit
+berechtigte Mitarbeiter z. B. aus Workflow heraus per Bedeutungssuche Rechnungen finden; eine
+spätere Fassung der Werkzeuge für Mitarbeiter ohne diesen Zugang. **Nicht verfolgt, nur
+eingereiht.** Zu klären vor einem Bau (gelesen in `src/modules/23_rendezvous.js`, nicht
+gemessen): im eigenen Netz ist der Inhalt mit AES-GCM 256 verschlüsselt, der Schlüssel kommt
+aus dem gemeinsamen Netz-Code (PBKDF2); wer den Code hat, liest alles, es gibt keine Rechte
+je Person, und wer das Netz verlässt, behält den Code, bis er gewechselt wird. Ob und welche
+Buchungsdaten an eine KI außerhalb des Geräts gehen (KI-Richter, BYOK), ist offen.
+
 ## Erledigt
 
 ### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15
