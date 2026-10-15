@@ -31,6 +31,11 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Küchenzettel im Mycel eingetragen (verified-match 0.897519) (Hauptsitzung)
+- **Getan:** Klaus' Spore (am Gerät im Andock-Wizard erzeugt, 17:38:06Z) byte-gleich als `sbkim/kuechenzettel_inbox.json`; Prüf-Vermerk `sbkim/kuechenzettel_inbox.verify.md`; Zeile in `sbkim/NETZ-STAND.md`; Eintrag in `status.json`. Die Spore kam in `tools/s2-wiederholung.html` dazu.
+- **Gemessen:** VALID (Modul-02-Pfad), id = SHA256(Pubkey) unabhängig nachgerechnet, Manipulationsprobe fällt durch, kein `d` im JWK, L2 = 1, 9 Schnipsel, `embeddingSource: "description"`. Sage-Cosinus **0.897519** (Depot-Maßstab) → `verified-match`. Keine personenbezogenen Daten in Beschreibung und Stichworten. Die Schnipsel enthalten die Stichworte, die Spore stammt also aus der Erst-Signatur („Beschreibung. Stichworte“), der zweiten Fassung, die S2 nachrechnet.
+- **Nicht gemessen:** Raum-Beitritt, S2 mit dem echten Modell, Spore im App-Depot.
+
 ## 2026-10-15 · S2: Entscheid (Schwelle 0,99, Inhalts-Vektor „nicht nachprüfbar“) und Bau in Sage (Hauptsitzung)
 - **Klaus' Wort:** Schwelle **0,99**; `embeddingSource: "content"` → Weg A (sichtbar, kein Abzug, kein „geprüft“, Schnipsel trotzdem nachrechnen). Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md` S2 und im Sammel-Brief Schritt 5.
 - **Gemessen:** 55 Paare der gespeicherten Vektoren in `sbkim/`: 0,780–0,983 (engstes Paar Jasons-Tresor ⟷ Mein-Tresor 0,983).
