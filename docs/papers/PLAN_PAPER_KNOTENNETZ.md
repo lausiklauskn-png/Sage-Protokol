@@ -156,6 +156,32 @@ Nicht aus dem Gedächtnis zitieren — vor der Verwendung nachsehen:
 - Nostr NIP-01 (Ereignisse, Signatur) und NIP-13 (Rechenaufwand).
 - OWASP Top 10 für LLM-Anwendungen — als Vergleichsliste.
 
+### Klaus' Wünsche zum Quellenteil (2026-10-15)
+
+Klaus, wörtlich: *„wichtig sind da auch die Quellenangaben. Wichtig ist, was andere schon
+erforscht haben und was dahingehend mit berücksichtigt wird bei der Theorie, die wir haben …
+es geht daher auch Internetseiten, Sicherheit und ähnliche Sachen. Was wir davon übernehmen
+können und was vorgeschlagen wird für das Knotennetz. Und warum?"*
+
+Daraus folgt ein **eigener Abschnitt „Stand der Forschung"** (zwischen 2 und 3 einzuordnen,
+mit Klaus abzustimmen), je Quelle drei Spalten: **was dort erforscht ist · was wir übernehmen ·
+was wir fürs Knotennetz vorschlagen, und warum**. Ergänzend zu den Quellen oben zu prüfen
+(nicht aus dem Gedächtnis):
+- Web-Sicherheit: OWASP Top 10 (Web), Content Security Policy (W3C), Same-Origin-Policy,
+  Subresource Integrity — die Apps laufen als Webseiten auf geteilter Adresse.
+- Signierte Nachrichten ohne Zentrale: Nostr NIP-01/NIP-13, Secure Scuttlebutt.
+- Sybil-Abwehr und Vertrauen: Douceur 2002, Web of Trust, SybilGuard (Yu et al. 2006).
+- Ratenbegrenzung und Rechenaufwand: Hashcash (Back 2002).
+
+**Fallbeispiele aus dem eigenen Netz, drei Internetseiten** (Klaus 2026-10-15):
+Perfect-Skin-Beauty, PWA-Toolpoint, family-projekt.de. **Alis-Moderaum nicht** (Klaus: „ist
+noch keine Internetseite"). Gemessen wird dort nur mit echtem Abruf (Skill
+`auslieferung-pruefen-und-sperren`), nicht aus dem Quelltext erschlossen.
+
+**Gegenlesen:** Klaus liest jede Fassung **vor** der Veröffentlichung gegen. Sie wird ihm
+dazu im Chat vorgelegt (Klaus 2026-10-15: *„muss das auch noch hier erscheinen"*), nicht
+nur ins Depot gelegt.
+
 ## Material im Depot
 
 - Befund: `docs/sessions/archiv/2026-10-14_angriffsflaeche_mycel.md` samt Proben N1–N3.
