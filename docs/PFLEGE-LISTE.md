@@ -181,6 +181,20 @@ Pflegearbeit — nicht nebenbei gemacht, weil sie die Schwelle von
 `service_worker_parst` (≥ 10) mit entscheidet: ab wie vielen Nachbarn misst
 sie etwas?
 
+### 13 · `kanon-verteilen` erhöht nur `CACHE_VERSION`, nicht den Cache-Stand
+
+**Gemessen 2026-10-14** beim Rollout von Bau 23.R. Workflow-Calculate und Workflow-Needs halten
+zu jeder `CACHE_VERSION` eine Prüfsumme des Vorrats in `tests/cache-stand.json`. Nach dem
+Verteiler war ihr Wächter rot (`kern: 305 grün · 1 ROT` bzw. `282 · 1`), bis
+`node tools/cache-stand.mjs` von Hand lief. Vorschlag: der Verteiler ruft das Werkzeug mit, wo
+es eins gibt.
+
+### 14 · Workflow-PDF: `tests/chrome.mjs` bleibt gelegentlich hängen, schon auf `main`
+
+**Gemessen 2026-10-14.** Im Tab wartet die Probe 20 s auf `.dlg [data-ausapp]`, danach bricht
+die `npm test`-Kette ab. Auf `origin/main` (ohne Bau 23.R) 1 von 5 Läufen rot, auf dem Zweig
+2 von 9. Der Dialog hängt am Laden der Bibliothek aus IndexedDB. Ursache nicht gesucht.
+
 ## Erledigt
 
 ### ✅ 11 · `tests/vorrat_wirkung.mjs` steht im Läufer — 2026-10-07

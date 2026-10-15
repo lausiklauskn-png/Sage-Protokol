@@ -243,6 +243,15 @@ Fehlschläge mit Datum nennt. Ohne die Fehlschläge ist es Werbung.
 
 ---
 
+## Paper S · Sicherer Umgang im Knotennetz
+
+> **Eigener Plan seit 2026-10-15:** [`PLAN_PAPER_KNOTENNETZ.md`](PLAN_PAPER_KNOTENNETZ.md).
+> Ergänzung zum veröffentlichten SBKIM-Paper: Angriffe und gemessene Gegenmaßnahmen
+> gegenübergestellt, die Artgrenzen der Natur als bewährtes Muster, Bürgen ohne Zentrale.
+> Gerüst, kein Text.
+
+---
+
 ## Die Reihenfolge, und warum
 
 | | Was | Warum in dieser Reihenfolge |
