@@ -174,6 +174,49 @@ je Repo Probe, PR, Merge, nachzählen). Sage allein reicht nicht: die Apps trage
 | S5 Bürgen | nein — Bürgschaften sind eigene, signierte Zettel | unverbürgt bleibt sichtbar |
 | S6/S7 | nein | — |
 
+## Leitlinie: Wer ein Netz betreibt, ist dort der Netzadministrator (Klaus 2026-10-15)
+
+Das Knotennetz ist ein Werkzeug, das andere für ihre Firma oder ihren Verein nachbauen
+(Modul 23 „eigenes Netz“, Netz-Code). Darum gilt für S4, S5 und das Melden:
+
+- **Im offenen Mycel ist Klaus der Netzadministrator. In einem eigenen Netz ist es dessen
+  Betreiber.** Bürgen, Melden und Sperrliste unterschreibt in jedem Netz dessen eigener
+  Netzadministrator, nicht Klaus.
+- **Das Wort:** In Doku und Oberfläche heißt die Rolle **„Netzadministrator“** (Klaus
+  2026-10-15, statt „Anker“). Im Code bleibt der Name `anchor` / `vouchAnchors` /
+  `RDV_VOUCH_ANCHORS`. Die Oberfläche zeigt seit S5 Teil 1 noch „🤝 Anker“ (in 28 Trägern
+  mit dem S2-Rollout #1118); umbenannt wird mit S5 Teil 2, damit es ein Rollout bleibt.
+- **Folge für den Bau:** Klaus' Kennung gehört in die Einstellung des **offenen** Mycels,
+  nicht fest in den Kanon. Sonst wäre sie in jedem fremden Netz mit verankert. S5 nimmt den
+  Netzadministrator schon als Einstellung (`init({vouchAnchors})`); `RDV_VOUCH_ANCHORS` ist leer.
+  Offen: wie die Netz-Einstellung den Netzadministrator trägt.
+- **Die Werkzeuge stecken in den Modulen**, nicht nur in Klaus' Seiten (PWA Toolpoint,
+  family-project, Studio). Wer ein eigenes Netz aufbaut, bekommt Bürgen, Melden und
+  Sperrliste mit.
+
+### Zuordnung zu den alten Modul-Karten (gelesen 2026-10-15)
+
+Die Karten 10, 11, 12 und 14 sind Pläne (`docs/MODUL-STAND.md`: Stub, Priorität niedrig);
+Code gibt es zu keiner. Was davon in den Schichten aufgeht, wird **als** dieses Modul gebaut,
+nicht daneben neu:
+
+| Modul-Karte | Inhalt der Karte | geht auf in |
+|---|---|---|
+| 10 Reputation | Ruf-Wert mit Verblassen; Quorum (`QUORUM_RATIO = 0.15`) → gemeinsame Misstrauensliste | **Melden** (mindestens zwei unabhängige, verbürgte Knoten, mit Beleg → „aufgefallen“, Bürge haftet); „Rang durch Bewährung“ erst später. Gebaut ist davon nur „der Bürge haftet“ (S5 Teil 1) |
+| 11 Rate-Limit | Bremse gegen Fluten, Hop-Grenze | zum großen Teil schon in Modul 23/05b verteilt (6/min, 2 davon unsigniert, 3 Identitäten je Absender, Raum-Deckel); **S3** ist das nächste Stück |
+| 12 Blocklist | Sperrliste des Netzadministrators | **S4** |
+| 14 Diffusion | Knoten empfehlen einander beim Andocken | nicht Teil der Schichten; bleibt liegen |
+
+Bei 13 Trägern ergeben 15 % genau 2 Knoten — dieselbe Zahl wie Klaus' „mindestens zwei“.
+Vor dem Bau von Modul 10 nachsehen, was PWA Toolpoint und family-project schon haben
+(Melde-Knopf, „geprüft/ungeprüft“, aus dem Studio steuerbar — Klaus 2026-10-15, in dieser
+Sitzung nicht angesehen).
+
+**Offen zum Entscheid (Tafel-Widerspruch, benannt):** Karte 12 sagt, die Sperrliste wird
+**nicht öffentlich** verteilt (sonst erfährt der Angreifer davon). S4 sagt: **signiert und
+öffentlich** wie in Kimboard, damit jede App sie lesen kann. Beides zugleich geht nicht.
+Klaus entscheidet vor dem Bau von S4.
+
 ## Reihenfolge (freigegeben, Klaus 2026-10-15)
 
 S1 → S2 → S5 → S3 → S4; S6 und S7 erst nach eigenem Entscheid. Jede Schicht mit eigener
