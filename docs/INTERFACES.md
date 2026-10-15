@@ -5458,6 +5458,45 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         _meta zusätzlich: fragenBestaetigt, fragenUnbestaetigt, frageVerworfen,
         queryUnsignedMaxPerMin. Der Antwort-Zettel ändert sich nicht.
         Alte Antworter ignorieren spore/sig der Frage (additiv).
+    ✅ S2 „Vektor gegen Text nachrechnen" (2026-10-15, docs/PLAN_MYCEL_SCHICHTEN.md):
+        Der Empfänger rechnet den domainVector einer GEPRÜFTEN Raum-Karte aus
+        ihrer Selbstbeschreibung nach. Kein neues Zettel-Feld, keine neue Spore.
+        checkMeaning(spore) → Promise<{ status, score, snippets, reason }>:
+          status "passt"            → max. Cosinus ≥ RDV_MEANING_MIN (0.99)
+                                      gegen eine der drei Text-Fassungen:
+                                      domainDescription  ODER
+                                      domainDescription + ". " + domainKeywords.join(", ")  ODER
+                                      domainDescription + " " + domainKeywords.join(", ")
+                                      (der Andock-Wizard nutzt die ersten zwei,
+                                      tools/embed_helper.html die dritte; die
+                                      Spore sagt nicht welche)
+                 "passt-nicht"      → embeddingSource "description" und unter der
+                                      Schwelle, ODER ein Satz-Schnipsel passt
+                                      nicht zu seinem eigenen `text`
+                 "nicht-nachpruefbar" → embeddingSource "content" (Vektor aus
+                                      Inhalten, Klaus 2026-10-15: kein Abzug, kein
+                                      „geprüft"), oder embeddingSource fehlt und
+                                      die Beschreibung trifft nicht (Herkunft
+                                      unbekannt — alte Sporen)
+                 "nicht-geprueft"   → Modul 03 fehlt / Modell NICHT geladen
+                                      (isReady() false — es wird NIE eigens
+                                      geladen, beim Raum-Lesen kein Netz) /
+                                      anderes embeddingModel / kein Vektor /
+                                      Rechenfehler. Nie still „passt".
+          score    : höchster Cosinus der Text-Fassungen oder null
+          snippets : "passen" | "passen-nicht" | null — jeder snippetVectors[i]
+                     gegen embedPassage(snippetVectors[i].text) nachgerechnet,
+                     Schwelle dieselbe; gekürzte Sätze (text endet auf „…")
+                     werden übersprungen. Läuft auch bei "content".
+        listen() hängt je Karte `meaning` an (opts.checkMeaning:false schaltet ab).
+        Folge „kein Match-Vorrang" (REINE ANZEIGE, gatet nichts, der 0.80-
+        Riegel bleibt): relatednessForCards setzt isRelated:false bei
+        "passt-nicht"; rankCardsByQuery sortiert "passt-nicht" ans Ende.
+        Die Karte bleibt sichtbar (abweisen kann nur der Empfänger, und er
+        markiert statt abzuweisen). _meta.meaningMin = RDV_MEANING_MIN.
+        ⚠ Gemessen vor dem Entscheid: 55 Paare verschiedener Knoten 0.780–0.983.
+        NICHT gemessen: Wiederholgenauigkeit desselben Textes über Geräte —
+        Werkzeug tools/s2-wiederholung.html; unter 0.995 → Klaus fragen.
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]

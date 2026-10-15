@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S2 · Wiederholgenauigkeit</title>
+<style>
+  :root { --bg:#0f141a; --fg:#e6edf3; --mut:#9aa7b6; --line:#2a3340; --ok:#6ee7d3; --warn:#f5c26b; --bad:#e5484d; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:860px; margin:0 auto; }
+  h1 { font-size:1.25rem; margin:0 0 8px; }
+  p { color:var(--mut); margin:6px 0; }
+  button { font:inherit; padding:9px 14px; border-radius:8px; border:1px solid var(--line); background:#1b2430; color:var(--fg); cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  #status { margin:10px 0; min-height:1.5em; }
+  .tab { width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.85rem; }
+  th, td { text-align:left; padding:5px 6px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  td.z { font-variant-numeric:tabular-nums; }
+  .ok { color:var(--ok); } .warn { color:var(--warn); } .bad { color:var(--bad); }
+  #fazit { margin-top:14px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>S2 · Wie genau rechnet dieses Gerät nach?</h1>
+  <p>Diese Seite misst, ob das Sprachmodell auf <b>diesem</b> Gerät für denselben Text
+  denselben Vektor ausrechnet wie das Gerät, das die Spore unterschrieben hat. Davon hängt
+  die Schwelle 0,99 ab (Klaus 2026-10-15).</p>
+  <p>Gemessen wird an den <b>Satz-Schnipseln</b> der Sporen in Sages Depot: dort steht der
+  Text genau so in der Spore, wie er eingebettet wurde. Gekürzte Sätze (Ende „…“) zählen
+  nicht. Die Spalte „Beschreibung“ zeigt dazu, ob der Haupt-Vektor aus der Beschreibung kommt.</p>
+  <p>⚠ Beim Druck auf den Knopf lädt das Gerät einmalig das Sprachmodell (gemessen 118 MB).
+  Vorher geht nichts ins Netz außer den Sporen dieses Depots.</p>
+  <button id="los" type="button">Messen</button>
+  <div id="status"></div>
+  <div class="tab"><table id="tab" hidden>
+    <thead><tr><th>Spore</th><th>Schnipsel</th><th>min</th><th>Mittel</th><th>Beschreibung (beste Fassung)</th><th>Quelle</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div id="fazit" hidden></div>
+</main>
+<script src="../src/modules/03_embedding.js"></script>
+<script>
+(function () {
+  "use strict";
+  // Die Sporen im Depot. Neue Eingänge hier ergänzen; eine fehlende Datei wird übersprungen.
+  var DATEIEN = ["spore.json", "inoutbook_inbox.json", "point_inbox.json", "rezeptbuch_inbox.json",
+    "meintresor_inbox.json", "muttis_inbox.json", "jason_inbox.json", "bookledgerpro_inbox.json",
+    "mixarium_inbox.json", "tomys_inbox.json"];
+  var SCHWELLE = 0.99, WIEDERHOL_MIN = 0.995;
+  var $ = function (id) { return document.getElementById(id); };
+  function say(t, cls) { var s = $("status"); s.textContent = t; s.className = cls || ""; }
+  function cos(a, b) { var d = 0, x = 0, y = 0; for (var i = 0; i < a.length; i++) { d += a[i] * b[i]; x += a[i] * a[i]; y += b[i] * b[i]; } return d / Math.sqrt(x * y); }
+  function zelle(tr, text, cls) { var td = document.createElement("td"); td.textContent = text; if (cls) td.className = cls; tr.appendChild(td); return td; }
+  function f4(x) { return (typeof x === "number" && isFinite(x)) ? x.toFixed(4) : "—"; }
+  function klasse(x, grenze) { return (typeof x !== "number") ? "" : (x >= grenze ? "ok" : (x >= SCHWELLE ? "warn" : "bad")); }
+
+  $("los").addEventListener("click", async function () {
+    var E = window.SbkimEmbedding;
+    if (!E) { say("Modul 03 nicht geladen.", "bad"); return; }
+    $("los").disabled = true;
+    try {
+      window.addEventListener("sbkim:embedding-progress", function (ev) {
+        var d = ev && ev.detail; if (d && typeof d.progress === "number") say("Lade Sprachmodell … " + Math.round(d.progress) + " %");
+      });
+      say("Lade Sprachmodell …");
+      await E.init();
+      var tbody = $("tab").querySelector("tbody"); $("tab").hidden = false;
+      var alleMin = null, gesamt = 0, gezaehlt = 0;
+      for (var i = 0; i < DATEIEN.length; i++) {
+        var name = DATEIEN[i], sp;
+        say("Rechne " + name + " …");
+        try { var r = await fetch("../sbkim/" + name, { cache: "no-store" }); if (!r.ok) continue; sp = await r.json(); }
+        catch (e) { continue; }
+        var sv = Array.isArray(sp.snippetVectors) ? sp.snippetVectors.filter(function (x) {
+          return x && typeof x.text === "string" && x.text.trim() && !/…$/.test(x.text.trim()) && Array.isArray(x.vec);
+        }) : [];
+        var min = null, summe = 0;
+        for (var j = 0; j < sv.length; j++) {
+          var c = cos(await E.embedPassage(sv[j].text), sv[j].vec);
+          summe += c; min = (min === null || c < min) ? c : min;
+        }
+        var desc = typeof sp.domainDescription === "string" ? sp.domainDescription.trim() : "";
+        var kw = Array.isArray(sp.domainKeywords) ? sp.domainKeywords.join(", ") : "";
+        var best = null;
+        if (desc && Array.isArray(sp.domainVector)) {
+          var fass = [desc]; if (kw) { fass.push(desc + ". " + kw); fass.push(desc + " " + kw); }
+          for (var k = 0; k < fass.length; k++) { var cf = cos(await E.embedPassage(fass[k]), sp.domainVector); if (best === null || cf > best) best = cf; }
+        }
+        var tr = document.createElement("tr");
+        zelle(tr, String(sp.nodeName || name).slice(0, 40));
+        zelle(tr, String(sv.length), "z");
+        zelle(tr, f4(min), "z " + klasse(min, WIEDERHOL_MIN));
+        zelle(tr, sv.length ? f4(summe / sv.length) : "—", "z");
+        zelle(tr, f4(best), "z " + klasse(best, SCHWELLE));
+        zelle(tr, String(sp.embeddingSource || "nicht angegeben"));
+        tbody.appendChild(tr);
+        if (min !== null) { alleMin = (alleMin === null || min < alleMin) ? min : alleMin; gesamt += sv.length; gezaehlt++; }
+      }
+      var fz = $("fazit"); fz.hidden = false;
+      if (alleMin === null) { fz.textContent = "Keine nachrechenbaren Schnipsel gefunden — nichts gemessen."; fz.className = "warn"; }
+      else {
+        fz.textContent = "Gemessen an " + gesamt + " Schnipseln aus " + gezaehlt + " Sporen: kleinster Wert " + f4(alleMin) +
+          (alleMin >= WIEDERHOL_MIN ? " — genau genug für die Schwelle 0,99." : " — unter 0,995: bitte der Sitzung melden, die Schwelle ist dann zu prüfen.") +
+          " Gerät: " + navigator.userAgent.slice(0, 120);
+        fz.className = alleMin >= WIEDERHOL_MIN ? "ok" : "warn";
+      }
+      say("Fertig.", "ok");
+    } catch (e) {
+      say("Fehler: " + (e && e.message ? e.message : e), "bad");
+    } finally { $("los").disabled = false; }
+  });
+})();
+</script>
+</body>
+</html>

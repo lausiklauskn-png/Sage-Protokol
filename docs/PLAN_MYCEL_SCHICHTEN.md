@@ -84,6 +84,14 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   ein, beim Neu-Signieren nur die Beschreibung (`16b_andock_wizard.js`, `quelle` bzw.
   `beschreibung`); die Spore sagt nicht, welcher Weg. Der Empfänger muss beide Fassungen
   nachrechnen.
+  **Stand 2026-10-15: in Sage gebaut** (INTERFACES § Modul 23 S2, `checkMeaning`, Anzeige
+  an der Karte DE/EN, Siegel-Aspekt). Geprüft werden drei Text-Fassungen — dazu
+  „Beschreibung + Leerzeichen + Stichworte" aus `tools/embed_helper.html`. Gerechnet wird nur
+  mit einem schon geladenen Modell (sonst „nicht geprüft", kein Nachladen). Probe
+  `tests/smoke_s2_bedeutung.mjs` 27 grün (Modell als Attrappe; drei Zeilen im echten
+  Chromium), Gegenprobe `tests/gegenprobe_s2_bedeutung.mjs` 14 von 14 gefangen.
+  **Offen:** Wiederholgenauigkeit am Gerät messen (`tools/s2-wiederholung.html`, 33
+  Schnipsel aus 8 Sporen), dann Rollout in alle Träger.
 
 - [ ] **S3 — Rechenaufwand je Zettel** (teure Balz) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Nostr NIP-13: der Sender rechnet vor dem Senden eine kleine Prüfsummen-Aufgabe. Fluten

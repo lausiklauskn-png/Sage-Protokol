@@ -202,6 +202,18 @@
         "⚠ The same name appears ",
       "× im Raum, mit anderer Kennung — der Name ist nicht geprüft.":
         " more time(s) in the room, with another identifier — the name is not verified.",
+      "✓ Bedeutung passt zur Beschreibung":
+        "✓ Meaning matches the description",
+      "⚠ Bedeutung passt nicht zur Beschreibung — kein Vorrang":
+        "⚠ Meaning does not match the description — no priority",
+      "· Bedeutung aus Inhalten, nicht nachprüfbar":
+        "· Meaning computed from content, cannot be checked",
+      "· Herkunft der Bedeutung nicht angegeben, nicht nachprüfbar":
+        "· Origin of the meaning not stated, cannot be checked",
+      "· Bedeutung nicht geprüft":
+        "· Meaning not checked",
+      "Bedeutungs-Vektor aus dem Text nachgerechnet (S2)":
+        "Meaning vector recomputed from the text (S2)",
       "\n\n🧠 KI-Richter: nicht gefragt — die Antwort ist nicht unterschrieben.":
         "\n\n🧠 AI judge: not asked — the answer is not signed.",
       "KI-Anbieter wählen":
@@ -2890,6 +2902,25 @@
         var badge = el("span", badgeCss, badgeTxt);
         badge.title = T("Wie verwandt die Domäne ist");
         info.appendChild(badge);
+      }
+      // S2 — Bedeutung gegen den Text nachgerechnet (Modul 23 checkMeaning). Reine
+      // Anzeige, fester Text; der fremde Grund geht nur über textContent (title).
+      if (c.meaning && typeof c.meaning.status === "string") {
+        var mStat = c.meaning.status;
+        var mTxt = mStat === "passt" ? T("✓ Bedeutung passt zur Beschreibung")
+          : mStat === "passt-nicht" ? T("⚠ Bedeutung passt nicht zur Beschreibung — kein Vorrang")
+          : mStat === "nicht-nachpruefbar"
+            ? ((c.spore && c.spore.embeddingSource === "content")
+              ? T("· Bedeutung aus Inhalten, nicht nachprüfbar")
+              : T("· Herkunft der Bedeutung nicht angegeben, nicht nachprüfbar"))
+          : T("· Bedeutung nicht geprüft");
+        var mCol = mStat === "passt" ? ac : mStat === "passt-nicht" ? "#f5c26b" : "#9aa7b6";
+        info.appendChild(el("br"));
+        var mBadge = el("span", "display:inline-block;margin-top:3px;font-size:.68rem;color:" + mCol, mTxt);
+        mBadge.title = T("Bedeutungs-Vektor aus dem Text nachgerechnet (S2)") +
+          (typeof c.meaning.score === "number" && isFinite(c.meaning.score) ? " · " + c.meaning.score.toFixed(4) : "");
+        mBadge.setAttribute("data-sbkim-meaning", mStat);
+        info.appendChild(mBadge);
       }
       // A11 — Passung zur getippten Frage (nur wenn rankCardsByQuery einen Score lieferte).
       if (typeof c.queryFit === "number" && isFinite(c.queryFit)) {
