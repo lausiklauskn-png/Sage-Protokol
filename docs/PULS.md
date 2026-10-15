@@ -31,6 +31,11 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Schichten: Leitlinie Netzadmin, Zuordnung zu den Modulen 10–12 (Hauptsitzung)
+- **Klaus' Wort:** Wer ein Netz betreibt, ist dort der **Netzadmin** (das Wort ersetzt „Anker“ in Doku und Oberfläche; im Code bleibt `anchor`). Bürgen, Melden und Sperrliste unterschreibt in jedem eigenen Netz dessen Netzadmin. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md`.
+- **Gelesen:** Karten 10, 11, 12, 14 sind Pläne ohne Code. Zuordnung im Plan: Melden/Quorum = Modul 10, Rate-Limit = Modul 11 (+ S3), S4 = Modul 12, Modul 14 bleibt liegen.
+- **Offen:** Sperrliste öffentlich (S4) oder nicht (Karte 12) — Klaus' Entscheid vor S4. Oberfläche zeigt noch „🤝 Anker“, umbenannt mit S5 Teil 2.
+
 ## 2026-10-15 · S5 Bürgen, Teil 1: Format, Prüfung, Anzeige in Sage (Hauptsitzung)
 - **Startprüfung:** kein offener PR in Sage; erster offener Schritt im Sammel-Brief: 5. S2-Rollout wartet auf die Messung am Gerät. Klaus fragte, wie er misst — Anleitung im Chat gegeben (Seite `tools/s2-wiederholung.html`, Knopf „Messen", kleinster Wert).
 - **Klaus' Wort zu S5:** Kette 2 Schritte, Anker „Klaus + eigene Kontakte", Ablauf 1 Jahr. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md`.
@@ -557,30 +562,11 @@ Punkt 4c: Namen nach „Herr/Frau" und aus der Anrede **vorschlagen**, nie selbs
 verdecken. ⚠ PULS dafür ausgelagert: Eintrag vom 17.09. (KI-Schulung) wortwörtlich
 in `sessions/archiv/2026-10_puls-auslagerung-16.md`.
 
-## 2026-09-28 · Modul 25, Generation 2 — der Kern des Sende-Prüfers zieht nach Sage
+## Eine Sitzung vom 2026-09-28 (Modul 25, Generation 2) — ausgelagert am 2026-10-15
 
-Klaus: *„Modul 25 gehen wir gleich als erstes an. Das ist überhaupt das Beste an
-der ganzen Geschichte."* Der Prüfkern des Sende-Prüfers ist jetzt ein Sage-Modul,
-das jede App tragen kann. Karte: `docs/components/25_pseudonym.md`.
-
-| | |
-|---|---|
-| Platzhalter | `⟦NAME-1⟧`, `⟦RECHNUNG-1⟧`, `⟦BETRAG-1⟧` — Klaus hat das Format bestätigt. Alte `[[TYP_n]]` werden weiter gelesen |
-| Sorten | SCHLUESSEL · MAIL · TELEFON · IBAN (Prüfziffer) · BETRAG (Tausenderpunkt ganz) · RECHNUNG, alle an; Namen aus Liste an Wortgrenzen |
-| neu | `find` (Fundstelle mit Zeile), `findLeak`, `isIban` |
-| Smoke | `smoke_bau25_pseudonym.mjs` **52 grün** · `npm test` **109 grün · 0 rot** |
-| Gegenprobe | `gegenprobe_bau25_pseudonym.mjs` **15 gefangen · 0 blind · 0 aus falschem Grund · 0 tote Anker** — beim ersten Lauf **14 · 1 blind**: der Riegel gegen verschachtelte Platzhalter war mit dem Testtext nicht messbar (kein Muster traf in einen Platzhalter). Neuer Wächter 5e mit einem Muster, das träfe |
-| Panel 25 | im echten Chromium alle vier Knöpfe grün; das Beispiel trug „100 EUR" ohne Nachkommastellen — das ist kein Betrag im Sinne der Regel, jetzt „1.248,50 EUR" |
-
-⚠ **Kein Knoten benutzte Generation 1** (`25_pseudonym` in keinem App-Depot), der
-Formatwechsel bricht nichts, was läuft. Klaus' Sichttest vom 2026-07-17 galt
-Generation 1; der für Generation 2 steht aus.
-
-⚠ **Benannte Doppelung:** die Muster stehen ein zweites Mal im Auslieferungsprüfer.
-Der Sende-Prüfer trägt das Modul noch NICHT — Umstellung ist der nächste Schritt.
-
-⚠ **Zum wiederholten Mal:** ein deutsches Anführungszeichen hat beim Schreiben der
-Probe einen String beendet; `node` meldete es beim ersten Lauf.
+> **↓ Ausgelagert.** Der Eintrag „Modul 25, Generation 2 — der Kern des Sende-Prüfers zieht nach Sage“ steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-10_puls-auslagerung-22.md`](sessions/archiv/2026-10_puls-auslagerung-22.md)
+> (24 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-09-28 (Sechs Wartepunkte) — ausgelagert am 2026-10-15
 
