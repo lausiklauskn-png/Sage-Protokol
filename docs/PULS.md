@@ -31,6 +31,10 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Paper S: Gliederung abgestimmt (Hauptsitzung)
+- **Klaus' Wort:** „Vorschlag ok“ zur Gliederung: die zwölf Abschnitte wie geplant, „Stand der Forschung“ als Abschnitt 3 hinter dem Bedrohungsmodell, Klaus' Lesart „Störungen als Prüfmechanismus“ als seine gekennzeichnet (jetzt Abschnitt 6). Nummern und Querverweise in `docs/papers/PLAN_PAPER_KNOTENNETZ.md` nachgezogen; Sammel-Brief Schritt 6: teilweise.
+- **Offen:** Fassung 1 schreiben (Quellen vorher nachsehen, Klaus liest im Chat gegen). S2 steht dort als „in Sage gebaut, Rollout offen“, bis der Rollout auf `main` ist.
+
 ## 2026-10-15 · Sammel-Brief Schritt 7: Workflow-PDF-Probe hängt nicht mehr; Sitzungsende (Hauptsitzung)
 - **Ursache gemessen:** Im hängenden Tab blieb `vendor/qrcode.js` liegen, weil `tab.route` erst am schon ladenden Tab einsetzte. Ein Fehler der Probe, nicht der App. Workflow-PDF #118: `ctx.route` vor dem Klick. Vorher 3/17 rot, danach 0/40; `npm test` 0. Auf `main` nachgezählt. PFLEGE-LISTE § 14 erledigt.
 - **Diese Sitzung insgesamt:** S2-Entscheid (#1109), S2 gebaut (#1110), Küchenzettel im Mycel (#1111), Workflow-PDF #118. Übergabe: `docs/sessions/archiv/2026-10-15_s2_kuechenzettel_wpdf.md`.
