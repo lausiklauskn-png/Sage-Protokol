@@ -37,6 +37,12 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Reihenfolge der Briefe:** erst Nachziehen, dann `BRIEF_2026-10-15_schutzschichten_und_paper_s.md` (S1).
 - **Gemessen:** 13 Träger + Sage + Mycel-Karte auf main gleich; die übrigen Repos waren nicht im Sitzungs-Umfang, ihr Stand ist nicht nachgesehen.
 
+## 2026-10-15 · Kimhub-Sperre aufgehoben (Hauptsitzung)
+
+- **Klaus' Wort:** „Ja, nimm den Satz in Sage heraus.“ Die Sperre „Kimhub nicht anfassen, keine Forschungseinträge in Kimhub“ ist aus `docs/PLAN_MYCEL_SCHICHTEN.md`, `docs/papers/PLAN_PAPER_KNOTENNETZ.md` und dem PULS-Eintrag „Plan: Schutzschichten“ entfernt; an ihrer Stelle steht, dass Klaus sie aufgehoben hat.
+- **Kimhub:** die Forschungseinträge der Prüf-Reihe Sitzung 6 stehen dort schon (#376, `2026-10-14-angriffsflaeche-mycel` und `2026-10-15-schutzschichten-paper-s`). Diese Sitzung hat in Kimhub nichts geändert.
+- Die Sätze in den Einträgen vom 2026-10-14 bleiben als Verlauf stehen.
+
 ## 2026-10-15 · Abschluss Prüf-Reihe Sitzung 6 · Plan Paper S (Hauptsitzung)
 
 - **Getan:** `docs/papers/PLAN_PAPER_KNOTENNETZ.md` (Paper S „Sicherer Umgang im Knotennetz", Ergänzung zum SBKIM-Paper; Natur als eigenes Kapitel, Klaus' Lesart „Störungen als Prüfmechanismus" gekennzeichnet), Zeiger in `PLAN_PAPERS.md`, Antragsmappe neu erzeugt. Abschluss `docs/sessions/archiv/2026-10-15_abschluss_pruef-reihe-sitzung6.md`, Folge-Brief `docs/sessions/BRIEF_2026-10-15_schutzschichten_und_paper_s.md`. Pflege-Liste #13, #14.
@@ -49,7 +55,6 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Klaus' Wort:** „Bürgen mit in den Plan-Brief aufnehmen“ → S5. Sein Einwand „man kann sich selber einen Bürgen ausstellen“ steht als Regel darin: eine Bürgschaft zählt nur, wenn der Leser dem Bürgen schon traut; dazu kurze Kette, Haftung, Widerruf, Ablauf, Anker.
 - **Stand Rollout Bau 23.R:** auf `main` von Sage und 13 Trägern nachgezählt (`RDV_LABEL_MAX = 200`), Mycel-Karte mit `sicher()`. Nicht ausgerollt: PWA-Toolpoint, Kimseek, SB-KIMTool-Point, family-project, Kim-Bell.
 - **Offen:** alle Schichten außer dem Planpunkt S5 warten auf Klaus' Freigabe; Vorschlag S1 → S2 → S5 → S3 → S4.
-- ⛔ KIMHUB NICHT ANFASSEN. KEINE FORSCHUNGSEINTRÄGE IN KIMHUB — weitergeben, bis Klaus ihn aufhebt.
 
 ## 2026-10-14 · Prüf-Reihe Sitzung 6 (Planmodus): Ist das Mycel ein Angriffspunkt?
 
