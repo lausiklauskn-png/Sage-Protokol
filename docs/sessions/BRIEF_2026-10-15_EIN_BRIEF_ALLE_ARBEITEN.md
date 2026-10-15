@@ -21,7 +21,7 @@ weiter.
 |---|---|---|
 | 0 | Startprüfung: keine andere Sitzung arbeitet daran | je Sitzung neu |
 | 1 | Werkzeug: `kanon-verteilen` lässt `cache-stand.mjs` mitlaufen (Pflege-Liste #13) | erledigt (PR #1094, 2026-10-15) |
-| 2 | Gruppe A: Bau 23.R in die übrigen Träger nachziehen | teilweise: A1 erledigt (PWA-Toolpoint #167, SB-KIMTool-Point #186, Kimseek #92, 2026-10-15); A2 erledigt (Kim-Bell #72, kim-hub-company #75, family-project #359, Kimhub ohne Modul-Dateien, 2026-10-15); A3 erledigt (Mein-Tresor #134, Jasons-Tresor #186, Company-Brain #24, 2026-10-15); A4 offen |
+| 2 | Gruppe A: Bau 23.R in die übrigen Träger nachziehen | erledigt (2026-10-15): A1 (PWA-Toolpoint #167, SB-KIMTool-Point #186, Kimseek #92, 2026-10-15); A2 (Kim-Bell #72, kim-hub-company #75, family-project #359, Kimhub ohne Modul-Dateien, 2026-10-15); A3 (Mein-Tresor #134, Jasons-Tresor #186, Company-Brain #24, 2026-10-15); A4 (Alis-Moderaum #72, Perfect-Skin-Fashion #44, Perfect-Skin-Beauty #72, 2026-10-15). Offen: Mein-Workfloh-Page („Muster Werbetechnik“) trägt 23 `3caa0bb1fbe7`, steht aber unter „NIE anfassen: *-Page“ — Klaus' Entscheid; `docs/observatorium/tools/mycelknoten.html` bettet 02/16 ohne 23 ein, benannt, nicht nachgezogen |
 | 3 | Gruppe B: In-and-Out-Book, Kim-sync (Datei-Post nur nach Klaus' Ja) als Knoten andocken | offen |
 | 4 | Gruppe C: Klaus fragen, was davon andocken soll | offen |
 | 5 | Schichten: Klaus' Freigabe holen, dann S1 „Fragen unterschreiben“ bauen und in alle Träger tragen | teilweise: Freigabe erteilt (Klaus 2026-10-15: S1 → S2 → S5 → S3 → S4; S6/S7 nicht), Bau von S1 offen |
