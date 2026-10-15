@@ -215,6 +215,23 @@ der Proben ist eigener Server → `/models/` der eigenen Adresse → HuggingFace
 nach Schärfen der Probe, eine davon als zwei sich deckende Riegel zusammen weggenommen).
 ⚠ transformers.js selbst kommt weiter von jsDelivr. ⚠ Im Browser nicht gemessen.
 
+**Rückfall auf HuggingFace (Klaus 2026-10-15).** Gemessen an Klaus' Tablet: Apps mit
+`SBKIM_MODEL_ROOT` meldeten „Can't create a session", ein Inkognito-Tab lud dasselbe Modell, und
+`model_quantized.onnx` auf dem Server trug dieselbe sha256 wie bei HuggingFace
+(`f80102d3…6f98c193`). Die Quelle wurde nur an `config.json` entschieden; scheiterte danach das
+Modell, war HuggingFace abgeschaltet. Jetzt: scheitert `local`, werden die Einträge **dieser
+Wurzel** aus `transformers-cache` entfernt (nur sie — der Speicher ist auf einer geteilten Adresse
+für alle Apps derselbe) und genau einmal von HuggingFace geladen; `getModelFallback()` nennt
+Wurzel, Grund und Zahl der entfernten Einträge, die Selbstauskunft auf der Konsole auch.
+⚠ **Der Quellenwechsel allein reicht nicht:** transformers.js 2.17.2 (`src/utils/hub.js`,
+`tryCache`) fragt den Zwischenspeicher zuerst unter dem lokalen Pfad, auch mit
+`allowLocalModels=false`. Deshalb wird außerdem `env.localModelPath` zurückgesetzt (Haupt-Faden
+und Worker). Probe `tests/smoke_bau03_rueckfall.mjs` (33), Gegenprobe
+`tests/gegenprobe_bau03_rueckfall.mjs` (9 gefangen · 0 blind; erst 1 blind — der Worker-Quelltext
+lief nie, jetzt führt die Probe ihn selbst aus).
+⚠ **Grenze:** ist die Datei auf dem Server selbst kaputt, lädt jeder Start sie einmal (118 MB)
+und fällt dann zurück. ⚠ Im Browser nicht gemessen.
+
 ---
 
 ## Fehlerverhalten

@@ -822,6 +822,7 @@ Bietet (öffentlich):
                                           // Spore-Schreibvorgang (Modul 02 assembliert daraus die Spore).
   getModelSource()                        → "local" | "remote" | null  // (2026-07-11) woher das Modell kam
   getModelRoot()                          → string | null              // (2026-10-13) Wurzel des eigenen Servers, nur bei "local"
+  getModelFallback()                      → null | {from, reason, droppedCacheEntries}  // (2026-10-15) Rückfall auf HuggingFace
 
   Modell-Quelle (2026-10-13, ADDITIV): setzt die App VOR dem ersten init()
     window.SBKIM_MODEL_ROOT = "https://<eigener-server>/models/"
@@ -830,6 +831,14 @@ Bietet (öffentlich):
   "//"); der Server muss Access-Control-Allow-Origin senden. Ohne Einstellung
   byte-gleiches Verhalten. Gleiches Modell, gleiche Vektoren — KEIN Spore-Feld,
   KEIN PROTOCOL_VERSION-Bump, Match-Schwelle unberührt.
+
+  Rückfall (2026-10-15, ADDITIV): scheitert das Laden aus "local" (eigener
+  Server oder "<origin>/models/") NACH der Probe — z. B. „Can't create a
+  session" —, entfernt Modul 03 die Einträge DIESER Wurzel aus dem
+  Browser-Speicher "transformers-cache" und lädt genau EINMAL von HuggingFace.
+  Danach getModelSource() = "remote", getModelFallback() nennt Wurzel und Grund.
+  Scheitert auch HuggingFace → ModelLoadError wie bisher. Gleiches Modell,
+  gleiche Vektoren — KEIN Spore-Feld, KEIN PROTOCOL_VERSION-Bump.
 
   KEIN mode-Parameter. e5-Rollen-Prefix wird intern angewandt:
     embedQuery   → "query: "   + text
