@@ -5415,7 +5415,7 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
     qid = frager-lokal eindeutig (Zeit+Zufall). text ≤ 300 Zeichen (der
         Antworter schneidet hart ab). k ≤ 5. results-Einträge NUR
         {label, score, anchorId?} — keine Inhalte, kein PII.
-    v1 EHRLICH OFFEN: die Zettel-Umschläge sind UNSIGNIERT — die
+    v1 EHRLICH OFFEN (seit Bau 23.R und S1 beide Zettel v2, siehe unten): die Zettel-Umschläge sind UNSIGNIERT — die
         Identitäts-Wahrheit liefert weiterhin der signierte Handshake +
         0.80-Riegel (Modul 05); Antworten sind ADVISORY (Anzeige), gaten
         nichts. Ed25519-Signatur der Zettel = notierter Folge-Schritt
@@ -5439,6 +5439,25 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         (200) Zeichen. fetchAnswers(qids) nimmt Strings ODER {qid, toNodeId} —
         mit toNodeId nur die Antwort genau dieses Knotens.
         Der FRAGE-Zettel bleibt unsigniert (er gatet nichts beim Antworter).
+        → abgelöst durch S1 (2026-10-15), siehe unten.
+    ✅ S1 „Fragen unterschreiben" (2026-10-15, docs/PLAN_MYCEL_SCHICHTEN.md):
+        Frage-Zettel v2 = v1 + { spore: <eigene Spore des Fragers>,
+        sig: Modul 02 signDetached(<Zettel ohne sig>) } — dieselbe Form wie
+        Antwort-Zettel v2, derselbe Schlüssel, keine neue Spore. Der Antworter
+        prüft: spore.id === fromNodeId · verifyForeignSpore(spore).valid ·
+        verifyDetached(…, spore.publicKey). Ergebnis je Frage:
+          bestätigt   → beantwortet, Rate-Limit RDV_QUERY_MAX_PER_MIN (6/min)
+          unbestätigt → v1-Zettel ohne spore/sig (ältere Fassung, oder Modul 02
+                        ohne Sign-/Prüf-Pfad); WEITER beantwortet, aber
+                        höchstens RDV_QUERY_UNSIGNED_MAX_PER_MIN (2) der 6
+                        Antworten je Minute (Klaus 2026-10-15: „2 von 6")
+          falsch      → Unterschrift/Spore/Bindung passt nicht, oder nur eines
+                        von spore/sig → verworfen, NICHT beantwortet, gezählt in
+                        _meta.frageVerworfen. Eine verworfene Frage sperrt ihre
+                        qid nicht (die echte Frage gleicher qid wird beantwortet).
+        _meta zusätzlich: fragenBestaetigt, fragenUnbestaetigt, frageVerworfen,
+        queryUnsignedMaxPerMin. Der Antwort-Zettel ändert sich nicht.
+        Alte Antworter ignorieren spore/sig der Frage (additiv).
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
