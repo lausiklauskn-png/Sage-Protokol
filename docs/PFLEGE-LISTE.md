@@ -226,6 +226,27 @@ Die Datei auf dem Server ist also richtig; der Unterschied ist der Browser-Zwisc
 
 Gesehen am 2026-10-15 an Klaus' Tablet: „Modell lädt … (~30 MB einmalig)“. Gemessen am 2026-10-13: `model_quantized.onnx` = **118 308 185 Bytes**. Der Balken braucht damit rund viermal so lange, wie der Text erwarten lässt; am Tablet sieht das wie ein Hänger aus. Stellen: `src/modules/16b_andock_wizard.js` (drei deutsche Sätze samt englischer Fassung, Zeilen 109/181/185/269). Nicht nebenbei umgebaut: 16b ist Kanon in allen Trägern, die Übersetzungs-Wächter (83/83) hängen an den Sätzen.
 
+### 17 · `kanon-verteilen` folgt `origin/HEAD` — bei BookLedgerPro ist das nicht `main`
+
+**Gemessen 2026-10-15.** Der Vorgabe-Zweig von BookLedgerPro auf GitHub heißt
+`claude/general-discussion-x9xyk9`. Ein frischer Klon setzt `origin/HEAD` darauf,
+und `standardZweig()` im Verteiler nimmt ihn. Folge: BookLedgerPro fiel aus **zwei**
+Rollouts desselben Tages (Modul 03 am Vormittag, S1 am Nachmittag) still heraus.
+Der Lauf meldete es nur als „Commits hinter origin", nicht als fehlenden Träger.
+Gefunden hat es der Bau der Kimhub-Forschungsseite, der `origin/main` verlangt.
+Nachgeholt mit `git remote set-head origin main` im eigenen Klon (BookLedgerPro #336).
+
+**Offen, zwei Wege:** Klaus stellt den Vorgabe-Zweig auf GitHub auf `main` (eine
+Einstellung, schwer zu raten, ob der andere Zweig Absicht ist) · oder der Verteiler
+bevorzugt `origin/main`, wenn es ihn gibt, vor `origin/HEAD`. Nicht nebenbei gebaut.
+
+### 18 · Der Verteiler zieht `?v=` nicht in `manifest.json` mit
+
+**Gemessen 2026-10-15, zweimal am selben Tag** (In-and-Out-Book). Seite und Vorrat
+bekamen die neue `?v=`, die Manifest-Symbole nicht; der Manifest-Wächter der App wurde
+rot. Von Hand nachgezogen. Dazu derselbe Tag: Kim-sync nagelt die Cache-Version in
+einer Probe fest (`kimsync-v15`, dann `-v16`) — jeder Bump macht sie rot.
+
 ## Erledigt
 
 ### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15
