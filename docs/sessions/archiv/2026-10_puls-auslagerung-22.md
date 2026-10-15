@@ -1,7 +1,7 @@
 # PULS-Auslagerung 2026-10-15 — „Modul 25, Generation 2 — der Kern des Sende-Prüfers zieht nach Sage“
 
 **Ausgelagert am 2026-10-15**, weil `docs/PULS.md` über der 3000-Zeilen-Grenze stand
-(3014 Zeilen nach dem Eintrag „Leitlinie Netzadministrator“). Die Schutz-Klausel im Kopf von PULS.md
+(3014 Zeilen nach dem Eintrag „Leitlinie Netzadmin“). Die Schutz-Klausel im Kopf von PULS.md
 verlangt **auslagern statt kürzen**: hier steht der Eintrag **wortwörtlich**.
 
 ---

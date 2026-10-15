@@ -31,8 +31,8 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
-## 2026-10-15 · Schichten: Leitlinie Netzadministrator, Zuordnung zu den Modulen 10–12 (Hauptsitzung)
-- **Klaus' Wort:** Wer ein Netz betreibt, ist dort der **Netzadministrator** (das Wort ersetzt „Anker“ in Doku und Oberfläche; im Code bleibt `anchor`). Bürgen, Melden und Sperrliste unterschreibt in jedem eigenen Netz dessen Netzadministrator. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md`.
+## 2026-10-15 · Schichten: Leitlinie Netzadmin, Zuordnung zu den Modulen 10–12 (Hauptsitzung)
+- **Klaus' Wort:** Wer ein Netz betreibt, ist dort der **Netzadmin** (das Wort ersetzt „Anker“ in Doku und Oberfläche; im Code bleibt `anchor`). Bürgen, Melden und Sperrliste unterschreibt in jedem eigenen Netz dessen Netzadmin. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md`.
 - **Gelesen:** Karten 10, 11, 12, 14 sind Pläne ohne Code. Zuordnung im Plan: Melden/Quorum = Modul 10, Rate-Limit = Modul 11 (+ S3), S4 = Modul 12, Modul 14 bleibt liegen.
 - **Offen:** Sperrliste öffentlich (S4) oder nicht (Karte 12) — Klaus' Entscheid vor S4. Oberfläche zeigt noch „🤝 Anker“, umbenannt mit S5 Teil 2.
 
