@@ -5501,6 +5501,70 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         0.9949–0.9972 (40 Schnipsel, 8 Sporen): vermutlich, weil sie beim
         Signieren im Stapel (embedPassageBatch) entstehen — nicht gemessen. Alle
         über 0.99. Schwelle 0.99 bleibt.
+    🔧 S5 „Bürgen" — Teil 1: Format, Prüfung, Anzeige (2026-10-15,
+        docs/PLAN_MYCEL_SCHICHTEN.md). Entscheid-Werte (Klaus 2026-10-15):
+        Kette höchstens 2 Schritte · Anker „Klaus + eigene Kontakte" · Ablauf
+        1 Jahr. Keine neue Spore: Bürgschaften sind eigene, signierte Zettel.
+        Bürgschaft = { kind:"sbkim-vouch", v:1, voucher:<nodeId Bürge>,
+                       subject:<nodeId>, ts:<Sek.>, exp:<Sek.>,
+                       spore:<Spore des Bürgen>, sig }
+        Widerruf   = { kind:"sbkim-vouch-revoke", v:1, voucher, subject, ts,
+                       spore, sig }
+        sig = Modul 02 signDetached(<Zettel ohne sig>) mit dem Schlüssel des
+        Bürgen (wie Antwort-/Frage-Zettel v2). Gültig nur, wenn:
+        spore.id === voucher · verifyForeignSpore(spore).valid ·
+        verifyDetached(…, spore.publicKey) · voucher !== subject ·
+        ts ≤ jetzt + RDV_VOUCH_SKEW_SEC (600) · bei der Bürgschaft zusätzlich
+        ts < exp ≤ ts + RDV_VOUCH_TTL_SEC (365 Tage) und exp > jetzt.
+        Eine Bürgschaft mit längerer Frist ist UNGÜLTIG (nicht still gekürzt).
+        Ein Widerruf schlägt jede Bürgschaft desselben voucher→subject mit
+        ts ≤ Widerruf.ts; eine NEUERE Bürgschaft gilt wieder.
+        Die Bürgschaft hängt an der Kennung (subject), nie am Namen.
+        Transport (kein eigener Tag, kein Dauer-Speicher beim Relais nötig):
+          Präsenz-Karte + { vouches: [Bürgschaft …] (≤ RDV_VOUCH_PER_CARD_MAX 8),
+                            revocations: [Widerruf …] (≤ RDV_REVOKE_PER_CARD_MAX 32) }
+          Der Verbürgte trägt seine Bürgschaften (und die seiner Bürgen, damit
+          die Kette lesbar ist), der Bürge seine Widerrufe. Wer trägt, ist
+          egal — jeder Zettel wird für sich geprüft. Der Leser sammelt Zettel
+          aus ALLEN Karten-Ereignissen eines discover()-Laufs, nicht nur aus
+          der neuesten Karte je Kennung (sonst könnte eine nachgemachte,
+          neuere Karte die Widerrufe eines Bürgen verdrängen).
+          ⚠ Die Karte selbst ist nicht signiert: ein Dritter kann eine Karte
+          ohne ihre Bürgschaften auslegen. Das nimmt nur Vorrang, gibt keinen.
+          Widerrufe wirken, sobald der Bürge im Raum ist; ist er es nicht,
+          greift der Ablauf.
+        Vertrauens-Wurzeln (der Leser entscheidet, nie der Raum):
+          RDV_VOUCH_ANCHORS (fest im Kanon, Klaus' Kennung — bis Klaus sie
+          nennt LEER; benannt, nicht verschwiegen: ein Anker ist eine Mitte)
+          + init({vouchAnchors}) + eigene Kontakte (saveVouchContacts, Speicher
+          "sbkim_buergen_" + dbSuffix, ohne dbSuffix nicht gespeichert).
+        vouchTrust(cards, opts?) → Promise<cards> (neue Liste, je Karte `vouch`):
+          status "anker"       → Kennung ist selbst ein Anker
+                 "kontakt"     → Kennung ist eigener Kontakt
+                 "verbuergt"   → Kette Wurzel → … → Kennung, höchstens
+                                 RDV_VOUCH_CHAIN_MAX (2) Schritte
+                 "unverbuergt" → sonst (auch: Modul 02 fehlt → nicht prüfbar,
+                                 reason sagt es; nie still „verbürgt")
+          by    : Kennungen der Kette, Wurzel zuerst (ohne die Karte selbst)
+          depth : Schritte (0 bei anker/kontakt) · reason : Text oder null
+          „Der Bürge haftet": opts.flagged / init({vouchFlagged}) = Kennungen,
+          die aufgefallen sind (bis S4 von Hand; danach aus der Sperrliste).
+          Ein Bürge mit gültiger Bürgschaft für eine aufgefallene Kennung
+          verliert ALLE seine Bürgschaften (zählen nicht mehr); eine
+          aufgefallene Kennung ist nie „verbürgt". Wurzeln bleiben Wurzeln.
+        discover() hängt je Karte `vouch` an (opts.vouchTrust:false schaltet ab).
+        REINE ANZEIGE: gatet nichts, der 0.80-Riegel bleibt, unverbürgte Karten
+        bleiben sichtbar. Ob verbürgte Karten in rankCardsByQuery Vorrang
+        bekommen, ist OFFEN (Entscheid Klaus) — bis dahin ändert S5 die
+        Reihenfolge nicht.
+        Ausstellen: createVouch(subjectId, {days?}) / createRevocation(subjectId)
+        signieren mit der eigenen Identität (Modul 02 signDetached); fail-soft
+        ok:false ohne Identität. addCarried(zettel) legt eine erhaltene
+        Bürgschaft / einen eigenen Widerruf in den eigenen Vorrat (geprüft,
+        Speicher wie die Kontakte); doAnnounce trägt ihn in der Karte.
+        Die Oberfläche dazu (Sicherheitsnummer vergleichen, Bürgschaft
+        weitergeben) ist Teil 2.
+        _meta: vouchChainMax, vouchTtlSec, vouchAnchors (Anzahl).
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]

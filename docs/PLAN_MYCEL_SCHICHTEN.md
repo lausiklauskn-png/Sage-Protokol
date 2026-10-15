@@ -132,6 +132,20 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
 
   Vorher: Format der Bürgschaft (Zettel-Art, Felder, Signatur über welche Bytes) in
   INTERFACES festlegen; Gegenprobe-Fälle für jede der vier Regeln.
+  **Entscheid (Klaus 2026-10-15):** Kette **2 Schritte** · Anker **Klaus + eigene Kontakte** ·
+  Ablauf **1 Jahr**.
+  **Stand 2026-10-15: Teil 1 in Sage gebaut** (INTERFACES § Modul 23 S5): Bürgschaft und
+  Widerruf als signierte Zettel, reisen in der Raum-Karte mit; `vouchTrust` prüft Kette,
+  Ablauf, Widerruf und „der Bürge haftet"; Anzeige „🤝 verbürgt von …" an der Karte DE/EN,
+  immer mit Kennung, ein Name nur aus den eigenen Kontakten. Probe
+  `tests/smoke_s5_buergen.mjs` 41 grün, Gegenprobe `tests/gegenprobe_s5_buergen.mjs` 14 von 14
+  gefangen; ein fünfzehnter Fall war ein toter Anker (die Prüfung änderte nichts), die
+  Zeile ist entfernt. **Offen:** (a) mit welcher Identität Klaus bürgt — bis dahin ist der
+  feste Anker leer, es zählen nur eigene Kontakte; (b) ob verbürgte Karten in der
+  Frage-Rangfolge Vorrang bekommen (bis dahin ändert S5 die Reihenfolge nicht);
+  (c) Teil 2: Oberfläche zum Ausstellen (Sicherheitsnummer vergleichen, Bürgschaft
+  weitergeben, Kontakte pflegen); (d) „aufgefallen" kommt bis S4 nur von Hand;
+  (e) Siegel-Aspekt und Rollout erst mit Teil 2.
 
 - [ ] **S6 — Eigene Einträge markieren** (Bakterien-Methylierung) · `Entscheid`+`Bau`
   Was die App selbst ablegt, trägt eine eigene Prüfsumme; was von außen in den Speicher

@@ -214,6 +214,18 @@
         "· Meaning not checked",
       "Bedeutungs-Vektor aus dem Text nachgerechnet (S2)":
         "Meaning vector recomputed from the text (S2)",
+      "🤝 verbürgt von ":
+        "🤝 vouched for by ",
+      " (über ":
+        " (via ",
+      " weiteren Schritt)":
+        " more step)",
+      "🤝 Anker":
+        "🤝 Anchor",
+      "🤝 eigener Kontakt":
+        "🤝 own contact",
+      "Bürgschaft geprüft (S5) — gatet nichts, unverbürgte Knoten bleiben sichtbar":
+        "Vouch checked (S5) — blocks nothing, nodes without a vouch stay visible",
       "\n\n🧠 KI-Richter: nicht gefragt — die Antwort ist nicht unterschrieben.":
         "\n\n🧠 AI judge: not asked — the answer is not signed.",
       "KI-Anbieter wählen":
@@ -2921,6 +2933,28 @@
           (typeof c.meaning.score === "number" && isFinite(c.meaning.score) ? " · " + c.meaning.score.toFixed(4) : "");
         mBadge.setAttribute("data-sbkim-meaning", mStat);
         info.appendChild(mBadge);
+      }
+      // S5 — Bürgschaft (Modul 23 vouchTrust). Reine Anzeige; „unverbürgt" zeigt
+      // nichts. Immer mit Kennung; ein Name nur aus den EIGENEN Kontakten.
+      if (c.vouch && (c.vouch.status === "verbuergt" || c.vouch.status === "kontakt" || c.vouch.status === "anker")) {
+        var vText;
+        if (c.vouch.status === "verbuergt" && Array.isArray(c.vouch.by) && c.vouch.by.length) {
+          var vonId = String(c.vouch.by[c.vouch.by.length - 1]);
+          var vonName = "";
+          try {
+            var kList = (rdv() && typeof rdv().loadVouchContacts === "function") ? rdv().loadVouchContacts() : [];
+            kList.forEach(function (k) { if (k.nodeId === vonId && k.name) vonName = k.name; });
+          } catch (_e) { vonName = ""; }
+          vText = T("🤝 verbürgt von ") + (vonName ? vonName + " · " : "") + vonId.slice(0, 8) + "…" +
+            (c.vouch.depth > 1 ? T(" (über ") + (c.vouch.depth - 1) + T(" weiteren Schritt)") : "");
+        } else {
+          vText = c.vouch.status === "anker" ? T("🤝 Anker") : T("🤝 eigener Kontakt");
+        }
+        info.appendChild(el("br"));
+        var vBadge = el("span", "display:inline-block;margin-top:3px;font-size:.68rem;color:" + ac, vText);
+        vBadge.title = T("Bürgschaft geprüft (S5) — gatet nichts, unverbürgte Knoten bleiben sichtbar");
+        vBadge.setAttribute("data-sbkim-vouch", c.vouch.status);
+        info.appendChild(vBadge);
       }
       // A11 — Passung zur getippten Frage (nur wenn rankCardsByQuery einen Score lieferte).
       if (typeof c.queryFit === "number" && isFinite(c.queryFit)) {
