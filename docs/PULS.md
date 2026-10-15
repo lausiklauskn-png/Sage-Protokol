@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Sitzungsende: Brief „Bau 23.R in alle Apps nachziehen" (Hauptsitzung)
+
+- **Getan:** `docs/sessions/BRIEF_2026-10-15_nachziehen_alle_apps.md` — Klaus' Auftrag, Bau 23.R in alle Apps zu tragen, die das Mycel tragen, und die funktionsfähigen, nützlichen Apps ohne Mycel anzudocken. Gruppe A (nachziehen, 12 Repos + Kimhub nur auf Klaus' Wort), Gruppe B (andocken: In-and-Out-Book, Kim-sync, Datei-Post), Gruppe C (vorher klären), „nicht anfassen" (u. a. Prompt-Generator und Linksprüfer, Klaus).
+- **Reihenfolge der Briefe:** erst Nachziehen, dann `BRIEF_2026-10-15_schutzschichten_und_paper_s.md` (S1).
+- **Gemessen:** 13 Träger + Sage + Mycel-Karte auf main gleich; die übrigen Repos waren nicht im Sitzungs-Umfang, ihr Stand ist nicht nachgesehen.
+
 ## 2026-10-15 · Abschluss Prüf-Reihe Sitzung 6 · Plan Paper S (Hauptsitzung)
 
 - **Getan:** `docs/papers/PLAN_PAPER_KNOTENNETZ.md` (Paper S „Sicherer Umgang im Knotennetz", Ergänzung zum SBKIM-Paper; Natur als eigenes Kapitel, Klaus' Lesart „Störungen als Prüfmechanismus" gekennzeichnet), Zeiger in `PLAN_PAPERS.md`, Antragsmappe neu erzeugt. Abschluss `docs/sessions/archiv/2026-10-15_abschluss_pruef-reihe-sitzung6.md`, Folge-Brief `docs/sessions/BRIEF_2026-10-15_schutzschichten_und_paper_s.md`. Pflege-Liste #13, #14.
