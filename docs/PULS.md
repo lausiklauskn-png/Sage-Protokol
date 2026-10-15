@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Mein-Workfloh-Page („Muster Werbetechnik") nachgezogen (Hauptsitzung, Nachtrag zu A4)
+
+- **Klaus' Wort:** nachziehen. Damit gilt „NIE anfassen: *-Page" für dieses Repo nicht (Vorlage-PWA und arbeitender Knoten, Schublade `workflohpage`).
+- **Getan:** `kanon-verteilen --nur 02_spore,05b_nostr_relay,16_siegel,23_rendezvous --schreiben`, ein Lauf, keine Handarbeit. Gleicher Stand wie die übrigen 28 Träger seit #1118 (S1, S2, S5 Teil 1): 02 `0cbf0664e2a7`, 05b `030aa2d26014` → `37eee5b196b3`, 16 `853e60807e14`, 23 `3caa0bb1fbe7` → `bc8cc295b449`, 23-UI `828855bbbc0e`. Cache `werbetechnik-page-v27` → `v28`. PR Mein-Workfloh-Page #38, gemergt, auf `main` nachgezählt (alle fünf = Kanon, `RDV_LABEL_MAX = 200`, `RDV_MEANING_MIN = 0.99`), Zweig danach gehoben.
+- **Gemessen:** `npm test` rc 0 vorher wie nachher (13 byte-1:1 · 9 · 14 · 84 grün). Gegenprobe des Repos 18/18. Von Hand: alte 23 zurück → Drift-Guard rot (rc=1). `index.html` im Chromium bis zum Kettenende: 23, 23-UI, 05b, Siegel, Spore da, vorher wie nachher; `Unexpected token 'export'` (noble als klassisches Skript) auch auf `main`.
+- **Benannt:** 03 und 04 hängen zurück. Tablet nicht gemessen; am Gerät ⟳ / Hard-Reload.
+
 ## 2026-10-15 · Sitzungsende S5-Sitzung: Übergabe und Forschungseintrag (Hauptsitzung)
 - **Diese Sitzung insgesamt:** S5 Teil 1 (#1116), Leitlinie Netzadmin und Zuordnung Module 10–12 (#1119), Netzadmin = Sage-Protokol, verbürgte Karten nach vorne (#1120). Alle auf `main` nachgezählt. Übergabe: `docs/sessions/archiv/2026-10-15_s5_buergen_teil1.md` (Nachtrag am Ende). Forschungseintrag in Kimhub.
 - **Weiter:** Sammel-Brief Schritt 5, S5 Teil 2.
