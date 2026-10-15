@@ -7,8 +7,8 @@
 > (`docs/sessions/archiv/2026-10-14_angriffsflaeche_mycel.md`) und Klaus' Frage, ob sich
 > die mehrstufigen Artgrenzen der Natur aufs Mycel übertragen lassen.
 >
-> ⛔ **KIMHUB NICHT ANFASSEN. KEINE FORSCHUNGSEINTRÄGE IN KIMHUB** — dort läuft gerade die
-> Gegenprobe. Diesen Satz an jede Folge-Sitzung weitergeben, bis Klaus ihn aufhebt.
+> Hier stand eine Sperre für Kimhub (Gegenprobe lief dort). Klaus hat sie am 2026-10-15
+> aufgehoben; die Forschungseinträge stehen in Kimhub (#376).
 
 **Legende:** `Bau` = Bau-Sitzung · `Test` = Klaus' Sichttest am Tablet · `Entscheid` = Klaus
 wählt vorher. **Freigegeben** ist bisher nur **S5 (Bürgen) als Planpunkt** (Klaus 2026-10-15:

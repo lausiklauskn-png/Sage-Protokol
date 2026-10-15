@@ -6,8 +6,8 @@ von Angriffen und Gegenmaßnahmen, zur Diskussion gestellt, damit andere sie ver
 können. **Als Ergänzung zum veröffentlichten SBKIM-Paper**
 (`sbkim-paper-de.html` / `-en.html`, DOI 10.5281/zenodo.22277738), nicht als Ersatz.
 
-> ⛔ **KIMHUB NICHT ANFASSEN. KEINE FORSCHUNGSEINTRÄGE IN KIMHUB** — dort läuft gerade die
-> Gegenprobe. Diesen Satz an jede Folge-Sitzung weitergeben, bis Klaus ihn aufhebt.
+> Hier stand eine Sperre für Kimhub (Gegenprobe lief dort). Klaus hat sie am 2026-10-15
+> aufgehoben; die Forschungseinträge stehen in Kimhub (#376).
 >
 > Die veröffentlichten Papers werden **nicht** geändert. Wo dieses Paper einem älteren Satz
 > widerspricht, sagt es das offen, mit Messung.
