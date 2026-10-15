@@ -38,11 +38,13 @@ abgeschrieben. Wer einen Knoten andockt, trägt seinen Suffix **hier** nach.
 | `bookledgerpro` | BookLedgerPro (`src/core/db.js`, eigener DB-Bau) |
 | `companybrain` | Company-Brain |
 | `familyprojekt` | family-project |
+| `inoutbook` | **Mein-In-and-Out-Book** *(neu 2026-10-15, Sammel-Brief Schritt 3)* |
 | `jasonstresor` | Jasons-Tresor |
 | `kimbell` | Kim-Bell |
 | `kimboard` | Kimboard |
 | `kimhubcompany` | **kim-hub-company** *(neu 2026-09-08)* |
 | `kimseek` | Kimseek |
+| `kimsync` | **Kim-sync** *(neu 2026-10-15, Sammel-Brief Schritt 3)* |
 | `meintresor` | Mein-Tresor |
 | `mixarium` | Mein-Mixarium |
 | `muttisrezeptbuch` | Muttis-Rezeptbuch |
@@ -56,6 +58,11 @@ abgeschrieben. Wer einen Knoten andockt, trägt seinen Suffix **hier** nach.
 | `toolpoint` | **SB-KIMTool-Point** |
 | `workfloh` | Mein-WorkFloh |
 | `workflohpage` | Mein-Workfloh-Page |
+| `workflowneeds` | Workflow-Needs *(seit 2026-10-13; nachgetragen 2026-10-15, gelesen im Klon `index.html`)* |
+
+> ⚠ **Lücke, benannt am 2026-10-15:** Sende-Prüfer, Workflow-Calculate und Workflow-PDF sind seit
+> dem 2026-10-13 Knoten und stehen hier nicht. Ihre Werte sind in der Sitzung vom 2026-10-15 nicht
+> gemessen (die Klone lagen nicht vor) — vor einer neuen Vergabe dort nachsehen.
 
 ### ⚠ Zwei Berichtigungen an der Liste, die im Brief stand
 
