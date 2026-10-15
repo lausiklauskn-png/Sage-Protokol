@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Sammel-Brief Schritt 1: `kanon-verteilen` zieht den Cache-Stand mit (Hauptsitzung)
+
+- **Getan:** `tools/kanon-verteilen.mjs` ruft nach einem Cache-Bump `tools/cache-stand.mjs` des Trägers auf (einmal je Träger, nur bei `--schreiben`; Fehlschlag laut, Rückgabewert 1). Probe `smoke_kanon_cachestand.mjs` 15 grün, Gegenprobe 6 gefangen · 0 durch · 0 tot. Pflege-Liste #13 erledigt.
+- **Gemessen:** Wegwerf-Klone von Workflow-Calculate/-Needs: alter Verteiler lässt `CACHE` rot, neuer → 305 · 0 ROT bzw. 283 · 0 ROT. Echte Repos unberührt. Tablet: nicht betroffen.
+- **Nächster Schritt:** Sammel-Brief Schritt 2 (Gruppe A, Bau 23.R), in Paketen von 3–4 Repos.
+
 ## 2026-10-15 · Ein Sammel-Brief statt zwei (Hauptsitzung)
 
 - **Klaus' Wort:** „Es gibt ein Problem mit den anderen Sitzungen. Mach bitte einen einzigen Sitzungsbrief …, der Reihe nach … und dann später weiterleiten.“

@@ -356,6 +356,7 @@ const unpruefbar = [];        // Module, zu denen die Historie nichts hergibt
  * zweiter Grund, den Vorrat wegzuwerfen. */
 const schonGebumpt = new Set();
 const offen = [];
+const cacheStandFehler = [];  // Traeger, deren tools/cache-stand.mjs scheiterte
 /* ⚠ WIE VIELE FASSUNGEN NEBENEINANDER IM NETZ STEHEN — ergaenzt am 2026-09-16,
  * nachdem ich die eigene Ausgabe dieses Werkzeugs falsch gelesen habe.
  *
@@ -397,6 +398,8 @@ for (const repo of repos) {
   if (!zurueck.length) { gleich += treffer.length; continue; }
 
   console.log(`▶ ${repo}`);
+  let gebumptHier = false;
+  const offenVorher = offen.length;
   for (const t of zurueck) {
     const rel = relative(rp, t.datei);
     /* ⚠ WIE WEIT es zurueckhaengt, gehoert DANEBEN. Gemessen am 2026-09-14:
@@ -459,8 +462,9 @@ for (const repo of repos) {
     console.log(`    ✓ nachgezogen: ${rel}  (${t.k.marke || t.k.name})`);
     nachgezogen++;
     pinsNachziehen(rp, t.ist, t.k.sha);
-    cacheBump(rp, t.datei);
+    if (cacheBump(rp, t.datei)) gebumptHier = true;
   }
+  cacheStandNachziehen(rp, repo, gebumptHier, offen.length > offenVorher);
   gleich += treffer.length - zurueck.length;
 }
 
@@ -526,6 +530,7 @@ function pinsNachziehen(rp, altSha, neuSha) {
  * Schale neu laden, ein ausgelassener kostet ein Update, das niemand bemerkt.
  * Betrifft 6 der 18 Repos; drei davon brauchten ihn wirklich. */
 function cacheBump(rp, zielPfad) {
+  let gebumpt = false;
   const dateiname = basename(zielPfad);
   const ziel = zielPfad.replace(/\\/g, "/");
   /* ⚠ DER GELTUNGSBEREICH ENTSCHEIDET, NICHT DAS REPO. Ein Worker unter
@@ -554,6 +559,7 @@ function cacheBump(rp, zielPfad) {
     const neu = m[0].slice(0, -(m[5].length + 1)) + (Number(m[5]) + 1) + m[3];
     writeFileSync(sw, s.slice(0, m.index) + neu + s.slice(m.index + m[0].length));
     schonGebumpt.add(sw);
+    gebumpt = true;
     console.log(`        ↳ Cache-Bump: ${relative(rp, sw)}  ${m[4]}${m[5]} → ${m[4]}${Number(m[5]) + 1}`);
 
     /* ── ⚠ UND DIE ?v= ZIEHEN MIT — aber NUR, wo sie VORHER schon passten ──
@@ -592,6 +598,43 @@ function cacheBump(rp, zielPfad) {
     if (gezogen) {
       console.log(`        ↳ ?v= mitgezogen: ${gezogen} Stellen in ${dateienGezogen} Dateien  ${altN} → ${neuN}`);
     }
+  }
+  return gebumpt;
+}
+
+/* ── 4a. Der Cache-Stand zieht mit — wo ein Traeger einen fuehrt ──────────
+ * GEMESSEN am 2026-10-14 beim Rollout von Bau 23.R (Pflege-Liste #13).
+ * Workflow-Calculate und Workflow-Needs halten zu jeder CACHE_VERSION eine
+ * Pruefsumme ihres Vorrats in `tests/cache-stand.json`. Der Verteiler hob die
+ * Nummer, liess die Pruefsumme stehen — und ihr Waechter war danach ROT, bis
+ * jemand `node tools/cache-stand.mjs` von Hand lief.
+ *
+ * Aufgerufen wird das EIGENE Werkzeug des Traegers, einmal je Traeger, NACH
+ * allen Schreibvorgaengen in diesem Repo (Kopien, Pins, Bump, ?v=). Wer es je
+ * Datei aufriefe, haelte die Pruefsumme einer halb nachgezogenen Schale fest.
+ * Ohne die Datei aendert sich nichts. Ohne Bump auch nicht: dann meldet das
+ * Werkzeug selbst „Erst in sw.js erhoehen", und das waere ein Befund ueber den
+ * Bump, nicht ueber den Stand.
+ *
+ * ⚠ EIN FEHLSCHLAG IST LAUT. Er steht mit dem Traeger in der Ausgabe, noch
+ * einmal am Schluss, und der Rueckgabewert wird 1. Eine Meldung, die niemand
+ * liest, ist kein Stand. */
+function cacheStandNachziehen(rp, repo, gebumpt, offenHier) {
+  const werkzeug = join(rp, "tools", "cache-stand.mjs");
+  if (!existsSync(werkzeug)) return;
+  if (!schreiben) {
+    if (offenHier) console.log(`    ↳ beim Schreiben: nach dem Cache-Bump liefe hier tools/cache-stand.mjs (tests/cache-stand.json)`);
+    return;
+  }
+  if (!gebumpt) return;
+  try {
+    const aus = execFileSync("node", [werkzeug], { cwd: rp, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000 });
+    console.log(`        ↳ Cache-Stand nachgezogen: ${String(aus).trim().split("\n").pop()}`);
+  } catch (e) {
+    const grund = (String(e.stderr || "") + String(e.stdout || "")).trim().split("\n").pop() || e.message;
+    cacheStandFehler.push({ repo, grund });
+    console.error(`        ✗ CACHE-STAND GESCHEITERT in ${repo}: tools/cache-stand.mjs → ${grund}`);
+    console.error(`          tests/cache-stand.json passt NICHT zur neuen CACHE_VERSION — der Waechter dort bleibt rot.`);
   }
 }
 
@@ -644,7 +687,12 @@ console.log(`\n${betroffen} Repos tragen Kanon-Dateien · ${gleich} schon gleich
             (schreiben ? `${nachgezogen} nachgezogen` : `${offen.length} haengen zurueck`) +
             (NUR_GEN !== null ? ` · ${zurueckgehalten.length} zurueckgehalten (andere Fassung)` : "") +
             (handarbeit.length ? ` · ⛔ ${handarbeit.length} mit HANDARBEIT` : "") +
-            (unpruefbar.length ? ` · ⊘ ${unpruefbar.length} Modul(e) nicht pruefbar` : ""));
+            (unpruefbar.length ? ` · ⊘ ${unpruefbar.length} Modul(e) nicht pruefbar` : "") +
+            (cacheStandFehler.length ? ` · ✗ ${cacheStandFehler.length} Cache-Stand gescheitert` : ""));
+if (cacheStandFehler.length) {
+  console.error(`\n✗ CACHE-STAND GESCHEITERT — ${cacheStandFehler.length} Traeger, von Hand nachziehen:`);
+  for (const f of cacheStandFehler) console.error(`  ${f.repo}: ${f.grund}`);
+}
 
 /* ⚠ EIN FILTER, DER NICHTS TRIFFT, IST EIN BEFUND — KEIN STILLES „NICHTS ZU TUN".
  * Ein Tippfehler im sha laesst jeden Traeger durch den Zurueckgehalten-Zweig
@@ -665,4 +713,4 @@ if (!schreiben && offen.length) {
 /* ⚠ HANDARBEIT IST EIN BEFUND, AUCH IM SCHREIB-GANG. Ohne diese Zeile endete
  * ein Lauf, der vier Kopien zurueckhaelt, mit 0 — und „0" heisst in jeder Kette
  * „alles erledigt". Genau die stille Sorte, gegen die dieser Riegel gebaut ist. */
-process.exit((!schreiben && offen.length) || (!HANDARBEIT_OK && handarbeit.length) ? 1 : 0);
+process.exit((!schreiben && offen.length) || (!HANDARBEIT_OK && handarbeit.length) || cacheStandFehler.length ? 1 : 0);
