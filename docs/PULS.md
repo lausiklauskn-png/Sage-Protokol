@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Ein Sammel-Brief statt zwei (Hauptsitzung)
+
+- **Klaus' Wort:** „Es gibt ein Problem mit den anderen Sitzungen. Mach bitte einen einzigen Sitzungsbrief …, der Reihe nach … und dann später weiterleiten.“
+- **Getan:** `docs/sessions/BRIEF_2026-10-15_EIN_BRIEF_ALLE_ARBEITEN.md` — Schritte 0–7: Startprüfung gegen parallele Sitzungen · Werkzeug (Pflege-Liste #13) · Gruppe A nachziehen (jetzt mit Kimhub) · Gruppe B andocken · Gruppe C fragen · Schichten/S1 · Paper S · Pflege-Liste #14. Mit Fortschritts-Tabelle, die jede Sitzung auf `main` abhakt, und einem Codeblock zum Weiterleiten.
+- Die zwei Briefe vom selben Tag tragen oben den Vermerk „ersetzt“.
+
 ## 2026-10-15 · Sitzungsende: Brief „Bau 23.R in alle Apps nachziehen" (Hauptsitzung)
 
 - **Getan:** `docs/sessions/BRIEF_2026-10-15_nachziehen_alle_apps.md` — Klaus' Auftrag, Bau 23.R in alle Apps zu tragen, die das Mycel tragen, und die funktionsfähigen, nützlichen Apps ohne Mycel anzudocken. Gruppe A (nachziehen, 12 Repos + Kimhub nur auf Klaus' Wort), Gruppe B (andocken: In-and-Out-Book, Kim-sync, Datei-Post), Gruppe C (vorher klären), „nicht anfassen" (u. a. Prompt-Generator und Linksprüfer, Klaus).

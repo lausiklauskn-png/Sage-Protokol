@@ -1,5 +1,7 @@
 # Brief · Folge-Sitzung: Bau 23.R in alle Apps nachziehen, neue Apps andocken
 
+> **Ersetzt am 2026-10-15** durch `docs/sessions/BRIEF_2026-10-15_EIN_BRIEF_ALLE_ARBEITEN.md` (Klaus: ein einziger Brief, der Reihe nach). Hier nur noch nachschlagen, nicht danach arbeiten.
+
 Klaus 2026-10-15: *„das nachzuziehen in den anderen Apps … auch die neuen Apps mit einbinden …
 alle, die das Mycel in sich tragen können, auch wenn sie nicht veröffentlicht sind. Aber sie
 müssen funktionsfähig sein und nützlich."* Ausdrücklich **nicht**: der Linksprüfer und der
