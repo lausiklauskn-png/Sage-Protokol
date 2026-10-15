@@ -31,6 +31,15 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Modul 03: Rückfall auf HuggingFace gebaut und netzweit verteilt (Hauptsitzung)
+- **Anlass:** „Can't create a session“ in In-and-Out-Book, Kim-sync, Kimboard (Server-Modell); Alis (HuggingFace) ging. Server-Datei sha256 = HuggingFace; Inkognito lud; nach `caches.delete('transformers-cache')` lud es auch normal (PFLEGE-LISTE § 15).
+- **Gebaut:** Sage #1103 — Rückfall in Modul 03 mit Leeren der Cache-Einträge der Wurzel und Rücksetzen von `env.localModelPath` (Haupt-Faden und Worker); `getModelFallback()`; INTERFACES §03 additiv. Probe `smoke_bau03_rueckfall` 33 grün, Gegenprobe 9/9 (erst 1 blind). Kopien in pinnwand/sbkim-bundle(-voll)/such-tool nachgezogen.
+- **Verteilt:** `kanon-verteilen --nur 03_embedding --schreiben`: 26 Repos, 29 Kopien, zwei ältere Fassungen (`a6ac64d7536d` 21×, `e4bb8bd6a237` 8×). Je Repo eigene Proben, PR, Merge; alle 26 gemergt; auf `main` **29 von 29** Kopien byte-gleich mit dem Kanon `2e31baa09a29`, danach Zweige gehoben.
+- **Unterwegs:** In-and-Out-Book neues Logo (Klaus) — Favicon-Ring mindestens 3 px, weil der helle Logo-Rand ihn bei 2 px einfärbte (Wächter war rot, Probe unverändert); Manifest und Gegenprobe-Anker auf `?v=9`. Kim-sync: Probe nagelte `kimsync-v15`. PWA-Toolpoint: eine Zeile in `smoke_detail` rot bei 151/180 s, einzeln auf Zweig und `main` je 780/0 — Ausreißer. Sage `smoke_service_worker_parst` rot, auf `main` ebenso.
+- **Nicht gemessen:** Tablet; der Rückfall selbst im echten Browser.
+- **Eingereiht:** PFLEGE-LISTE § 16 („~30 MB“ im Andock-Wizard, gemessen 118 MB).
+- **Kim-sync bleibt privat** (Klaus): nicht im Mycel eintragen.
+
 ## 2026-10-15 · Mein In-and-Out-Book im Mycel eingetragen (Hauptsitzung)
 - **Getan:** Klaus' Spore (am Tablet im Andock-Wizard erzeugt, 14:15:19Z) byte-gleich als `sbkim/inoutbook_inbox.json` abgelegt; Prüf-Vermerk `sbkim/inoutbook_inbox.verify.md`; Zeile in `sbkim/NETZ-STAND.md`; Eintrag in `status.json` (`endknoten`, 23. Eintrag).
 - **Gemessen:** VALID (Modul-02-Pfad), id = SHA256(Pubkey), Manipulationsprobe fällt durch, kein `d` im JWK, L2 = 1, 11 Schnipsel. Sage-Cosinus **0.917311** (Depot-Maßstab) → `verified-match`.

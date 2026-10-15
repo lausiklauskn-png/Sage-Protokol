@@ -205,6 +205,27 @@ Modul 03 probt nur `config.json`; liegt sie auf dem Server, wird „local“ gew
 
 **Offen:** Ursache (Prüfsumme Server gegen Hugging Face); Abhilfe auf dem Server oder ein Rückfall in Modul 03 — Klaus' Entscheid. Aus der Sitzung nicht messbar: der Proxy sperrt family-projekt.de, Hugging Face und jsDelivr.
 
+**Nachgemessen am selben Tag (Klaus, Termux und Tablet):**
+
+| | Ergebnis |
+|---|---|
+| sha256 `onnx/model_quantized.onnx` auf dem Server | `f80102d3…6f98c193` — **gleich** dem `x-linked-etag` von Hugging Face |
+| derselbe Abruf im **Inkognito-Tab** | lädt |
+| im normalen Tab | „Can't create a session“ |
+| nach `caches.delete('transformers-cache')` im normalen Tab | lädt neu; die Spore des In-and-Out-Book entstand danach am Tablet |
+
+Die Datei auf dem Server ist also richtig; der Unterschied ist der Browser-Zwischenspeicher. Dass dort eine **verdorbene** Kopie lag, ist daraus geschlossen, nicht als Datei gesehen.
+
+⚠ **Und ein reiner Quellenwechsel hätte nicht geholfen:** transformers.js 2.17.2 (`src/utils/hub.js`, `tryCache`) fragt den Zwischenspeicher **zuerst unter dem lokalen Pfad**, auch mit `allowLocalModels=false`.
+
+**Gebaut (Klaus' Ja, 2026-10-15):** Rückfall in Modul 03 — scheitert „local“, werden die Einträge dieser Wurzel aus `transformers-cache` entfernt und genau einmal von Hugging Face geladen; `getModelFallback()` (Sage #1103, Probe 33 grün, Gegenprobe 9/9). Verteilt mit `kanon-verteilen` in **26 Repos, 29 Kopien**, alle gemergt, auf `main` nachgezählt.
+
+**Offen:** am Tablet nicht gemessen, ob der Rückfall in einem Browser mit verdorbenem Eintrag greift (der Eintrag ist inzwischen gelöscht; zu sehen erst beim nächsten Vorfall, in der Konsole an „Rückfall auf HuggingFace“).
+
+### 16 · Der Andock-Wizard nennt „~30 MB“, die Modell-Datei hat 118 MB
+
+Gesehen am 2026-10-15 an Klaus' Tablet: „Modell lädt … (~30 MB einmalig)“. Gemessen am 2026-10-13: `model_quantized.onnx` = **118 308 185 Bytes**. Der Balken braucht damit rund viermal so lange, wie der Text erwarten lässt; am Tablet sieht das wie ein Hänger aus. Stellen: `src/modules/16b_andock_wizard.js` (drei deutsche Sätze samt englischer Fassung, Zeilen 109/181/185/269). Nicht nebenbei umgebaut: 16b ist Kanon in allen Trägern, die Übersetzungs-Wächter (83/83) hängen an den Sätzen.
+
 ## Erledigt
 
 ### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15
