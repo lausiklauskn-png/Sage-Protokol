@@ -58,10 +58,13 @@ und stellt den Satz damit zur Diskussion. Quelle:
    eigenem Schlüssel, Flutender, Text, der eine KI anweisen will, eine Browser-KI beim
    Nutzer), was er kann (lesen, schreiben, Schlüssel erzeugen), was er nicht kann (fremden
    privaten Schlüssel nutzen).
-3. **Die Wege fremden Texts.** Spore, Karte, Name, Frage, Antwort, Vektor, eingefügte
+3. **Stand der Forschung** (Klaus 2026-10-15, Gliederung abgestimmt). Je Quelle drei Spalten:
+   was dort erforscht ist · was wir übernehmen · was wir fürs Knotennetz vorschlagen, und warum.
+   Quellen und Fallbeispiele: siehe „Klaus' Wünsche zum Quellenteil“ unten.
+4. **Die Wege fremden Texts.** Spore, Karte, Name, Frage, Antwort, Vektor, eingefügte
    KI-Antwort, Anzeige im Browser. Für jeden Weg: wohin er führt (Mensch, KI-Richter, Rangfolge).
-4. **Die Gegenüberstellung** (Herzstück, Tabelle unten).
-5. **Was die Natur bewährt hat** (eigenes Kapitel, Klaus 2026-10-15: *„da ist es bewährt,
+5. **Die Gegenüberstellung** (Herzstück, Tabelle unten).
+6. **Was die Natur bewährt hat** (eigenes Kapitel, Klaus 2026-10-15: *„da ist es bewährt,
    das ist im Prinzip die Gegenprobe … durch Erhaltung der Arten"*). Die Artgrenzen sind eine
    Bewährungsprobe über sehr lange Zeit für das **Muster**: mehrere Hürden, billige zuerst,
    Ähnlichkeit erst beim Ernstfall, Gedächtnis, Schutz dessen, was weitergegeben wird. Je
@@ -92,26 +95,26 @@ und stellt den Satz damit zur Diskussion. Quelle:
    ⚠ Als **Klaus' Lesart** kennzeichnen. Die Biologie kennt keinen Planer: ein Virus *wirkt*
    als Auslesedruck, es ist nicht dafür *vorgesehen*. Formulierung im Text: „Störungen wirken
    wie eine Gegenprobe", nicht „sind als Prüfung gedacht".
-6. **Die Schichten im Netz.** S1–S7 aus `docs/PLAN_MYCEL_SCHICHTEN.md` mit Stand und Probe.
-7. **Vertrauen ohne Zentrale: Bürgen.** Wie man einen Bürgen bekommt, warum ein
+7. **Die Schichten im Netz.** S1–S7 aus `docs/PLAN_MYCEL_SCHICHTEN.md` mit Stand und Probe.
+8. **Vertrauen ohne Zentrale: Bürgen.** Wie man einen Bürgen bekommt, warum ein
    selbst ausgestellter nichts zählt (Sybil), die vier Riegel (kurze Kette, Haftung, Widerruf,
    Ablauf), der Anker als ehrlich benannte Mitte. Abgrenzung zum geschlossenen Netz (ein Code
    für alle, Modul 23 „Netz").
-8. **Wie man prüft, dass ein Schutz wirkt.** Probe und Gegenprobe; drei Ausgänge statt zwei
+9. **Wie man prüft, dass ein Schutz wirkt.** Probe und Gegenprobe; drei Ausgänge statt zwei
    (gefangen · blind · toter Anker); Belege aus dem Betrieb, in denen ein grüner Haken nichts
    gemessen hatte (z. B. die Echtheitsprüfung, deren Probe einen Prüfer stellte, der anders
    antwortete als der echte).
-9. **Ausrollen in ein lebendes Netz.** Eine Lücke steckt in jeder Kopie: dieselbe falsche Zeile
+10. **Ausrollen in ein lebendes Netz.** Eine Lücke steckt in jeder Kopie: dieselbe falsche Zeile
    stand in mindestens sieben Apps. Kanon an einer Stelle, Verteilung mit Herkunfts-Riegel,
    Nachzählen auf `main` statt der Meldung zu glauben.
-10. **Was offen bleibt.** Unsignierte Fragen (bis S1), Vektor-Bindung (bis S2), Wortliste vor
+11. **Was offen bleibt.** Unsignierte Fragen (bis S1), Vektor-Bindung (bis S2), Wortliste vor
    dem Richter, Browser mit eingebauter KI, nicht ausgerollte Träger, nichts am Tablet gemessen.
-11. **Zur Diskussion.** Die Tabelle als Vergleichsvorlage für andere Netze; Fragen an Leser.
-12. **Zur Entstehung dieses Textes** (wie in den anderen Papers).
+12. **Zur Diskussion.** Die Tabelle als Vergleichsvorlage für andere Netze; Fragen an Leser.
+13. **Zur Entstehung dieses Textes** (wie in den anderen Papers).
 
 ---
 
-## Die Gegenüberstellung (Rohfassung für Abschnitt 4)
+## Die Gegenüberstellung (Rohfassung für Abschnitt 5)
 
 Spalte „Beleg" nennt nur, was **gemessen** ist; Vermutetes steht als solches da.
 
@@ -150,8 +153,8 @@ Spalte „Beleg" nennt nur, was **gemessen** ist; Vermutetes steht als solches d
 ## Quellen, die beim Schreiben geprüft werden müssen
 
 Nicht aus dem Gedächtnis zitieren — vor der Verwendung nachsehen:
-- Douceur, *The Sybil Attack* (IPTPS 2002) — für Abschnitt 7.
-- Greshake et al., *Not what you've signed up for* (2023) — indirekte Prompt-Injektion, Abschnitt 3/4.
+- Douceur, *The Sybil Attack* (IPTPS 2002) — für Abschnitt 8.
+- Greshake et al., *Not what you've signed up for* (2023) — indirekte Prompt-Injektion, Abschnitt 4/5.
 - PGP-Web-of-Trust (Zimmermann) — Bürgen als bekanntes Muster, Abgrenzung.
 - Nostr NIP-01 (Ereignisse, Signatur) und NIP-13 (Rechenaufwand).
 - OWASP Top 10 für LLM-Anwendungen — als Vergleichsliste.
@@ -163,8 +166,8 @@ erforscht haben und was dahingehend mit berücksichtigt wird bei der Theorie, di
 es geht daher auch Internetseiten, Sicherheit und ähnliche Sachen. Was wir davon übernehmen
 können und was vorgeschlagen wird für das Knotennetz. Und warum?"*
 
-Daraus folgt ein **eigener Abschnitt „Stand der Forschung"** (zwischen 2 und 3 einzuordnen,
-mit Klaus abzustimmen), je Quelle drei Spalten: **was dort erforscht ist · was wir übernehmen ·
+Daraus folgt ein **eigener Abschnitt „Stand der Forschung"** (Abschnitt 3, hinter dem
+Bedrohungsmodell; mit Klaus abgestimmt 2026-10-15), je Quelle drei Spalten: **was dort erforscht ist · was wir übernehmen ·
 was wir fürs Knotennetz vorschlagen, und warum**. Ergänzend zu den Quellen oben zu prüfen
 (nicht aus dem Gedächtnis):
 - Web-Sicherheit: OWASP Top 10 (Web), Content Security Policy (W3C), Same-Origin-Policy,
@@ -207,8 +210,8 @@ nur ins Depot gelegt.
 
 ## Reihenfolge
 
-1. Gliederung mit Klaus abstimmen (dieser Plan).
-2. S1 bauen, damit Abschnitt 4 nicht mit einer offenen Tür beginnt; die offenen Träger nachziehen.
+1. Gliederung mit Klaus abstimmen (dieser Plan). **Abgestimmt 2026-10-15** (Klaus: „Vorschlag ok“): zwölf Abschnitte wie geplant, dazu „Stand der Forschung“ als Abschnitt 3; Klaus' Lesart in Abschnitt 6 als seine gekennzeichnet.
+2. S1 bauen, damit Abschnitt 5 nicht mit einer offenen Tür beginnt; die offenen Träger nachziehen.
 3. Fassung 1 auf Deutsch als Markdown (Quelle), HTML erzeugt wie bei Paper A
    (`tools/paper-md-zu-html.mjs`), mit eigenem Wächter.
 4. Englische Übersetzung, gleiche Gliederung (Wächter wie `smoke_paper_a.mjs`).
