@@ -64,7 +64,7 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   `tests/gegenprobe_s1_fragen.mjs` (7 von 7 gefangen). **Ausgerollt 2026-10-15:** 26 Träger,
   auf `main` 26 von 26 nachgezählt; dazu Kuechenzettel und die Demo beim Andocken.
 
-- [ ] **S2 — Vektor gegen Text nachrechnen** (Fehlerkorrektur) · `Entscheid`+`Bau` · ⏱ ~2 Sitzungen
+- [x] **S2 — Vektor gegen Text nachrechnen** (Fehlerkorrektur) · `Entscheid`+`Bau` · ⏱ ~2 Sitzungen
   Der Empfänger rechnet den `domainVector` aus der Selbstbeschreibung der Spore nach und
   vergleicht mit dem angesagten. Liegt der Abstand über einer Schwelle → Karte „Bedeutung
   passt nicht zur Beschreibung", kein Match-Vorrang. Fehlt das Modell (~135 MB) beim
@@ -94,7 +94,9 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   1,0000 nachgerechnet; Schnipsel 0,9949–0,9972 (40 aus 8 Sporen, alle über 0,99; einzeln
   statt im Stapel gerechnet, vermutete Ursache). SB-KIMTool-Point 0,888 und BookLedgerPro
   0,902 passen nicht zur Beschreibung und tragen kein `embeddingSource` → „nicht
-  nachprüfbar“. **Schwelle 0,99 bestätigt. Offen:** Rollout in alle Träger.
+  nachprüfbar“. **Schwelle 0,99 bestätigt.**
+  **Ausgerollt 2026-10-15:** 28 Träger je ein PR, auf `main` 28/28 mit S2-Code, 27 mit
+  Siegel-Aspekt (Company-Brain ohne Siegel); Verteiler danach „81 schon gleich · 0 hängen zurück“.
 
 - [ ] **S3 — Rechenaufwand je Zettel** (teure Balz) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Nostr NIP-13: der Sender rechnet vor dem Senden eine kleine Prüfsummen-Aufgabe. Fluten

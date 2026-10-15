@@ -44,3 +44,15 @@ Alle vier sind auf `main` nachgezählt.
    Darunter wird die Schwelle neu besprochen.
 2. Paper S: Gliederung mit Klaus abstimmen.
 3. Danach S5 (Bürgen), S3, S4.
+
+## Nachtrag: S2 gemessen und ausgerollt (gleiche Sitzung)
+
+- Klaus hat am Tablet (DeX) gemessen: Haupt-Vektor 9/9 auf 1,0000, Schnipsel 0,9949–0,9972.
+  Schwelle 0,99 bestätigt (#1115, #1117). Die Mess-Seite prüfte die Schnipsel zuerst gegen
+  0,995 und meldete fälschlich „zu prüfen“; korrigiert.
+- Paper S Fassung 1 (#1114), Gliederung abgestimmt (#1113).
+- S2 in 28 Träger (Liste und PRs in `docs/PULS.md`), auf `main` 28/28 nachgezählt, Verteiler
+  danach „0 hängen zurück“. S5 Teil 1 der parallelen Sitzung kam mit.
+- Parallele Sitzung: S5 Teil 1 (#1116) wurde gemergt, während diese Sitzung lief. Bemerkt an
+  einer fremden Übergabe-Datei auf `main`; es war kein PR offen, kein Konflikt.
+- Eingereiht: PFLEGE-LISTE § 19–21.
