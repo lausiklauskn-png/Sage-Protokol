@@ -1,5 +1,7 @@
 # Brief · Folge-Sitzung: Schutzschichten am Knotennetz und Paper S
 
+> **Ersetzt am 2026-10-15** durch `docs/sessions/BRIEF_2026-10-15_EIN_BRIEF_ALLE_ARBEITEN.md` (Klaus: ein einziger Brief, der Reihe nach). Hier nur noch nachschlagen, nicht danach arbeiten.
+
 ```
 Du bist eine Hauptsitzung in Sage-Protokol.
 
