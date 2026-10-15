@@ -112,6 +112,21 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
 
 ---
 
+## Nachziehen und Sporen je Schicht
+
+Eine Schicht ist erst fertig, wenn sie in **allen** Trägern auf `main` steht (`kanon-verteilen`,
+je Repo Probe, PR, Merge, nachzählen). Sage allein reicht nicht: die Apps tragen eigene Kopien.
+
+| Schicht | neue Spore nötig? | Übergang |
+|---|---|---|
+| Bau 23.R (gebaut) | nein — signiert mit dem vorhandenen Schlüssel | alte Träger antworten „unbestätigt" |
+| S1 Fragen unterschreiben | nein — derselbe Schlüssel | unsignierte Fragen als „unbestätigt" beantworten |
+| S2 Vektor nachrechnen | **möglich** — wessen Vektor nicht zur Beschreibung passt, signiert im Siegel neu; offen für `embeddingSource: "content"` | Karte „Bedeutung nicht geprüft" statt Ablehnung |
+| S3 Rechenaufwand | nein | Zettel ohne Aufwand weiter annehmen, nur nachrangig |
+| S4 Sperrliste | nein | — |
+| S5 Bürgen | nein — Bürgschaften sind eigene, signierte Zettel | unverbürgt bleibt sichtbar |
+| S6/S7 | nein | — |
+
 ## Reihenfolge (Vorschlag)
 
 S1 → S2 → S5 → S3 → S4; S6 und S7 erst nach eigenem Entscheid. Jede Schicht mit eigener

@@ -30,9 +30,41 @@ Deine Aufgabe heute:
    - Rollout mit `node tools/kanon-verteilen.mjs`; danach in Workflow-Calculate und
      Workflow-Needs `node tools/cache-stand.mjs`; erst auf main nachzählen, dann Zweige heben
 3. Die noch offenen Träger auf Bau 23.R nachziehen: PWA-Toolpoint, Kimseek, SB-KIMTool-Point,
-   family-project, Kim-Bell; dazu docs/observatorium/tools/mycelknoten.html prüfen.
+   family-project, Kim-Bell (Weg: Abschnitt „Nachziehen" unten); dazu
+   docs/observatorium/tools/mycelknoten.html prüfen. Jede spätere Schicht (S1 …) geht denselben
+   Weg in ALLE Träger, nicht nur nach Sage.
 4. Paper S: Gliederung mit Klaus abstimmen; erst schreiben, wenn S1 gebaut ist und die offenen
    Träger nachgezogen sind (keine Anleitung zu offenen Lücken veröffentlichen).
+
+Nachziehen in die anderen Repos (Klaus 2026-10-15: „wenn eine Verbesserung ist, müssen wir
+das in die anderen Repos nachziehen"):
+- Es läuft NICHT automatisch über Sage. Jede App trägt die Module als eigene Kopie und lädt sie
+  aus ihrem eigenen Repo. Eine Änderung in Sage erreicht keine App, bis sie dort hineinkopiert
+  und gemergt ist.
+- Weg je Kanon-Änderung: `node tools/kanon-verteilen.mjs` (erst ohne --schreiben ansehen), dann
+  --schreiben → je Repo Probe, PR, Merge → auf main nachzählen. Der Verteiler findet nur Repos,
+  die in der Sitzung geklont sind; was nicht im Sitzungs-Umfang ist, bleibt liegen und wird
+  NAMENTLICH als offen gemeldet.
+- Stand 2026-10-15: 13 Träger gleich (Lauf ohne --schreiben: „25 schon gleich · 0 hängen
+  zurück"). Offen: PWA-Toolpoint, Kimseek, SB-KIMTool-Point, family-project, Kim-Bell
+  (nicht im Sitzungs-Umfang gewesen) — für diese Repos in die Sitzung holen (add_repo).
+- Nach dem Merge braucht jedes Gerät einmal ⟳ / Hard-Reload; der Verteiler hat den Cache
+  erhöht, der Service-Worker holt dann die neue Fassung.
+
+Sporen (Klaus' Frage: „ob wir neue Sporen erzeugen müssen"):
+- Für Bau 23.R: NEIN. Antworten werden mit dem schon vorhandenen Schlüssel der App
+  unterschrieben (Modul 02 signDetached nimmt die bestehende Identität); die Spore selbst hat
+  sich nicht geändert, alte Sporen bleiben gültig. Das Siegel zeigt den neuen Sicherheits-Aspekt
+  ohne neues Andocken (ZERTIFIKAT_ASPEKTE).
+- Ausnahme, gezielt prüfen: verschwindet nach dem Update eine App von der Karte, war ihre Spore
+  schon vorher ungültig signiert und wurde nur wegen des alten Fehlers angenommen. Dann (und nur
+  dann) im Siegel der App neu signieren. Live nicht gemessen — braucht einen Blick auf die
+  Mycel-Karte bzw. einen Mitschnitt.
+- Übergangszeit: Apps, die noch die alte Fassung tragen (die fünf oben), antworten
+  unsigniert; ihre Antworten erscheinen bei aktualisierten Apps als „unbestätigt". Das ist
+  gewollt und verschwindet mit dem Nachziehen.
+- Für die kommenden Schichten steht je Schicht in docs/PLAN_MYCEL_SCHICHTEN.md, ob neu
+  signiert werden muss.
 
 Regeln, die hier besonders gelten:
 - Befund ins Dokument, Rat in den Chat.
