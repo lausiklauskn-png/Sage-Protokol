@@ -160,6 +160,17 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
     Kontakte und Verbürgte, dann Unverbürgte; innerhalb jeder Gruppe nach Frage-Passung.
     Benannter Preis: eine gut passende unverbürgte Karte kann hinter einer schwächer
     passenden verbürgten stehen.
+  **Stand 2026-10-15: Teil 2 in Sage gebaut** (INTERFACES § Modul 23 S5 Teil 2):
+  Netzadmin je Netz (`RDV_OPEN_MYCEL_ADMIN` = Sage-Protokol nur im öffentlichen Netz; im
+  eigenen Netz das neue Feld `admin` der Netz-Einstellung, reist im Netz-Link als `a`);
+  `rankCardsByQuery` stellt Netzadmin, Kontakte und Verbürgte vor die übrigen (nur mit
+  Frage-Vektor; „passt nicht“ bleibt am Ende); Sicherheitsnummer `vouchSafetyNumber`
+  (wie B7, aus beiden `publicKey.x`); Oberfläche: je Karte „🤝 Bürgen“ (Nummer, Haken,
+  unterschreiben, Kontakt merken, widerrufen), Kasten „🤝 Bürgschaften“ (einfügen,
+  Kontakte, Netzadmin); „🤝 Anker“ heißt „🤝 Netzadmin“. Siegel-Aspekt S5 ergänzt.
+  `RDV_VOUCH_ANCHORS` ist ersetzt (eine feste Kennung im Kanon wäre in jedem fremden Netz
+  mit verankert). **Offen:** Rollout in die Träger; Tablet nicht gemessen; „aufgefallen“
+  weiter nur von Hand (bis S4/Modul 10).
 
 - [ ] **S6 — Eigene Einträge markieren** (Bakterien-Methylierung) · `Entscheid`+`Bau`
   Was die App selbst ablegt, trägt eine eigene Prüfsumme; was von außen in den Speicher
