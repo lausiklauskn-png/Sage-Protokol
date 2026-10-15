@@ -31,11 +31,15 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
-## 2026-10-15 · S2-Entscheid: Schwelle 0,99, Inhalts-Vektor „nicht nachprüfbar“ (Hauptsitzung)
+## 2026-10-15 · S2: Entscheid (Schwelle 0,99, Inhalts-Vektor „nicht nachprüfbar“) und Bau in Sage (Hauptsitzung)
 - **Klaus' Wort:** Schwelle **0,99**; `embeddingSource: "content"` → Weg A (sichtbar, kein Abzug, kein „geprüft“, Schnipsel trotzdem nachrechnen). Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md` S2 und im Sammel-Brief Schritt 5.
 - **Gemessen:** 55 Paare der gespeicherten Vektoren in `sbkim/`: 0,780–0,983 (engstes Paar Jasons-Tresor ⟷ Mein-Tresor 0,983).
 - **Nicht gemessen:** Wiederholgenauigkeit des Modells über Geräte (HuggingFace und family-projekt.de im Container gesperrt).
 - **Fund:** Andock-Wizard bettet Erst-Signatur „Beschreibung. Stichworte“, Neu-Signieren nur die Beschreibung — der Empfänger muss beide nachrechnen.
+- **Gebaut (gleiche Sitzung):** INTERFACES § Modul 23 S2 zuerst, dann Modul 23 `checkMeaning` (drei Text-Fassungen, dazu „Beschreibung Stichworte“ aus `tools/embed_helper.html`; nur mit geladenem Modell, sonst „nicht-geprueft“), `meaning` je Raum-Karte, „passt-nicht“ ohne Verwandtschafts- und Rang-Vorrang, bleibt sichtbar; Satz-Schnipsel gegen ihren eigenen Text (gekürzte „…“ übersprungen). Anzeige an der Karte DE/EN (fester Text). Siegel-Aspekt DE/EN. Bündel-Kopien nachgezogen.
+- **Gemessen:** `smoke_s2_bedeutung` 27 grün (Modell als Attrappe; B1–B3 im echten Chromium, 360 px, fremder Name mit `<img onerror>` nur als Text), Gegenprobe 14/14 beim ersten Lauf. `run_alle` 120 grün · 2 rot (`smoke_geraetename_netzweit`, `smoke_service_worker_parst`, beide auch auf `main`) · 2 nicht lauffähig. `smoke_netz_eigen` verglich `discover` byte-gleich mit einer alten Fassung: wie bei `bestaetigt` (Bau 23.R) jetzt ohne das neue Feld `meaning`, das Feld selbst wird verlangt.
+- **Werkzeug:** `tools/s2-wiederholung.html` misst am Gerät die Wiederholgenauigkeit an 33 Satz-Schnipseln aus 8 Depot-Sporen; lädt das Modell erst auf Knopfdruck. Im Chromium geladen: 320/412/1280 px ohne Überlauf, beim Laden kein Abruf außer Haus.
+- **Nicht gemessen:** das echte Modell (Container gesperrt); Tablet. **Offen:** Messung am Gerät, Rollout in alle Träger.
 
 ## 2026-10-15 · Sammel-Brief Schritt 4, 4b, 5 (S1): Fragen unterschreiben netzweit, zwei Knoten angedockt (Hauptsitzung)
 - **Schritt 4 (Klaus):** andocken Kuechenzettel und die Demo; nicht papas-aktenschrank, Kochfreunde. Für die Demo die öffentliche `sbkim-demo/` in Sage statt des privaten Repos semantic-match-demo.

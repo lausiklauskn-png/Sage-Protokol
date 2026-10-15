@@ -136,6 +136,7 @@
     anastomose: null,    // null → global.SbkimAnastomose
     spore: null,         // null → global.SbkimSpore
     match: null,         // null → global.SbkimMatch (optional, nur Anzeige-Score)
+    embedding: null,     // null → global.SbkimEmbedding (S2, optional, nur mit geladenem Modell)
     storage: null,       // null → global.SbkimStorage (Identitäts-Hygiene)
     dbSuffix: null,      // eigene Schublade `sbkim_<dbSuffix>`
     createIdentity: null,// app-eigener async-Callback (Spore-Erzeugung)
@@ -409,7 +410,89 @@
     return (s && typeof s.init === "function") ? s : null;
   }
 
+  // Modul 03 (Embedding) — nur für S2 „Vektor gegen Text nachrechnen".
+  // Gelesen wird NUR ein bereits geladenes Modell (isReady): der Raum lädt
+  // nie selbst ~118 MB nach. Fehlt es → Karte „nicht-geprueft", nie still grün.
+  function resolveEmbedding() {
+    var e = cfg.embedding || global.SbkimEmbedding;
+    return (e && typeof e.embedPassage === "function" && typeof e.isReady === "function") ? e : null;
+  }
+
   function nowSec() { return Math.floor(Date.now() / 1000); }
+
+  // ---- S2: Vektor gegen Text nachrechnen (2026-10-15, INTERFACES §23) ----
+  // Der angesagte domainVector ist signiert, aber nicht an den Text gebunden:
+  // ein Knoten konnte einen fremden Vektor kopieren (Befund 2026-10-14, N2 b/c).
+  // Hier rechnet der EMPFÄNGER aus der Selbstbeschreibung nach. Reine Anzeige:
+  // gatet nichts, nimmt nur den Match-Vorrang (Klaus 2026-10-15: Schwelle 0.99,
+  // embeddingSource "content" → nicht nachprüfbar, kein Abzug).
+  var RDV_MEANING_MIN = 0.99;
+  var RDV_MEANING_MODEL = "Xenova/multilingual-e5-small";
+
+  function cosine(a, b) {
+    if (!a || !b || a.length !== b.length || !a.length) return null;
+    var dot = 0, na = 0, nb = 0;
+    for (var i = 0; i < a.length; i++) { dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+    if (!na || !nb) return null;
+    var c = dot / Math.sqrt(na * nb);
+    return isFinite(c) ? c : null;
+  }
+
+  async function checkMeaning(spore) {
+    function out(status, score, snippets, reason) {
+      return { status: status, score: score, snippets: snippets, reason: reason };
+    }
+    var emb = resolveEmbedding();
+    if (!emb) return out("nicht-geprueft", null, null, "Modul 03 fehlt");
+    var ready = false;
+    try { ready = emb.isReady() === true; } catch (_e) { ready = false; }
+    if (!ready) return out("nicht-geprueft", null, null, "Sprachmodell nicht geladen");
+    if (!spore || typeof spore !== "object") return out("nicht-geprueft", null, null, "keine Spore");
+    var vec = toVec(spore.domainVector);
+    if (!vec || !vec.length) return out("nicht-geprueft", null, null, "kein Bedeutungs-Vektor");
+    if (typeof spore.embeddingModel === "string" && spore.embeddingModel && spore.embeddingModel !== RDV_MEANING_MODEL) {
+      return out("nicht-geprueft", null, null, "anderes Modell: " + String(spore.embeddingModel).slice(0, 80));
+    }
+    try {
+      // Satz-Schnipsel: jeder Vektor gegen seinen EIGENEN Text. Gekürzte Sätze
+      // („…") sind nicht verlässlich nachzurechnen und werden übersprungen.
+      var snippets = null;
+      var sv = Array.isArray(spore.snippetVectors) ? spore.snippetVectors : [];
+      var pruefbar = sv.filter(function (x) {
+        return x && typeof x.text === "string" && x.text.trim() && !/…$/.test(x.text.trim()) && toVec(x.vec);
+      });
+      if (pruefbar.length) {
+        snippets = "passen";
+        for (var i = 0; i < pruefbar.length; i++) {
+          var c = cosine(await emb.embedPassage(pruefbar[i].text), toVec(pruefbar[i].vec));
+          if (c === null || c < RDV_MEANING_MIN) { snippets = "passen-nicht"; break; }
+        }
+      }
+      var src = spore.embeddingSource;
+      var desc = typeof spore.domainDescription === "string" ? spore.domainDescription.trim() : "";
+      var kw = Array.isArray(spore.domainKeywords) ? spore.domainKeywords.join(", ") : "";
+      var best = null;
+      if (desc) {
+        var fassungen = [desc];
+        if (kw) fassungen.push(desc + ". " + kw);   // Andock-Wizard, Erst-Signatur
+        if (kw) fassungen.push(desc + " " + kw);    // tools/embed_helper.html (ältere Sporen)
+        for (var f = 0; f < fassungen.length; f++) {
+          var cf = cosine(await emb.embedPassage(fassungen[f]), vec);
+          if (cf !== null && (best === null || cf > best)) best = cf;
+        }
+      }
+      if (snippets === "passen-nicht") return out("passt-nicht", best, snippets, "Satz-Schnipsel passt nicht zu seinem Text");
+      if (src === "content") return out("nicht-nachpruefbar", best, snippets, "Bedeutung aus Inhalten, nicht nachprüfbar");
+      if (best !== null && best >= RDV_MEANING_MIN) return out("passt", best, snippets, "Bedeutung passt zur Beschreibung");
+      if (src === "description") {
+        return out("passt-nicht", best, snippets, desc ? "Bedeutung passt nicht zur Beschreibung" : "Beschreibung fehlt");
+      }
+      return out("nicht-nachpruefbar", best, snippets, "Herkunft des Vektors nicht angegeben");
+    } catch (e) {
+      return out("nicht-geprueft", null, null, "Rechenfehler: " + String(e && e.message ? e.message : e).slice(0, 120));
+    }
+  }
+  function meaningFails(c) { return !!(c && c.meaning && c.meaning.status === "passt-nicht"); }
 
   // Domänen-Vektor (number[] aus der Spore, oder Float32Array) → Float32Array.
   // null bei fehlender/ungültiger Eingabe (relatedness() validiert den Rest).
@@ -452,7 +535,7 @@
         }
       }
       copy.relatedness = rel;
-      copy.isRelated = isRel;
+      copy.isRelated = meaningFails(c) ? false : isRel;   // S2: kein Vorrang
       return copy;
     });
   }
@@ -500,6 +583,8 @@
       return enriched.map(function (c) { delete c._idx; return c; });
     }
     enriched.sort(function (a, b) {
+      var ma = meaningFails(a), mb = meaningFails(b);   // S2: „passt nicht" ans Ende
+      if (ma !== mb) return ma ? 1 : -1;
       var fa = (typeof a.queryFit === "number") ? a.queryFit : -Infinity;
       var fb = (typeof b.queryFit === "number") ? b.queryFit : -Infinity;
       if (fb !== fa) return fb - fa;      // beste Passung zuerst
@@ -745,6 +830,7 @@
     if (opts.anastomose !== undefined) cfg.anastomose = opts.anastomose;
     if (opts.spore !== undefined) cfg.spore = opts.spore;
     if (opts.match !== undefined) cfg.match = opts.match;
+    if (opts.embedding !== undefined) cfg.embedding = opts.embedding;
     if (opts.storage !== undefined) cfg.storage = opts.storage;
     if (typeof opts.dbSuffix === "string" && opts.dbSuffix.length > 0) cfg.dbSuffix = opts.dbSuffix;
     if (typeof opts.createIdentity === "function") cfg.createIdentity = opts.createIdentity;
@@ -984,6 +1070,15 @@
             if (okSpore) geprueft.push(cards[vi]); else rejected++;
           }
           cards = geprueft;
+        }
+        // S2: Bedeutung nachrechnen — nur geprüfte Karten, nur mit geladenem
+        // Modell (sonst „nicht-geprueft"). Vor relatednessForCards, damit
+        // „passt nicht" dort keinen Vorrang bekommt.
+        if (opts.checkMeaning !== false) {
+          for (var mi = 0; mi < cards.length; mi++) {
+            try { cards[mi].meaning = await checkMeaning(cards[mi].spore); }
+            catch (_e) { cards[mi].meaning = { status: "nicht-geprueft", score: null, snippets: null, reason: "Fehler" }; }
+          }
         }
         // Adress-Wand-Härtung (Klaus 2026-07-10): ein Knoten kann durch
         // wiederholtes „Aufräumen & neu anmelden" mehrere Alt-Identitäten
@@ -1483,7 +1578,8 @@
     askNode: askNode,                   // Bau 23.B — nutzer-ausgelöste Cross-Knoten-Frage
     fetchAnswers: fetchAnswers,         // A12 Briefkasten — späte Antworten nachlesen (Lookback)
     relatednessForCards: relatednessForCards, // pure (cards, ownSpore) → angereicherte Liste; reine Anzeige
-    rankCardsByQuery: rankCardsByQuery,       // A11 — pure (cards, queryVec) → nach Frage-Passung sortiert; reine Anzeige/Auswahl
+    rankCardsByQuery: rankCardsByQuery,
+    checkMeaning: checkMeaning,               // S2 — (spore) → {status, score, snippets, reason}; reine Anzeige       // A11 — pure (cards, queryVec) → nach Frage-Passung sortiert; reine Anzeige/Auswahl
     ensureIdentity: ensureIdentity,             // Modus A (sanft, automatisch, idempotent)
     cleanupSharedOrigin: cleanupSharedOrigin,   // Modus-B-Reinigung (nur eigene Origin)
     repairAndReconnect: repairAndReconnect,     // Modus B (zerstörend, nutzer-ausgelöst)
@@ -1539,7 +1635,8 @@
         fragenUnbestaetigt: fragenUnbestaetigt,   // S1: beantwortete Fragen ohne Unterschrift
         queryUnsignedMaxPerMin: RDV_QUERY_UNSIGNED_MAX_PER_MIN, // S1
         antwortSigniert: (function () { var s = resolveSpore(); return !!(s && typeof s.signDetached === "function"); })(), // Bau 23.R
-        labelMax: RDV_LABEL_MAX,                  // Bau 23.R
+        labelMax: RDV_LABEL_MAX,
+        meaningMin: RDV_MEANING_MIN,              // S2                  // Bau 23.R
         rankByQueryNote: "rankCardsByQuery(cards, queryVec, {raw?}) rankt Raum-Karten nach Frage-Passung (Modul 04 relatedness, zentriert; raw→match). REINE Anzeige/Auswahl, gatet nichts, 0.80-Riegel unberührt; fail-soft ohne Vektor → Eingabe-Reihenfolge.", // A11
       };
     },

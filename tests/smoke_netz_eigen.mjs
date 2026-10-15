@@ -147,7 +147,12 @@ async function main() {
     const ohneBest = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "bestaetigt" ? undefined : v));
     sage(ohneBest(vorher.ant) === ohneBest(nachher.ant), "die Antwort auf die Frage ist gleich (ohne das neue Feld bestaetigt)", nachher.ant);
     sage(/"bestaetigt":false/.test(nachher.ant), "die Antwort sagt bestaetigt:false (gestellte Spore ohne Unterschrift)", nachher.ant);
-    sage(vorher.karten === nachher.karten, "discover liefert dieselben Karten", nachher.karten);
+    // S2 (2026-10-15, Tafel-Evolution benannt): jede Karte trägt zusätzlich `meaning`.
+    // Ohne Modul 03 heißt das „nicht-geprueft". Verglichen wird ohne das neue Feld,
+    // und das Feld selbst wird ausdrücklich verlangt (wie `bestaetigt` oben).
+    const ohneMeaning = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "meaning" ? undefined : v));
+    sage(ohneMeaning(vorher.karten) === ohneMeaning(nachher.karten), "discover liefert dieselben Karten (ohne das neue Feld meaning)", nachher.karten);
+    sage(/"meaning":\{"status":"nicht-geprueft"/.test(nachher.karten), "jede Karte sagt meaning: nicht-geprueft (kein Modul 03 gestellt)", nachher.karten);
     sage(nachher.meta[0] === "sbkim-rdv" && nachher.meta[1] === "sbkim-qry", "_meta nennt sbkim-rdv / sbkim-qry", nachher.meta.join(" / "));
   }
 
