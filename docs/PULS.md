@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · S5 Bürgen, Teil 1: Format, Prüfung, Anzeige in Sage (Hauptsitzung)
+- **Startprüfung:** kein offener PR in Sage; erster offener Schritt im Sammel-Brief: 5. S2-Rollout wartet auf die Messung am Gerät. Klaus fragte, wie er misst — Anleitung im Chat gegeben (Seite `tools/s2-wiederholung.html`, Knopf „Messen", kleinster Wert).
+- **Klaus' Wort zu S5:** Kette 2 Schritte, Anker „Klaus + eigene Kontakte", Ablauf 1 Jahr. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md`.
+- **Gebaut:** INTERFACES § Modul 23 S5 zuerst, dann Modul 23: Bürgschaft und Widerruf als signierte Zettel (Modul 02 `signDetached`), reisen in der Raum-Karte mit (`vouches`, `revocations`); `vouchTrust` (Kette ≤ 2, Ablauf ≤ 1 Jahr und nicht still gekürzt, Zeit nicht in der Zukunft, Widerruf, „der Bürge haftet"); `createVouch`, `createRevocation`, `addCarried`, eigene Kontakte im Speicher `sbkim_buergen_<dbSuffix>`. Zettel werden aus ALLEN Karten-Ereignissen eines Laufs gesammelt, damit eine nachgemachte neuere Karte keinen Widerruf verdrängt. Anzeige an der Karte DE/EN, ein Name nur aus den eigenen Kontakten. Bündel-Kopien nachgezogen. Reine Anzeige, die Rangfolge ist unverändert.
+- **Gemessen:** `smoke_s5_buergen` 41 grün (echtes Modul 01/02, drei Zeilen im echten Chromium bei 360 px), Gegenprobe 14 von 14 gefangen. Ein fünfzehnter Fall rutschte durch und war ein toter Anker: eine zweite Prüfung „Aufgefallener nie verbürgt" änderte nichts, weil dessen Bürge schon haftet. Die Zeile ist entfernt. `smoke_netz_eigen` verglich `discover` byte-gleich: wie bei S2 ohne das neue Feld `vouch`, das Feld selbst wird verlangt. `run_alle` danach: 2 rot (`smoke_geraetename_netzweit`, `smoke_service_worker_parst`, beide auch auf `main` rot) · 2 nicht lauffähig. `tests/manual_check.html` ungeprüft (kein Browser-Sichttest dieser Sitzung; die Browser-Zeilen der Probe laden 23 + 23-UI).
+- **Nicht gemessen:** Tablet. **Offen:** Klaus' Bürgen-Identität (der feste Anker ist leer), Vorrang in der Frage-Rangfolge (Entscheid), Teil 2 (Oberfläche zum Ausstellen), Siegel-Aspekt und Rollout mit Teil 2; S2-Messung.
+
 ## 2026-10-15 · Paper S: Gliederung abgestimmt (Hauptsitzung)
 - **Klaus' Wort:** „Vorschlag ok“ zur Gliederung: die zwölf Abschnitte wie geplant, „Stand der Forschung“ als Abschnitt 3 hinter dem Bedrohungsmodell, Klaus' Lesart „Störungen als Prüfmechanismus“ als seine gekennzeichnet (jetzt Abschnitt 6). Nummern und Querverweise in `docs/papers/PLAN_PAPER_KNOTENNETZ.md` nachgezogen; Sammel-Brief Schritt 6: teilweise.
 - **Offen:** Fassung 1 schreiben (Quellen vorher nachsehen, Klaus liest im Chat gegen). S2 steht dort als „in Sage gebaut, Rollout offen“, bis der Rollout auf `main` ist.
@@ -555,27 +562,11 @@ Der Sende-Prüfer trägt das Modul noch NICHT — Umstellung ist der nächste Sc
 ⚠ **Zum wiederholten Mal:** ein deutsches Anführungszeichen hat beim Schreiben der
 Probe einen String beendet; `node` meldete es beim ersten Lauf.
 
-## 2026-09-28 · Sechs Wartepunkte, die nie gewartet haben (`vorrat_wirkung.mjs`)
+## Eine Sitzung vom 2026-09-28 (Sechs Wartepunkte) — ausgelagert am 2026-10-15
 
-**Rolle:** Pflege-Sitzung (Brief aus Kimhub, Stand `7aa6af6`).
-
-**Getan.** `waitForFunction` wertet das Ergebnis der Bedingung aus, und ein
-Promise ist immer wahr (gemessen: `async () => false` 100 ms,
-`() => Promise.resolve(false)` 6 ms). In `tests/vorrat_wirkung.mjs` standen
-**sechs** solche Stellen — vier `async`, zwei `.then` (der Brief nannte vier).
-Ersetzt durch `warteBis()` (fragt per `evaluate` in Abständen). Neue
-Familien-Probe `tests/smoke_warten_async.mjs` (12 Zusicherungen) + Gegenprobe
-`tests/gegenprobe_warten_async.mjs` (**7 gefangen · 0 durchgerutscht · 0 aus
-falschem Grund · 0 tote Anker**). `LEHREN.md` § 6: fünfte Art.
-
-**Gemessen:** die alte Probe war 3/3 grün und unter Last 4/4 — der Vorrat
-stand jedes Mal schon da, wenn der Worker steuerte (55–88 ms). Die Wartepunkte
-waren blind **und** überflüssig. Neue Fassung 3/3 grün. `run_alle.mjs`:
-**109 grün · 0 rot · 0 nicht lauffähig.** Netzweit auf `origin/main` von 17
-Depots gesucht: diese sechs waren die einzigen.
-
-**Offen:** `vorrat_wirkung.mjs` steht in keinem Läufer (`PFLEGE-LISTE.md` § 11).
-`laufReparaturB` wartet weiter fest 1500 ms (Sorte B, gewollt — nicht angefasst).
+> **↓ Ausgelagert.** Der Eintrag „Sechs Wartepunkte, die nie gewartet haben (`vorrat_wirkung.mjs`)“ steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-10_puls-auslagerung-21.md`](sessions/archiv/2026-10_puls-auslagerung-21.md)
+> (21 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-09-18 (Rollbalken-Rinne) — ausgelagert am 2026-10-14
 
