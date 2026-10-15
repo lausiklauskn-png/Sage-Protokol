@@ -629,6 +629,29 @@
       "matchScore": 0.917107,
       "sporeUrl": "https://lausiklauskn-png.github.io/kim-hub-company/sbkim/spore.json",
       "matchScoreQuelle": "raum-2026-09-10"
+    },
+    {
+      "name": "Mein In-and-Out-Book",
+      "domain": "Eingangsprüfung/Ausgangsprüfung/Werkzeug",
+      "integrated": true,
+      "stammCategories": [
+        "Eingangsprüfung",
+        "Ausgangsprüfung",
+        "Werkzeug"
+      ],
+      "guestCategories": [
+        "Prüfung",
+        "Mail",
+        "Siegel"
+      ],
+      "pingStatus": "verified-match",
+      "note": "PWA, im Mycel angeschlossen (Klaus 2026-10-15). Spore am Tablet im Andock-Wizard erzeugt (2026-10-15T14:15:19Z), von Klaus übergeben, byte-gleich als sbkim/inoutbook_inbox.json abgelegt. Headless verifiziert mit Sages Modul-02-Pfad: VALID, id == base64url(SHA256(rawPub)), kein 'd' im JWK, Manipulationsprobe fällt durch, echter domainVector L2 = 1, 11 Schnipsel. Sage-Cosinus 0.917311 im Depot-Maßstab (nicht im Raum gemessen). Im Depot der App liegt keine sbkim/spore.json; sporeUrl deshalb leer. Ein Beitritt zum Raum ist nicht gemessen.",
+      "url": "https://lausiklauskn-png.github.io/Mein-In-and-Out-Book/",
+      "integratedAt": "2026-10-15",
+      "nodeId": "MsQIFdqe-HuhQsydxediaHadQmS-WEr7j-LLabpQbV0",
+      "matchScore": 0.917311,
+      "sporeUrl": null,
+      "matchScoreQuelle": "depot-2026-10-15"
     }
   ],
   "modules": [

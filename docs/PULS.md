@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Mein In-and-Out-Book im Mycel eingetragen (Hauptsitzung)
+- **Getan:** Klaus' Spore (am Tablet im Andock-Wizard erzeugt, 14:15:19Z) byte-gleich als `sbkim/inoutbook_inbox.json` abgelegt; Prüf-Vermerk `sbkim/inoutbook_inbox.verify.md`; Zeile in `sbkim/NETZ-STAND.md`; Eintrag in `status.json` (`endknoten`, 23. Eintrag).
+- **Gemessen:** VALID (Modul-02-Pfad), id = SHA256(Pubkey), Manipulationsprobe fällt durch, kein `d` im JWK, L2 = 1, 11 Schnipsel. Sage-Cosinus **0.917311** (Depot-Maßstab) → `verified-match`.
+- **Nicht gemessen:** Raum-Beitritt (`established`), Raum-Maßstab. Im App-Depot liegt keine `sbkim/spore.json` (`sporeUrl` leer).
+- **Offen:** Kim-sync eintragen, sobald Klaus seine Spore schickt (Klaus: „erst einmal" nur das In-and-Out-Book).
+
 ## 2026-10-15 · Sammel-Brief Schritt 3: Mein-In-and-Out-Book und Kim-sync als SBKIM-Knoten angedockt (Hauptsitzung)
 
 - **Getan:** zwei neue Knoten, Bauart Sende-Prüfer/Workflow-Needs (feste Leiste in der Kopfzeile, **kein Modul 17**): Mein-In-and-Out-Book #8 (Schublade `inoutbook`, Cache `inout-v8`, alle `?v=8`) und Kim-sync #19 (Schublade `kimsync`, Cache `kimsync-v15`). Je 13 Pflicht-Module byte-1:1 aus dem Kanon (23 `05a6eb42ec68`, 05b `37eee5b196b3`), in der App-Probe gepinnt; `window.SBKIM_DB_SUFFIX` im `<head>`; 05b als eigene `<script type="module">`-Zeile, nicht in der Nachlade-Kette; Identität `assets/siegel-inhalt.js` (Beschreibung ohne Post-Inhalt bzw. ohne Raum-Code); `sicherheit.html` daneben; alles im Vorrat. Kim-sync: noble ist die vorhandene Datei aus Kimboard (sha gleich Kanon), kein zweites Exemplar; `assets/pruefer-mail.js` byte-1:1 dazu. Register `sbkim/DB-SUFFIXE.md` um `inoutbook`, `kimsync` und das fehlende `workflowneeds` ergänzt.
