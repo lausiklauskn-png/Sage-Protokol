@@ -181,14 +181,6 @@ Pflegearbeit — nicht nebenbei gemacht, weil sie die Schwelle von
 `service_worker_parst` (≥ 10) mit entscheidet: ab wie vielen Nachbarn misst
 sie etwas?
 
-### 13 · `kanon-verteilen` erhöht nur `CACHE_VERSION`, nicht den Cache-Stand
-
-**Gemessen 2026-10-14** beim Rollout von Bau 23.R. Workflow-Calculate und Workflow-Needs halten
-zu jeder `CACHE_VERSION` eine Prüfsumme des Vorrats in `tests/cache-stand.json`. Nach dem
-Verteiler war ihr Wächter rot (`kern: 305 grün · 1 ROT` bzw. `282 · 1`), bis
-`node tools/cache-stand.mjs` von Hand lief. Vorschlag: der Verteiler ruft das Werkzeug mit, wo
-es eins gibt.
-
 ### 14 · Workflow-PDF: `tests/chrome.mjs` bleibt gelegentlich hängen, schon auf `main`
 
 **Gemessen 2026-10-14.** Im Tab wartet die Probe 20 s auf `.dlg [data-ausapp]`, danach bricht
@@ -196,6 +188,28 @@ die `npm test`-Kette ab. Auf `origin/main` (ohne Bau 23.R) 1 von 5 Läufen rot, 
 2 von 9. Der Dialog hängt am Laden der Bibliothek aus IndexedDB. Ursache nicht gesucht.
 
 ## Erledigt
+
+### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15
+
+**Befund (2026-10-14, Rollout Bau 23.R):** Workflow-Calculate und Workflow-Needs halten zu jeder
+`CACHE_VERSION` eine Prüfsumme des Vorrats in `tests/cache-stand.json`. Der Verteiler hob nur die
+Nummer; ihr Wächter blieb rot (`kern: 305 grün · 1 ROT` bzw. `282 · 1`), bis
+`node tools/cache-stand.mjs` von Hand lief.
+
+**Jetzt:** Hat ein Träger `tools/cache-stand.mjs` und fiel bei `--schreiben` ein Cache-Bump,
+ruft der Verteiler das Werkzeug **einmal je Träger, nach allen Schreibvorgängen** dort auf.
+Im Nachsehen-Gang steht nur, was geschähe. Scheitert der Aufruf: Zeile `✗ CACHE-STAND
+GESCHEITERT in <Repo>`, noch einmal am Schluss, Rückgabewert 1. Ohne die Datei ändert sich nichts.
+
+Wächter: `tests/smoke_kanon_cachestand.mjs` (15 Zusicherungen, Wegwerf-Netz mit, ohne und mit
+scheiterndem Werkzeug). Gegenprobe `tests/gegenprobe_kanon_cachestand.sh`: **6 gefangen · 0
+durchgerutscht · 0 tote Anker**, jeder mit der eigenen Zusicherung als erster roter Zeile. Erster
+Lauf: Fall „Rückgabewert bleibt 0“ war rot aus falschem Grund (die Probe las stderr bei
+Rückgabewert 0 nicht mit) — geschärft, nachgefahren.
+
+Gemessen an Wegwerf-Klonen beider Träger (`16_siegel.js` auf Sage `e9df076` zurückgesetzt):
+alter Verteiler → `CACHE`-Zeile rot in beiden; neuer Verteiler → Workflow-Calculate
+**305 grün · 0 ROT**, Workflow-Needs **283 grün · 0 ROT**. Die echten Repos sind nicht angefasst.
 
 ### ✅ 11 · `tests/vorrat_wirkung.mjs` steht im Läufer — 2026-10-07
 
