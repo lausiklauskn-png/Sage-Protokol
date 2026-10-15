@@ -187,6 +187,24 @@ sie etwas?
 die `npm test`-Kette ab. Auf `origin/main` (ohne Bau 23.R) 1 von 5 Läufen rot, auf dem Zweig
 2 von 9. Der Dialog hängt am Laden der Bibliothek aus IndexedDB. Ursache nicht gesucht.
 
+### 15 · Das Sprachmodell vom eigenen Server startet im Browser nicht — netzweit
+
+**Gemessen 2026-10-15 an Klaus' Tablet (Bilder im Chat), Siegel → „Beschreibung übernehmen → Vektor & Spore neu signieren“:**
+
+| App | Modell-Adresse | Ergebnis |
+|---|---|---|
+| Mein-In-and-Out-Book, Kim-sync (neu angedockt) | `SBKIM_MODEL_ROOT = https://family-projekt.de/models/` | `Modell 'Xenova/multilingual-e5-small' konnte nicht geladen werden: Can't create a session` |
+| Kimboard | dieselbe Adresse | Laden bis **100 %**, danach derselbe Fehler |
+| Alis-Moderaum | **keine** Adresse → Hugging Face | lädt, funktioniert (Klaus) |
+
+Klaus in Termux: `onnx/model_quantized.onnx` auf dem Server → `HTTP/2 200`, `content-length: 118308185` (gleich der Messung vom 2026-10-13). Die Datei ist also vollständig; ob ihr **Inhalt** derselbe ist wie bei Hugging Face, ist **nicht gemessen** (Prüfsumme gegen `x-linked-etag` steht aus).
+
+Seit dem 2026-10-13 setzen laut PULS 17 Apps die Adresse, dazu Workflow-Calculate/-Needs, In-and-Out-Book, Kim-sync. Im PULS-Eintrag vom 2026-10-13 stand: „im Browser am Tablet nicht gemessen“ — das hier ist die erste Browser-Messung des Server-Modells.
+
+Modul 03 probt nur `config.json`; liegt sie auf dem Server, wird „local“ gewählt, und scheitert das Modell danach, weicht es **nicht** auf Hugging Face aus.
+
+**Offen:** Ursache (Prüfsumme Server gegen Hugging Face); Abhilfe auf dem Server oder ein Rückfall in Modul 03 — Klaus' Entscheid. Aus der Sitzung nicht messbar: der Proxy sperrt family-projekt.de, Hugging Face und jsDelivr.
+
 ## Erledigt
 
 ### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15
