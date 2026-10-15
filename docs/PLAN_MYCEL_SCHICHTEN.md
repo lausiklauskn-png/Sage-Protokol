@@ -11,9 +11,11 @@
 > aufgehoben; die Forschungseinträge stehen in Kimhub (#376).
 
 **Legende:** `Bau` = Bau-Sitzung · `Test` = Klaus' Sichttest am Tablet · `Entscheid` = Klaus
-wählt vorher. **Freigegeben** ist bisher nur **S5 (Bürgen) als Planpunkt** (Klaus 2026-10-15:
-„Bürgen mit in den Plan-Brief aufnehmen"). Alle anderen Punkte sind Vorschläge; gebaut wird
-erst nach Klaus' Wort je Punkt.
+wählt vorher. **Freigegeben sind S1, S2, S5, S3, S4 in dieser Reihenfolge** (Klaus 2026-10-15:
+„Ja, S1 → S2 → S5 → S3 → S4 freigegeben"). Vorher war nur S5 (Bürgen) als Planpunkt
+freigegeben („Bürgen mit in den Plan-Brief aufnehmen"). **Die Freigabe gilt dem Bau, nicht den
+offenen Werten:** was eine Schicht als `Entscheid` nennt (z. B. Schwelle in S2, Kettenlänge in
+S5), legt Klaus fest, bevor dieser Teil gebaut wird. **S6 und S7 sind nicht freigegeben.**
 
 ---
 
@@ -127,7 +129,7 @@ je Repo Probe, PR, Merge, nachzählen). Sage allein reicht nicht: die Apps trage
 | S5 Bürgen | nein — Bürgschaften sind eigene, signierte Zettel | unverbürgt bleibt sichtbar |
 | S6/S7 | nein | — |
 
-## Reihenfolge (Vorschlag)
+## Reihenfolge (freigegeben, Klaus 2026-10-15)
 
 S1 → S2 → S5 → S3 → S4; S6 und S7 erst nach eigenem Entscheid. Jede Schicht mit eigener
 Probe **und** Gegenprobe, Rollout über `node tools/kanon-verteilen.mjs`.
