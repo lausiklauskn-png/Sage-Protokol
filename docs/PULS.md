@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Abschluss Prüf-Reihe Sitzung 6 · Plan Paper S (Hauptsitzung)
+
+- **Getan:** `docs/papers/PLAN_PAPER_KNOTENNETZ.md` (Paper S „Sicherer Umgang im Knotennetz", Ergänzung zum SBKIM-Paper; Natur als eigenes Kapitel, Klaus' Lesart „Störungen als Prüfmechanismus" gekennzeichnet), Zeiger in `PLAN_PAPERS.md`, Antragsmappe neu erzeugt. Abschluss `docs/sessions/archiv/2026-10-15_abschluss_pruef-reihe-sitzung6.md`, Folge-Brief `docs/sessions/BRIEF_2026-10-15_schutzschichten_und_paper_s.md`. Pflege-Liste #13, #14.
+- **Kimhub:** Klaus meldet die Gegenprobe dort als durch und hat die Forschungseinträge freigegeben. Diese Sitzung konnte Kimhub nicht einbinden (Zugriff abgelehnt); die Einträge stehen als Material im Abschluss, Abschnitt 5.
+- **Nächster Schritt:** Folge-Brief — Klaus' Freigabe der Schichten, dann S1 (Fragen unterschreiben) und die fünf noch offenen Träger.
+
 ## 2026-10-15 · Plan: Schutzschichten am Mycel-Eingang (Hauptsitzung)
 
 - **Getan:** `docs/PLAN_MYCEL_SCHICHTEN.md` angelegt — Abhak-Liste S1–S7 nach Klaus' Frage, ob sich die mehrstufigen Artgrenzen der Natur aufs Mycel übertragen lassen. Kein Code.
