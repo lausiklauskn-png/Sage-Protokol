@@ -20,7 +20,7 @@ weiter.
 | Schritt | Inhalt | Stand |
 |---|---|---|
 | 0 | Startprüfung: keine andere Sitzung arbeitet daran | je Sitzung neu |
-| 1 | Werkzeug: `kanon-verteilen` lässt `cache-stand.mjs` mitlaufen (Pflege-Liste #13) | offen |
+| 1 | Werkzeug: `kanon-verteilen` lässt `cache-stand.mjs` mitlaufen (Pflege-Liste #13) | erledigt (PR #1094, 2026-10-15) |
 | 2 | Gruppe A: Bau 23.R in die übrigen Träger nachziehen | offen |
 | 3 | Gruppe B: In-and-Out-Book, Kim-sync (Datei-Post nur nach Klaus' Ja) als Knoten andocken | offen |
 | 4 | Gruppe C: Klaus fragen, was davon andocken soll | offen |
