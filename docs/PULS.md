@@ -31,6 +31,12 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Paper S: Fassung 1 (Entwurf) geschrieben (Hauptsitzung)
+- **Getan:** `docs/papers/sicherer-umgang-im-knotennetz.md`, 14 Abschnitte nach der abgestimmten Gliederung; „Browser und Knotennetz“ als Abschnitt 11, damit die abgestimmten Nummern bleiben. Klaus' Lesart in 6.4 als seine gekennzeichnet. Die veröffentlichten Papers sind nicht geändert.
+- **Quellen:** in derselben Sitzung nachgesehen, nicht aus dem Gedächtnis. Gelesen: Douceur, NIP-01/13, PGP-Handbuch 1994, OWASP Top 10 2025 und LLM 2026, Hashcash (Spiegel), GitHub-Diskussion #54257. Nur über Auszüge (der Abruf der meisten Verlags- und Blog-Seiten war im Container gesperrt): Biologie, Google-Blogs, W3C/WHATWG, Greshake, SybilGuard, SSB. Jeder Eintrag trägt seinen Prüfstand. Vier biologische Zuordnungen wurden korrigiert (mutS/RecA bei Bakterien, Schlüssel-Schloss nicht absolut, Handicap umstritten, virale Nachahmung). Ein Satz ohne Quelle (Web of Trust „gescheitert“) wurde gestrichen.
+- **Nicht gemessen:** die drei Fallbeispiel-Seiten (11.4).
+- **Offen:** Klaus' Gegenlesen; HTML erst danach mit DOI; englische Fassung.
+
 ## 2026-10-15 · Paper S: Gliederung abgestimmt (Hauptsitzung)
 - **Klaus' Wort:** „Vorschlag ok“ zur Gliederung: die zwölf Abschnitte wie geplant, „Stand der Forschung“ als Abschnitt 3 hinter dem Bedrohungsmodell, Klaus' Lesart „Störungen als Prüfmechanismus“ als seine gekennzeichnet (jetzt Abschnitt 6). Nummern und Querverweise in `docs/papers/PLAN_PAPER_KNOTENNETZ.md` nachgezogen; Sammel-Brief Schritt 6: teilweise.
 - **Offen:** Fassung 1 schreiben (Quellen vorher nachsehen, Klaus liest im Chat gegen). S2 steht dort als „in Sage gebaut, Rollout offen“, bis der Rollout auf `main` ist.
