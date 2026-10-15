@@ -31,6 +31,14 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Sammel-Brief Schritt 2, Paket A2: Bau 23.R in Kim-Bell, kim-hub-company, family-project; Kimhub ohne Träger (Hauptsitzung)
+
+- **Getan:** `kanon-verteilen --schreiben --nur …` in zwei Läufen (je Träger ein Bump). Kim-Bell und family-project: 02, 16, 23, 23-UI (23 `9464fba75e5a` → `05a6eb42ec68`). kim-hub-company: dazu **05b**, weil 23 zusammen mit 05b weitergebaut wurde (#1074, #1080) und dort noch die Fassung vom 2026-06-27 lag; 23 sprang dort von `3caa0bb1fbe7` (zwei Generationen). Cache Kim-Bell v52→v53, kim-hub-company v76→v77, family-project v152→v153 samt `ASSET_V` und 96 `?v=`. Herkunfts-Riegel: keine Handarbeit. Keine in HTML eingebetteten Kopien von 02/16/23 in den vier Repos. PRs Kim-Bell #72 · kim-hub-company #75 · family-project #359, gemergt; auf `main` nachgezählt (sha = Kanon, `RDV_LABEL_MAX = 200`, Verteiler für 02/05b/16/23: 0 hängen zurück).
+- **Kimhub:** trägt keine Modul-Dateien (die Werkstatt ist kein Knoten, die Dateien liegen in kim-hub-company). Alte shas stehen dort nur in Forschungsaufzeichnungen. Kein Code-PR, nur der Forschungseintrag.
+- **Gemessen:** Kim-Bell `npm test` 4/4 · kim-hub-company `npm test` 72 grün, `sbkim-drift` 13/13, `drift` 27/27 · family-project alle 48 `tests/smoke_*.mjs` mit Rückgabewert 0 (zwei melden je einen Teil ungemessen: Nachbar-Klon PWA-Toolpoint fehlt). Kim-Bell und kim-hub-company im Chromium geladen: 23, 23-UI, 05b, Siegel, Box „Netz" da, keine Skriptfehler. Gegenprobe von Hand (alte 23 zurück): Kim-Bell `not ok 1 - Drift-Guard`, kim-hub-company `ABGEWICHEN … rc=1`, family-project (kein eigener Wächter) Verteiler „hängt zurück". Glue: fremder Text nur über `esc()`/`textContent`.
+- **Benannt, nicht nachgezogen:** Kim-Bell 01 (133 Zeilen), 04 (264, Bau 04.J mit Prüfliste), 20 (14); kim-hub-company 03 (60, Modell-Wurzel). Eigene Generationen, nicht Teil von 23.R.
+- **Offen:** Pakete A3–A4. Tablet nicht gemessen.
+
 ## 2026-10-15 · Sammel-Brief Schritt 2, Paket A1: Bau 23.R in PWA-Toolpoint, SB-KIMTool-Point, Kimseek (Hauptsitzung)
 
 - **Getan:** `kanon-verteilen --schreiben` über die drei Repos: Modul 02, 16, 23, 23-UI byte-1:1 (23 sha `05a6eb42ec68`), Pins, Cache-Bump (PWA-Toolpoint v90→v91 samt 244 `?v=`, SB-KIMTool-Point v10→v11, Kimseek v62→v63). Alle drei trugen dieselbe ältere Fassung je Modul; keine Handarbeit gemeldet. SB-KIMTool-Point: `jasons-bibliothek/index.html` trägt 02 eingebettet und ist neu eingebettet (Probe verlangt es byte-genau). PRs #167 · #186 · #92, gemergt, auf `main` nachgezählt (sha = Kanon, `RDV_LABEL_MAX = 200`, Verteiler: 0 hängen zurück).
