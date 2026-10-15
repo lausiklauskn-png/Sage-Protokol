@@ -51,9 +51,21 @@ Schritt war 5: Der S2-Rollout wartet auf die Messung am Gerät, danach folgt S5.
 - `tests/manual_check.html` ist ungeprüft (kein Sichttest; die Browser-Zeilen der Probe
   laden 23 und 23-UI).
 
+## Parallel-Sitzung
+
+Während dieser Sitzung hat eine zweite Sitzung am selben Brief gearbeitet: S2 mit Klaus
+gemessen (#1115, Haupt-Vektor 9/9 exakt, Schwelle 0,99 bestätigt) und Paper S Fassung 1
+geschrieben (#1114). Bemerkt erst beim `git diff --stat origin/main` vor dem PR: der Zweig
+hätte 832 Zeilen dieser Arbeit zurückgedreht. Vor dem PR zusammengeführt (Konflikte in
+PULS, INTERFACES, Brief). Paper S nennt S5 weiter „geplant“; das stimmt, solange S5 nicht
+in den Trägern steht, und der Entwurf gehört der anderen Sitzung.
+⚠ Wer jetzt `kanon-verteilen --nur 23_rendezvous` für S2 laufen lässt, trägt S5 Teil 1
+mit (der Kanon wird byte-gleich verteilt). Das ist unschädlich (reine Anzeige, ohne Anker
+und Kontakte zeigt keine Karte etwas), gehört aber in den Rollout-PR-Text.
+
 ## Offen
 
-1. S2: Klaus misst am Tablet. Liegt der Wert bei mindestens 0,995, wird S2 verteilt.
+1. S2-Rollout in alle Träger (Messung liegt vor, #1115).
 2. S5: Mit welcher Identität bürgt Klaus? Bis dahin ist `RDV_VOUCH_ANCHORS` leer.
 3. S5: Sollen verbürgte Karten in der Frage-Rangfolge Vorrang bekommen? Bis dahin
    ändert sich die Reihenfolge nicht.

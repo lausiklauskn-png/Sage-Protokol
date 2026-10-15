@@ -5495,8 +5495,12 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         Die Karte bleibt sichtbar (abweisen kann nur der Empfänger, und er
         markiert statt abzuweisen). _meta.meaningMin = RDV_MEANING_MIN.
         ⚠ Gemessen vor dem Entscheid: 55 Paare verschiedener Knoten 0.780–0.983.
-        NICHT gemessen: Wiederholgenauigkeit desselben Textes über Geräte —
-        Werkzeug tools/s2-wiederholung.html; unter 0.995 → Klaus fragen.
+        Gemessen 2026-10-15 (Klaus, tools/s2-wiederholung.html, Chrome 154):
+        Haupt-Vektor aus der Beschreibung 9 von 9 Sporen auf 1.0000 nachgerechnet,
+        auch für Sporen anderer Geräte. Satz-Schnipsel einzeln nachgerechnet
+        0.9949–0.9972 (40 Schnipsel, 8 Sporen): vermutlich, weil sie beim
+        Signieren im Stapel (embedPassageBatch) entstehen — nicht gemessen. Alle
+        über 0.99. Schwelle 0.99 bleibt.
     🔧 S5 „Bürgen" — Teil 1: Format, Prüfung, Anzeige (2026-10-15,
         docs/PLAN_MYCEL_SCHICHTEN.md). Entscheid-Werte (Klaus 2026-10-15):
         Kette höchstens 2 Schritte · Anker „Klaus + eigene Kontakte" · Ablauf

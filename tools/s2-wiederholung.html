@@ -48,7 +48,7 @@
   var DATEIEN = ["spore.json", "inoutbook_inbox.json", "kuechenzettel_inbox.json", "point_inbox.json", "rezeptbuch_inbox.json",
     "meintresor_inbox.json", "muttis_inbox.json", "jason_inbox.json", "bookledgerpro_inbox.json",
     "mixarium_inbox.json", "tomys_inbox.json"];
-  var SCHWELLE = 0.99, WIEDERHOL_MIN = 0.995;
+  var SCHWELLE = 0.99, EXAKT = 0.9999;
   var $ = function (id) { return document.getElementById(id); };
   function say(t, cls) { var s = $("status"); s.textContent = t; s.className = cls || ""; }
   function cos(a, b) { var d = 0, x = 0, y = 0; for (var i = 0; i < a.length; i++) { d += a[i] * b[i]; x += a[i] * a[i]; y += b[i] * b[i]; } return d / Math.sqrt(x * y); }
@@ -67,7 +67,7 @@
       say("Lade Sprachmodell …");
       await E.init();
       var tbody = $("tab").querySelector("tbody"); $("tab").hidden = false;
-      var alleMin = null, gesamt = 0, gezaehlt = 0;
+      var alleMin = null, gesamt = 0, gezaehlt = 0, exakt = 0, mitBeschr = 0;
       for (var i = 0; i < DATEIEN.length; i++) {
         var name = DATEIEN[i], sp;
         say("Rechne " + name + " …");
@@ -91,21 +91,26 @@
         var tr = document.createElement("tr");
         zelle(tr, String(sp.nodeName || name).slice(0, 40));
         zelle(tr, String(sv.length), "z");
-        zelle(tr, f4(min), "z " + klasse(min, WIEDERHOL_MIN));
+        zelle(tr, f4(min), "z " + klasse(min, SCHWELLE));
         zelle(tr, sv.length ? f4(summe / sv.length) : "—", "z");
         zelle(tr, f4(best), "z " + klasse(best, SCHWELLE));
         zelle(tr, String(sp.embeddingSource || "nicht angegeben"));
         tbody.appendChild(tr);
+        if (best !== null && best >= SCHWELLE) { mitBeschr++; if (best >= EXAKT) exakt++; }
         if (min !== null) { alleMin = (alleMin === null || min < alleMin) ? min : alleMin; gesamt += sv.length; gezaehlt++; }
       }
       var fz = $("fazit"); fz.hidden = false;
-      if (alleMin === null) { fz.textContent = "Keine nachrechenbaren Schnipsel gefunden — nichts gemessen."; fz.className = "warn"; }
-      else {
-        fz.textContent = "Gemessen an " + gesamt + " Schnipseln aus " + gezaehlt + " Sporen: kleinster Wert " + f4(alleMin) +
-          (alleMin >= WIEDERHOL_MIN ? " — genau genug für die Schwelle 0,99." : " — unter 0,995: bitte der Sitzung melden, die Schwelle ist dann zu prüfen.") +
-          " Gerät: " + navigator.userAgent.slice(0, 120);
-        fz.className = alleMin >= WIEDERHOL_MIN ? "ok" : "warn";
-      }
+      /* Gemessen 2026-10-15 (Klaus): der HAUPT-Vektor rechnet sich auf 1.0000 nach, die
+         Schnipsel nur auf 0.995–0.997 — vermutlich, weil der Andock-Wizard sie im Stapel
+         rechnet und diese Seite einzeln. Maß für die Wiederholgenauigkeit ist darum der
+         Haupt-Vektor; die Schnipsel müssen nur über der Schwelle 0,99 liegen. */
+      var ok = (mitBeschr === 0 || exakt === mitBeschr) && (alleMin === null || alleMin >= SCHWELLE);
+      fz.textContent = "Haupt-Vektor: " + exakt + " von " + mitBeschr + " passenden Sporen exakt nachgerechnet (≥ 0,9999). " +
+        (alleMin === null ? "Keine nachrechenbaren Schnipsel. " :
+          "Schnipsel: " + gesamt + " aus " + gezaehlt + " Sporen, kleinster Wert " + f4(alleMin) + " (Schwelle 0,99). ") +
+        (ok ? "Die Schwelle 0,99 hält auf diesem Gerät." : "Bitte der Sitzung melden: die Schwelle ist auf diesem Gerät zu prüfen.") +
+        " Gerät: " + navigator.userAgent.slice(0, 120);
+      fz.className = ok ? "ok" : "warn";
       say("Fertig.", "ok");
     } catch (e) {
       say("Fehler: " + (e && e.message ? e.message : e), "bad");

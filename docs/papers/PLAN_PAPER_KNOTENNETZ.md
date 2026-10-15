@@ -212,7 +212,8 @@ nur ins Depot gelegt.
 
 1. Gliederung mit Klaus abstimmen (dieser Plan). **Abgestimmt 2026-10-15** (Klaus: „Vorschlag ok“): zwölf Abschnitte wie geplant, dazu „Stand der Forschung“ als Abschnitt 3; Klaus' Lesart in Abschnitt 6 als seine gekennzeichnet.
 2. S1 bauen, damit Abschnitt 5 nicht mit einer offenen Tür beginnt; die offenen Träger nachziehen.
-3. Fassung 1 auf Deutsch als Markdown (Quelle), HTML erzeugt wie bei Paper A
+3. **Fassung 1 geschrieben 2026-10-15** (`docs/papers/sicherer-umgang-im-knotennetz.md`, Entwurf, Klaus liest im Chat gegen). „Browser und Knotennetz“ steht dort als Abschnitt 11, damit die abgestimmten Nummern (Gegenüberstellung 5, Natur 6, Bürgen 8) bleiben. Jede Quelle trägt ihren Prüfstand (gelesen · Auszug · offen). Die drei Internetseiten (11.4) sind nicht abgerufen. HTML erst nach dem Gegenlesen, mit DOI.
+   Danach: 3. Fassung 1 auf Deutsch als Markdown (Quelle), HTML erzeugt wie bei Paper A
    (`tools/paper-md-zu-html.mjs`), mit eigenem Wächter.
 4. Englische Übersetzung, gleiche Gliederung (Wächter wie `smoke_paper_a.mjs`).
 5. Veröffentlichung über Zenodo (`ZENODO_WEG.md`), mit Verweis auf den DOI des SBKIM-Papers.
