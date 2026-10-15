@@ -40,7 +40,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Parallel:** Während dieser Sitzung hat eine zweite Sitzung am selben Sammel-Brief S2 mit Klaus gemessen (#1115) und Paper S Fassung 1 geschrieben (#1114). Kein Überschneiden mit S5; beim Zusammenführen bemerkt (Diff gegen `main` hätte 832 Zeilen fremder Arbeit zurückgedreht), vor dem PR zusammengeführt.
 
 ## 2026-10-15 · S2 am Gerät gemessen: Schwelle 0,99 hält (Hauptsitzung)
-- **Gemessen (Klaus, `tools/s2-wiederholung.html`, Chrome 154, UA „X11; Linux x86_64“ — welches Gerät, nicht vermerkt):** Haupt-Vektor aus der Beschreibung bei 9 Sporen auf **1,0000** nachgerechnet. Satz-Schnipsel einzeln nachgerechnet **0,9949–0,9972** (40 aus 8 Sporen). SB-KIMTool-Point 0,8879 und BookLedgerPro 0,9020 passen nicht zur Beschreibung, beide ohne `embeddingSource` → S2 zeigt „nicht nachprüfbar“.
+- **Gemessen (Klaus, `tools/s2-wiederholung.html`, Chrome 154 am Tablet im DeX-Modus (Klaus' Auskunft; UA „X11; Linux x86_64“)):** Haupt-Vektor aus der Beschreibung bei 9 Sporen auf **1,0000** nachgerechnet. Satz-Schnipsel einzeln nachgerechnet **0,9949–0,9972** (40 aus 8 Sporen). SB-KIMTool-Point 0,8879 und BookLedgerPro 0,9020 passen nicht zur Beschreibung, beide ohne `embeddingSource` → S2 zeigt „nicht nachprüfbar“.
 - **Gelesen daraus:** Wiederholgenauigkeit = Haupt-Vektor (exakt). Die Schnipsel-Abweichung kommt vermutlich vom Stapel beim Signieren (nicht gemessen); alle liegen über 0,99. Die Fazit-Zeile der Mess-Seite prüfte die Schnipsel gegen 0,995 und meldete deshalb fälschlich „zu prüfen“; jetzt: Haupt-Vektor exakt und Schnipsel ≥ 0,99.
 - **Nächster Schritt:** S2 in alle Träger (`kanon-verteilen --nur 16_siegel,23_rendezvous`, dazu 23-UI).
 

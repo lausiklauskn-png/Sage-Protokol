@@ -90,7 +90,7 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   mit einem schon geladenen Modell (sonst „nicht geprüft", kein Nachladen). Probe
   `tests/smoke_s2_bedeutung.mjs` 27 grün (Modell als Attrappe; drei Zeilen im echten
   Chromium), Gegenprobe `tests/gegenprobe_s2_bedeutung.mjs` 14 von 14 gefangen.
-  **Gemessen 2026-10-15 (Klaus, `tools/s2-wiederholung.html`):** Haupt-Vektor 9 von 9 auf
+  **Gemessen 2026-10-15 (Klaus, `tools/s2-wiederholung.html`, Tablet im DeX-Modus):** Haupt-Vektor 9 von 9 auf
   1,0000 nachgerechnet; Schnipsel 0,9949–0,9972 (40 aus 8 Sporen, alle über 0,99; einzeln
   statt im Stapel gerechnet, vermutete Ursache). SB-KIMTool-Point 0,888 und BookLedgerPro
   0,902 passen nicht zur Beschreibung und tragen kein `embeddingSource` → „nicht
