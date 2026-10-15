@@ -63,7 +63,40 @@ in den Trägern steht, und der Entwurf gehört der anderen Sitzung.
 mit (der Kanon wird byte-gleich verteilt). Das ist unschädlich (reine Anzeige, ohne Anker
 und Kontakte zeigt keine Karte etwas), gehört aber in den Rollout-PR-Text.
 
-## Offen
+## Nach Teil 1 (Gespräch mit Klaus, gleiche Sitzung)
+
+| PR | Was |
+|---|---|
+| Sage #1119 | Leitlinie „wer ein Netz betreibt, ist dort der Netzadmin“; Zuordnung der Modul-Karten 10, 11, 12, 14 zu den Schichten; Tafel-Widerspruch Sperrliste benannt |
+| Sage #1120 | Netzadmin des offenen Mycels = Sage-Protokol (`BgjXhSApoOrJ…`); verbürgte Karten rücken nach vorne |
+
+- Klaus' Vorschlag „drei Bürgschaften“: (1) seine Prüfung von Hand, ein Jahr gültig;
+  (2) Nutzer bürgen; (3) das Knotennetz nimmt einen Knoten heraus, wenn mindestens zwei
+  Knoten Schaden feststellen. Klaus' Wort zur Reihenfolge: 1 und 3 zuerst, 2 zurückstellen.
+  Melde-Knopf und „geprüft/ungeprüft“ gibt es nach Klaus schon in PWA Toolpoint und
+  family-project (aus dem Studio steuerbar); in dieser Sitzung nicht angesehen.
+- Gelesen: Karten 10 (Reputation, Quorum `QUORUM_RATIO = 0.15`), 11 (Rate-Limit),
+  12 (Blocklist), 14 (Diffusion) sind Stubs ohne Code. Bei 13 Trägern ergeben 15 % genau 2.
+- Das Wort: „Anker“ → „Netzadmin“. Klaus' Zwischenvorschläge „Netzadministrator“ und
+  „Netz-Ad-Mini“ verworfen (Klaus: „Netzadmin ist besser“).
+- Klaus' Idee, dass Firmen und Vereine ein eigenes Netz mit denselben Schutz-Werkzeugen
+  aufbauen: als Leitlinie im Plan; Klaus' Kennung gehört deshalb nur in die Einstellung des
+  offenen Mycels.
+
+## Offen (Stand Sitzungsende)
+
+1. S5 Teil 2: Oberfläche zum Ausstellen (Sicherheitsnummer vergleichen, Bürgschaft
+   ausstellen und weitergeben, Kontakte pflegen), „🤝 Anker“ → „Netzadmin“ (steht seit
+   #1118 in 28 Trägern), Sage-Protokol als Netzadmin nur im offenen Mycel, verbürgte Karten
+   nach vorne; dann Siegel-Aspekt und Rollout.
+2. Entscheid vor S4: Sperrliste öffentlich (S4) oder nicht (Karte 12).
+3. S3; danach Melden/Quorum als Modul 10 (vorher PWA Toolpoint und family-project ansehen).
+4. Paper S: Klaus' Gegenlesen (Fassung 1 aus #1114).
+
+Erledigt seit Teil 1 durch die Parallel-Sitzung: S2-Rollout in 28 Träger (#1118).
+
+## Offen (Stand Teil 1, überholt)
+
 
 1. S2-Rollout in alle Träger (Messung liegt vor, #1115).
 2. S5: Mit welcher Identität bürgt Klaus? Bis dahin ist `RDV_VOUCH_ANCHORS` leer.
