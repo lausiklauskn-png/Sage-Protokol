@@ -48,8 +48,11 @@ Nachgezogen mit `node tools/kanon-verteilen.mjs --nachbarn <ordner> --nur 02_spo
 Erster Befehl der Sitzung 12:01:48Z (Unix 1792065708), letzter Merge des Pakets (Alis-Moderaum #72) 12:07:25Z (Unix 1792066045): 5 min 37 s. In Unix-Zeit gerechnet.
 
 ## Offen
-- Mein-Workfloh-Page: nachziehen ja/nein (Klaus).
+- ~~Mein-Workfloh-Page: nachziehen ja/nein (Klaus).~~ Erledigt, siehe Nachtrag.
 - Schritt 3 des Sammel-Briefs (Gruppe B: In-and-Out-Book, Kim-sync).
 
 ## Forschung
 Kimhub-Eintrag `2026-10-15-sammelbrief-schritt2-a4` (Arm `voll`, 4 Befunde), Kimhub #382; Nachbar-Klone vorher mit `--shallow-since=2026-08-20` vertieft. Dort `node tests/alle.mjs` 3747 grün · 0 ROT · 0 nicht lauffähig, `NUR_ANKER` 1428 · 0 tot. Sages `run_alle.mjs`: 120 Proben, 117 grün, 1 rot (`smoke_service_worker_parst`, auch auf `main` rot), 2 nicht lauffähig (`bau24r_reinigung_browser`, `vorrat_wirkung`: Nachbar-Klone fehlen).
+
+## Nachtrag (selbe Sitzung): Mein-Workfloh-Page nachgezogen
+Klaus: nachziehen. Mein-Workfloh-Page #38 (gemergt): 02, 05b, 16, 23, 23-UI auf den Kanon vom Abend (23 `bc8cc295b449`, S1/S2/S5 Teil 1, wie die übrigen 28 Träger seit #1118), Cache `werbetechnik-page-v28`. `npm test` rc 0 vorher wie nachher, Gegenprobe 18/18, Drift-Guard mit alter 23 rot. Auf `main` nachgezählt, dann Zweig gehoben. Merge 22:41:38 (Ortszeit), Unix 1792096898.
