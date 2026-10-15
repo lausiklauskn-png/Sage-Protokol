@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Sammel-Brief Schritt 2, Paket A1: Bau 23.R in PWA-Toolpoint, SB-KIMTool-Point, Kimseek (Hauptsitzung)
+
+- **Getan:** `kanon-verteilen --schreiben` über die drei Repos: Modul 02, 16, 23, 23-UI byte-1:1 (23 sha `05a6eb42ec68`), Pins, Cache-Bump (PWA-Toolpoint v90→v91 samt 244 `?v=`, SB-KIMTool-Point v10→v11, Kimseek v62→v63). Alle drei trugen dieselbe ältere Fassung je Modul; keine Handarbeit gemeldet. SB-KIMTool-Point: `jasons-bibliothek/index.html` trägt 02 eingebettet und ist neu eingebettet (Probe verlangt es byte-genau). PRs #167 · #186 · #92, gemergt, auf `main` nachgezählt (sha = Kanon, `RDV_LABEL_MAX = 200`, Verteiler: 0 hängen zurück).
+- **Gemessen:** PWA-Toolpoint `npm test` 2425/2425 · SB-KIMTool-Point 140 bestanden · Kimseek 12 bestanden. Gegenprobe von Hand je Repo (alte 23-Fassung zurück): Drift-Guard rot. Glue nachgesehen (Knotenkarte, Briefkasten, brain.html): fremder Text nur über `esc`/`textContent`.
+- **Benannt, nicht geändert:** SB-KIMTool-Point `web/tools/mycelknoten.html` trägt 02/16 eingebettet, aber kein 23 — 16 dort nachzuziehen ließe das Siegel eine 23.R-Prüfung behaupten. `sbkim/SIGNAL.json` dort steht seit 2026-08-15 still, nicht angefasst.
+- **Offen:** Pakete A2–A4. Tablet nicht gemessen.
+
 ## 2026-10-15 · Schutzschichten freigegeben (Hauptsitzung)
 
 - **Klaus' Wort:** „Ja, S1 → S2 → S5 → S3 → S4 freigegeben“. Eingetragen in `docs/PLAN_MYCEL_SCHICHTEN.md` (Legende und Reihenfolge) und in der Fortschritts-Tabelle des Sammel-Briefs (Schritt 5: teilweise).
