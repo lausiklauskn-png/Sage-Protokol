@@ -15,7 +15,10 @@
 | 26 Träger | je 1 | Modul 23 + 16 per `kanon-verteilen`, Pins, Cache-Bump |
 | Kuechenzettel | #10 | als Knoten angedockt |
 | kim-hub-company | #78 | Schubladen-Liste nachgetragen |
-| Sage-Protokol | dieser PR | `sbkim-demo/` angedockt, Register, Pläne, Brief, PULS |
+| Sage-Protokol | #1107 | `sbkim-demo/` angedockt, Register, Pläne, Brief, PULS |
+| Kimhub | #385 | Forschungseintrag `2026-10-15-s1-fragen-und-andocken` |
+| BookLedgerPro | #336 | Modul 03, 16, 23 nachgeholt (fehlte in beiden Rollouts) |
+| Sage-Protokol | Nachtrag | PFLEGE-LISTE § 17, § 18, dieser Nachtrag |
 
 Träger S1: Alis-Moderaum #74 · Auslieferung-Pruefer #55 · Company-Brain #26 · Jasons-Tresor #188 · Kim-Bell #74 · Kim-sync #21 · Kimboard #154 · Kimseek #94 · Mein-In-and-Out-Book #10 · Mein-Mixarium #251 · Mein-Rezeptbuch #440 · Mein-Tresor #136 · Mein-WorkFloh #269 · Muttis-Rezeptbuch #245 · PWA-Toolpoint #169 · Perfect-Skin-Beauty #74 · Perfect-Skin-Fashion #46 · Privat-Brain #107 · SB-KIMTool-Point #188 · Sende-Pruefer #82 · Tomys-Hub #248 · Workflow-Calculate #23 · Workflow-Needs #20 · Workflow-PDF #117 · family-project #361 · kim-hub-company #77.
 
@@ -31,6 +34,8 @@ Träger S1: Alis-Moderaum #74 · Auslieferung-Pruefer #55 · Company-Brain #26 �
 - Küchenzettel-Gegenprobe: K5 zählte die Kettenglieder und nahm K6 die Arbeit ab (aus falschem Grund); „width:auto fehlt" rutschte erst durch, weil kein Wächter maß, ob die Lampen in ihren Knopf passen. Beides nachgezogen.
 - Die Demo-Probe fand einen Abruf von `raw.githubusercontent.com`: er kommt aus der eingebetteten Mycel-Karte (iframe), schon vor dem Andocken. B9 zählt nur die Seite selbst.
 - Das Register nannte eine Listen-Kopie in `PWA-Toolpoint/tests/smoke.mjs`, die es dort nicht gibt. Berichtigt.
+
+- **BookLedgerPro fiel aus beiden Rollouts des Tages.** Sein Vorgabe-Zweig auf GitHub ist `claude/general-discussion-x9xyk9`; der Klon setzte `origin/HEAD` darauf, und der Verteiler meldete nur „44 Commits hinter origin". Gefunden hat es `forschung-bauen.mjs` in Kimhub, das `origin/main` verlangt. `smoke_a5_antwortpfad` dort ist auch auf `main` rot (Modul 15), die CI fährt nur `run.mjs`.
 
 ## Nicht gemessen
 Tablet; die ersten Sporen von Kuechenzettel und Demo; der Rückfall auf unsignierte Fragen zwischen zwei echten Geräten.

@@ -40,6 +40,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Paper S:** Klaus' Wünsche im Plan (Quellen mit „übernommen · vorgeschlagen · warum", drei Internetseiten ohne Alis, Browser und Knotennetz, Gegenlesen im Chat).
 - **Wackel-Proben, nicht durch S1:** family-project `smoke_kein_sprung` (Zweig 42/42, `main` im selben Moment 41/42), Workflow-PDF `chrome.mjs` (Pflege-Liste #14; danach Zweig und `main` je 47/47).
 - **Nicht gemessen:** Tablet; erste Sporen von Kuechenzettel und Demo.
+- **Nachtrag BookLedgerPro:** fiel aus beiden Rollouts des Tages heraus (Vorgabe-Zweig auf GitHub ist nicht `main`, der Verteiler folgt `origin/HEAD`; PFLEGE-LISTE § 17). Modul 03, 16, 23 nachgeholt in BookLedgerPro #336, `tests/run.mjs` 2284 bestanden. Kimhub-Forschungseintrag #385.
 
 ## 2026-10-15 · Modul 03: Rückfall auf HuggingFace gebaut und netzweit verteilt (Hauptsitzung)
 - **Anlass:** „Can't create a session“ in In-and-Out-Book, Kim-sync, Kimboard (Server-Modell); Alis (HuggingFace) ging. Server-Datei sha256 = HuggingFace; Inkognito lud; nach `caches.delete('transformers-cache')` lud es auch normal (PFLEGE-LISTE § 15).
