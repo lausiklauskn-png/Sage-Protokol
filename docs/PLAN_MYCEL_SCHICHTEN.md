@@ -148,6 +148,18 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   (c) Teil 2: Oberfläche zum Ausstellen (Sicherheitsnummer vergleichen, Bürgschaft
   weitergeben, Kontakte pflegen); (d) „aufgefallen" kommt bis S4 nur von Hand;
   (e) Siegel-Aspekt und Rollout erst mit Teil 2.
+  **Entscheid (Klaus 2026-10-15) zu (a) und (b):**
+  - (a) Klaus bürgt als Netzadmin des offenen Mycels mit **Sage-Protokol**, Kennung
+    `BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA` (`sbkim/spore.json`, signiert
+    2026-09-10T13:20:21.535Z; Raum und Depot dieselbe Spore, `sbkim/NETZ-STAND.md`). Der
+    Schlüssel liegt in Klaus' Browser auf der Sage-Page (`index.html` trägt Andock-Wizard und
+    23-UI). Nach der Leitlinie unten gilt diese Kennung **nur im offenen Mycel**, nicht in
+    einem eigenen Netz.
+  - (b) **Verbürgte Karten rücken nach vorne.** Bau-Vorschlag für Teil 2: in
+    `rankCardsByQuery` nach der Regel „passt nicht ans Ende“ zuerst Netzadmin, eigene
+    Kontakte und Verbürgte, dann Unverbürgte; innerhalb jeder Gruppe nach Frage-Passung.
+    Benannter Preis: eine gut passende unverbürgte Karte kann hinter einer schwächer
+    passenden verbürgten stehen.
 
 - [ ] **S6 — Eigene Einträge markieren** (Bakterien-Methylierung) · `Entscheid`+`Bau`
   Was die App selbst ablegt, trägt eine eigene Prüfsumme; was von außen in den Speicher
