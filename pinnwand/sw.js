@@ -42,7 +42,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v26";
+var CACHE_VERSION = "sbkim-pinnwand-v27";
 
 
 /* ⚠ NUR EIGENE VORRAETE AUFRAEUMEN — `caches` gehoert dem URSPRUNG, nicht dem
