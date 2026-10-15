@@ -31,6 +31,14 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Plan: Schutzschichten am Mycel-Eingang (Hauptsitzung)
+
+- **Getan:** `docs/PLAN_MYCEL_SCHICHTEN.md` angelegt — Abhak-Liste S1–S7 nach Klaus' Frage, ob sich die mehrstufigen Artgrenzen der Natur aufs Mycel übertragen lassen. Kein Code.
+- **Klaus' Wort:** „Bürgen mit in den Plan-Brief aufnehmen“ → S5. Sein Einwand „man kann sich selber einen Bürgen ausstellen“ steht als Regel darin: eine Bürgschaft zählt nur, wenn der Leser dem Bürgen schon traut; dazu kurze Kette, Haftung, Widerruf, Ablauf, Anker.
+- **Stand Rollout Bau 23.R:** auf `main` von Sage und 13 Trägern nachgezählt (`RDV_LABEL_MAX = 200`), Mycel-Karte mit `sicher()`. Nicht ausgerollt: PWA-Toolpoint, Kimseek, SB-KIMTool-Point, family-project, Kim-Bell.
+- **Offen:** alle Schichten außer dem Planpunkt S5 warten auf Klaus' Freigabe; Vorschlag S1 → S2 → S5 → S3 → S4.
+- ⛔ KIMHUB NICHT ANFASSEN. KEINE FORSCHUNGSEINTRÄGE IN KIMHUB — weitergeben, bis Klaus ihn aufhebt.
+
 ## 2026-10-14 · Prüf-Reihe Sitzung 6 (Planmodus): Ist das Mycel ein Angriffspunkt?
 
 ⛔ Kimhub nicht angefasst, keine Forschungseinträge in Kimhub (Gegenprobe läuft dort). Satz weitergeben, bis Klaus ihn aufhebt.
