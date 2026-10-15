@@ -42,7 +42,8 @@ Eine Zusicherung ohne Gegenprobe ist eine Behauptung.
 
 Der Bericht widerspricht einem Satz des eigenen SBKIM-Papers (§7.3) und liefert die
 Messung dazu. Er legt seine Grenzen offen: Fallzahl eins, ein Betreiber, kein
-unabhängiger Angreifer, und am Tablet, dem eigentlichen Gerät, ist nichts gemessen.
+unabhängiger Angreifer, und am Tablet, dem eigentlichen Gerät, ist bisher nur eine Zahl gemessen
+(die Wiederholgenauigkeit für S2).
 
 ---
 
@@ -357,8 +358,8 @@ einer sehr ähnlichen Anwendung stammt.
 
 Offen war, wie genau dasselbe Sprachmodell denselben Text auf einem anderen Gerät
 wiederholt. Rechnete ein Gerät nur auf 0,98 genau nach, stünde jede echte Spore als
-„passt nicht" da. Der Betreiber hat das am 2026-10-15 mit einer eigenen Mess-Seite
-gemessen: bei neun Sporen ergab der aus der Beschreibung nachgerechnete Vektor **1,0000**,
+„passt nicht" da. Der Betreiber hat das am 2026-10-15 mit einer eigenen Mess-Seite an seinem
+Tablet gemessen (Chrome im DeX-Modus): bei neun Sporen ergab der aus der Beschreibung nachgerechnete Vektor **1,0000**,
 auch bei Sporen, die auf anderen Geräten unterschrieben worden waren. Die Satz-Schnipsel
 kamen einzeln nachgerechnet auf 0,995 bis 0,997, vermutlich weil sie beim Unterschreiben
 im Stapel gerechnet werden. Auch sie liegen über der Schwelle.
@@ -599,7 +600,8 @@ ob Server-Dateien als Klartext zu lesen sind.
 - **Bürgen, Rechenaufwand, Sperrliste** (S5, S3, S4) sind geplant, nicht gebaut.
 - **Ein gültig signierter Namensvetter** wird angezeigt, und nur wer die Kennung kennt,
   kann ihn vom echten unterscheiden.
-- **Nichts ist am Tablet gemessen**, dem Gerät, auf dem das Netz benutzt wird.
+- **Am Tablet ist fast nichts gemessen**, dem Gerät, auf dem das Netz benutzt wird. Die
+  einzige Messung dort ist die Wiederholgenauigkeit für S2 (7.2).
 - **Die drei Internetseiten** aus Abschnitt 11.4 sind in dieser Fassung nicht abgerufen.
 
 ---

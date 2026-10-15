@@ -5495,7 +5495,7 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         Die Karte bleibt sichtbar (abweisen kann nur der Empfänger, und er
         markiert statt abzuweisen). _meta.meaningMin = RDV_MEANING_MIN.
         ⚠ Gemessen vor dem Entscheid: 55 Paare verschiedener Knoten 0.780–0.983.
-        Gemessen 2026-10-15 (Klaus, tools/s2-wiederholung.html, Chrome 154):
+        Gemessen 2026-10-15 (Klaus, tools/s2-wiederholung.html, Chrome 154, Tablet im DeX-Modus):
         Haupt-Vektor aus der Beschreibung 9 von 9 Sporen auf 1.0000 nachgerechnet,
         auch für Sporen anderer Geräte. Satz-Schnipsel einzeln nachgerechnet
         0.9949–0.9972 (40 Schnipsel, 8 Sporen): vermutlich, weil sie beim
