@@ -31,6 +31,16 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-15 · Sammel-Brief Schritt 4, 4b, 5 (S1): Fragen unterschreiben netzweit, zwei Knoten angedockt (Hauptsitzung)
+- **Schritt 4 (Klaus):** andocken Kuechenzettel und die Demo; nicht papas-aktenschrank, Kochfreunde. Für die Demo die öffentliche `sbkim-demo/` in Sage statt des privaten Repos semantic-match-demo.
+- **S1 gebaut:** Sage #1106. INTERFACES Frage-Zettel v2 (spore + sig), Modul 23 prüft Fragen: bestätigt → 6/min, unbestätigt → höchstens 2 der 6 (Klaus' Wert), falsch → nicht beantwortet, sperrt die qid nicht. Siegel-Aspekt DE/EN. `smoke_s1_fragen_signiert` 13 grün, Gegenprobe 7/7.
+- **S1 verteilt:** `kanon-verteilen --nur 16_siegel,23_rendezvous`, 26 Träger, 51 Dateien, je Repo eigene Proben, PR, Merge; auf `main` 26/26 nachgezählt, dann Zweige gehoben. Nebenfunde: Kim-sync-Probe nagelte `kimsync-v16`; In-and-Out-Book-Manifest `?v=` zog der Verteiler nicht mit.
+- **Angedockt:** Kuechenzettel #10 (13 Module, feste Leiste, `kuechenzettel-v3`; Kopfleiste ragte auf `main` schon bei 360 px 33 px hinaus, jetzt passt sie bei 320/360/412). `sbkim-demo/` lädt den Kanon direkt aus `src/modules/`, Schublade `sbkimdemo`. Proben 54 bzw. 49 grün, Gegenproben 10/10 und 9/9.
+- **Register:** `kuechenzettel`, `sbkimdemo`; kim-hub-company #78 (Kopie der Liste, dazu `inoutbook`, `kimsync`).
+- **Paper S:** Klaus' Wünsche im Plan (Quellen mit „übernommen · vorgeschlagen · warum", drei Internetseiten ohne Alis, Browser und Knotennetz, Gegenlesen im Chat).
+- **Wackel-Proben, nicht durch S1:** family-project `smoke_kein_sprung` (Zweig 42/42, `main` im selben Moment 41/42), Workflow-PDF `chrome.mjs` (Pflege-Liste #14; danach Zweig und `main` je 47/47).
+- **Nicht gemessen:** Tablet; erste Sporen von Kuechenzettel und Demo.
+
 ## 2026-10-15 · Modul 03: Rückfall auf HuggingFace gebaut und netzweit verteilt (Hauptsitzung)
 - **Anlass:** „Can't create a session“ in In-and-Out-Book, Kim-sync, Kimboard (Server-Modell); Alis (HuggingFace) ging. Server-Datei sha256 = HuggingFace; Inkognito lud; nach `caches.delete('transformers-cache')` lud es auch normal (PFLEGE-LISTE § 15).
 - **Gebaut:** Sage #1103 — Rückfall in Modul 03 mit Leeren der Cache-Einträge der Wurzel und Rücksetzen von `env.localModelPath` (Haupt-Faden und Worker); `getModelFallback()`; INTERFACES §03 additiv. Probe `smoke_bau03_rueckfall` 33 grün, Gegenprobe 9/9 (erst 1 blind). Kopien in pinnwand/sbkim-bundle(-voll)/such-tool nachgezogen.
