@@ -262,6 +262,27 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   - **Benannte Grenze:** „wer gerade im Raum ist" zeigt nur, wer in diesem Augenblick eine
     Seite offen hat. Die dauerhafte Liste sind die Einträge des Studios mit Kennung; der
     Raum ergänzt sie, ersetzt sie nicht.
+  **Firmennetz (Klaus 2026-10-16, „kommt später, soll jetzt schon mitbedacht werden"):**
+  *„innerhalb des Firmennetzwerkes einzelne Mitarbeiter sperren oder einzelne Mitarbeitern
+  die Bürgschaft entziehen, damit sie nicht auf alles Zugriff haben."* Gemeint ist ein eigenes
+  Netz über das interne Relais (`relay-intern.family-projekt.de`, family-project
+  `server/relais-intern/`), verbunden über Mycel-Karte und Netz-Fenster.
+  - **Was schon trägt:** S4 und S5 gelten im eigenen Netz mit dem Netzadmin aus dem Feld
+    `admin` der Netz-Einstellung. Die Netz-Verwaltung oben arbeitet dort mit dieser
+    Identität. Deshalb wird sie von Anfang an für **jeden** Netzadmin gebaut, nicht fest
+    für Sage-Protokol.
+  - **Benannte Grenze — Sperren und Bürgen regeln, was die ANDEREN mit einem Knoten tun,
+    nicht was er LESEN kann.** Ein gesperrter Knoten verschwindet bei den anderen und bekommt
+    keine Antworten mehr; Karten und Fragen im Raum sieht er weiter, denn das Relais nimmt
+    jeden an (keine `pubkey_whitelist`, Klaus 2026-10-13). „Nicht auf alles Zugriff" heißt
+    damit: **keine Antworten von Knoten, die es nicht erlauben**.
+  - **Mit einbauen (S5b):** eine Einstellung je Knoten „antworte nur Verbürgten" (aus:
+    wie heute). An: eine Frage wird nur beantwortet, wenn ihr Absender beim Antwortenden
+    Netzadmin, Kontakt oder verbürgt ist. Damit wird die Bürgschaft zur Berechtigung, und ein
+    Widerruf nimmt einem Mitarbeiter die Antworten dieses Knotens.
+  - **Später, eigener Entscheid:** Stufen (wer bekommt welche Antworten) und eine Sperre am
+    Relais selbst (Anmeldung am Relais oder Liste erlaubter Schlüssel). Das zweite widerspricht
+    „jederzeit ein neues Tool hinzufügen" und braucht Klaus' Wort.
   **Reihenfolge:** INTERFACES (Punkte 1, 2, 4, 5) → Modul 23 + 23-UI + Siegel-Aspekt →
   Probe/Gegenprobe → Rollout → Netz-Verwaltung als Kanon in Sage → Studio in PWA Toolpoint
   und family-project.
