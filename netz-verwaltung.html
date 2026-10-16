@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Netz-Verwaltung · Sage·Protokol</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <!-- Eigene Seite der Netz-Verwaltung (Modul 23b, S5b Teil 2, Klaus 2026-10-16).
+       Gleiche Adresse, gleiche Schublade wie die Sage-Page → gleiche Identität.
+       Hier unterschreibt Sage-Protokol als Netzadmin des offenen Mycels.
+       Beim Laden kein Netz: der Raum wird nur auf Knopfdruck gelesen. -->
+</head>
+<body>
+  <noscript>Die Netz-Verwaltung braucht JavaScript.</noscript>
+  <div id="sbkim-netzverwaltung"></div>
+  <p style="max-width:900px;margin:8px auto;padding:0 12px;font:12px system-ui,sans-serif;color:#8899a8">
+    <a href="./" style="color:#f4b435">← zurück zur Sage-Page</a></p>
+  <script src="src/modules/01_storage.js"></script>
+  <script src="src/modules/02_spore.js"></script>
+  <script type="module" src="src/modules/05b_nostr_relay.js"></script>
+  <script src="src/modules/23_rendezvous.js"></script>
+  <script src="src/modules/23b_netzverwaltung.js"></script>
+  <script>
+    window.SbkimNetzVerwaltung.page({ nodeName: "Sage-Protokoll", dbSuffix: "sage", entries: window.SAGE_STUDIO_EINTRAEGE || [] });
+  </script>
+</body>
+</html>
