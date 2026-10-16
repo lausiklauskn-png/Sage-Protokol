@@ -5603,6 +5603,37 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
           (Objekt oder Liste, höchstens 16 Zettel, jeder über addCarried
           geprüft), eigene Kontakte sehen und entfernen, Netzadmin des Netzes
           anzeigen. Fremde Namen und Texte nur als Text (textContent).
+    ✅ S3 „Rechenaufwand je Zettel" (2026-10-16, docs/PLAN_MYCEL_SCHICHTEN.md;
+        Klaus 2026-10-16: „12 Stufen", „Karten + Fragen", „Vorrang bei Enge").
+        Neues optionales Feld `pow` (String, ≤ RDV_POW_NONCE_MAX = 32 Zeichen)
+        in der KARTE (sbkim-presence) und im FRAGE-Zettel (sbkim-query). Der
+        Antwort-Zettel und Bürgschaften tragen keins. Keine neue Spore.
+          h = sha256( "sbkim-pow-v1|" + hex(sha256(JSON.stringify(z ohne
+              pow/sig/spore))) + "|" + pow )
+          gültig ⇔ h hat ≥ RDV_POW_BITS (12) führende Null-Bits.
+        Die JSON-Form ist die Feld-Reihenfolge des empfangenen Zettels (JSON.parse
+        erhält sie). Beim Frage-Zettel wird ERST gerechnet, DANN unterschrieben
+        (S1): `pow` steht im unterschriebenen Inhalt, `spore` nicht im Aufwand.
+        Der Sender gibt nach RDV_POW_TRIES_MAX Versuchen auf (fail-soft: ohne pow).
+        Empfänger — abgewiesen wird nichts:
+          Karten: solange der Raum nicht voll ist, ändert sich nichts. Bei
+            RDV_CARDS_MAX (200) darf eine neue Karte MIT gültigem Aufwand die
+            zuletzt aufgenommene Karte OHNE Aufwand verdrängen; ohne Aufwand
+            kommt sie nicht mehr hinein. Eine Karte mit Aufwand verdrängt nie
+            eine andere mit Aufwand. RDV_CARDS_PER_SENDER_MAX (3) gilt weiter.
+            discover() meldet `verdraengt` (Zahl dieses Laufs).
+          Fragen: ohne gültigen Aufwand höchstens RDV_QUERY_NOPOW_MAX_PER_MIN (4)
+            der RDV_QUERY_MAX_PER_MIN (6) Antworten je Minute; die S1-Grenze
+            für unsignierte (2) gilt zusätzlich. Ein ungültiger oder zu
+            schwacher Aufwand zählt wie keiner (nicht als Fälschung).
+        _meta zusätzlich: powBits, queryNoPowMaxPerMin, kartenVerdraengt,
+        fragenOhneAufwand. Alte Empfänger ignorieren `pow` (additiv).
+        ⚠ Benannte Grenze (gemessen 2026-10-16 im Sitzungs-Behälter, nicht am
+        Tablet): 12 Stufen kosten eine Browser-App ~0,03 s je Zettel (reines
+        JS, 123 000 Prüfsummen/s), einen Angreifer mit Rechner-Code ~0,01 s
+        (489 000/s, ein Kern) — 200 Flut-Karten ~2 s. Die Schicht verdrängt
+        Fluter, die gar nicht rechnen; gegen einen entschlossenen Angreifer
+        tragen S1, S5 und S4.
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]

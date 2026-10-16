@@ -98,10 +98,25 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   **Ausgerollt 2026-10-15:** 28 Träger je ein PR, auf `main` 28/28 mit S2-Code, 27 mit
   Siegel-Aspekt (Company-Brain ohne Siegel); Verteiler danach „81 schon gleich · 0 hängen zurück“.
 
-- [ ] **S3 — Rechenaufwand je Zettel** (teure Balz) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
+- [x] **S3 — Rechenaufwand je Zettel** (teure Balz) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Nostr NIP-13: der Sender rechnet vor dem Senden eine kleine Prüfsummen-Aufgabe. Fluten
   wird teuer, ein einzelner Zettel bleibt billig. Schwierigkeit mild, am Tablet zu messen.
   Empfänger bevorzugt, verwirft nicht.
+  **Entscheid (Klaus 2026-10-16):** 12 Stufen, Karten + Fragen, „Vorrang bei Enge“ (ohne
+  Anzeige an der Karte). Klaus fragte nach, ob mehr Aufwand besser wäre; Antwort im Chat: ein
+  Angreifer mit Rechner-Code rechnet viel schneller als ein Tablet-Browser, jede Stufe, die ihn
+  bremst, bremst das Tablet stärker. Er blieb bei 12.
+  **Gemessen 2026-10-16 im Sitzungs-Behälter** (nicht am Tablet): reines JS 123 000
+  Prüfsummen/s → 12 Stufen ~0,03 s je Zettel; Rechner-Code ein Kern 489 000/s → ~0,01 s,
+  200 Flut-Karten ~2 s. Eine erste Zahl an Klaus (0,2 s / 40 s) kam aus der langsamen
+  `crypto.subtle`-Schnittstelle und war falsch; sie wurde vor dem Bau richtiggestellt.
+  **Gebaut in Sage** (INTERFACES § Modul 23 S3, Modul 23, Siegel-Aspekt): Feld `pow` in Karte
+  und Frage; voller Raum (200) → Karte mit Aufwand verdrängt die zuletzt gekommene ohne;
+  Fragen ohne Aufwand höchstens 4 der 6 Antworten je Minute (die 4 ist eine Setzung dieser
+  Sitzung, benannt: „2 Plätze bleiben Fragen mit Aufwand“, wie S1 „2 von 6“).
+  Probe `tests/smoke_s3_aufwand.mjs` 19 grün (nachgerechnet mit Node-crypto, nicht mit dem
+  Modul), Gegenprobe `tests/gegenprobe_s3_aufwand.mjs` 14 von 14 gefangen, je mit dem Namen
+  der Zusicherung. **Offen:** Rollout in alle Träger; Zeit am Tablet messen.
 
 - [ ] **S4 — Signierte Sperrliste im Mycel** (Gedächtnis) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Wie in Kimboard: nur Klaus unterschreibt, nur nach oben (sperren); gelöst wird nur in der
