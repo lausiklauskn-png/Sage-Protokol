@@ -117,6 +117,21 @@ selbst an der Wurzel) — nachgezogen am selben Tag.
 - **Wer eine Abschirmung trägt** (Sende-Prüfer), nimmt genau diese eigene Seite von der
   Fremd-Meldung aus — sonst meldet das Siegel sich selbst als fremdes Fenster.
 
+**Seit dem 2026-10-17 ein Überblick in Stichworten, Deutsch und Englisch** (Klaus: „Handbuch
+oder besser Überblick, mit Stichworten … mit einer Link-Funktion“). Inhalt: Mycel, Fenster
+„Mit dem Knotennetz verbinden“, Karten im Raum, Siegel, Lampen, **warum es Schutz braucht**
+(aus Paper S), die Schichten S1–S5b, eigenes Netz, Empfehlen und Sperren, was noch nicht
+geht, Verweise auf die Papers, Wörterbuch.
+
+- **Zwei Sprachblöcke** `#de` und `#en` (ids im englischen Teil mit `en-` davor). Sprache:
+  `?lang=` · sonst `data-sprache-schluessel="<localStorage-Schlüssel der App>"` am `<html>`
+  (optional, je Träger) · sonst die Sprache der einbettenden Seite · sonst der Browser.
+- **Wort-Sprünge:** jedes unterstrichene Wort springt zur Erklärung; „↩ zurück“ (schwebend
+  und am Ziel), ein zweiter Tipp auf dasselbe Wort oder ein Tipp auf das erklärte Wort führen
+  zurück. Ohne Skript gehen die Sprünge trotzdem.
+- **Probe:** `node tests/smoke_sicherheit_seite.mjs [pfad]` — auch für die Kopie eines Trägers.
+  Gegenprobe `node tests/gegenprobe_sicherheit_seite.mjs` (Wegwerf-Kopie).
+
 ---
 
 **Seit 2026-09-29 trägt sie den Abschnitt „Was nützt mir das?"** (Klaus: *„Wichtig ist, dass der
