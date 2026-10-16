@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-10-16",
-  "seq": 96,
-  "headline": "S5b TEIL 1 FERTIG UND AUSGEROLLT: der Buerge haftet nur fuer die eine App; Buergschaften gelten hoechstens 180 Tage (Hinweis 30 Tage vorher); ein Widerruf traegt immer einen Grund; gesehene Widerrufe werden gespeichert; neue Einstellung „Nur Verbuergten antworten“. Sage #1136, 29 Traeger. Nach dem Merge am Geraet einmal ⟳ / Hard-Reload.",
+  "seq": 97,
+  "headline": "S5b TEIL 2 FERTIG UND AUSGEROLLT: im Netz-Fenster heisst Buergen jetzt „Empfehlen“; eine Empfehlung kommt von selbst ueber den Raum an (nur von Ausstellern, die beim Empfaenger schon zaehlen); neue Netz-Verwaltung als eigene Seite (Modul 23b) in Sage, PWA Toolpoint und family-project. Sage #1138, 29 Traeger. Nach dem Merge am Geraet einmal ⟳ / Hard-Reload.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {

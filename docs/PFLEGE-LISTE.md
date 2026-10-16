@@ -245,6 +245,11 @@ Nachgeholt mit `git remote set-head origin main` im eigenen Klon (BookLedgerPro 
 den alten Vorgabe-Zweig, `origin/main` gab es gar nicht; der Verteiler meldete 28 statt 29 Träger.
 Nachgeholt mit `git fetch origin main:refs/remotes/origin/main` + `git remote set-head origin main`.
 Wer einen Rollout fährt, zählt die Träger vorher gegen die Liste im PULS.
+**Zum vierten Mal am 2026-10-16 (S5b Teil 2):** frischer flacher Klon stand auf dem alten Zweig,
+`sbkim/` ohne Module; der erste Trockenlauf zählte 28 Träger. Nachgeholt wie oben. Dazu: der
+Verteiler meldete beim Schreiben „Arbeitsbaum älter als das Depot“ für BookLedgerPro, hat die
+Dateien aber trotzdem geschrieben (danach `git status`: 16/23/23-UI, sw.js, tests/run.mjs geändert).
+Die Meldung und das Verhalten passen nicht zusammen. Nicht nebenbei untersucht.
 
 **Offen, zwei Wege:** Klaus stellt den Vorgabe-Zweig auf GitHub auf `main` (eine
 Einstellung, schwer zu raten, ob der andere Zweig Absicht ist) · oder der Verteiler
@@ -308,6 +313,47 @@ grün. **Einzeln nicht nachgestellt:** keine der sechs Proben, die diese Dateien
 `tools/antragsmappe-bauen.mjs` oder `tools/ausgabe-bauen.mjs` im echten Baum, nur unter einer
 Bedingung des vollen Laufs (Nachbar-Klone?). Vermutet, nicht gemessen. Bis dahin: nach einem
 vollen Lauf `git status` ansehen, bevor committet wird (LEHREN § 10).
+
+### 25 · Zwei tote Anker in `tests/gegenprobe_s3_aufwand.mjs` (gefunden 2026-10-16)
+
+`NUR_ANKER=1 node tests/gegenprobe_s3_aufwand.mjs` meldet „Frage wird ohne Aufwand gesendet“ und
+„Aufwand nach dem Unterschreiben angehängt“ als tot (0 Treffer) — auf `origin/main` vor S5b Teil 2
+genauso (2 tot). Die beiden Zusicherungen sind damit ohne Gegenprobe. Nicht nebenbei nachgezogen
+(S5b-Teil-2-Sitzung).
+
+### 26 · `smoke_service_worker_parst` wird rot, sobald wenige Nachbar-Klone daliegen (2026-10-16)
+
+Mit genau zwei Nachbar-Klonen (pwa-toolpoint, family-project) meldet die Probe „✗ ROT — es gibt
+Service-Worker zu prüfen (3)“; ohne Nachbarn „ungeprüft, nicht rot“. Rot heißt hier „zu wenige
+gefunden“, nicht „ein Worker bricht“. Gemessen, nicht untersucht; die Schwelle steht vermutlich in
+der Probe selbst. Mit allen 29 Klonen nicht nachgemessen.
+
+### 27 · Tote Anker in den Gegenproben zweier Träger (gefunden 2026-10-16)
+
+Kuechenzettel `tests/gegenprobe_knoten.mjs`: drei Anker suchen `?v=3` / `kuechenzettel-v3`, `main`
+stand schon vor dem Rollout auf v8. Mein-In-and-Out-Book `tests/gegenprobe.sh`: neun Anker suchen
+`?v=9`, `main` stand auf v15. Beide Gegenproben melden damit Fälle als tot, die nichts mehr prüfen.
+Gemessen in der S5b-Teil-2-Sitzung, vor ihr schon so. Nicht nebenbei nachgezogen.
+
+### 28 · Eingebettete Kanon-Fassungen sieht der Verteiler nicht (gefunden 2026-10-16)
+
+SB-KIMTool-Point `web/tools/mycelknoten.html` trägt ab Zeile ~9455 eine eingebettete Fassung von
+Modul 16 ohne die neuen Aspekte; Sage `docs/observatorium/tools/mycelknoten.html` bettet 02/16 ein
+(Brief Schritt 2, benannt). `kanon-verteilen` erkennt nur eigene Dateien mit Marke im Kopf.
+
+### 29 · family-project: `saveEntry()` verliert `sporeUrl` und `sporeAuto` (gefunden 2026-10-16)
+
+Gelesen von der Hilfs-Sitzung zu family-project #367: wer im Studio einen Eintrag mit Spore-Link
+bearbeitet und speichert, verliert beide Felder beim nächsten Veröffentlichen (`normEntry` kennt
+sie, `saveEntry` übergibt sie nicht). `nodeId` ist davon nicht betroffen. Nicht nachgestellt, nicht
+repariert, im PR genannt.
+
+### 30 · Gegenproben, die im echten Baum arbeiten, stören parallele Läufe (2026-10-16)
+
+Auslieferung-Pruefer `tests/gegenprobe.sh` arbeitet im Arbeitsbaum und lief über 30 Minuten; ein
+verwaister Unterlauf (`gegenprobe_uebersetzung.sh`) ließ eine Mutation in `assets/pruefer-ui.js`
+zurück (von Hand zurückgelegt, Commit aus einem sauberen Worktree). Dieselbe Familie wie LEHREN § 10.
+Bis zum Umbau auf Wegwerf-Kopien: diese Gegenprobe nicht parallel zu anderen Arbeiten fahren.
 
 ## Erledigt
 
