@@ -165,9 +165,11 @@ async function main() {
     // und das Feld selbst wird ausdrücklich verlangt (wie `bestaetigt` oben).
     // S5 (2026-10-15, ebenso benannt): jede Karte trägt zusätzlich `vouch`.
     // S3: das Ergebnis von discover trägt zusätzlich `verdraengt` (hier 0, ausdrücklich verlangt).
-    const ohneMeaning = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "meaning" || k === "vouch" || k === "verdraengt" ? undefined : v));
-    sage(ohneMeaning(vorher.karten) === ohneMeaning(nachher.karten), "discover liefert dieselben Karten (ohne die neuen Felder meaning, vouch, verdraengt)", nachher.karten);
+    const ohneMeaning = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "meaning" || k === "vouch" || k === "verdraengt" || k === "gesperrt" ? undefined : v));
+    sage(ohneMeaning(vorher.karten) === ohneMeaning(nachher.karten), "discover liefert dieselben Karten (ohne die neuen Felder meaning, vouch, verdraengt, gesperrt)", nachher.karten);
     sage(/"verdraengt":0/.test(nachher.karten), "discover sagt verdraengt: 0 (Raum nicht voll, S3)", nachher.karten);
+    // S4: dazu `gesperrt` (hier 0: keine Sperrliste, ausdrücklich verlangt).
+    sage(/"gesperrt":0/.test(nachher.karten), "discover sagt gesperrt: 0 (keine Sperrliste, S4)", nachher.karten);
     sage(/"vouch":\{"status":"unverbuergt"/.test(nachher.karten), "jede Karte sagt vouch: unverbuergt (kein Anker, keine Bürgschaft)", nachher.karten);
     sage(/"meaning":\{"status":"nicht-geprueft"/.test(nachher.karten), "jede Karte sagt meaning: nicht-geprueft (kein Modul 03 gestellt)", nachher.karten);
     sage(nachher.meta[0] === "sbkim-rdv" && nachher.meta[1] === "sbkim-qry", "_meta nennt sbkim-rdv / sbkim-qry", nachher.meta.join(" / "));

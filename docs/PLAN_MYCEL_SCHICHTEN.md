@@ -124,6 +124,15 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   Wie in Kimboard: nur Klaus unterschreibt, nur nach oben (sperren); gelöst wird nur in der
   Datei. Gesperrte Kennungen erscheinen nicht auf der Karte und werden nicht beantwortet.
 
+  **Entscheid (Klaus 2026-10-16):** öffentlich und signiert; die Liste liegt in Sage, und
+  Sage-Protokol unterschreibt (derselbe Netzadmin wie bei den Bürgschaften, auf Nachfrage
+  bestätigt: die Offenheit des Repos ändert nichts, geprüft wird mit dem öffentlichen
+  Schlüssel aus der Spore). Im eigenen Netz unterschreibt dessen Netzadmin. Damit ist der
+  Tafel-Widerspruch zu Karte 12 („nicht öffentlich“) für das Mycel entschieden.
+  Transport wie die Bürgschaften: die Liste reist signiert auf den Karten im Raum mit, die
+  Apps laden sie nicht aus dem Repo (beim Laden kein Netz). `sbkim/sperrliste.json` ist
+  Ablage und Beleg. Format und Wirkung: INTERFACES § Modul 23 S4.
+
 - [x] **S5 — Bürgen** (Empfehlung statt Netz-Code) · `Entscheid`+`Bau` · ⏱ ~2–3 Sitzungen
   Freigegeben als Planpunkt (Klaus 2026-10-15). Ein bekannter Knoten unterschreibt:
   „Diese Kennung kenne ich." Steht zwischen dem offenen Mycel und dem eigenen Netz
@@ -254,10 +263,11 @@ Vor dem Bau von Modul 10 nachsehen, was PWA Toolpoint und family-project schon h
 (Melde-Knopf, „geprüft/ungeprüft“, aus dem Studio steuerbar — Klaus 2026-10-15, in dieser
 Sitzung nicht angesehen).
 
-**Offen zum Entscheid (Tafel-Widerspruch, benannt):** Karte 12 sagt, die Sperrliste wird
-**nicht öffentlich** verteilt (sonst erfährt der Angreifer davon). S4 sagt: **signiert und
-öffentlich** wie in Kimboard, damit jede App sie lesen kann. Beides zugleich geht nicht.
-Klaus entscheidet vor dem Bau von S4.
+**Entschieden (Klaus 2026-10-16, Tafel-Widerspruch aufgelöst):** Karte 12 sagte, die
+Sperrliste wird **nicht öffentlich** verteilt (sonst erfährt der Angreifer davon). S4 sagt:
+**signiert und öffentlich** wie in Kimboard, damit jede App sie lesen kann. Klaus hat
+„öffentlich, signiert“ gewählt. Der Preis bleibt benannt: ein Gesperrter sieht es und kann
+eine neue Kennung erzeugen; dagegen tragen S3 und S5.
 
 ## Reihenfolge (freigegeben, Klaus 2026-10-15)
 
