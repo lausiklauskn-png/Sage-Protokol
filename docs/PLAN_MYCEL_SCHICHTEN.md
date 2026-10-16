@@ -256,6 +256,14 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
     Sage-Protokol, Schlüssel auf der Sage-Page). In Sage gehen dazu Sperren und Lösen, und
     Bürgschaften für die Märkte. In einem eigenen Netz ist es die Identität, die im Feld
     `admin` steht.
+  - **Name und Zugang (Klaus 2026-10-16):** heißt überall **Studio** und öffnet sich mit
+    einem langen Druck (1,5 s) auf die Fußzeile mit dem ©, so wie es PWA Toolpoint
+    (`assets/app.js`) und family-projekt.de (`assets/studio-markt.js`) heute schon tun. Die
+    Netz-Verwaltung ist ein Bereich im vorhandenen Studio, kein zweiter Zugang. Sage bekommt
+    dasselbe Studio auf dieselbe Weise. **Benannt:** das Verstecken hält Besucher fern, es
+    schützt nichts. Geschützt ist das Ändern durch die Unterschrift (Schlüssel nur in Klaus'
+    Browser) und in family-projekt.de zusätzlich durch das Studio-Passwort; die Listen
+    selbst sind ohnehin öffentlich im Raum.
   - **Keine Höchstzahl für einen Bürgen.** Sage-Protokol und jeder Markt dürfen für beliebig
     viele Apps bürgen; die 8 in `RDV_VOUCH_PER_CARD_MAX` sind die Bürgschaften, die EINE
     Karte mitträgt.
