@@ -1,4 +1,4 @@
-# Übergabe 2026-10-17 · Überblick „Mit dem Mycel verbinden“ und Siegel
+# Übergabe 2026-10-16 · Überblick „Mit dem Mycel verbinden“ und Siegel
 
 **Rolle:** Hauptsitzung · **Auftrag:** `docs/sessions/BRIEF_2026-10-17_ueberblick_mycel_siegel.md`
 **Arm:** voll (CLAUDE.md, Regeln, Skills `menschlich-schreiben`, Pflichtleseliste)

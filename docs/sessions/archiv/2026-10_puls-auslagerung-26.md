@@ -1,6 +1,6 @@
-# PULS-Auslagerung 2026-10-17 — zwei Einträge vom 2026-10-13
+# PULS-Auslagerung 2026-10-16 — zwei Einträge vom 2026-10-13
 
-**Ausgelagert am 2026-10-17**, weil `docs/PULS.md` mit dem Eintrag „Überblick Mycel und
+**Ausgelagert am 2026-10-16**, weil `docs/PULS.md` mit dem Eintrag „Überblick Mycel und
 Siegel“ über der 3000-Zeilen-Grenze gestanden hätte (2979 vorher). Die Schutz-Klausel im Kopf
 von PULS.md verlangt **auslagern statt kürzen**: hier stehen die Einträge **wortwörtlich**.
 

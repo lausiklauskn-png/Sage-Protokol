@@ -1,4 +1,4 @@
-// Gegenprobe sicherheit.html (2026-10-17) — jeder Riegel wird in einer WEGWERF-KOPIE
+// Gegenprobe sicherheit.html (2026-10-16) — jeder Riegel wird in einer WEGWERF-KOPIE
 // der Seite einzeln gebrochen; tests/smoke_sicherheit_seite.mjs muss dann rot werden,
 // und eine rote Zeile muss den Namen der Zusicherung tragen. Der echte Baum wird nie
 // angefasst (LEHREN § 10).

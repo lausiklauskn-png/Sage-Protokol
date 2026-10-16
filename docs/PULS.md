@@ -31,7 +31,7 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
-## 2026-10-17 · Überblick „Mit dem Mycel verbinden“ und Siegel: sicherheit.html neu, DE/EN, in 27 Träger (Hauptsitzung)
+## 2026-10-16 · Überblick „Mit dem Mycel verbinden“ und Siegel: sicherheit.html neu, DE/EN, in 27 Träger (Hauptsitzung)
 - **Startprüfung:** frisch von `origin/main`; Auftrag `sessions/BRIEF_2026-10-17_ueberblick_mycel_siegel.md`.
 - **Klaus' Antworten:** `sicherheit.html` **erweitern** (keine neue Seite) · **Deutsch und Englisch**. Mitten in der Sitzung dazu: die neuen Schutzschichten müssen hinein; **Wort-Links** („auf ein Hauptwort klicken, hinspringen, und wieder zurück“); **warum Schutz nötig ist** aus den Papers.
 - **Gebaut (Sage):** `sicherheit.html` als Überblick in Stichworten, 14 Abschnitte (Mycel, Nutzen, Fenster, Karten, Siegel, Lampen, **Warum es Schutz braucht**, Schichten S1–S5b samt Prüfliste und eigenem Netz, eigenes Netz einrichten, Empfehlen und Sperren, Regel, Grenzen aus Paper S § 12, Mehr lesen, Wörterbuch). Zwei Sprachblöcke `#de`/`#en`; Sprache: `?lang=` · `data-sprache-schluessel` · Seite drumherum · Browser. Jedes unterstrichene Wort springt; „↩ zurück“ schwebend und am Ziel, zweiter Tipp aufs Wort oder Tipp aufs erklärte Wort führt zurück; ohne Skript gehen die Sprünge trotzdem. Knopf- und Lampennamen aus dem Code gelesen (Modul 16, 16b, 17, 23-UI, 23b), nicht aus dem Gedächtnis.
@@ -42,6 +42,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **PRs (alle gemergt):** Alis-Moderaum #81 · Auslieferung-Pruefer #62 · Jasons-Tresor #195 · Kim-Bell #81 · Kim-sync #28 · Kimboard #161 · Kimseek #101 · Kuechenzettel #17 · Mein-In-and-Out-Book #17 · Mein-Mixarium #258 · Mein-Rezeptbuch #447 · Mein-Tresor #143 · Mein-WorkFloh #276 · Mein-Workfloh-Page #44 · Muttis-Rezeptbuch #252 · PWA-Toolpoint #177 · Perfect-Skin-Beauty #81 · Perfect-Skin-Fashion #53 · Privat-Brain #114 · SB-KIMTool-Point #195 · Sende-Pruefer #89 · Tomys-Hub #255 · Workflow-Calculate #30 · Workflow-Needs #27 · Workflow-PDF #125 · kim-hub-company #85 · family-project #369. Eigene Proben je Träger grün (`npm test` rc=0; Mixarium, Muttis, Tomys-Hub ohne `package.json`, dort kennt keine Probe die Seite). **Auf `main` nachgezählt: 27/27.**
 - **Nicht gemessen:** Tablet (Sprünge mit dem Finger, iframe im Siegel am Gerät). Vier Träger verlieren ihr eigenes Aussehen der Seite (Pflege § 37). Die russische Oberfläche des Auslieferungsprüfers bekommt die Seite auf Deutsch oder Englisch (die Seite kennt nur zwei Sprachen). Nach den Merges am Gerät ⟳ / Hard-Reload. SIGNAL `seq` 99.
 - **Offen:** Klaus' Sichttest; Paper S weiter im Gegenlesen; Pflege § 36/37.
+- **Datum berichtigt (eigener Fehler):** zuerst stand überall 2026-10-17 (der Name des Briefs), gearbeitet wurde am 2026-10-16. In Sage nachgezogen (Sage #1149); in den 27 Kopien steht das falsche Datum nur im Kopf-Kommentar von `sicherheit.html` und in einem Kommentar der family-project-Probe, es kommt mit dem nächsten Verteilen mit.
 
 ## 2026-10-16 abends · Sammel-Brief: Schritt 6 wartet auf Klaus (Hauptsitzung)
 - **Startprüfung:** Sitzungsliste: nur diese Sitzung lief (zwei weitere untätig seit 13:58 und 16:33); kein offener PR in Sage. Erster offener Schritt: 6. Alle übrigen Schritte stehen auf `main` als erledigt.
@@ -515,7 +516,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Nächster Schritt:** Kanon 05b/23 nach dem Brief, INTERFACES zuerst.
 
-## Zwei Sitzungen vom 2026-10-13 (Modul 03 netzweit verteilt; Modell vom eigenen Server) — ausgelagert am 2026-10-17
+## Zwei Sitzungen vom 2026-10-13 (Modul 03 netzweit verteilt; Modell vom eigenen Server) — ausgelagert am 2026-10-16
 
 > **↓ Ausgelagert.** Die zwei Einträge stehen **wortwörtlich** in
 > [`docs/sessions/archiv/2026-10_puls-auslagerung-26.md`](sessions/archiv/2026-10_puls-auslagerung-26.md)

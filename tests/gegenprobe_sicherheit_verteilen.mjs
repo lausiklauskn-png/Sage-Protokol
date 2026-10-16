@@ -1,4 +1,4 @@
-// Gegenprobe tools/sicherheit-verteilen.mjs (2026-10-17) — jeder Riegel wird in einer
+// Gegenprobe tools/sicherheit-verteilen.mjs (2026-10-16) — jeder Riegel wird in einer
 // WEGWERF-KOPIE des Werkzeugs gebrochen; tests/smoke_sicherheit_verteilen.mjs muss rot werden,
 // und eine rote Zeile muss den Namen der Zusicherung tragen. Der echte Baum wird nie angefasst.
 // NUR_ANKER=1 → nur prüfen, ob jeder Anker genau einmal trifft.

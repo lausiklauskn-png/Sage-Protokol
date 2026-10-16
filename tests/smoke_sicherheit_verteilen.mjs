@@ -1,4 +1,4 @@
-/* smoke_sicherheit_verteilen.mjs — was tools/sicherheit-verteilen.mjs von einer App erhält (2026-10-17).
+/* smoke_sicherheit_verteilen.mjs — was tools/sicherheit-verteilen.mjs von einer App erhält (2026-10-16).
  *
  * Lauf:  node tests/smoke_sicherheit_verteilen.mjs [pfad/zum/werkzeug.mjs]
  * Ohne Browser. Gefragt wird `anpassen(alt)` an gestellten alten Seiten:

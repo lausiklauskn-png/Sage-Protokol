@@ -1,4 +1,4 @@
-/* smoke_sicherheit_seite.mjs — sicherheit.html, der Überblick zu Mycel, Siegel und Schutz (2026-10-17).
+/* smoke_sicherheit_seite.mjs — sicherheit.html, der Überblick zu Mycel, Siegel und Schutz (2026-10-16).
  *
  * Lauf:  node tests/smoke_sicherheit_seite.mjs [pfad/zur/sicherheit.html] [--traeger]
  * Teil A liest die Datei (ohne Browser). Teil B braucht `playwright-core`;

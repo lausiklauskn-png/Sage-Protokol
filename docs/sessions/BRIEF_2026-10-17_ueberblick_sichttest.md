@@ -1,10 +1,10 @@
-# Brief: Sichttest des Überblicks, dann Pflege (Stand 2026-10-17)
+# Brief: Sichttest des Überblicks, dann Pflege (Stand 2026-10-16)
 
 ## Was es gibt
 
-`sicherheit.html` ist seit dem 2026-10-17 ein Überblick in Stichworten zu Mycel, Siegel und
+`sicherheit.html` ist seit dem 2026-10-16 ein Überblick in Stichworten zu Mycel, Siegel und
 Schutz (S1–S5b), Deutsch und Englisch, mit Wort-Sprüngen und „↩ zurück“. Er liegt in 27
-Trägern (Übergabe `sessions/archiv/2026-10-17_ueberblick-mycel-siegel.md`). Verteilt wird mit
+Trägern (Übergabe `sessions/archiv/2026-10-16_ueberblick-mycel-siegel.md`). Verteilt wird mit
 `node tools/sicherheit-verteilen.mjs [--schreiben]`; was eine App anpasst, gehört zwischen die
 Marken `APP-EIGEN-DE/-EN/-KOPF/-FUSS` (`docs/PFLICHT_MODULE.md` § sicherheit.html).
 
@@ -27,11 +27,11 @@ Marken `APP-EIGEN-DE/-EN/-KOPF/-FUSS` (`docs/PFLICHT_MODULE.md` § sicherheit.ht
 
 ```
 Du bist eine Hauptsitzung in Sage-Protokol. Auftrag:
-docs/sessions/BRIEF_2026-10-18_ueberblick_sichttest.md
+docs/sessions/BRIEF_2026-10-17_ueberblick_sichttest.md
 
 Startprüfung: bash "$CLAUDE_PROJECT_DIR/.claude/hooks/refresh-origin-main.sh",
 Sitzungsliste und offene PRs ansehen, frisch von origin/main abzweigen.
-Pflichtleseliste: CLAUDE.md, docs/PULS.md (ab 2026-10-17), der Brief oben,
+Pflichtleseliste: CLAUDE.md, docs/PULS.md (ab 2026-10-16), der Brief oben,
 docs/PFLICHT_MODULE.md (Abschnitt sicherheit.html), sicherheit.html.
 Skill: menschlich-schreiben.
 
