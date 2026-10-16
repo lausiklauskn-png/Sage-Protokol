@@ -2,7 +2,9 @@
 // docs/PLAN_MYCEL_SCHICHTEN.md, INTERFACES § Modul 23 S5).
 //
 // Klaus' Werte (2026-10-15): Kette höchstens 2 Schritte · Anker „Klaus + eigene
-// Kontakte" · Ablauf 1 Jahr. Echtes Modul 01/02, echt signierte Sporen; nur das
+// Kontakte" · Ablauf 1 Jahr — seit S5b (Klaus 2026-10-16) höchstens 180 Tage,
+// Widerruf mit Grund, der Bürge haftet nur für die eine App. Die S5b-Fälle
+// stehen in tests/smoke_s5b_buergen_maerkte.mjs. Echtes Modul 01/02, echt signierte Sporen; nur das
 // Relais ist gestellt. Gegenprobe: tests/gegenprobe_s5_buergen.mjs.
 
 import "fake-indexeddb/auto";
@@ -49,11 +51,12 @@ async function spore(slot, name) {
   return Sp.generateOwnSpore({ domain: "Test", endpoint: "https://" + slot + ".example/", nodeType: "hybrid", nodeName: name }, slot);
 }
 const now = () => Math.floor(Date.now() / 1000);
-const JAHR = 365 * 24 * 3600;
+const JAHR = 180 * 24 * 3600;   // S5b: die Frist heißt hier weiter JAHR, gilt aber 180 Tage
 const ohneSig = ({ sig, ...x }) => x;
 async function zettel(slot, sp, felder) {
   const z = { kind: "sbkim-vouch", v: 1, voucher: sp.id, ts: now(), spore: sp, ...felder };
   if (z.kind === "sbkim-vouch" && z.exp === undefined) z.exp = z.ts + JAHR;
+  if (z.kind === "sbkim-vouch-revoke" && z.reason === undefined) z.reason = "Probe";   // S5b: Grund Pflicht
   z.sig = await Sp.signDetached(ohneSig(z), slot);
   return z;
 }
@@ -77,13 +80,13 @@ const status = async (cards, opts) => Object.fromEntries((await L.vouchTrust(car
   const K = knoten("K");
   await K.init({ nodeName: "Klaus", spore: gesicht("k"), dbSuffix: "k" });
   const r = await K.createVouch(sA.id);
-  t("A1 createVouch: signiert, Frist genau 1 Jahr, an die Kennung gebunden",
+  t("A1 createVouch: signiert, Frist genau 180 Tage, an die Kennung gebunden",
     r.ok && r.zettel.kind === "sbkim-vouch" && r.zettel.voucher === sK.id && r.zettel.subject === sA.id &&
     r.zettel.exp - r.zettel.ts === JAHR && await Sp.verifyDetached(ohneSig(r.zettel), r.zettel.sig, sK.publicKey), JSON.stringify(r).slice(0, 160));
   const selbst = await K.createVouch(sK.id);
   t("A2 für sich selbst bürgt man nicht", selbst.ok === false, JSON.stringify(selbst));
   const lang = await K.createVouch(sA.id, { days: 900 });
-  t("A3 längere Frist wird auf 1 Jahr begrenzt", lang.ok && lang.zettel.exp - lang.zettel.ts === JAHR, String(lang.zettel && lang.zettel.exp - lang.zettel.ts));
+  t("A3 längere Frist wird auf 180 Tage begrenzt", lang.ok && lang.zettel.exp - lang.zettel.ts === JAHR, String(lang.zettel && lang.zettel.exp - lang.zettel.ts));
   const W = knoten("W");
   await W.init({ nodeName: "Ohne", spore: gesicht(null), dbSuffix: "w" });
   const ohne = await W.createVouch(sA.id);
@@ -130,7 +133,7 @@ const status = async (cards, opts) => Object.fromEntries((await L.vouchTrust(car
   const abgelaufen = await zettel("k", sK, { subject: sA.id, ts: now() - JAHR - 100, exp: now() - 100 });
   t("G4 abgelaufene Bürgschaft zählt nicht", (await status([karte(sA, { vouches: [abgelaufen] })])).Anna?.status === "unverbuergt");
   const zuLang = await zettel("k", sK, { subject: sA.id, exp: now() + JAHR + 3600 });
-  t("G5 Frist über 1 Jahr: ungültig, nicht still gekürzt", (await status([karte(sA, { vouches: [zuLang] })])).Anna?.status === "unverbuergt");
+  t("G5 Frist über 180 Tage: ungültig, nicht still gekürzt", (await status([karte(sA, { vouches: [zuLang] })])).Anna?.status === "unverbuergt");
   const zukunft = await zettel("k", sK, { subject: sA.id, ts: now() + 3600, exp: now() + 7200 });
   t("G6 Zeitstempel in der Zukunft zählt nicht", (await status([karte(sA, { vouches: [zukunft] })])).Anna?.status === "unverbuergt");
   const ohneSigZ = ohneSig(echt);
@@ -146,7 +149,8 @@ const status = async (cards, opts) => Object.fromEntries((await L.vouchTrust(car
   const neu = await zettel("k", sK, { subject: sA.id, ts: now() - 10 });
   t("W2 eine neuere Bürgschaft gilt wieder", (await status([karte(sA, { vouches: [alt, neu] }), karte(sK, { revocations: [weg] })])).Anna?.status === "verbuergt");
   const fremd = await zettel("b", sB, { kind: "sbkim-vouch-revoke", subject: sA.id, ts: now() - 5 });
-  t("W3 Widerruf eines anderen zählt nicht", (await status([karte(sA, { vouches: [alt] }), karte(sB, { revocations: [fremd] })])).Anna?.status === "verbuergt");
+  // `neu`, nicht `alt`: seit S5b merkt sich der Leser Klaus' Widerruf aus W1 (Punkt 5).
+  t("W3 Widerruf eines anderen zählt nicht", (await status([karte(sA, { vouches: [neu] }), karte(sB, { revocations: [fremd] })])).Anna?.status === "verbuergt");
   const gefaelscht = { ...weg, subject: sB.id };
   const kB = await zettel("k", sK, { subject: sB.id, ts: now() - 100 });
   t("W4 gefälschter Widerruf nimmt nichts weg", (await status([karte(sB, { vouches: [kB] }), karte(sK, { revocations: [gefaelscht] })])).Bert?.status === "verbuergt");
@@ -158,7 +162,8 @@ const status = async (cards, opts) => Object.fromEntries((await L.vouchTrust(car
   const aB = await zettel("a", sA, { subject: sB.id });
   const aF = await zettel("a", sA, { subject: sF.id });
   const s = await status([karte(sA, { vouches: [kA] }), karte(sB, { vouches: [aB, kA] }), karte(sF, { vouches: [aF, kA] })], { flagged: [sF.id] });
-  t("H1 Bürge eines Aufgefallenen verliert seine Bürgschaften", s.Bert?.status === "unverbuergt", JSON.stringify(s.Bert));
+  // S5b (Klaus 2026-10-16: „alle haften doch nicht für einen"): nur die eine Bürgschaft verfällt.
+  t("H1 Bürge eines Aufgefallenen behält seine übrigen Bürgschaften (S5b: Haftung nur je App)", s.Bert?.status === "verbuergt", JSON.stringify(s.Bert));
   t("H2 der Aufgefallene selbst ist nie verbürgt", s["Fälscher"]?.status === "unverbuergt" && s["Fälscher"].reason === "aufgefallen", JSON.stringify(s["Fälscher"]));
   t("H3 der Bürge selbst bleibt verbürgt (sein Bürge haftet nicht mit)", s.Anna?.status === "verbuergt", JSON.stringify(s.Anna));
   const s2 = await status([karte(sA, { vouches: [kA] }), karte(sB, { vouches: [aB, kA] })]);
@@ -191,7 +196,7 @@ const status = async (cards, opts) => Object.fromEntries((await L.vouchTrust(car
   t("R4 discover: Anna erscheint verbürgt von Klaus", a1?.vouch?.status === "verbuergt" && a1.vouch.by[0] === sK.id, JSON.stringify(a1 && a1.vouch));
   // Klaus widerruft und meldet sich an; danach legt ein Dritter eine NEUERE Karte mit
   // Klaus' (öffentlicher) Spore aus — ohne den Widerruf.
-  const w = await K.createRevocation(sA.id);
+  const w = await K.createRevocation(sA.id, "Probe: zurückgezogen");
   await K.addCarried(w.zettel);
   await K.announce();
   R.st.push({ pubkey: "dritter", kind: 1, created_at: now() + 1, tags: [["t", "sbkim-rdv"]],
@@ -207,7 +212,7 @@ const status = async (cards, opts) => Object.fromEntries((await L.vouchTrust(car
   const o = await O.vouchTrust([karte(sA, { vouches: [v.zettel] })]);
   t("R8 ohne Prüf-Modul: unverbürgt mit Grund, nie still verbürgt", o[0].vouch.status === "unverbuergt" && /nicht prüfbar/.test(o[0].vouch.reason || ""),
     JSON.stringify(o[0].vouch));
-  t("R9 _meta: Kette 2, Frist 1 Jahr", Le._meta.vouchChainMax === 2 && Le._meta.vouchTtlSec === JAHR && Le._meta.vouchAnchors === 1,
+  t("R9 _meta: Kette 2, Frist 180 Tage", Le._meta.vouchChainMax === 2 && Le._meta.vouchTtlSec === JAHR && Le._meta.vouchAnchors === 1,
     JSON.stringify([Le._meta.vouchChainMax, Le._meta.vouchTtlSec, Le._meta.vouchAnchors]));
   const rang = Le.rankCardsByQuery([{ ...karte(sA), vouch: { status: "unverbuergt" } }, { ...karte(sB), vouch: { status: "verbuergt" } }], null);
   t("R10 ohne Frage-Vektor bleibt die Reihenfolge unverändert", rang.map(c => c.nodeName).join(",") === "Anna,Bert");
@@ -381,6 +386,7 @@ const SAGE = "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA";
     await pg.click("[data-sbkim-kontakt-merken]");
     await pg.waitForTimeout(100);
     r.kontakte = await pg.evaluate(() => window.SbkimRendezvous.loadVouchContacts());
+    await pg.fill("[data-sbkim-widerruf-grund]", "Probe");   // S5b: Grund Pflicht
     await pg.click("[data-sbkim-widerruf]");
     await pg.waitForTimeout(150);
     r.ruf = await pg.evaluate(() => window.__ruf.slice());

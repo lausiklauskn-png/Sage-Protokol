@@ -5509,13 +5509,14 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
                        subject:<nodeId>, ts:<Sek.>, exp:<Sek.>,
                        spore:<Spore des Bürgen>, sig }
         Widerruf   = { kind:"sbkim-vouch-revoke", v:1, voucher, subject, ts,
-                       spore, sig }
+                       reason, spore, sig }      (reason: S5b, Pflicht)
         sig = Modul 02 signDetached(<Zettel ohne sig>) mit dem Schlüssel des
         Bürgen (wie Antwort-/Frage-Zettel v2). Gültig nur, wenn:
         spore.id === voucher · verifyForeignSpore(spore).valid ·
         verifyDetached(…, spore.publicKey) · voucher !== subject ·
         ts ≤ jetzt + RDV_VOUCH_SKEW_SEC (600) · bei der Bürgschaft zusätzlich
-        ts < exp ≤ ts + RDV_VOUCH_TTL_SEC (365 Tage) und exp > jetzt.
+        ts < exp ≤ ts + RDV_VOUCH_TTL_SEC (seit S5b 180 Tage, vorher 365) und
+        exp > jetzt · beim Widerruf zusätzlich reason (S5b, unten).
         Eine Bürgschaft mit längerer Frist ist UNGÜLTIG (nicht still gekürzt).
         Ein Widerruf schlägt jede Bürgschaft desselben voucher→subject mit
         ts ≤ Widerruf.ts; eine NEUERE Bürgschaft gilt wieder.
@@ -5551,14 +5552,15 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
           depth : Schritte (0 bei anker/kontakt) · reason : Text oder null
           „Der Bürge haftet": opts.flagged / init({vouchFlagged}) = Kennungen,
           die aufgefallen sind (von Hand; seit S4 zusätzlich jede gesperrte Kennung).
-          Ein Bürge mit gültiger Bürgschaft für eine aufgefallene Kennung
-          verliert ALLE seine Bürgschaften (zählen nicht mehr); eine
-          aufgefallene Kennung ist nie „verbürgt". Wurzeln bleiben Wurzeln.
+          Seit S5b verfällt nur die Bürgschaft FÜR die aufgefallene Kennung;
+          die übrigen des Bürgen gelten weiter (bis S5b: der Bürge verlor
+          ALLE seine Bürgschaften — ersetzt, unten). Eine aufgefallene
+          Kennung ist nie „verbürgt". Wurzeln bleiben Wurzeln.
         discover() hängt je Karte `vouch` an (opts.vouchTrust:false schaltet ab).
         GATET NICHTS: der 0.80-Riegel bleibt, unverbürgte Karten bleiben
         sichtbar und werden weiter gefragt. Vorrang in rankCardsByQuery:
         Teil 2, unten.
-        Ausstellen: createVouch(subjectId, {days?}) / createRevocation(subjectId)
+        Ausstellen: createVouch(subjectId, {days?}) / createRevocation(subjectId, reason)
         signieren mit der eigenen Identität (Modul 02 signDetached); fail-soft
         ok:false ohne Identität. addCarried(zettel) legt eine erhaltene
         Bürgschaft / einen eigenen Widerruf in den eigenen Vorrat (geprüft,
@@ -5692,6 +5694,75 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         S3 und S5, nicht S4). Ein Knoten ohne Kontakt zu einer Karte mit der
         Liste kennt sie nicht. Geht der Schlüssel des Netzadmins verloren,
         bleibt die letzte Liste gültig, wächst aber nicht mehr.
+
+    🔧 S5b „Bürgen für fremde Apps in den Märkten" — Teil 1: Protokoll
+        (2026-10-16, docs/PLAN_MYCEL_SCHICHTEN.md § S5b; Entscheide Klaus
+        2026-10-16). TAFEL-EVOLUTION, ausdrücklich benannt: S5 Teil 1 oben ist
+        an drei Stellen ersetzt (Haftung, Frist, Widerruf). Keine neue Spore.
+        1. Der Bürge haftet nur für die eine App. vouchTrust verwirft nur die
+           Kanten voucher→subject mit aufgefallenem/gesperrtem subject; die
+           übrigen des Bürgen gelten weiter. Benannter Preis: eine
+           automatische Folge für einen Bürgen, der für schlechte Apps
+           bürgt, gibt es nicht mehr; dafür bleiben sein eigener Widerruf
+           (durch SEINEN Bürgen) und die Sperrliste (S4).
+        2. Ablauf höchstens RDV_VOUCH_TTL_SEC = 180 Tage (netzweit). Eine
+           längere Frist ist UNGÜLTIG, nicht still gekürzt. createVouch
+           stellt ohne days 180 Tage aus. Echte Bürgschaften mit 365 Tagen
+           sind nicht bekannt; ob es welche gibt, steht nur in Klaus' Browser.
+        3. Hinweis vor dem Ablauf: vouchExpiring({withinSec?}) → Promise<
+           [{voucher, exp, ts}]> — eigene mitgetragene Bürgschaften (subject
+           = eigene Kennung), je Bürge die neueste, Ablauf in den nächsten
+           RDV_VOUCH_WARN_SEC (30 Tage). Ohne Identität → []. 23-UI zeigt im
+           Kasten „🤝 Bürgschaften" „⏳ Bürgschaft von ‹Bürge› läuft am …
+           ab" (Name nur aus den eigenen Kontakten, sonst Kennung) und
+           ergänzt die Überschrift um „· ⏳ läuft bald ab". Verlängern kann
+           nur der Bürge (neu unterschreiben). Das Siegel der App zeigt den
+           Hinweis noch nicht (app-eigener Glue, benannt).
+        4. Ein Widerruf trägt immer einen Grund: Feld `reason` (String,
+           getrimmt nicht leer, ≤ RDV_REVOKE_REASON_MAX = 200 Zeichen), steht
+           unter der Signatur. Ohne Grund ist der Widerruf UNGÜLTIG.
+           createRevocation(subjectId, reason) → ok:false ohne Grund. Geprüft
+           wird nur, dass ein Grund dasteht, nicht ob er stimmt. Alte
+           Widerrufe ohne Grund sind damit ungültig; echte sind nicht bekannt.
+        5. Der Leser speichert gesehene Widerrufe: Speicher
+           "sbkim_widerrufe_" + dbSuffix (ohne dbSuffix nicht gespeichert),
+           {v:1, revocations:[…]} ≤ RDV_REVOKE_STORE_MAX (256), neueste
+           zuerst. Jeder Widerruf wird beim Lesen NEU geprüft (geteilte
+           Adresse) und hat ein eigenes Prüf-Budget vor den Zetteln aus dem
+           Raum. Ein Widerruf mit ts + RDV_VOUCH_TTL_SEC < jetzt fällt heraus
+           (jede Bürgschaft, die er schlagen könnte, ist abgelaufen).
+           loadSeenRevocations() → die gespeicherte Liste. Geprüfte
+           Unterschriften merkt sich das Modul im Arbeitsspeicher (≤ 1000,
+           Schlüssel = der ganze Zettel); Form und Zeit werden jedes Mal neu
+           geprüft.
+        6. Der Widerruf reist NICHT mit der Sperrliste (zurückgestellt, nicht
+           verworfen): mit Punkt 1 schützt er niemanden mehr vor Mithaftung.
+        „Antworte nur Verbürgten" (Firmennetz, Klaus 2026-10-16):
+          Einstellung je Knoten, Vorgabe AUS (wie bisher).
+          setAnswerOnlyVouched(bool) speichert sie im Bürgen-Speicher
+          (Feld onlyVouched; ohne dbSuffix ok:false); init({answerOnlyVouched})
+          setzt sie für diese Sitzung und schlägt den Speicher, bis
+          setAnswerOnlyVouched sie wieder schreibt. answerOnlyVouched() → Boolean.
+          AN: enableAnswering beantwortet eine Frage nur, wenn sie
+          unterschrieben ist (S1 "bestaetigt") UND ihr spore.id beim
+          Antwortenden Netzadmin, eigener Kontakt oder verbürgt ist
+          (vouchTrust). Sonst still nicht beantwortet, gezählt in
+          _meta.fragenNichtVerbuergt. Die Bürgschaften dazu kommen aus der
+          Frage selbst, aus dem letzten discover()-Lauf und dem eigenen Vorrat.
+        Frage-Zettel: neues optionales Feld `vouches` (≤ RDV_QUERY_VOUCH_MAX
+          = 4, die eigenen mitgetragenen Bürgschaften, neueste zuerst). Steht
+          im unterschriebenen Inhalt (S1) und im Aufwand (S3); jeder Zettel
+          darin wird für sich geprüft. Alte Antworter ignorieren das Feld.
+        _meta zusätzlich: vouchWarnSec, revokeReasonMax, queryVouchMax,
+          answerOnlyVouched, fragenNichtVerbuergt.
+        ⚠ Benannte Grenze: „antworte nur Verbürgten" regelt, wer ANTWORTEN
+          bekommt, nicht wer etwas LESEN kann — Karten und Fragen im Raum
+          sieht jeder, der das Relais erreicht (keine pubkey_whitelist,
+          Klaus 2026-10-13).
+        Offen (eigene Sitzungen, Plan § S5b): Rollout in alle Träger,
+          Netz-Verwaltung als Kanon in Sage, Studio in PWA Toolpoint und
+          family-project (Feld nodeId je Eintrag, Bürgen/Verlängern/
+          Widerrufen mit Grund, „Sperren" widerruft zuerst).
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
