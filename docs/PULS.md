@@ -31,6 +31,17 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 · S4 Sperrliste gebaut und in 29 Träger ausgerollt (Hauptsitzung)
+- **Startprüfung:** kein offener PR in Sage; erster offener Schritt: 5 (S4, Klaus' Entscheid fehlte). **Zwei Sitzungen am selben Brief, 53 s nacheinander gestartet** („Sage-Protokol 1/2 Abarbeitung“); die zweite fand die erste nur über die Sitzungsliste, nicht über PRs/Zweige (nichts gepusht), und brach ohne Bau ab (Kimhub #394). Diese Sitzung bestätigte sich danach über `list_sessions` als einzige laufende. Schritt 0 im Brief nennt jetzt die Sitzungsliste.
+- **Entscheid (Klaus 2026-10-16):** öffentlich und signiert; liegt in Sage, Sage-Protokol unterschreibt (auf Nachfrage bestätigt: dieselbe Kennung wie beim Bürgen, die Offenheit des Repos ändert nichts). Tafel-Widerspruch zu Karte 12 aufgelöst, Karte 12 benannt.
+- **Gebaut (Sage #1129):** INTERFACES § Modul 23 S4 zuerst. Zettel `sbkim-blocklist` (admin, ts, ≤ 256 ids, spore, sig), gültig nur vom Netzadmin des Lesers; reist auf den Karten mit (kein Abruf), Speicher `sbkim_sperre_<suffix>` beim Lesen neu geprüft. Gesperrte Karten fallen aus `discover()` (`gesperrt`), ihre Fragen werden nicht beantwortet, Antworten verworfen (auch `fetchAnswers`), für S5 „aufgefallen“. 23-UI: Kasten „⛔ Sperrliste“, Knopf „⛔ Sperren“ nur beim Netzadmin. Siegel-Aspekt S4 DE/EN.
+- **Gemessen:** `smoke_s4_sperrliste` 33 grün (Oberfläche im Chromium DE/EN, 360 px), Gegenprobe 15/15, jede erste rote Zeile mit dem Namen der Zusicherung; F7 war zuerst blind (prüfte nur das Wort „Netzadmin“, das auch in einer anderen Meldung steht), vor dem Lauf geschärft. S5-Gegenprobe: 2 tote Anker aus dem eigenen Bau (wortgleiche Prüfzeilen), nachgezogen → 31/31. `smoke_netz_eigen` (neues Feld) 69 grün, Gegenprobe 14/14. `run_alle` 126 grün · 1 rot (eben diese, behoben) · 1 nicht lauffähig (`vorrat_wirkung`, mycel-karte nicht geklont); Baum vor/nach gleich.
+- **Eigene Fehler, benannt:** `git stash` während eines laufenden Probenlaufs (Lauf verworfen, neu gefahren); `pkill -f` traf die eigene Shell (Falle aus Kimhubs Verfassung); ein Python-Ersatz in Karte 12 griff nicht und ging ohne Abbruch durch (zweiter Commit).
+- **Rollout:** `kanon-verteilen --nur 16_siegel,23_rendezvous --schreiben`, 84 Dateien in 29 Trägern, keine Handarbeit. BookLedgerPro fehlte zuerst wieder (`origin/HEAD` auf altem Zweig, § 17). Proben je Repo grün; PWA-Toolpoint `smoke_detail` 1 rot und auf `main` gleich (Layout „Kopf 100 px, Überschrift bei 95“); Sende-Pruefer unter paralleler Last 1 rot, allein 682 grün.
+- **PRs:** Alis-Moderaum #78 · Auslieferung-Pruefer #59 · BookLedgerPro #340 · Company-Brain #30 · Jasons-Tresor #192 · Kim-Bell #78 · Kim-sync #25 · Kimboard #158 · Kimseek #98 · Kuechenzettel #14 · Mein-In-and-Out-Book #14 · Mein-Mixarium #255 · Mein-Rezeptbuch #444 · Mein-Tresor #140 · Mein-WorkFloh #273 · Mein-Workfloh-Page #41 · Muttis-Rezeptbuch #249 · PWA-Toolpoint #173 · Perfect-Skin-Beauty #78 · Perfect-Skin-Fashion #50 · Privat-Brain #111 · SB-KIMTool-Point #192 · Sende-Pruefer #86 · Tomys-Hub #252 · Workflow-Calculate #27 · Workflow-Needs #24 · Workflow-PDF #122 · family-project #365 · kim-hub-company #82. Auf `main` 29/29 mit `RDV_BLOCK_KIND`, 28 mit Siegel-Aspekt S4 (Company-Brain ohne Siegel); Verteiler danach „84 schon gleich · 0 hängen zurück“. Zweige danach gehoben (per `ls-remote` = `main`).
+- **Nicht gemessen:** Tablet; eine echte, von Sage-Protokol unterschriebene Liste (das kann nur Klaus am Gerät, im Sage-Mycel-Fenster: an der Karte „⛔ Sperren“); `sbkim/sperrliste.json` gibt es deshalb noch nicht. Nach dem Merge am Gerät ⟳ / Hard-Reload. SIGNAL `seq` 95.
+- **Offen:** Sammel-Brief Schritt 6 (Paper S: Gegenlesen, nennt S3/S4/S5 noch „geplant“); Pflege-Liste § 22–24; Privat-Brains Mycel-Fenster ohne Sperrlisten-Kasten (wie § 19).
+
 ## 2026-10-16 · S3 Rechenaufwand gebaut und in 29 Träger ausgerollt (Hauptsitzung)
 - **Startprüfung:** kein offener PR in Sage; erster offener Schritt im Sammel-Brief: 5 (S3). Parallel lief die Sitzung „Pflege-Liste § 18“ (#1126, anderes Thema); vor dem PR zusammengeführt, ihre § 22 behalten, meine Funde als § 23/§ 24.
 - **Entscheid (Klaus 2026-10-16):** 12 Stufen, Karten + Fragen, „Vorrang bei Enge“. Meine erste Zeitangabe (0,2 s / 40 s für 200 Karten) kam aus `crypto.subtle` und war falsch; vor dem Bau richtiggestellt (reines JS ~0,03 s, Rechner-Code ~0,01 s je Zettel). Klaus fragte, ob mehr Aufwand besser wäre, und blieb bei 12.
@@ -463,82 +474,11 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 **Offen:** netzweiter Rollout (bisher nur Workflow Calculate) · transformers.js kommt weiter von jsDelivr · im Browser am Tablet nicht gemessen. Die „~30 MB" in Texten der Apps sind falsch (gemessen 118 MB).
 
 
-## 2026-10-11 · Sitzungsabschluss
+## Vier Sitzungen vom 2026-10-11 (Sitzungsabschluss, Kopfleiste, Mycel-Knopf, Truhe-Raster) — ausgelagert am 2026-10-16
 
-Drei Aufträge, PRs #1066–#1068 gemergt und auf `main` nachgezählt.
-Forschungseintrag `2026-10-11-sage-truhe-raster-mycel-anker-kopfleiste` in
-`Kimhub/forschung/sitzungen.json` (Kimhub PR #360): 68 min, 9 Befunde.
-Übergabeprotokoll: `docs/sessions/archiv/2026-10-11_truhe-pwa-raster.md`.
-Auf Klaus' Wunsch kein Brief für eine Folge-Sitzung.
-
-**Nachtrag:** Klaus' Sichttest des Mycel-Knopfs bestanden („klappt
-einwandfrei"). Truhe-Raster und Kopfleiste am Handy nicht ausdrücklich
-bestätigt.
-
-## 2026-10-11 · Kopfleiste am Handy in zwei Zeilen, Meta-Angaben entfernt
-
-**Rolle:** Pflege-Sitzung (Auftrag von Klaus, Bildschirmfoto vom Handy).
-
-**Befund:** Branch/Protokoll/Schema/Update standen doppelt, als Zeile in der
-Kopfleiste und als eigener Kasten über dem Impressum. Am Handy brauchte die
-Kopfleiste vier Zeilen.
-
-**Getan (`index.html`):** beide Meta-Anzeigen samt `renderTopbar`/`renderFooter`
-und ihrem CSS entfernt. Unter 560 px: Lampen ohne Wörter, größere Punkte,
-„Installieren" nur als ⬇. Ein Tipp auf eine Lampe zeigt ihren Titel 4 s lang
-(FREMD behält seinen eigenen Klick dazu).
-
-**Gemessen** (Playwright): 360 · 390 · 412 px → zwei Zeilen, kein
-waagerechtes Überlaufen; der Lampen-Hinweis erscheint unter der Lampe.
-`npm test` 109 grün · 2 rot (die bekannten, Nachbar-Repos fehlen) · 1 nicht
-lauffähig.
-
-## 2026-10-11 · Mycel-Knopf dockt in Sages Leiste neben dem Siegel an
-
-**Rolle:** Pflege-Sitzung (Auftrag von Klaus, zwei Bildschirmfotos vom Tablet).
-
-**Befund:** Sage bot keinen `data-sbkim-mycel-platz` an. Hochgezogen schwebte
-der Knopf nur in Pixel-Abstand über der Leiste und lag im schmalen Fenster
-unter den Lampen.
-
-**Getan:** `index.html`: Platz direkt hinter der Lampen-/Siegel-Gruppe.
-`23_rendezvous_ui.js`: eine gemerkte `oben`-Lage plus angebotener Platz dockt
-beim Laden an, statt weiter zu schweben. Bundle-Kopien (`sbkim-bundle*/`)
-nachgezogen. Bauplan in `INTERFACES.md` („Die Leiste nimmt den Mycel-Knopf
-automatisch auf").
-
-**Gemessen:** Playwright an Sage, 1100 px und 1700 px, alte `oben`-Lage
-vorbelegt → Knopf jeweils im Platz, 32 px rechts vom Siegel-Rand.
-`smoke_bau23_mycel_platz` 19/19, Gegenprobe: 4b fällt ohne die Regel rot.
-`bauvorlagen`, `andocken_oben`, `bau23_rendezvous_ui` grün.
-
-**Offen:** Kanon-Verteilung von `23_rendezvous_ui.js` in die Apps; jede App
-braucht dazu ihren eigenen Platz in der Leiste.
-
-## 2026-10-11 · Truhe: die Mycel-PWAs stehen als Raster, nicht als Spalte
-
-**Rolle:** Pflege-Sitzung (Auftrag von Klaus, mit Bildschirmfoto vom Tablet).
-
-**Befund:** Im Truhe-Screen (`#vp-pwa-themes`) stand jedes Thema als eigener
-Block in einer eigenen Zeile. Alle 24 Themen tragen genau **eine** Karte, das
-Raster darin hatte also eine Karte links und daneben leere Spalten. Ergebnis:
-eine lange, linksbündige Spalte.
-
-**Getan:** nur CSS in `index.html`. Die Themen-Blöcke selbst bilden jetzt das
-Raster (`auto-fill`, mind. 260 px). Über `subgrid` stehen Etikett und Karte
-einer Zeile auf gleicher Höhe, alle Karten einer Zeile sind gleich hoch, die
-Adresse sitzt unten. Ohne `subgrid` bleibt es ein normales Raster. Kein JS
-geändert.
-
-**Gemessen** (Playwright, Chromium): 1280 px → vier Spalten, 390 px → eine
-Spalte. Kein waagerechtes Überlaufen bei beiden Breiten. `npm test`: 109 grün,
-2 rot, 1 nicht lauffähig. Die zwei roten (`smoke_geraetename_netzweit`,
-`smoke_service_worker_parst`) sind auf `origin/main` ohne diese Änderung
-genauso rot, weil die Nachbar-Repos nicht neben Sage liegen.
-`tests/manual_check.html`: ungeprüft, weil nur das Aussehen eines Screens
-geändert wurde und keine Modul-Logik.
-
-**Offen:** Sichttest am Tablet durch Klaus.
+> **↓ Ausgelagert.** Die vier Einträge stehen **wortwörtlich** in
+> [`docs/sessions/archiv/2026-10_puls-auslagerung-25.md`](sessions/archiv/2026-10_puls-auslagerung-25.md)
+> (77 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-07 (`vorrat_wirkung.mjs` steht im Läufer) — ausgelagert am 2026-10-16
 

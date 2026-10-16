@@ -241,6 +241,10 @@ Rollouts desselben Tages (Modul 03 am Vormittag, S1 am Nachmittag) still heraus.
 Der Lauf meldete es nur als „Commits hinter origin", nicht als fehlenden Träger.
 Gefunden hat es der Bau der Kimhub-Forschungsseite, der `origin/main` verlangt.
 Nachgeholt mit `git remote set-head origin main` im eigenen Klon (BookLedgerPro #336).
+**Zum dritten Mal am 2026-10-16 (S4):** ein frischer flacher Klon von BookLedgerPro holte nur
+den alten Vorgabe-Zweig, `origin/main` gab es gar nicht; der Verteiler meldete 28 statt 29 Träger.
+Nachgeholt mit `git fetch origin main:refs/remotes/origin/main` + `git remote set-head origin main`.
+Wer einen Rollout fährt, zählt die Träger vorher gegen die Liste im PULS.
 
 **Offen, zwei Wege:** Klaus stellt den Vorgabe-Zweig auf GitHub auf `main` (eine
 Einstellung, schwer zu raten, ob der andere Zweig Absicht ist) · oder der Verteiler

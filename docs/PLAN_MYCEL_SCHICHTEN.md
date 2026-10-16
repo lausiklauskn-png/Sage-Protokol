@@ -120,7 +120,7 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   28 mit Siegel-Aspekt (Company-Brain ohne Siegel); Verteiler danach „84 schon gleich · 0 hängen
   zurück“. **Offen:** Zeit am Tablet messen.
 
-- [ ] **S4 — Signierte Sperrliste im Mycel** (Gedächtnis) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
+- [x] **S4 — Signierte Sperrliste im Mycel** (Gedächtnis) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Wie in Kimboard: nur Klaus unterschreibt, nur nach oben (sperren); gelöst wird nur in der
   Datei. Gesperrte Kennungen erscheinen nicht auf der Karte und werden nicht beantwortet.
 
@@ -132,6 +132,11 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   Transport wie die Bürgschaften: die Liste reist signiert auf den Karten im Raum mit, die
   Apps laden sie nicht aus dem Repo (beim Laden kein Netz). `sbkim/sperrliste.json` ist
   Ablage und Beleg. Format und Wirkung: INTERFACES § Modul 23 S4.
+  **Gebaut 2026-10-16 (Sage #1129):** Probe `tests/smoke_s4_sperrliste.mjs` 33 grün, Gegenprobe
+  `tests/gegenprobe_s4_sperrliste.mjs` 15 von 15, je mit dem Namen der Zusicherung.
+  **Ausgerollt 2026-10-16:** 29 Träger je ein PR, auf `main` 29/29 mit S4-Code, 28 mit
+  Siegel-Aspekt (Company-Brain ohne Siegel). **Offen:** die erste echte Liste unterschreibt Klaus
+  am Gerät (Sage-Mycel-Fenster, „⛔ Sperren“); Tablet nicht gemessen.
 
 - [x] **S5 — Bürgen** (Empfehlung statt Netz-Code) · `Entscheid`+`Bau` · ⏱ ~2–3 Sitzungen
   Freigegeben als Planpunkt (Klaus 2026-10-15). Ein bekannter Knoten unterschreibt:
