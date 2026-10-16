@@ -257,6 +257,10 @@ einer Probe fest (`kimsync-v15`, dann `-v16`) — jeder Bump macht sie rot.
 Manifest, Kim-sync `kimsync-v17` in `tests/smoke.mjs`. Beide von Hand nachgezogen, die Proben
 der Apps haben es gefunden.
 
+**Zum vierten Mal am 2026-10-15 (S5-Teil-2-Rollout):** dieselben zwei, `?v=11` → `?v=12` im
+Manifest und `kimsync-v18` → `-v19` in `tests/smoke.mjs`. Die Proben der Apps haben es
+gefunden. Vier Treffer an einem Tag: ein Riegel im Verteiler wäre billiger als die Handarbeit.
+
 ### 19 · Apps mit eigenem Mycel-Fenster bekommen neue Anzeigen aus 23-UI nicht von selbst
 
 **Gemessen 2026-10-15 (S2-Rollout).** Privat-Brain zeigt den Raum in einem eigenen Fenster

@@ -107,7 +107,7 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   Wie in Kimboard: nur Klaus unterschreibt, nur nach oben (sperren); gelöst wird nur in der
   Datei. Gesperrte Kennungen erscheinen nicht auf der Karte und werden nicht beantwortet.
 
-- [ ] **S5 — Bürgen** (Empfehlung statt Netz-Code) · `Entscheid`+`Bau` · ⏱ ~2–3 Sitzungen
+- [x] **S5 — Bürgen** (Empfehlung statt Netz-Code) · `Entscheid`+`Bau` · ⏱ ~2–3 Sitzungen
   Freigegeben als Planpunkt (Klaus 2026-10-15). Ein bekannter Knoten unterschreibt:
   „Diese Kennung kenne ich." Steht zwischen dem offenen Mycel und dem eigenen Netz
   (Modul 23 „Netz", ein Code für alle).
@@ -169,8 +169,10 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   unterschreiben, Kontakt merken, widerrufen), Kasten „🤝 Bürgschaften“ (einfügen,
   Kontakte, Netzadmin); „🤝 Anker“ heißt „🤝 Netzadmin“. Siegel-Aspekt S5 ergänzt.
   `RDV_VOUCH_ANCHORS` ist ersetzt (eine feste Kennung im Kanon wäre in jedem fremden Netz
-  mit verankert). **Offen:** Rollout in die Träger; Tablet nicht gemessen; „aufgefallen“
-  weiter nur von Hand (bis S4/Modul 10).
+  mit verankert). **Ausgerollt 2026-10-15** in 29 Träger (je 1 PR, auf `main` 29/29
+  nachgezählt, Siegel-Aspekt in 28 — Company-Brain trägt kein Siegel). **Offen:** Tablet nicht
+  gemessen (zwei echte Geräte, die einander bürgen); „aufgefallen“ weiter nur von Hand (bis
+  S4/Modul 10); Privat-Brains eigenes Mycel-Fenster zeigt keine Bürgen-Oberfläche (PFLEGE § 19).
 
 - [ ] **S6 — Eigene Einträge markieren** (Bakterien-Methylierung) · `Entscheid`+`Bau`
   Was die App selbst ablegt, trägt eine eigene Prüfsumme; was von außen in den Speicher
