@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-10-15",
-  "seq": 92,
-  "headline": "S2 VEKTOR GEGEN TEXT: Modul 23 rechnet den Bedeutungs-Vektor einer Raum-Karte aus ihrer Beschreibung nach (Schwelle 0,99, am Tablet gemessen: Haupt-Vektor 9/9 exakt). Passt er nicht, verliert die Karte den Vorrang und bleibt sichtbar; ein Vektor aus Inhalten heisst nicht nachpruefbar, ohne Abzug. Ausgerollt in 28 Traeger, auf main nachgezaehlt. Fuer Gegenstellen mit eigenem Mycel-Fenster: card.meaning anzeigen und bei eigener Auswahl beachten (Privat-Brain #108 als Vorlage).",
+  "seq": 93,
+  "headline": "S5 BUERGEN FERTIG: Ein Knoten kann fuer einen anderen buergen, nachdem beide eine Sicherheitsnummer verglichen haben. Netzadmin des offenen Mycels ist Sage-Protokol, in einem eigenen Netz dessen Betreiber (Feld admin der Netz-Einstellung). Verbuergte Karten stehen bei einer Frage vorn, unverbuergte bleiben sichtbar. Ausgerollt in 29 Traeger, auf main nachgezaehlt. Fuer Gegenstellen mit eigenem Mycel-Fenster: card.vouch anzeigen; die eigene Auswahl ueber rankCardsByQuery bekommt den Vorrang von selbst.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -505,6 +505,11 @@
       "seq": 92,
       "date": "2026-10-15",
       "note": "S2 gebaut (Sage #1110), am Tablet gemessen (#1115), in 28 Traeger verteilt; S5 Teil 1 (Buergen, nur Anzeige) kam mit, weil der Kanon byte-gleich verteilt wird."
+    },
+    {
+      "seq": 93,
+      "date": "2026-10-15",
+      "note": "S5 Teil 2 gebaut (Sage #1123: Netzadmin je Netz, Vorrang fuer Verbuergte, Buergen in der Oberflaeche) und in 29 Traeger verteilt; S5 damit fertig."
     }
   ]
 }
