@@ -1,6 +1,6 @@
 /* smoke_sicherheit_seite.mjs — sicherheit.html, der Überblick zu Mycel, Siegel und Schutz (2026-10-17).
  *
- * Lauf:  node tests/smoke_sicherheit_seite.mjs [pfad/zur/sicherheit.html]
+ * Lauf:  node tests/smoke_sicherheit_seite.mjs [pfad/zur/sicherheit.html] [--traeger]
  * Teil A liest die Datei (ohne Browser). Teil B braucht `playwright-core`;
  * fehlt es, ist Teil B nicht lauffähig (⊘), nicht rot.
  *
@@ -16,14 +16,17 @@
  * B9 data-sprache-schluessel · B10 ohne Skript: Deutsch, Sprünge gehen · B11 kein Abruf
  * nach außen, kein Konsolenfehler · B12 360 px ohne Querlauf.
  */
-import { readFileSync, mkdtempSync, writeFileSync, copyFileSync, rmSync } from 'node:fs';
+import { readFileSync, mkdtempSync, writeFileSync, copyFileSync, rmSync, mkdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const DATEI = process.argv[2] ? resolve(process.argv[2]) : join(WURZEL, 'sicherheit.html');
+const pfadArg = process.argv.slice(2).find((a) => !a.startsWith('--'));
+const DATEI = pfadArg ? resolve(pfadArg) : join(WURZEL, 'sicherheit.html');
+// --traeger: the copy in an app may carry its own name (title, own sections); A3 only holds for the neutral template
+const TRAEGER = process.argv.includes('--traeger');
 let gruen = 0, rot = 0, nicht = 0;
 function t(name, ok, extra) {
   if (ok) { gruen++; console.log('✓ ' + name); }
@@ -39,10 +42,10 @@ const block = (id) => {
 const DE = block('de'), EN = block('en');
 
 console.log('── A · die Datei ──');
-t('A1 noindex steht im Kopf', /<meta name="robots" content="noindex">/.test(html));
+t('A1 noindex steht im Kopf (oder, bei einem Träger, ein canonical)', /<meta name="robots" content="noindex">/.test(html) || (TRAEGER && /<link rel="canonical"/.test(html)));
 const fremd = [...ohneKommentar.matchAll(/<(script|img|iframe|link|source|video|audio)\b[^>]*\b(src|href)=["']([^"']+)["']/gi)]
   .filter((m) => m[1].toLowerCase() !== 'link' || /stylesheet|preload|icon|manifest/i.test(m[0]))
-  .map((m) => m[3]);
+  .map((m) => m[3]).filter((u) => /^(https?:)?\/\//i.test(u));   // only what comes from another host
 t('A2 kein fremder Abruf (nichts wird von außen geladen)', fremd.length === 0, fremd.join(' '));
 const APPS = ['Mixarium', 'Rezeptbuch', 'Kimboard', 'Kim-Bell', 'Kimseek', 'BookLedger', 'Toolpoint', 'family-projekt',
   'Küchenzettel', 'Kuechenzettel', 'Jasons', 'Tomys', 'WorkFloh', 'Workfloh', 'Company Brain', 'Privat-Brain', 'Alis',
@@ -50,7 +53,8 @@ const APPS = ['Mixarium', 'Rezeptbuch', 'Kimboard', 'Kim-Bell', 'Kimseek', 'Book
 const sichtbar = (s) => s.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '')
   .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
 const treffer = APPS.filter((a) => sichtbar(ohneKommentar).includes(a));
-t('A3 kein App-Name in der neutralen Vorlage', treffer.length === 0, treffer.join(', '));
+if (TRAEGER) console.log('· A3 entfällt (Kopie eines Trägers, darf ihren Namen tragen)');
+else t('A3 kein App-Name in der neutralen Vorlage', treffer.length === 0, treffer.join(', '));
 t('A4a beide Sprachblöcke sind da und nicht leer', DE.length > 5000 && EN.length > 5000, DE.length + ' / ' + EN.length);
 const ids = (s) => new Set([...s.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
 const sprunge = (s) => [...s.matchAll(/href="#([^"]*)"/g)].map((m) => m[1]);
@@ -90,7 +94,12 @@ if (!chromium) {
 } else {
   const basis = mkdtempSync(join(tmpdir(), 'sicherheit-'));
   copyFileSync(DATEI, join(basis, 'sicherheit.html'));
-  const geschluesselt = readFileSync(DATEI, 'utf8').replace('<html lang="de">', '<html lang="de" data-sprache-schluessel="probe_lang">');
+  // a carrier's own scripts (relative) come along, so the copy behaves like the real page
+  for (const m of readFileSync(DATEI, 'utf8').matchAll(/<script[^>]+src="(?!https?:|\/\/)([^"?]+)/g)) {
+    try { mkdirSync(dirname(join(basis, m[1])), { recursive: true }); copyFileSync(join(dirname(DATEI), m[1]), join(basis, m[1])); } catch (_e) {}
+  }
+  const geschluesselt = readFileSync(DATEI, 'utf8').replace(/ data-sprache-schluessel="[^"]*"/, '')
+    .replace('<html lang="de"', '<html lang="de" data-sprache-schluessel="probe_lang"');
   writeFileSync(join(basis, 'mit-schluessel.html'), geschluesselt);
   const huelle = (lang) => `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><title>H</title></head><body>
 <iframe id="f" src="sicherheit.html" style="width:800px;height:700px"></iframe></body></html>`;

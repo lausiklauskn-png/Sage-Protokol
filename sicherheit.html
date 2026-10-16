@@ -429,6 +429,8 @@
   Meine Empfehlungen, Widerrufe, Sperrliste. Dort lässt sich empfehlen, verlängern, widerrufen, und für den
   Netzadmin sperren und lösen.</p>
 
+  <!-- APP-EIGEN-DE: hier darf ein Träger eigene Abschnitte einsetzen (tools/sicherheit-verteilen.mjs) -->
+
   <!-- 11 -->
   <h2 id="regel">11 · Die eine Regel für dich</h2>
   <div class="achtung">
@@ -606,16 +608,16 @@
     <tr><td><span class="knopf">🌐 Connect to the node network</span></td><td>Creates the identity if needed, puts your card in the room, listens.</td></tr>
     <tr><td><span class="knopf">👥 Who is in the room?</span></td><td>Reads the room and shows the <a class="w" href="#en-karten">cards</a>. Also collects recommendations for you.</td></tr>
     <tr><td><span class="knopf">🙋 Just re-announce</span></td><td>Puts your own card in the room again.</td></tr>
-    <tr><td><span class="knopf">🔎 Antwort holen</span></td><td>Asks your question to the best-matching node. With 🎤 you can speak it.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">🔎 Antwort holen</span> (get an answer)</td><td>Asks your question to the best-matching node. With 🎤 you can speak it.</td></tr>
     <tr><td><span class="knopf">📬 Fetch replies</span></td><td>Collects answers that arrived while you were away.</td></tr>
-    <tr><td><span class="knopf">💬 Antworten: an/aus</span></td><td>Whether your app answers others.</td></tr>
-    <tr><td><span class="knopf">🧬 nur verwandte</span></td><td>Shows only nodes with a related topic.</td></tr>
-    <tr><td><span class="knopf">🧠 KI-Richter</span></td><td>An AI rates the answers. You enter your own AI key; it stays in the browser, in the vault if you wish. See <a class="w" href="#en-w-richter">AI judge</a>.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">💬 Antworten: an/aus</span> (answering: on/off)</td><td>Whether your app answers others.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">🧬 nur verwandte</span> (related only)</td><td>Shows only nodes with a related topic.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">🧠 KI-Richter</span> (AI judge)</td><td>An AI rates the answers. You enter your own AI key; it stays in the browser, in the vault if you wish. See <a class="w" href="#en-w-richter">AI judge</a>.</td></tr>
     <tr><td><span class="knopf">🪪 Secure the identifier</span></td><td>💾 Make a backup, 📥 Play a backup in. Without a backup, a browser that cleans up can delete the identity.</td></tr>
     <tr><td><span class="knopf">🔒 Network</span></td><td>Set up <a class="w" href="#en-eigenes-netz">your own network</a> or go back to the public one.</td></tr>
-    <tr><td><span class="knopf">🤝 Empfehlungen</span></td><td>Network admin, own contacts, received recommendations, expiry. See <a class="w" href="#en-empfehlen">Recommending</a>.</td></tr>
-    <tr><td><span class="knopf">⛔ Sperrliste</span></td><td>Shows who is blocked. See <a class="w" href="#en-w-sperrliste">block list</a>.</td></tr>
-    <tr><td><span class="knopf">🍄 Mycel-Karte ansehen ↗</span></td><td>The live map of the network in a new tab.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">🤝 Empfehlungen</span> (recommendations)</td><td>Network admin, own contacts, received recommendations, expiry. See <a class="w" href="#en-empfehlen">Recommending</a>.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">⛔ Sperrliste</span> (block list)</td><td>Shows who is blocked. See <a class="w" href="#en-w-sperrliste">block list</a>.</td></tr>
+    <tr><td><span class="knopf" lang="de" translate="no">🍄 Mycel-Karte ansehen ↗</span> (view the mycelium map)</td><td>The live map of the network in a new tab.</td></tr>
   </table></div>
   <p class="klein"><strong>Device name:</strong> Many apps show a field for a device name in the window, such as “phone”
   or “office”. It helps tell two devices of the same app apart. It is a hint, not proof, because anyone can choose
@@ -635,14 +637,14 @@
     <tr><td>🤝 Network admin</td><td>This card belongs to the <a class="w" href="#en-w-netzadmin">network admin</a> of this network.</td></tr>
     <tr><td>🤝 own contact</td><td>You saved this identifier as a contact yourself.</td></tr>
     <tr><td>🤝 recommended by …</td><td>Someone you trust has <a class="w" href="#en-empfehlen">recommended</a> this identifier. Recommended cards come first for a question. All others stay visible.</td></tr>
-    <tr><td>🧬 verwandt 0.xx</td><td>How close the topic is to yours.</td></tr>
+    <tr><td><span lang="de" translate="no">🧬 verwandt</span> 0.xx (related)</td><td>How close the topic is to yours.</td></tr>
     <tr><td>🔎 Question fit 0.xx</td><td>How well the node fits your question.</td></tr>
     <tr><td>⚠ unconfirmed (not signed)</td><td>Shown on an <strong>answer</strong> without a valid signature. It does not go to the AI judge.</td></tr>
     <tr><td>(blocked card)</td><td>Does not appear. See <a class="w" href="#en-w-sperrliste">block list</a>.</td></tr>
   </table></div>
   <p>Each card has buttons: <span class="knopf">🤝 Connect</span> (exchange business cards),
   <span class="knopf">❓ ask directly</span>, <span class="knopf">🤝 Recommend</span>,
-  <span class="knopf">↗ App öffnen</span>. Only the network admin also sees <span class="knopf">⛔ Block</span>.</p>
+  <span class="knopf" lang="de" translate="no">↗ App öffnen</span> (open the app). Only the network admin also sees <span class="knopf">⛔ Block</span>.</p>
 
   <h2 id="en-siegel">5 · The seal</h2>
   <ul>
@@ -745,11 +747,11 @@
     <tr id="en-s1"><td><strong>S1 · Signed questions</strong></td><td>Forged questions are not answered, unsigned ones are throttled (at most 2 of 6 per minute).</td><td>nothing, it works in the background</td></tr>
     <tr id="en-s2"><td><strong>S2 · Recomputing the vector</strong></td><td>Your app recomputes the vector from the description (threshold 0.99). A copied one stands out.</td><td>“✓ Meaning matches” or “⚠ does not match, no priority”</td></tr>
     <tr id="en-s3"><td><strong>S3 · Computing effort</strong></td><td>Before sending, the app solves a small puzzle. When the room is full, notes with effort take priority. Flooding becomes expensive.</td><td>nothing, it works in the background</td></tr>
-    <tr id="en-s4"><td><strong>S4 · Block list</strong></td><td>Only the <a class="w" href="#en-w-netzadmin">network admin</a> signs it. Blocked identifiers do not appear, and their questions go unanswered.</td><td>the “⛔ Sperrliste” box</td></tr>
+    <tr id="en-s4"><td><strong>S4 · Block list</strong></td><td>Only the <a class="w" href="#en-w-netzadmin">network admin</a> signs it. Blocked identifiers do not appear, and their questions go unanswered.</td><td>the “<span lang="de" translate="no">⛔ Sperrliste</span>” (block list) box</td></tr>
     <tr id="en-s5"><td><strong>S5 · Recommending</strong></td><td>A known node says: “I know this identifier.” It only counts if you already trust the recommender.</td><td>“🤝 recommended by …”, first for questions</td></tr>
     <tr id="en-s5b"><td><strong>S5b · Recommending in the markets</strong></td><td>Markets recommend the outside apps they show. At most 180 days, revocation only with a reason, liability only for that one app. The recommendation arrives by itself.</td><td>“⏳ expires on …”</td></tr>
     <tr id="en-pruefliste"><td><strong>Check list before the AI judge</strong></td><td>The question and foreign answers are checked for instructions aimed at an AI. Without the list the judge does not run.</td><td>such an answer does not go to the AI</td></tr>
-    <tr id="en-verschluesselt"><td><strong>Own network with a code</strong></td><td>Cards, questions and answers are encrypted. Without the code you see nothing readable.</td><td>“🔒 Eigenes Netz”</td></tr>
+    <tr id="en-verschluesselt"><td><strong>Own network with a code</strong></td><td>Cards, questions and answers are encrypted. Without the code you see nothing readable.</td><td>“<span lang="de" translate="no">🔒 Eigenes Netz</span>” (own network)</td></tr>
   </table></div>
   <p class="klein">Every layer has a test that shows it works, and a counter-test that builds the fault in on purpose and
   shows that the test then fails. S1 to S5b are built and rolled out in 29 apps (as of 2026-10-16). S6 and S7 are not
@@ -787,11 +789,11 @@
     <li>Enter a <strong>name</strong>, for example the name of the company.</li>
     <li>Enter the <strong>relay</strong> (an address starting with <code>wss://</code>). Your own relay on your own
       server is best, see below.</li>
-    <li><span class="knopf">🎲 Code erzeugen</span>, then <span class="knopf">✓ Übernehmen</span>.</li>
+    <li><span class="knopf" lang="de" translate="no">🎲 Code erzeugen</span> (create a code), then <span class="knopf" lang="de" translate="no">✓ Übernehmen</span> (apply).</li>
     <li>Optional: enter the <strong>network admin</strong>, the identifier of the app that may recommend and block in this network.</li>
-    <li><span class="knopf">🔗 Link kopieren</span> and give the link <strong>only to your own devices</strong>. Whoever opens it
+    <li><span class="knopf" lang="de" translate="no">🔗 Link kopieren</span> (copy link) and give the link <strong>only to your own devices</strong>. Whoever opens it
       is asked whether to join this network.</li>
-    <li>To go back, use <span class="knopf">🌐 Zurück ins öffentliche Netz</span>.</li>
+    <li>To go back, use <span class="knopf" lang="de" translate="no">🌐 Zurück ins öffentliche Netz</span> (back to the public network).</li>
   </ol>
   <h3>What you have to do yourself</h3>
   <ul>
@@ -811,8 +813,8 @@
     <li>In the window, press <span class="knopf">👥 Who is in the room?</span>.</li>
     <li>On the card, press <span class="knopf">🤝 Recommend</span>.</li>
     <li>Compare the <a class="w" href="#en-w-sicherheitsnummer">safety number</a> through a second channel (phone, in person).
-      If it matches, tick “Die Nummer stimmt überein” (the number matches).</li>
-    <li><span class="knopf">✍ Empfehlung unterschreiben</span> (sign the recommendation). Done. The recommendation arrives by itself.</li>
+      If it matches, tick “<span lang="de" translate="no">Die Nummer stimmt überein</span>” (the number matches).</li>
+    <li><span class="knopf" lang="de" translate="no">✍ Empfehlung unterschreiben</span> (sign the recommendation). Done. The recommendation arrives by itself.</li>
   </ol>
   <h3>The rules</h3>
   <ul>
@@ -822,7 +824,7 @@
     <li><strong>At most 180 days.</strong> 30 days before, “⏳ expires on …” appears. Only the recommender can extend it.</li>
     <li><strong>Revocation only with a reason.</strong> The reason is signed with it and readable by everyone.</li>
     <li><strong>It locks nobody out.</strong> Cards without a recommendation stay visible and are still asked. For stricter
-      rules, switch on “Nur Empfohlenen antworten” (answer only recommended ones; off by default).</li>
+      rules, switch on “<span lang="de" translate="no">Nur Empfohlenen antworten</span>” (answer only recommended ones; off by default).</li>
   </ul>
   <h3>Blocking</h3>
   <ul>
@@ -834,6 +836,8 @@
   <p>Anyone who recommends many apps, a market for instance, has a separate page with four lists: apps in my mycelium,
   my recommendations, revocations, block list. There you can recommend, extend and revoke, and as network admin block
   and unblock.</p>
+
+  <!-- APP-EIGEN-EN -->
 
   <h2 id="en-regel">11 · The one rule for you</h2>
   <div class="achtung">
@@ -874,7 +878,7 @@
 
   <h2 id="en-woerter">Glossary</h2>
   <dl class="woerter">
-    <dt id="en-w-mycel">Mycelium</dt><dd>the invisible fungal network in the soil; here, the network of nodes.</dd>
+    <dt id="en-w-mycel">Mycel (mycelium)</dt><dd>the invisible fungal network in the soil; here, the network of nodes.</dd>
     <dt id="en-w-knoten">Node</dt><dd>a single app in the network, running entirely in the browser.</dd>
     <dt id="en-w-raum">Room</dt><dd>the shared meeting place on the relay where the cards lie.</dd>
     <dt id="en-w-relais">Relay</dt><dd>the post office: accepts signed notes and passes them on. It can hold them back, but cannot change them unnoticed.</dd>
@@ -892,9 +896,9 @@
     <dt id="en-w-sperrliste">Block list</dt><dd>a list of blocked identifiers signed by the network admin. It travels with the cards; every app checks it itself.</dd>
     <dt id="en-w-richter">AI judge</dt><dd>an AI that rates answers. It runs with your own key and only behind the check list.</dd>
     <dt id="en-w-rechenaufwand">Computing effort</dt><dd>a small puzzle before sending. Barely noticeable for one note, expensive for thousands.</dd>
-    <dt id="en-w-handschlag">Handshake (anastomosis)</dt><dd>two nodes exchange business cards and check the signature.</dd>
-    <dt id="en-w-apoptose">Apoptosis</dt><dd>the orderly self-deletion of a node.</dd>
-    <dt id="en-w-hyphe">Hypha</dt><dd>a single fungal thread; here, a connection between two nodes.</dd>
+    <dt id="en-w-handschlag">Handshake (Anastomose)</dt><dd>two nodes exchange business cards and check the signature.</dd>
+    <dt id="en-w-apoptose">Apoptose (apoptosis)</dt><dd>the orderly self-deletion of a node.</dd>
+    <dt id="en-w-hyphe">Hyphe (hypha)</dt><dd>a single fungal thread; here, a connection between two nodes.</dd>
     <dt id="en-w-pwa">PWA</dt><dd>a web page that can be installed like an app.</dd>
   </dl>
 </div>
@@ -936,7 +940,10 @@
     bloecke.de.hidden = aktuell !== "de";
     bloecke.en.hidden = aktuell !== "en";
     root.lang = aktuell;
-    doc.title = aktuell === "en" ? "How the mycelium works" : "So funktioniert das Mycel";
+    // keep a carrier's suffix („… — App-Name"), swap only the base
+    var TDE = "So funktioniert das Mycel", TEN = "How the mycelium works";
+    var t = String(doc.title || TDE);
+    doc.title = aktuell === "en" ? t.replace(TDE, TEN) : t.replace(TEN, TDE);
     schwebe.textContent = aktuell === "en" ? "↩ back" : "↩ zurück";
     aufraeumen();
   }
