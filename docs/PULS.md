@@ -31,6 +31,15 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 · S5b geplant: Bürgen für fremde Apps in den Märkten (Hauptsitzung)
+
+- **Getan:** Klaus' Entscheide zu Bürgschaften in PWA Toolpoint und family-projekt.de als
+  Planpunkt S5b in `docs/PLAN_MYCEL_SCHICHTEN.md` eingetragen. Kein Code.
+- **Entschieden:** Bürge haftet nur für die eine App (ersetzt „verliert alle", Tafel-Evolution
+  benannt) · Ablauf höchstens 180 Tage · Hinweis 30 Tage vorher · Widerruf nur mit Grund ·
+  Leser speichert Widerrufe · Widerruf reist nicht mit der Sperrliste (zurückgestellt).
+- **Offen:** Bau in der Reihenfolge des Planpunkts, zuerst INTERFACES.
+
 ## 2026-10-16 · S4 Sperrliste gebaut und in 29 Träger ausgerollt (Hauptsitzung)
 - **Startprüfung:** kein offener PR in Sage; erster offener Schritt: 5 (S4, Klaus' Entscheid fehlte). **Zwei Sitzungen am selben Brief, 53 s nacheinander gestartet** („Sage-Protokol 1/2 Abarbeitung“); die zweite fand die erste nur über die Sitzungsliste, nicht über PRs/Zweige (nichts gepusht), und brach ohne Bau ab (Kimhub #394). Diese Sitzung bestätigte sich danach über `list_sessions` als einzige laufende. Schritt 0 im Brief nennt jetzt die Sitzungsliste.
 - **Entscheid (Klaus 2026-10-16):** öffentlich und signiert; liegt in Sage, Sage-Protokol unterschreibt (auf Nachfrage bestätigt: dieselbe Kennung wie beim Bürgen, die Offenheit des Repos ändert nichts). Tafel-Widerspruch zu Karte 12 aufgelöst, Karte 12 benannt.
