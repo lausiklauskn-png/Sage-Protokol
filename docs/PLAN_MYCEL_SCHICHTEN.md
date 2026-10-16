@@ -294,6 +294,22 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   **Reihenfolge:** INTERFACES (Punkte 1, 2, 4, 5) → Modul 23 + 23-UI + Siegel-Aspekt →
   Probe/Gegenprobe → Rollout → Netz-Verwaltung als Kanon in Sage → Studio in PWA Toolpoint
   und family-project.
+  **Stand 2026-10-16: Teil 1 in Sage gebaut** (INTERFACES § Modul 23 S5b zuerst, dann Modul 23,
+  23-UI, Siegel-Aspekt S5b; Punkte 1–5 und „antworte nur Verbürgten“). Neu: Feld `reason` im
+  Widerruf (Pflicht, ≤ 200 Zeichen, unter der Signatur), `RDV_VOUCH_TTL_SEC` 180 Tage,
+  `vouchExpiring` (30 Tage), Speicher `sbkim_widerrufe_<dbSuffix>` (≤ 256, beim Lesen neu
+  geprüft, eigenes Prüf-Budget), `setAnswerOnlyVouched`; die Frage trägt bis zu 4 eigene
+  Bürgschaften mit. Oberfläche: Grund-Feld am Widerruf, Hinweis „⏳ läuft … ab“ im Kasten
+  „🤝 Bürgschaften“, Schalter „Nur Verbürgten antworten“. Der S5-Siegel-Aspekt sagte „ein Jahr“
+  und „verliert das Gewicht seiner Bürgschaften“; beides ist ersetzt. Probe
+  `tests/smoke_s5b_buergen_maerkte.mjs` 44 grün, Gegenprobe
+  `tests/gegenprobe_s5b_buergen_maerkte.mjs` 24 von 24, je mit dem Namen der Zusicherung. Die
+  S5-Probe ist nachgezogen (70 grün, Gegenprobe 31/31), ebenso S4 D7. Gefunden beim Bau: E1 war
+  zweimal ein blinder Wächter (die fremde Bürgschaft kam vom selben Bürgen wie eine eigene und
+  wurde von „neueste je Bürge“ verdeckt); erst ein Bürge, der sonst nirgends vorkommt, machte
+  den Fall sichtbar. **Offen:** Rollout in alle Träger; Netz-Verwaltung als Kanon; Studio in
+  PWA Toolpoint und family-project; Hinweis im Siegel der App (bisher nur im Netz-Fenster);
+  Tablet nicht gemessen.
   **Was ein Konkurrent damit kann (gelesen im Code, 2026-10-16):** nur seine eigene
   Bürgschaft widerrufen (der Widerruf muss vom Bürgen unterschrieben sein). Unverbürgt heißt
   sichtbar und gefragt, nur nicht vorn; herausfallen geht nur über die Sperrliste des

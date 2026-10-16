@@ -183,7 +183,8 @@ let liste1 = null;
   t("D6 jeder Knoten mit gültiger Liste trägt sie weiter", N.isBlocked(sX.id) && !r3.cards.some(c => c.nodeId === sX.id), JSON.stringify(r3.cards.map(c => c.nodeId)));
 }
 {
-  // Bürgen: eine gesperrte Kennung zählt als aufgefallen — der Bürge haftet.
+  // Bürgen: eine gesperrte Kennung zählt als aufgefallen. Seit S5b (Klaus
+  // 2026-10-16) haftet der Bürge nur für diese eine: seine übrigen gelten weiter.
   const R = relay();
   const K = await imNetz("VK", "k", R);
   const sperr = (await K.blockId(sX.id)).zettel;
@@ -192,11 +193,12 @@ let liste1 = null;
   const L = await imNetz("VL", "l", R);
   L.saveVouchContacts([{ nodeId: sB.id, name: "Bert" }]);
   const karte = (s) => ({ nodeId: s.id, nodeName: s.nodeName, spore: s });
-  const vorher = await L.vouchTrust([karte(sY)], { vouches: [vX, vY] });
+  const vorher = await L.vouchTrust([karte(sX), karte(sY)], { vouches: [vX, vY] });
   await L.addBlocklist(sperr);
-  const nachher = await L.vouchTrust([karte(sY)], { vouches: [vX, vY] });
-  t("D7 wer für einen Gesperrten bürgt, verliert seine Bürgschaften (S5 „der Bürge haftet“)",
-    vorher[0].vouch.status === "verbuergt" && nachher[0].vouch.status === "unverbuergt", JSON.stringify([vorher[0].vouch.status, nachher[0].vouch.status]));
+  const nachher = await L.vouchTrust([karte(sX), karte(sY)], { vouches: [vX, vY] });
+  const st = (l) => l.map(c => c.vouch.status + (c.vouch.reason ? ":" + c.vouch.reason : "")).join(",");
+  t("D7 eine gesperrte Kennung ist nie verbürgt; die übrigen Bürgschaften ihres Bürgen gelten weiter (S5b)",
+    st(vorher) === "verbuergt,verbuergt" && st(nachher) === "unverbuergt:aufgefallen,verbuergt", JSON.stringify([st(vorher), st(nachher)]));
 }
 
 // ═══ A · Fragen und Antworten ═══
