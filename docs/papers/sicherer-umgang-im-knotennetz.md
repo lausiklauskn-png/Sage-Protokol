@@ -740,14 +740,24 @@ Drei Fragen an Leser:
 
 ## 14 · Zur Entstehung dieses Textes
 
-Den Text haben wir gemeinsam geschrieben: der Verfasser, der das Netz betreibt, und eine
-KI-Sitzung (Claude Code). Die Gliederung hat der Verfasser vorgegeben und am 2026-10-15
-abgestimmt. Alle Messwerte stammen
-aus dem Depot und stehen dort mit Datum. Die Literaturangaben wurden in derselben
-Sitzung an der Quelle nachgesehen, nicht aus dem Gedächtnis übernommen. Abschnitt 6.4 ist als Lesart
-gekennzeichnet, nicht als Befund. Fassung 2 (2026-10-16)
-zieht den Stand der Schichten S3, S4, S5 und S5b nach, wie er im Depot steht, und ergänzt
-drei Quellenangaben über Suchauszüge.
+Dieser Bericht ist eine **Zusammenarbeit** zwischen einem Menschen und einer KI-Sitzung
+(Claude Code), und das Ergebnis gehört beiden. Ohne einen der beiden Teile wäre es nicht
+zustande gekommen.
+
+Vom Verfasser stammen die Ideen, die den Bericht tragen: der Vergleich mit den Artgrenzen
+der Natur, die Lesart von Störungen als Prüfmechanismus, die Frage nach dem Schutz durch
+den Browser, das Wort „Empfehlen" und die Grenze, dass ein Bürge nur für die eine App
+haftet. Er hat die Gliederung vorgegeben, die Reihenfolge der Schutzschichten festgelegt,
+am Tablet gemessen (7.2), den Text Abschnitt für Abschnitt gegengelesen und dort
+berichtigt, wo er den Stand des Netzes besser kannte. Die KI-Sitzung hat den Code
+geschrieben, Probe und Gegenprobe gebaut und gefahren, die Quellen gesucht und den Text
+gesetzt.
+
+Alle Messwerte stammen aus dem Depot und stehen dort mit Datum. Die Literaturangaben sind
+an der Quelle nachgesehen oder über Suchauszüge belegt; welche wie, steht bei jeder Angabe
+(Prüfstand). Abschnitt 6.4 ist als Lesart gekennzeichnet, nicht als Befund. Fassung 2
+(2026-10-16) zieht den Stand der Schichten S3, S4, S5 und S5b nach, wie er im Depot steht,
+ergänzt drei Quellenangaben und übernimmt zwei Runden Gegenlesen.
 
 ---
 
