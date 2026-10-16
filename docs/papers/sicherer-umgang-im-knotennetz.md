@@ -63,10 +63,11 @@ Anwendung liegt als statische Seite im Netz, meist bei GitHub Pages, und läuft 
 Browser ihres Nutzers. Damit sie einander finden, meldet sich jede in einem gemeinsamen,
 öffentlichen Raum an. Dieser Raum liegt auf einem Nostr-Relais: einem Dienst, der
 signierte Nachrichten annimmt und an alle weitergibt, die zuhören. Das Relais, das die
-Anwendungen von Haus aus benutzen, betreibt der Betreiber dieses Netzes selbst
-(`relay.family-projekt.de`). Wer will, legt ein eigenes an, unter eigenem Namen, und
+Anwendungen von Haus aus benutzen, betreiben wir selbst (`relay.family-projekt.de`). Wer will, legt ein eigenes an, unter eigenem Namen, und
 bekommt damit einen eigenen Raum mit eigenen Regeln und eigenem Schutz. Ein solches
-eigenes Netz hat der Betreiber am 2026-10-13 zwischen Handy und Tablet ausprobiert.
+eigenes Netz haben wir mehrfach zwischen Handy und Tablet über das Relais erprobt, zuletzt
+am 2026-10-13. Die Auswertung in der Mycel-Karte, die das Netz zeichnet, zeigt dabei an,
+dass die Verbindung über das Relais zustande kam.
 
 **Was „ohne Server" hier heißt.** Ganz ohne Server geht es nicht: das Relais läuft auf
 einem. Gemeint ist etwas anderes. Es gibt keinen großen, übergeordneten Dienst wie bei
@@ -112,8 +113,9 @@ gibt es in diesem Bericht eine Probe und eine Gegenprobe (Abschnitt 9).
 ### 1.3 Werkstatt statt Labor
 
 Wie die beiden früheren Papers ist auch dieses ein Werkstattbericht. Es gibt einen
-Betreiber, ein Netz und keinen unabhängigen Angreifer. Die Angriffe hat der Betreiber
-selbst nachgestellt, zusammen mit einer KI-Sitzung, die den Code schreibt und prüft.
+Betreiber, ein Netz und keinen unabhängigen Angreifer. Die Angriffe haben wir selbst
+nachgestellt: ein Mensch, der das Netz betreibt, und eine KI-Sitzung, die den Code
+schreibt und prüft.
 Dafür ist das Netz echt. Die Anwendungen werden benutzt, die Fehler sind beim Arbeiten
 aufgefallen, und jede Zahl in diesem Bericht steht mit Datum im öffentlichen Depot.
 
@@ -138,9 +140,12 @@ Der letzte Eintrag ist kein Angreifer im üblichen Sinn. Er steht hier, weil ein
 Browser alles liest, was die Anwendung anzeigt, auch fremden Text. Ein Teil davon lässt
 sich sichtbar machen: spricht eine fremde KI oder ein Browser-Agent die Anwendung über
 Nachrichten an, meldet die Membran (Modul 15) das an der Lampe „Fremd" und weist
-Absender ab, die nicht auf ihrer Liste stehen. Liest eine KI dagegen die angezeigte
-Seite direkt im Browser, sieht die Anwendung davon nichts und kann es nicht verhindern
-(Abschnitt 4.4).
+Absender ab, die nicht auf ihrer Liste stehen. Der Sende-Prüfer geht einen Schritt weiter:
+er bemerkt Schreib-Erweiterungen, die sich in die Seite hängen, und schaltet auf einen
+Knopfdruck („Abgeschirmt") an allen Schreibfeldern Rechtschreibprüfung, Autokorrektur und
+die KI-Schreibhilfe des Browsers ab. Eine Erweiterung darf diese Marken allerdings
+übergehen. Liest eine KI dagegen die angezeigte Seite direkt im Browser, sieht die
+Anwendung davon nichts und kann es nicht verhindern (Abschnitt 4.4).
 
 ### 2.2 Was ein Angreifer kann und was nicht
 
@@ -160,9 +165,9 @@ Geheimnis oder ein Aufwand, den ein Angreifer nicht billig fälschen kann.
 
 Nichts in diesem Bericht ist als Idee neu. Signierte Nachrichten ohne Zentrale,
 Rechenaufwand gegen Fluten, Vertrauen über Bürgen, die Gefahr von Anweisungen in fremdem
-Text: all das ist erforscht. Der Betreiber hat dazu eine klare Frage gestellt: *„was andere
-schon erforscht haben … was wir davon übernehmen können und was vorgeschlagen wird für das
-Knotennetz. Und warum?"* Die Tabelle beantwortet sie Quelle für Quelle.
+Text: all das ist erforscht. Die Frage lautet deshalb: Was haben andere schon erforscht,
+was übernehmen wir davon, was schlagen wir für das Knotennetz vor, und warum? Die Tabelle
+beantwortet sie Quelle für Quelle.
 
 | Quelle | Was dort erforscht ist | Was wir übernehmen | Was wir fürs Knotennetz vorschlagen, und warum |
 |---|---|---|---|
@@ -291,9 +296,8 @@ feste Wendungen leistet (Zeile „Anweisung an eine KI").
 
 ## 6 · Was sich in der Natur bewährt hat
 
-Der Betreiber hat diesen Abschnitt ausdrücklich gewünscht, mit einem Satz, der den
-Gedanken trägt: *„da ist es bewährt, das ist im Prinzip die Gegenprobe … durch Erhaltung
-der Arten."* Die Natur hält Arten seit sehr langer Zeit auseinander, und sie tut es nicht
+Der Gedanke dieses Abschnitts: Was sich in der Natur über sehr lange Zeit bewährt hat, ist
+selbst eine Art Gegenprobe, ablesbar an der Erhaltung der Arten. Die Natur hält Arten seit sehr langer Zeit auseinander, und sie tut es nicht
 mit einer Hürde, sondern mit vielen.
 
 ### 6.1 Viele Hürden hintereinander
@@ -349,21 +353,21 @@ nicht mehr da, um es zu zeigen.
 trägt, zeigt nur ihre eigene Probe mit Gegenprobe. Beides gehört nebeneinander, und keines
 ersetzt das andere.
 
-### 6.4 Störungen als Prüfmechanismus: die Lesart des Betreibers
+### 6.4 Störungen als Prüfmechanismus: eine Lesart
 
-> **Dies ist die Sicht des Betreibers, nicht ein Befund der Biologie.**
+> **Dies ist eine Lesart, kein Befund der Biologie.**
 
-Der Betreiber liest die Niederlagen der Natur anders als üblich: *„ein Virus ist kein
-Schädling, ein Virus ist ein Prüfmechanismus … wenn ein System aus dem Gleichgewicht
-gerät, zeigen diese Prüfmechanismen, dass etwas nicht stimmt."* Viren, Autoimmunität und
+Man kann die Niederlagen der Natur auch anders lesen als üblich. Nach dieser Lesart ist ein
+Virus kein Schädling, sondern ein Prüfmechanismus: gerät ein System aus dem
+Gleichgewicht, zeigen solche Mechanismen, dass etwas nicht stimmt. Viren, Autoimmunität und
 Hybride machen nach dieser Lesart eine schwache oder fehlgehende Abwehr sichtbar, bevor
 man sie anders bemerken würde.
 
 Gemeint ist das **Wirkprinzip**. Ein Virus ist nicht als Prüfung gedacht, er wirkt aber
 wie eine. Er greift in die Zelle ein und kopiert sich, und wer zusieht, erkennt, ob die
-Zelle standhält, ob andere Mechanismen sie schützen oder ob sie unterliegt. Ein
-Mechanismus hat für den Betreiber immer einen Urheber, auch wenn man ihn nicht kennt. So
-ist es auch im Netz: jeder Angriff und jede Flut geht von jemandem aus, nur ist die Quelle
+Zelle standhält, ob andere Mechanismen sie schützen oder ob sie unterliegt. Es gibt die
+Annahme, dass jeder Mechanismus einen Urheber hat, auch wenn man ihn nicht kennt. Im Netz
+ist das jedenfalls so: jeder Angriff und jede Flut geht von jemandem aus, nur ist die Quelle
 oft nicht zu bestimmen. In diesem Sinn trägt die Lesart auch im Netz: die nachgestellte gefälschte Antwort (N1)
 hat sichtbar gemacht, dass Antworten an niemanden gebunden waren. Daraus folgt ein
 praktischer Vorschlag: Angriffe, Fluten und Fehlmeldungen nicht nur abwehren, sondern
@@ -374,8 +378,8 @@ praktischer Vorschlag: Angriffe, Fluten und Fehlmeldungen nicht nur abwehren, so
 ## 7 · Die Schichten im Netz
 
 Aus dem Muster der Natur ist eine Liste von Schichten entstanden. Jede ist eine Hürde,
-keine ist allein genug. Der Betreiber hat am 2026-10-15 die Reihenfolge S1 → S2 → S5 →
-S3 → S4 freigegeben; S6 und S7 sind nicht freigegeben.
+keine ist allein genug. Gebaut haben wir sie am 2026-10-15 und 2026-10-16 in der
+Reihenfolge S1 → S2 → S5 → S3 → S4; S6 und S7 sind nicht freigegeben.
 
 | Schicht | Vorbild | Was sie tut | Stand am 2026-10-16 |
 |---|---|---|---|
@@ -407,11 +411,36 @@ einer sehr ähnlichen Anwendung stammt.
 
 Offen war, wie genau dasselbe Sprachmodell denselben Text auf einem anderen Gerät
 wiederholt. Rechnete ein Gerät nur auf 0,98 genau nach, stünde jede echte Spore als
-„passt nicht" da. Der Betreiber hat das am 2026-10-15 mit einer eigenen Mess-Seite an seinem
-Tablet gemessen (Chrome im DeX-Modus): bei neun Sporen ergab der aus der Beschreibung nachgerechnete Vektor **1,0000**,
-auch bei Sporen, die auf anderen Geräten unterschrieben worden waren. Die Satz-Schnipsel
-kamen einzeln nachgerechnet auf 0,995 bis 0,997, vermutlich weil sie beim Unterschreiben
-im Stapel gerechnet werden. Auch sie liegen über der Schwelle.
+„passt nicht" da. Gemessen haben wir das am Tablet (Chrome im DeX-Modus) mit einer eigenen
+Mess-Seite (`tools/s2-wiederholung.html`). Sie rechnet für jede Spore im Depot die
+Beschreibung und jeden einzelnen Satz-Schnipsel neu aus und vergleicht mit dem
+gespeicherten Vektor. Der zweite Lauf am 2026-10-16:
+
+| Spore | Schnipsel | kleinster Wert | Mittel | Beschreibung |
+|---|---|---|---|---|
+| Sage | 9 | 0,9954 | 0,9965 | 1,0000 |
+| Mein In-and-Out-Book | 7 | 0,9960 | 0,9973 | 1,0000 |
+| Küchenzettel | 7 | 0,9967 | 0,9971 | 1,0000 |
+| SB-KIMTool-Point | 0 | — | — | 0,8879 |
+| Rezeptbuch | 3 | 0,9971 | 0,9974 | 1,0000 |
+| Mein-Tresor | 2 | 0,9972 | 0,9973 | 1,0000 |
+| Muttis Rezeptbuch | 3 | 0,9966 | 0,9969 | 1,0000 |
+| Jasons-Tresor | 2 | 0,9965 | 0,9969 | 1,0000 |
+| BookLedgerPro | 0 | — | — | 0,9020 |
+| Mixarium | 7 | 0,9949 | 0,9966 | 1,0000 |
+| Tomys Hub | 0 | — | — | 1,0000 |
+
+Bei neun von elf Sporen ergab der aus der Beschreibung nachgerechnete Vektor **1,0000**,
+auch bei Sporen, die auf anderen Geräten unterschrieben worden waren. Die 40 Satz-Schnipsel
+aus acht Sporen kamen auf 0,9949 bis 0,9974, vermutlich weil sie beim Unterschreiben im
+Stapel gerechnet werden. Auch der kleinste Wert liegt über der Schwelle 0,99. Der erste
+Lauf am 2026-10-15 hatte dasselbe Bild ergeben (neun Sporen 1,0000, Schnipsel ab 0,9949).
+
+Zwei Sporen passen nicht zu ihrer Beschreibung: SB-KIMTool-Point (0,8879) und
+BookLedgerPro (0,9020). Ihr gespeicherter Vektor stammt also nicht aus der Beschreibung, die
+heute in der Spore steht, und eine Quelle ist nicht angegeben. Woran das liegt, haben wir
+noch nicht untersucht. S2 zeigt bei diesen beiden Karten „passt nicht", und sie bekommen
+keinen Vorrang, bis sie neu unterschrieben sind.
 
 Zwei Fälle kann S2 nicht prüfen. Ist der Vektor aus den Inhalten einer Anwendung
 gerechnet (aus Rezepten etwa), kennt der Empfänger diese Inhalte nicht. Die Karte sagt
@@ -425,7 +454,7 @@ Prüfung nicht eigens geladen, weil es 118 MB groß ist.
 
 Bürgen sind die Schicht S5. In Fassung 1 war sie ein Entwurf; seit dem 2026-10-15 ist sie
 gebaut und verteilt, am 2026-10-16 kam S5b dazu: Bürgschaften der Märkte für fremde Apps.
-In der Oberfläche heißt das Bürgen seit S5b **„Empfehlen"** (Wahl des Betreibers aus vier
+In der Oberfläche heißt das Bürgen seit S5b **„Empfehlen"** (gewählt aus vier
 Vorschlägen). Im Protokoll und in diesem Abschnitt bleibt das Wort Bürgschaft.
 
 ### 8.1 Zwischen offenem Raum und geschlossenem Netz
@@ -444,8 +473,8 @@ Die Bürgschaft hängt an der **Kennung**, nie am Namen, denn Namen sind frei w�
 
 ### 8.3 Warum ein selbst ausgestellter Bürge nichts zählt
 
-Der Betreiber hat den Einwand selbst gebracht: *„Man kann sich auch selber einen Bürgen
-ausstellen."* Genau das ist der Sybil-Angriff. Douceur hat 2002 gezeigt, dass ein System,
+Der naheliegende Einwand lautet: Man kann sich auch selbst einen Bürgen ausstellen. Genau
+das ist der Sybil-Angriff. Douceur hat 2002 gezeigt, dass ein System,
 das jede Identität annimmt, für die genug andere bürgen, einer Gruppe von Fälschern
 beliebig viele Identitäten erlaubt. Hundert erfundene Knoten, die füreinander bürgen,
 erfüllen jede Zählregel.
@@ -458,12 +487,12 @@ traut, und dieses Vertrauen nicht weitergibt.
 
 ### 8.4 Vier Riegel
 
-- **Kurze Kette.** Höchstens zwei Schritte vom eigenen Vertrauen (Entscheid des Betreibers,
+- **Kurze Kette.** Höchstens zwei Schritte vom eigenen Vertrauen (festgelegt am
   2026-10-15). Das reicht genau für den Weg Netzadmin → Markt → fremde App.
 - **Der Bürge haftet, aber nur für die eine App.** Fällt eine verbürgte App auf oder wird sie
   gesperrt, verfällt diese eine Bürgschaft. Gebaut war zuerst etwas Schärferes: alle
-  Bürgschaften des Bürgen verloren ihr Gewicht. Der Betreiber hat das am 2026-10-16 geändert:
-  *„alle haften doch nicht für einen."* Der Preis ist benannt: eine automatische Folge für
+  Bürgschaften des Bürgen verloren ihr Gewicht. Am 2026-10-16 haben wir das geändert, denn
+  es sollen nicht alle für einen haften. Der Preis ist benannt: eine automatische Folge für
   einen Bürgen, der für schlechte Apps bürgt, gibt es nicht mehr. Es bleiben der Widerruf und
   die Sperrliste.
 - **Widerruf mit Grund.** Der Bürge zieht zurück, sofort wirksam. Der Widerruf ist selbst
@@ -517,6 +546,10 @@ Beim Nachlaufen fiel die Gegenprobe zu S3 mit **zwei toten Ankern** auf: ein sp�
 (S5b) hatte die Stelle umgeschrieben, an der die Frage ihren Aufwand rechnet, und die
 Gegenprobe fand den alten Wortlaut nicht mehr. Die Probe war grün, die Gegenprobe meldete
 das selbst. Nachgezogen, danach wieder 14 von 14 (Abschnitt 9.2).
+
+Neben Probe und Gegenprobe steht bei S2 eine dritte Prüfung, und zwar am echten Gerät:
+die Messung in 7.2. Probe und Gegenprobe zeigen, dass der Code richtig entscheidet. Ob die
+Schwelle zu den Zahlen passt, die ein Tablet wirklich ausrechnet, zeigt nur die Messung dort.
 
 Für S2 sieht das so aus: Die Gegenprobe kennt 14 Fälle, von „Schwelle zu mild (0,98
 statt 0,99)" bis „die Karte zeigt die Bedeutung nicht". Alle 14 wurden gefangen, jeder
@@ -594,8 +627,8 @@ Arbeitszweige aufgeräumt.
 
 ## 11 · Browser und Knotennetz
 
-Der Betreiber hat gefragt, *„inwiefern der Browser selber schon zur Sicherheit beiträgt …
-und inwiefern sich das ergänzt oder auch gegenseitig schwächt."* Die Anwendungen laufen
+Wie weit trägt der Browser selbst schon zur Sicherheit bei, und wo ergänzen oder schwächen
+sich Browser und Netz gegenseitig? Die Anwendungen laufen
 im Browser, und der bringt eigene Schutzschichten mit. Manche helfen dem Netz, manche
 gehen an ihm vorbei, eine arbeitet gegen eine Annahme, die man leicht macht.
 
@@ -707,11 +740,12 @@ Drei Fragen an Leser:
 
 ## 14 · Zur Entstehung dieses Textes
 
-Der Text entstand in einer KI-Sitzung (Claude Code) im Auftrag des Betreibers. Der
-Betreiber gab die Gliederung vor und stimmte sie am 2026-10-15 ab. Alle Messwerte stammen
+Den Text haben wir gemeinsam geschrieben: der Verfasser, der das Netz betreibt, und eine
+KI-Sitzung (Claude Code). Die Gliederung hat der Verfasser vorgegeben und am 2026-10-15
+abgestimmt. Alle Messwerte stammen
 aus dem Depot und stehen dort mit Datum. Die Literaturangaben wurden in derselben
-Sitzung an der Quelle nachgesehen, nicht aus dem Gedächtnis übernommen. Die Lesart in
-Abschnitt 6.4 ist die des Betreibers und als solche gekennzeichnet. Fassung 2 (2026-10-16)
+Sitzung an der Quelle nachgesehen, nicht aus dem Gedächtnis übernommen. Abschnitt 6.4 ist als Lesart
+gekennzeichnet, nicht als Befund. Fassung 2 (2026-10-16)
 zieht den Stand der Schichten S3, S4, S5 und S5b nach, wie er im Depot steht, und ergänzt
 drei Quellenangaben über Suchauszüge.
 

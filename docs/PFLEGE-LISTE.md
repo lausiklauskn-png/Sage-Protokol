@@ -403,6 +403,16 @@ kommen, nicht aus dem Seitentext; die Apps tragen heute Inline-Skripte (z. B. de
 Sprachriegel im `<head>`). GitHub Pages setzt keine eigenen Kopfzeilen, dort ginge es nur
 über ein `<meta>`-Element.
 
+### 35 · Zwei Sporen passen nicht zu ihrer Beschreibung (gemessen 2026-10-16)
+
+Klaus' zweiter Lauf von `tools/s2-wiederholung.html` am Tablet (2026-10-16, 20:50, Chrome 154
+im DeX-Modus): **SB-KIMTool-Point 0,8879** und **BookLedgerPro 0,9020** zwischen gespeichertem
+Vektor und der neu gerechneten Beschreibung, beide ohne Satz-Schnipsel und ohne Quellen-Angabe.
+Die übrigen neun Sporen 1,0000, 40 Schnipsel aus acht Sporen 0,9949 bis 0,9974. Folge: S2 zeigt
+bei beiden „passt nicht", kein Vorrang. Ursache nicht untersucht (veraltete Spore im Depot?
+Vektor aus Inhalten ohne Angabe?). Weg vermutlich: im Siegel der App neu signieren, danach
+neu messen. Steht so in Paper S 7.2.
+
 ## Erledigt
 
 ### ✅ 18 · `kanon-verteilen` zieht Manifest und festgenagelte Cache-Kennung mit — 2026-10-16
