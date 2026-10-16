@@ -107,7 +107,7 @@ selbst an der Wurzel) — nachgezogen am selben Tag.
 
 - **Vorlage:** `sicherheit.html` an Sages Wurzel — neutral, ohne App-Namen, mit
   `noindex` (sonst landet sie in gefundenen Sitemaps), Rückweg `./`. 1:1 kopieren.
-- **Kein Kanon, kein Drift-Guard:** wer den Text anpasst (Name, Farben), darf das — seit dem 2026-10-17 zwischen den Marken `APP-EIGEN-…`, sonst nimmt der nächste Lauf es nicht mit.
+- **Kein Kanon, kein Drift-Guard:** wer den Text anpasst (Name, Farben), darf das — seit dem 2026-10-16 zwischen den Marken `APP-EIGEN-…`, sonst nimmt der nächste Lauf es nicht mit.
 - **Kein Cache-Bump nötig,** solange sie nicht im Installations-Vorrat steht; offline
   fehlt sie dann bis zum ersten Abruf. Wer sie in den Vorrat nimmt, erhöht die
   `CACHE_VERSION`.
@@ -117,7 +117,7 @@ selbst an der Wurzel) — nachgezogen am selben Tag.
 - **Wer eine Abschirmung trägt** (Sende-Prüfer), nimmt genau diese eigene Seite von der
   Fremd-Meldung aus — sonst meldet das Siegel sich selbst als fremdes Fenster.
 
-**Seit dem 2026-10-17 ein Überblick in Stichworten, Deutsch und Englisch** (Klaus: „Handbuch
+**Seit dem 2026-10-16 ein Überblick in Stichworten, Deutsch und Englisch** (Klaus: „Handbuch
 oder besser Überblick, mit Stichworten … mit einer Link-Funktion“). Inhalt: Mycel, Fenster
 „Mit dem Knotennetz verbinden“, Karten im Raum, Siegel, Lampen, **warum es Schutz braucht**
 (aus Paper S), die Schichten S1–S5b, eigenes Netz, Empfehlen und Sperren, was noch nicht

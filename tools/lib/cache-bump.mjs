@@ -1,6 +1,6 @@
 /* cache-bump.mjs — Cache-Bump für einen Träger, wenn eine Datei sich geändert hat.
  *
- * ⚠ KOPIE aus tools/kanon-verteilen.mjs (2026-10-17), Funktionen traegerDateien,
+ * ⚠ KOPIE aus tools/kanon-verteilen.mjs (2026-10-16), Funktionen traegerDateien,
  * probenDateien, jsDateien, cacheBump, cacheStandNachziehen — wortgleich, nur mit
  * eigenem Zustand. Benannt in docs/PFLEGE-LISTE.md: wer die Riegel dort ändert, zieht
  * sie hier nach (oder baut kanon-verteilen auf diese Datei um). Genutzt von

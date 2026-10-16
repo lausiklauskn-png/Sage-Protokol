@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* sicherheit-verteilen.mjs — trägt Sages sicherheit.html in alle Nachbar-Klone, die das Siegel
- * mit „Ausführlich erklärt" tragen (2026-10-17).
+ * mit „Ausführlich erklärt" tragen (2026-10-16).
  *
  *   node tools/sicherheit-verteilen.mjs              # nur nachsehen (Vorgabe)
  *   node tools/sicherheit-verteilen.mjs --schreiben  # schreiben
