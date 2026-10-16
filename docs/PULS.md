@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 · Pflege-Liste § 18: Verteiler zieht Manifest und Proben-Pin mit (Hauptsitzung)
+- **Startprüfung:** eine zweite Sitzung arbeitet an S3 (wartet auf Klaus' Antwort zur Stärke); die S5-Sitzung ist abgestürzt, ihre Arbeit liegt auf `main` (#1125, Kimhub #390/#391). Klaus: Punkt 4 der Übergabe übernehmen.
+- **Gebaut:** `tools/kanon-verteilen.mjs` zieht beim Cache-Bump `?v=` auch in `manifest.json`/`*.webmanifest` mit und in `tests/`/`test/` die volle alte Cache-Kennung. Ausgenommen: kürzere/längere/fremde Kennungen, kurze Vorsilben, `tests/cache-stand.json`.
+- **Gemessen:** `smoke_kanon_mitziehen` 16 grün (alter Verteiler: 4 ROT) · Gegenprobe 7/7 · `smoke_kanon_cachestand` 15 grün (hat die erste Fassung gefangen) · `gegenprobe_kanon_cachestand` 6/6 · `smoke_kanon_verteilen` 65/0. An Kopien von In-and-Out-Book und Kim-sync: alter Verteiler je 1 ROT in der App-Probe, neuer je 0 ROT. `run_alle` 122 grün · 2 rot · 2 nicht lauffähig — die zwei roten (`geraetename_netzweit`, `service_worker_parst`) fehlen die Nachbar-Klone in diesem Behälter.
+- **Offen:** Pflege-Liste § 22 (toter Anker in `gegenprobe_kanon_verteilen.sh`, auf `main` schon tot). S3 (andere Sitzung), S4 (Klaus' Entscheid), Sichttest Bürgen.
+- **Nicht gemessen:** an einem echten Rollout. Der nächste Rollout zeigt die Zeile `↳ Proben mitgezogen` oder nicht.
+
 ## 2026-10-15 · S5 Teil 2 gebaut und in 29 Träger ausgerollt (Hauptsitzung)
 - **Startprüfung:** kein offener PR in Sage; erster offener Schritt im Sammel-Brief: 5 (S5 Teil 2). Während der Sitzung hat eine zweite Sitzung #1122 (Mein-Workfloh-Page nachgezogen) gemergt — anderes Thema, vor dem PR zusammengeführt; Mein-Workfloh-Page damit 29. Träger.
 - **Gebaut (Sage #1123):** INTERFACES § Modul 23 S5 Teil 2 zuerst. `RDV_OPEN_MYCEL_ADMIN` (Sage-Protokol, nur im öffentlichen Netz) ersetzt `RDV_VOUCH_ANCHORS`; Netz-Einstellung mit optionalem `admin` (geprüft, reist im Netz-Link als `a`); `rankCardsByQuery` stellt Netzadmin, Kontakte, Verbürgte vor die übrigen (nur mit Frage-Vektor, „passt nicht“ bleibt am Ende); `vouchSafetyNumber` (wie B7, aus beiden `publicKey.x`), `vouchPassOn`, `currentNetAdmin`. 23-UI: je Karte „🤝 Bürgen“, Kasten „🤝 Bürgschaften“, Netzadmin-Feld; „🤝 Anker“ → „🤝 Netzadmin“. Siegel-Aspekt S5. Bündel-Kopien nachgezogen.

@@ -246,21 +246,6 @@ Nachgeholt mit `git remote set-head origin main` im eigenen Klon (BookLedgerPro 
 Einstellung, schwer zu raten, ob der andere Zweig Absicht ist) · oder der Verteiler
 bevorzugt `origin/main`, wenn es ihn gibt, vor `origin/HEAD`. Nicht nebenbei gebaut.
 
-### 18 · Der Verteiler zieht `?v=` nicht in `manifest.json` mit
-
-**Gemessen 2026-10-15, zweimal am selben Tag** (In-and-Out-Book). Seite und Vorrat
-bekamen die neue `?v=`, die Manifest-Symbole nicht; der Manifest-Wächter der App wurde
-rot. Von Hand nachgezogen. Dazu derselbe Tag: Kim-sync nagelt die Cache-Version in
-einer Probe fest (`kimsync-v15`, dann `-v16`) — jeder Bump macht sie rot.
-
-**Zum dritten Mal am 2026-10-15 (S2-Rollout):** wieder beide, In-and-Out-Book `?v=10` im
-Manifest, Kim-sync `kimsync-v17` in `tests/smoke.mjs`. Beide von Hand nachgezogen, die Proben
-der Apps haben es gefunden.
-
-**Zum vierten Mal am 2026-10-15 (S5-Teil-2-Rollout):** dieselben zwei, `?v=11` → `?v=12` im
-Manifest und `kimsync-v18` → `-v19` in `tests/smoke.mjs`. Die Proben der Apps haben es
-gefunden. Vier Treffer an einem Tag: ein Riegel im Verteiler wäre billiger als die Handarbeit.
-
 ### 19 · Apps mit eigenem Mycel-Fenster bekommen neue Anzeigen aus 23-UI nicht von selbst
 
 **Gemessen 2026-10-15 (S2-Rollout).** Privat-Brain zeigt den Raum in einem eigenen Fenster
@@ -294,7 +279,12 @@ aus dem gemeinsamen Netz-Code (PBKDF2); wer den Code hat, liest alles, es gibt k
 je Person, und wer das Netz verlässt, behält den Code, bis er gewechselt wird. Ob und welche
 Buchungsdaten an eine KI außerhalb des Geräts gehen (KI-Richter, BYOK), ist offen.
 
-### 22 · Toter Anker in `tests/gegenprobe_netz_ui.mjs` (gefunden 2026-10-16)
+### 22 · `gegenprobe_kanon_verteilen.sh`: ein toter Anker
+
+Gesehen am 2026-10-16: der Fall „Handarbeit faellt aus dem Rueckgabewert" meldet `ANKER NICHT
+GEFUNDEN` — auf `origin/main` genauso (`27 gefangen · 0 durchgerutscht · 1 tote Anker`), also
+nicht aus der Arbeit an § 18. Der Fall misst damit nichts. Nicht nebenbei nachgezogen.
+### 23 · Toter Anker in `tests/gegenprobe_netz_ui.mjs` (gefunden 2026-10-16)
 
 Der Fall „NETZ: der Link trägt den Code im Klartext“ zeigt auf die Zeile, die den Netz-Link
 baut. Seit S5 Teil 2 (#1123) trägt der Link zusätzlich `a` (Netzadmin), die Zeile sieht anders
@@ -303,7 +293,7 @@ auf `origin/main` (afd49dc) und auf dem S3-Zweig gleich. Die Zusicherung ist dam
 ohne Gegenprobe. **Nicht nebenbei repariert** (S3-Sitzung), nur eingereiht: Anker auf die neue
 Zeile ziehen, Fall von Hand nachstellen, rote Zeile lesen.
 
-### 23 · Ein voller Lauf überschrieb vier Dateien im echten Baum (gefunden 2026-10-16)
+### 24 · Ein voller Lauf überschrieb vier Dateien im echten Baum (gefunden 2026-10-16)
 
 Nach `node tests/run_alle.mjs` (S3-Zweig, alle 29 Nachbar-Klone daneben) standen
 `docs/antragsmappe-einreichbar.html`, `docs/unterlagen-forschungsaufgaben.html` und die zwei
@@ -316,6 +306,53 @@ Bedingung des vollen Laufs (Nachbar-Klone?). Vermutet, nicht gemessen. Bis dahin
 vollen Lauf `git status` ansehen, bevor committet wird (LEHREN § 10).
 
 ## Erledigt
+
+### ✅ 18 · `kanon-verteilen` zieht Manifest und festgenagelte Cache-Kennung mit — 2026-10-16
+
+**Jetzt:** Beim Cache-Bump zieht der Verteiler `?v=` auch in `manifest.json` und `*.webmanifest`
+mit (derselbe Riegel wie bei Seiten: nur was vorher auf der alten Nummer stand), und in `tests/`
+bzw. `test/` die **volle** alte Kennung (`kimsync-v19` → `-v20`). Nicht gezogen: eine kürzere
+oder längere Kennung (`kimsync-v4`, `…-v190`), eine fremde (`fremd-…-v19`), eine Vorsilbe unter
+drei Zeichen oder ohne Buchstaben, und `tests/cache-stand.json` (gehört `tools/cache-stand.mjs`,
+§ 13). Ausgabe: `↳ Proben mitgezogen: N Stellen in M Dateien`.
+
+**Beim Bauen gefunden:** die erste Fassung zog auch `tests/cache-stand.json` mit; danach brach
+`cache-stand.mjs` mit „Vorrat geändert, Version gleich" ab. Gefangen hat es
+`tests/smoke_kanon_cachestand.mjs`, nicht das Nachdenken.
+
+Wächter: `tests/smoke_kanon_mitziehen.mjs` (16 Zusicherungen, Wegwerf-Netz). Gegen den alten
+Verteiler: **4 ROT**, genau die vier „zieht mit"-Zusicherungen. Gegenprobe
+`tests/gegenprobe_kanon_mitziehen.sh`: **7 gefangen · 0 durchgerutscht · 0 tote Anker**, jeder mit
+der eigenen Zusicherung als erster roter Zeile.
+
+Gemessen an Kopien der echten Träger (Modul 16 auf `58f263c` zurückgesetzt, `--nur 16_siegel`):
+
+| | alter Verteiler | neuer Verteiler |
+|---|---|---|
+| Mein-In-and-Out-Book `tests/smoke.mjs` | 230 grün · **1 ROT** (Manifest `?v=` 12,12,12) | **231 grün · 0 ROT** |
+| Kim-sync `tests/smoke.mjs` | 335 grün · **1 ROT** (`CACHE ist kimsync-v19`) | **336 grün · 0 ROT** |
+
+Die echten Repos sind nicht angefasst.
+
+<details><summary>Der Befund davor, wortgleich</summary>
+
+#### 18 · Der Verteiler zieht `?v=` nicht in `manifest.json` mit
+
+**Gemessen 2026-10-15, zweimal am selben Tag** (In-and-Out-Book). Seite und Vorrat
+bekamen die neue `?v=`, die Manifest-Symbole nicht; der Manifest-Wächter der App wurde
+rot. Von Hand nachgezogen. Dazu derselbe Tag: Kim-sync nagelt die Cache-Version in
+einer Probe fest (`kimsync-v15`, dann `-v16`) — jeder Bump macht sie rot.
+
+**Zum dritten Mal am 2026-10-15 (S2-Rollout):** wieder beide, In-and-Out-Book `?v=10` im
+Manifest, Kim-sync `kimsync-v17` in `tests/smoke.mjs`. Beide von Hand nachgezogen, die Proben
+der Apps haben es gefunden.
+
+**Zum vierten Mal am 2026-10-15 (S5-Teil-2-Rollout):** dieselben zwei, `?v=11` → `?v=12` im
+Manifest und `kimsync-v18` → `-v19` in `tests/smoke.mjs`. Die Proben der Apps haben es
+gefunden. Vier Treffer an einem Tag: ein Riegel im Verteiler wäre billiger als die Handarbeit.
+
+
+</details>
 
 ### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15
 
