@@ -24,8 +24,8 @@ Kanon. Abgeglichen gegen die Kataloge und die Karte:
 
 | Ort | fehlte | nachgezogen |
 |---|---|---|
-| Markt family-projekt.de (`assets/config/listings.js`) | Mein In-and-Out-Book, Workflow Calculate, Workflow Bedarfsanalyse | family-project #FP_PR (Klaus' Ja: alle drei) |
-| Markt PWA Toolpoint | dieselben drei | PWA-Toolpoint #PT_PR |
+| Markt family-projekt.de (`assets/config/listings.js`) | Mein In-and-Out-Book, Workflow Calculate, Workflow Bedarfsanalyse | family-project #368 (Klaus' Ja: alle drei) |
+| Markt PWA Toolpoint | dieselben drei | PWA-Toolpoint #176 |
 | Adressbuch der Mycel-Karte (Symbol, Link, Kurztext) | In-and-Out-Book, Auslieferungsprüfer, Sende-Prüfer, Workflow Calculate, Workflow Bedarfsanalyse, Workfloh PDF, Kim Hub Company, SBKIM-Demo | mycel-karte #33, Sage-Kopie in diesem PR |
 | Kim-sync | in keinem Markt | bleibt draußen (privat, Klaus 2026-10-15) |
 
@@ -42,7 +42,22 @@ Spore entsteht im Browser mit dem Schlüssel der App; nicht von hier nachziehbar
 - Sage: Proben S1–S5b 13/27/19/33/70/44/42/13/11 grün; Gegenproben 7/14/14/15/31/24/31/10.
 - mycel-karte: alle Proben grün (63 · 76 · 7 · 40 · 37 · 12 · 32 · 4; Gegenproben 35/35, 40/40,
   14/14). Neun echte Knotennamen treffen ihren Eintrag (Abgleich, keine eigene Probe).
-- family-project / PWA Toolpoint: siehe die PRs; rot und auf `main` genauso benannt.
+- family-project #368: alle `smoke_*` grün bis auf `smoke_kein_sprung` (auf `main` ebenso rot).
+  Gegenproben 22/31 sauber; die übrigen neun auf `main` gleich rot oder schlechter (Tabelle im PR).
+- PWA-Toolpoint #176: `npm test` 2562/2563, die rote Zeile („Tablet quer“) auf `main` ebenso;
+  `gegenprobe.sh` bricht deshalb vor dem ersten Fall ab, auf `main` ebenso.
+- Alle vier PRs gemergt und auf `main` nachgezählt.
+
+## Eigener Fehler
+
+Die family-project-Gegenproben liefen über ungesicherter Arbeit. Danach waren `listings.js` und
+vier Seiten zurückgesetzt, und `sicherheit.html` trug eine liegengebliebene Sabotage
+(`sh_h1_AUS`). Gefunden, weil vor dem Commit die Einträge gezählt wurden (32 statt 35).
+Wiederhergestellt, jede fremde Datei gegen `main` verglichen. Pflege-Liste § 31.
+
+## Für die nächste Sitzung
+
+`docs/PULS.md` steht bei rund 2980 von 3000 Zeilen: zuerst ältere Einträge auslagern.
 
 ## Nicht gemessen
 
