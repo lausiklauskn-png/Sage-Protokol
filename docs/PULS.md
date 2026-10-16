@@ -37,7 +37,8 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Nicht gebaut:** nichts. Paper S nicht verändert (Gegenlesen steht bei Klaus).
 - **Danach auf Klaus' Wort:** Abschnitt 11.4 aus Paper S herausgenommen, Absatz zur Content-Security-Policy in 11.3 (Quelltext von Sage, PWA-Toolpoint, family-project, Perfect-Skin-Beauty, Auslieferung-Pruefer: keine CSP, nicht abgerufen). Klaus bekam eine PDF-Lesefassung (nicht im Depot).
 - **Gegenlesen, erste Runde (Klaus):** zwölf Stellen in Paper S geändert (Liste in `PLAN_PAPER_KNOTENNETZ.md`); die Membran-Aussage im Code von Modul 15 nachgesehen (zeigt und weist Zugriffe über Nachrichten ab, sieht das Lesen der Seite nicht); CSP-Absatz als Pflege-Liste § 34.
-- **Offen:** weitere Runden Gegenlesen · Klaus' Bild der S2-Messung für 7.2 · danach HTML und EN. Die Termux-Prüfung der drei Seiten ist jetzt Klaus' eigene Sache, nicht mehr Teil des Papers.
+- **Zweite Runde:** Stil wie im SBKIM-Paper („wir“, neutral; 6.4 ohne Person, Tafel-Evolution im Plan benannt), Abschirmung des Sende-Prüfers in 2.1, S2-Messung vom Tablet als Tabelle in 7.2 (2026-10-16: 9/11 Sporen 1,0000, Schnipsel ab 0,9949; SB-KIMTool-Point 0,8879 und BookLedgerPro 0,9020 passen nicht → Pflege-Liste § 35).
+- **Offen:** weitere Runden Gegenlesen · danach HTML und EN. Die Termux-Prüfung der drei Seiten ist jetzt Klaus' eigene Sache, nicht mehr Teil des Papers.
 - **Kein Forschungseintrag in Kimhub:** Kimhub ist in dieser Sitzung nicht eingebunden; die Sitzung hat außer diesem Eintrag keine Spur hinterlassen.
 
 ## 2026-10-16 · Paper S Fassung 2 · Bestand: drei Knoten in beide Märkte, neun in die Mycel-Karte (Hauptsitzung)
