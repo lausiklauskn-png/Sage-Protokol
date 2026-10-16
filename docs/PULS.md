@@ -31,6 +31,17 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 · S3 Rechenaufwand gebaut und in 29 Träger ausgerollt (Hauptsitzung)
+- **Startprüfung:** kein offener PR in Sage; erster offener Schritt im Sammel-Brief: 5 (S3). Parallel lief die Sitzung „Pflege-Liste § 18“ (#1126, anderes Thema); vor dem PR zusammengeführt, ihre § 22 behalten, meine Funde als § 23/§ 24.
+- **Entscheid (Klaus 2026-10-16):** 12 Stufen, Karten + Fragen, „Vorrang bei Enge“. Meine erste Zeitangabe (0,2 s / 40 s für 200 Karten) kam aus `crypto.subtle` und war falsch; vor dem Bau richtiggestellt (reines JS ~0,03 s, Rechner-Code ~0,01 s je Zettel). Klaus fragte, ob mehr Aufwand besser wäre, und blieb bei 12.
+- **Gebaut (Sage #1127):** INTERFACES § Modul 23 S3 zuerst. Feld `pow` in Karte und Frage (synchrones SHA-256 im Modul, Nonce ohne Zufall), Frage: erst Aufwand, dann Unterschrift. Voller Raum → Karte mit Aufwand verdrängt die zuletzt gekommene ohne; Fragen ohne Aufwand ≤ 4 von 6 je Minute (Setzung dieser Sitzung). `_meta` und `discover().verdraengt`. Siegel-Aspekt S3 DE/EN.
+- **Gemessen:** `smoke_s3_aufwand` 19 grün (nachgerechnet mit Node-crypto), Gegenprobe 14/14. `smoke_netz_eigen` war rot (Nonce-Suche verbrauchte `Math.random`, die qid verschob sich) → Suche ab 0, neue Felder benannt, 68 grün, Gegenprobe 14/14. `gegenprobe_s1_fragen` Anker nachgezogen 7/7. `run_alle` 124 grün · 1 rot (§ 24) · 1 nicht lauffähig.
+- **Rollout:** `kanon-verteilen --nur 16_siegel,23_rendezvous --schreiben`, 57 Dateien in 29 Trägern, keine Handarbeit; erster Rollout mit dem Verteiler aus #1126 (Manifest-`?v=` In-and-Out-Book, Proben-Pins, `cache-stand` Workflow-Calculate/-Needs mitgezogen). Proben je Repo grün; rot und auf `main` genauso: BookLedgerPro `smoke_a5_antwortpfad` (BLP_QUERY_SYNONYMS), family-project `smoke_stufe2_sporen` (8, § 20). Gemeinsamer Paket-Ordner `/home/user/_pakete` (playwright-core 1.56.1, pdf-lib, @pdf-lib/fontkit, fake-indexeddb). family-project: `main` bewegte sich (tägliche Aktualisierung 364cb50), vor dem PR hineingeführt.
+- **PRs:** Alis-Moderaum #77 · Auslieferung-Pruefer #58 · BookLedgerPro #339 · Company-Brain #29 · Jasons-Tresor #191 · Kim-Bell #77 · Kim-sync #24 · Kimboard #157 · Kimseek #97 · Kuechenzettel #13 · Mein-In-and-Out-Book #13 · Mein-Mixarium #254 · Mein-Rezeptbuch #443 · Mein-Tresor #139 · Mein-WorkFloh #272 · Mein-Workfloh-Page #40 · Muttis-Rezeptbuch #248 · PWA-Toolpoint #172 · Perfect-Skin-Beauty #77 · Perfect-Skin-Fashion #49 · Privat-Brain #110 · SB-KIMTool-Point #191 · Sende-Pruefer #85 · Tomys-Hub #251 · Workflow-Calculate #26 · Workflow-Needs #23 · Workflow-PDF #121 · family-project #364 · kim-hub-company #81. Auf `main` 29/29 mit `RDV_POW_BITS = 12`, 28/28 mit Siegel-Aspekt S3; Verteiler danach „84 schon gleich · 0 hängen zurück“. Zweige danach gehoben.
+- **Nicht gemessen:** Tablet (Zeit je Zettel, Bedienbarkeit während der Suche). Nach dem Merge am Gerät ⟳ / Hard-Reload. SIGNAL `seq` 94.
+- **Offen:** S4 nach Klaus' Entscheid (Sperrliste öffentlich oder nicht); Pflege-Liste § 22–24; Paper S nennt S3 noch „geplant“ (nicht geändert).
+
+
 ## 2026-10-16 · Pflege-Liste § 18: Verteiler zieht Manifest und Proben-Pin mit (Hauptsitzung)
 - **Startprüfung:** eine zweite Sitzung arbeitet an S3 (wartet auf Klaus' Antwort zur Stärke); die S5-Sitzung ist abgestürzt, ihre Arbeit liegt auf `main` (#1125, Kimhub #390/#391). Klaus: Punkt 4 der Übergabe übernehmen.
 - **Gebaut:** `tools/kanon-verteilen.mjs` zieht beim Cache-Bump `?v=` auch in `manifest.json`/`*.webmanifest` mit und in `tests/`/`test/` die volle alte Cache-Kennung. Ausgenommen: kürzere/längere/fremde Kennungen, kurze Vorsilben, `tests/cache-stand.json`.
@@ -529,36 +540,11 @@ geändert wurde und keine Modul-Logik.
 
 **Offen:** Sichttest am Tablet durch Klaus.
 
-## 2026-10-07 · `vorrat_wirkung.mjs` steht im Läufer (PFLEGE-LISTE § 11)
+## Eine Sitzung vom 2026-10-07 (`vorrat_wirkung.mjs` steht im Läufer) — ausgelagert am 2026-10-16
 
-**Rolle:** Pflege-Sitzung (Brief aus Kimhub, Stand `3c8a3cc`).
-
-**Der Brief war überholt, und das gehört an den Anfang.** Er verlangte, die
-vier blinden `waitForFunction(async …)` in `tests/vorrat_wirkung.mjs` zu
-reparieren. Auf `origin/main` war das seit PR #1050 (2026-09-28) erledigt —
-sechs Stellen, nicht vier, mit Familien-Probe und Gegenprobe. Nachgesehen
-statt nachgebaut. Offen war nur Schritt 5.
-
-**Gemessen:** Playwright läuft (`playwright-core 1.62.1`, Chromium unter
-`/opt/pw-browsers`). Mit den Nachbar-Klonen: **9 grün**, 11 s. Unter Last
-(8 Dauerschleifen auf 4 Kernen): **0 rot von 10 Läufen** — die Fassung aus
-#1050 hält.
-
-**Getan.** Die Probe meldet fehlende Nachbarn vor dem ersten Browser
-(Rückgabewert 3 + `⊘ NACHBAR FEHLT: … —`), `run_alle.mjs` nimmt sie über
-`EINZELN` mit und zählt nur das Paar als „nicht lauffähig". Wächter
-`tests/smoke_laeufer_nachbar.mjs` (11 grün), Gegenprobe
-`tests/gegenprobe_laeufer_nachbar.mjs` (**6 gefangen · 0 durchgerutscht · 0
-aus falschem Grund · 0 tote Anker**). `gegenprobe_warten_async.mjs` weiter
-**7 gefangen**.
-
-**Voller Lauf:** `run_alle.mjs` **110 grün · 2 rot · 0 nicht lauffähig** (112
-Proben). Die zwei roten sind älter und haben einen gemeinsamen Grund — sie
-brauchen Nachbar-Klone, die hier nicht liegen. Eingereiht als
-`PFLEGE-LISTE.md` § 12, nicht nebenbei umgebaut.
-
-**Offen:** § 12 · fehlendes Chromium ist in allen Sage-Browser-Proben ROT
-statt „nicht lauffähig" (benannt in § 11).
+> **↓ Ausgelagert.** Der Eintrag „`vorrat_wirkung.mjs` steht im Läufer (PFLEGE-LISTE § 11)“ steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-10_puls-auslagerung-24.md`](sessions/archiv/2026-10_puls-auslagerung-24.md)
+> (30 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-02 (Modul 25 verdeckt jetzt auch Daten (DATUM)) — ausgelagert am 2026-10-15
 

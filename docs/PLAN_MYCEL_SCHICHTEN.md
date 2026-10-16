@@ -116,7 +116,9 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   Sitzung, benannt: „2 Plätze bleiben Fragen mit Aufwand“, wie S1 „2 von 6“).
   Probe `tests/smoke_s3_aufwand.mjs` 19 grün (nachgerechnet mit Node-crypto, nicht mit dem
   Modul), Gegenprobe `tests/gegenprobe_s3_aufwand.mjs` 14 von 14 gefangen, je mit dem Namen
-  der Zusicherung. **Offen:** Rollout in alle Träger; Zeit am Tablet messen.
+  der Zusicherung. **Ausgerollt 2026-10-16:** 29 Träger je ein PR, auf `main` 29/29 mit S3-Code,
+  28 mit Siegel-Aspekt (Company-Brain ohne Siegel); Verteiler danach „84 schon gleich · 0 hängen
+  zurück“. **Offen:** Zeit am Tablet messen.
 
 - [ ] **S4 — Signierte Sperrliste im Mycel** (Gedächtnis) · `Entscheid`+`Bau` · ⏱ ~1 Sitzung
   Wie in Kimboard: nur Klaus unterschreibt, nur nach oben (sperren); gelöst wird nur in der
