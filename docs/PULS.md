@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 abends · Sammel-Brief: Schritt 6 wartet auf Klaus (Hauptsitzung)
+- **Startprüfung:** Sitzungsliste: nur diese Sitzung lief (zwei weitere untätig seit 13:58 und 16:33); kein offener PR in Sage. Erster offener Schritt: 6. Alle übrigen Schritte stehen auf `main` als erledigt.
+- **11.4 erneut versucht:** `family-projekt.de`, `pwa-toolpoint.de`, `…github.io/Perfect-Skin-Beauty/` antworten aus dem Container mit HTTP 000 (dritter Versuch nach 2026-10-15 und dem Mittag des 2026-10-16).
+- **Nicht gebaut:** nichts. Paper S nicht verändert (Gegenlesen steht bei Klaus).
+- **Offen:** Klaus' Gegenlesen von Fassung 2 · Abruf der drei Seiten vom Tablet (Befehle im Übergabeprotokoll) · danach HTML und EN.
+- **Kein Forschungseintrag in Kimhub:** Kimhub ist in dieser Sitzung nicht eingebunden; die Sitzung hat außer diesem Eintrag keine Spur hinterlassen.
+
 ## 2026-10-16 · Paper S Fassung 2 · Bestand: drei Knoten in beide Märkte, neun in die Mycel-Karte (Hauptsitzung)
 - **Startprüfung:** Sitzungsliste: nur diese Sitzung lief; kein offener PR in Sage. Erster offener Schritt: 6.
 - **Paper S Fassung 2 (Sage #1140):** S3/S4/S5 standen als „geplant“ → gebaut, 29 Träger; S5b in Abschnitt 8 (Empfehlen, Haftung je App, 180 Tage, Widerruf mit Grund). Proben-Tabelle 9.1, an dem Tag neu gelaufen (Proben 13/27/19/33/70/44/42/13/11, Gegenproben 7/14/14/15/31/24/31/10). Abschnitt 3 nannte S3 „am Tablet gemessen“ — berichtigt. DOI Greshake, SybilGuard, Ozata über Suchauszüge. 11.4 weiter nicht abgerufen (Proxy und WebFetch gesperrt).
