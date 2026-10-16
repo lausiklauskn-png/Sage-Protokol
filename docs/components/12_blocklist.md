@@ -5,6 +5,15 @@
 >
 > _Manuelle Sperrliste durch den Betreiber — die letzte Verteidigungslinie,
 > wenn Reputation und Apoptose-Vermächtnis nicht reichen._
+>
+> ⚠ **Tafel-Evolution (Klaus 2026-10-16, S4):** Für das Mycel ist entschieden, dass die
+> Sperrliste **öffentlich und signiert** reist (wie in Kimboard), unterschrieben vom
+> Netzadmin des Netzes (im offenen Mycel Sage-Protokol). Die Sätze unten, die Liste werde
+> „nicht öffentlich verteilt“, gelten damit nicht mehr; sie bleiben als Begründung der alten
+> Lesart stehen. Gebaut als **S4 in Modul 23**, nicht als eigenes Modul 12:
+> [`INTERFACES.md` § Modul 23 S4](../INTERFACES.md), Plan:
+> [`PLAN_MYCEL_SCHICHTEN.md`](../PLAN_MYCEL_SCHICHTEN.md). Der Preis ist benannt: ein
+> Gesperrter sieht es und kann eine neue Kennung erzeugen; dagegen tragen S3 und S5.
 
 ---
 

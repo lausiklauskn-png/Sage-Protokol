@@ -5550,7 +5550,7 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
           by    : Kennungen der Kette, Wurzel zuerst (ohne die Karte selbst)
           depth : Schritte (0 bei anker/kontakt) · reason : Text oder null
           „Der Bürge haftet": opts.flagged / init({vouchFlagged}) = Kennungen,
-          die aufgefallen sind (bis S4 von Hand; danach aus der Sperrliste).
+          die aufgefallen sind (von Hand; seit S4 zusätzlich jede gesperrte Kennung).
           Ein Bürge mit gültiger Bürgschaft für eine aufgefallene Kennung
           verliert ALLE seine Bürgschaften (zählen nicht mehr); eine
           aufgefallene Kennung ist nie „verbürgt". Wurzeln bleiben Wurzeln.
@@ -5634,6 +5634,64 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         (489 000/s, ein Kern) — 200 Flut-Karten ~2 s. Die Schicht verdrängt
         Fluter, die gar nicht rechnen; gegen einen entschlossenen Angreifer
         tragen S1, S5 und S4.
+    ✅ S4 „Signierte Sperrliste im Mycel" (2026-10-16, docs/PLAN_MYCEL_SCHICHTEN.md;
+        Klaus 2026-10-16: „öffentlich, signiert", „in Sage, Sage-Protokol
+        unterschreibt"). Ersetzt für das Mycel die Lesart der Modul-Karte 12
+        („nicht öffentlich") — Tafel-Evolution, benannt. Keine neue Spore.
+        Sperrliste = { kind:"sbkim-blocklist", v:1, admin:<nodeId Netzadmin>,
+                       ts:<Sek.>, ids:[nodeId …], spore:<Spore des Netzadmins>, sig }
+        sig = Modul 02 signDetached(<Zettel ohne sig>) wie Bürgschaft (S5).
+        Gültig nur, wenn: admin === currentNetAdmin() des LESERS (im offenen
+        Mycel Sage-Protokol, im eigenen Netz dessen `admin`; ohne Netzadmin
+        gilt keine Liste) · spore.id === admin · verifyForeignSpore(spore).valid ·
+        verifyDetached(…, spore.publicKey) · ts ≤ jetzt + RDV_VOUCH_SKEW_SEC (600) ·
+        ids ist ein Array mit ≤ RDV_BLOCK_MAX (256) Einträgen, jeder
+        /^[A-Za-z0-9_-]{16,128}$/, ohne Doppelte, ohne admin selbst. Sonst
+        ungültig (nicht still gekürzt). Kein Ablauf: eine Sperre bleibt, bis
+        eine NEUERE gültige Liste sie nicht mehr enthält. Unter mehreren
+        gültigen Listen desselben Netzadmins gilt die mit dem größten ts.
+        Transport (kein eigener Tag, kein Abruf aus dem Netz, beim Laden kein Netz):
+          Präsenz-Karte + { blocklist: <Sperrliste> } (höchstens eine). Jeder
+          Knoten, der eine gültige Liste kennt, trägt die neueste mit
+          (Speicher "sbkim_sperre_" + dbSuffix, ohne dbSuffix nicht gespeichert;
+          beim Lesen aus dem Speicher wird NEU geprüft — geteilte Adresse).
+          Der Leser sammelt Listen aus ALLEN Karten-Ereignissen eines
+          discover()-Laufs und prüft höchstens RDV_BLOCK_SEEN_MAX (8) mit
+          admin === eigener Netzadmin, neueste zuerst.
+          `sbkim/sperrliste.json` in Sage ist Ablage und Beleg, kein Sender.
+        Wirkung (anders als S5 GATET S4):
+          discover(): Karten gesperrter Kennungen fallen heraus (vor Bürgen
+            und Rangfolge); Rückgabe zusätzlich `gesperrt` (Zahl dieses Laufs).
+            Gesperrte Kennungen zählen für S5 als „aufgefallen" (der Bürge haftet).
+          enableAnswering(): Fragen mit gesperrter fromNodeId oder spore.id
+            werden nicht beantwortet (still, gezählt in _meta.fragenGesperrt).
+          askNode()/fetchAnswers(): Antworten gesperrter Kennungen werden
+            verworfen (gezählt in _meta.antwortGesperrt).
+          Ohne gültige Liste oder ohne Modul 02 (nicht prüfbar) ist nichts
+            gesperrt — fail-soft, _meta.blocklist.stand sagt es.
+        API:
+          blockId(nodeId) → Promise<{ok, zettel?, reason?}> — nur wenn die
+            eigene Kennung der Netzadmin ist: neue Liste = bisherige + nodeId,
+            signiert, gespeichert, reist mit der nächsten Karte. Nur nach oben.
+          createBlocklist(ids) → Promise<{ok, zettel?, reason?}> — Netzadmin
+            unterschreibt eine ganze Liste (auch eine kürzere = Sperre lösen;
+            in der Oberfläche gibt es dafür keinen Knopf, wie in Kimboard).
+          addBlocklist(zettel) → Promise<{ok, reason?}> — eingefügte Liste
+            prüfen und übernehmen, wenn sie neuer ist.
+          currentBlocklist() → Promise<{stand:"gueltig"|"keine"|"nicht-pruefbar",
+            admin, ts, ids:[…], zettel}> · isBlocked(nodeId) → Boolean (Stand
+            der zuletzt geladenen Liste).
+        _meta zusätzlich: blockMax, blocklist {stand, admin, ts, count},
+        fragenGesperrt, antwortGesperrt, kartenGesperrt.
+        Oberfläche (23-UI): Kasten „⛔ Sperrliste": Stand (Zahl, Datum,
+        Netzadmin), Liste einfügen und übernehmen, „📋 Liste kopieren" (für
+        die Ablage). Nur wenn die eigene Kennung der Netzadmin ist: je Karte
+        „⛔ Sperren" mit Rückfrage. Fremde Namen und Texte nur als Text.
+        ⚠ Benannte Grenzen: die Liste ist öffentlich — ein Gesperrter sieht,
+        dass er gesperrt ist, und kann eine neue Kennung erzeugen (dagegen
+        S3 und S5, nicht S4). Ein Knoten ohne Kontakt zu einer Karte mit der
+        Liste kennt sie nicht. Geht der Schlüssel des Netzadmins verloren,
+        bleibt die letzte Liste gültig, wächst aber nicht mehr.
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
