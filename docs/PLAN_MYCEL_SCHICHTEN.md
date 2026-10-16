@@ -205,7 +205,7 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   gemessen (zwei echte Geräte, die einander bürgen); „aufgefallen“ weiter nur von Hand (bis
   S4/Modul 10); Privat-Brains eigenes Mycel-Fenster zeigt keine Bürgen-Oberfläche (PFLEGE § 19).
 
-- [ ] **S5b — Bürgen für fremde Apps in den Märkten** · `Bau` · ⏱ ~2–3 Sitzungen
+- [x] **S5b — Bürgen für fremde Apps in den Märkten** · `Bau` · ⏱ ~2–3 Sitzungen
   Anlass: PWA Toolpoint und family-projekt.de laden fremde Apps offen ein, verwaltet im
   Studio. Klaus 2026-10-16: *„Ich müsste für sie bürgen, zumindest einen Teilbürgen."*
   Die Kette trägt das schon: Sage-Protokol (Netzadmin) bürgt einmal für jeden Markt, der
@@ -311,6 +311,14 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   28 mit Siegel-Aspekt (Company-Brain ohne Siegel). **Offen:** Netz-Verwaltung als Kanon; Studio in
   PWA Toolpoint und family-project; Hinweis im Siegel der App (bisher nur im Netz-Fenster);
   Tablet nicht gemessen.
+  **Stand 2026-10-16: Teil 2 gebaut und ausgerollt** (Sage #1138). Klaus mitten im Bau: die Listen
+  auf eine **eigene Seite** statt ins Studio, das Wort **„Empfehlen“** statt „Bürgen“, und die
+  Empfehlung soll **von selbst über den Raum** ankommen. Gebaut: Modul 23b (vier Listen, Knöpfe,
+  `page()`), `netz-verwaltung.html` in Sage (langer Druck aufs ©), PWA Toolpoint und family-project
+  (Knopf im Studio, Feld `nodeId`, „Spore prüfen“). Modul 23: Vorrat `issued`, Karte trägt ≤ 8,
+  `discover()` holt Empfehlungen für die eigene Kennung ab, nur von Ausstellern, die beim Empfänger
+  schon zählen. Rollout 29 Träger, auf `main` 29/29. Anleitung: `docs/ANLEITUNG_EMPFEHLEN.md`.
+  **Offen:** Kennungen der Markt-Einträge (Klaus); Ablauf-Hinweis im Siegel der App; Tablet.
   **Was ein Konkurrent damit kann (gelesen im Code, 2026-10-16):** nur seine eigene
   Bürgschaft widerrufen (der Widerruf muss vom Bürgen unterschrieben sein). Unverbürgt heißt
   sichtbar und gefragt, nur nicht vorn; herausfallen geht nur über die Sperrliste des
