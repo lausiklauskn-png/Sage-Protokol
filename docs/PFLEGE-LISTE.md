@@ -245,6 +245,11 @@ Nachgeholt mit `git remote set-head origin main` im eigenen Klon (BookLedgerPro 
 den alten Vorgabe-Zweig, `origin/main` gab es gar nicht; der Verteiler meldete 28 statt 29 Träger.
 Nachgeholt mit `git fetch origin main:refs/remotes/origin/main` + `git remote set-head origin main`.
 Wer einen Rollout fährt, zählt die Träger vorher gegen die Liste im PULS.
+**Zum vierten Mal am 2026-10-16 (S5b Teil 2):** frischer flacher Klon stand auf dem alten Zweig,
+`sbkim/` ohne Module; der erste Trockenlauf zählte 28 Träger. Nachgeholt wie oben. Dazu: der
+Verteiler meldete beim Schreiben „Arbeitsbaum älter als das Depot“ für BookLedgerPro, hat die
+Dateien aber trotzdem geschrieben (danach `git status`: 16/23/23-UI, sw.js, tests/run.mjs geändert).
+Die Meldung und das Verhalten passen nicht zusammen. Nicht nebenbei untersucht.
 
 **Offen, zwei Wege:** Klaus stellt den Vorgabe-Zweig auf GitHub auf `main` (eine
 Einstellung, schwer zu raten, ob der andere Zweig Absicht ist) · oder der Verteiler
@@ -308,6 +313,20 @@ grün. **Einzeln nicht nachgestellt:** keine der sechs Proben, die diese Dateien
 `tools/antragsmappe-bauen.mjs` oder `tools/ausgabe-bauen.mjs` im echten Baum, nur unter einer
 Bedingung des vollen Laufs (Nachbar-Klone?). Vermutet, nicht gemessen. Bis dahin: nach einem
 vollen Lauf `git status` ansehen, bevor committet wird (LEHREN § 10).
+
+### 25 · Zwei tote Anker in `tests/gegenprobe_s3_aufwand.mjs` (gefunden 2026-10-16)
+
+`NUR_ANKER=1 node tests/gegenprobe_s3_aufwand.mjs` meldet „Frage wird ohne Aufwand gesendet“ und
+„Aufwand nach dem Unterschreiben angehängt“ als tot (0 Treffer) — auf `origin/main` vor S5b Teil 2
+genauso (2 tot). Die beiden Zusicherungen sind damit ohne Gegenprobe. Nicht nebenbei nachgezogen
+(S5b-Teil-2-Sitzung).
+
+### 26 · `smoke_service_worker_parst` wird rot, sobald wenige Nachbar-Klone daliegen (2026-10-16)
+
+Mit genau zwei Nachbar-Klonen (pwa-toolpoint, family-project) meldet die Probe „✗ ROT — es gibt
+Service-Worker zu prüfen (3)“; ohne Nachbarn „ungeprüft, nicht rot“. Rot heißt hier „zu wenige
+gefunden“, nicht „ein Worker bricht“. Gemessen, nicht untersucht; die Schwelle steht vermutlich in
+der Probe selbst. Mit allen 29 Klonen nicht nachgemessen.
 
 ## Erledigt
 
