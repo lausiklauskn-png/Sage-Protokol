@@ -39,7 +39,7 @@ und in die tragenden Anwendungen verteilt, die dritte über eine Prüfung beim E
 die den Vektor aus der Beschreibung nachrechnet.
 
 Zwei Gedanken tragen den Bericht. **Erstens** genügt keine einzelne Prüfung. Wirksam ist
-eine Folge von Hürden, billige zuerst, teure erst im Ernstfall. Die Natur hält Arten mit
+eine Folge von Hürden: die billigen zuerst, die teuren erst im Ernstfall. Die Natur hält Arten mit
 genau so einer Folge auseinander, und ein eigener Abschnitt geht dem nach, wie weit der
 Vergleich trägt und wo er bricht. **Zweitens** heißt „garantiert" hier nur eines: Zu
 jeder Zusicherung gibt es eine Probe, die zeigt, dass der Schutz greift, und eine
@@ -61,8 +61,12 @@ Das Netz, von dem hier die Rede ist, besteht aus kleinen Web-Anwendungen: ein
 Rezeptbuch, eine Buchhaltung, ein Formular-Werkzeug, ein Brett für Notizen. Jede
 Anwendung liegt als statische Seite im Netz, meist bei GitHub Pages, und läuft ganz im
 Browser ihres Nutzers. Damit sie einander finden, meldet sich jede in einem gemeinsamen,
-öffentlichen Raum an. Dieser Raum ist ein geliehenes Nostr-Relais: ein Dienst, der
-signierte Nachrichten annimmt und an alle weitergibt, die zuhören.
+öffentlichen Raum an. Dieser Raum liegt auf einem Nostr-Relais: einem Dienst, der
+signierte Nachrichten annimmt und an alle weitergibt, die zuhören. Das Relais, das die
+Anwendungen von Haus aus benutzen, betreibt der Betreiber dieses Netzes selbst
+(`relay.family-projekt.de`). Wer will, legt ein eigenes an, unter eigenem Namen, und
+bekommt damit einen eigenen Raum mit eigenen Regeln und eigenem Schutz. Ein solches
+eigenes Netz hat der Betreiber am 2026-10-13 zwischen Handy und Tablet ausprobiert.
 
 **Was „ohne Server" hier heißt.** Ganz ohne Server geht es nicht: das Relais läuft auf
 einem. Gemeint ist etwas anderes. Es gibt keinen großen, übergeordneten Dienst wie bei
@@ -72,7 +76,7 @@ Poststelle. Es nimmt unterschriebene Zettel an und reicht sie weiter, es kennt k
 Konten und führt kein Verzeichnis. Es kann Zettel zurückhalten, aber nicht unbemerkt
 verändern, denn dann passt die Unterschrift nicht mehr. Relais gibt es viele, von
 verschiedenen Betreibern, und eine Anwendung kann mehrere zugleich benutzen. Fällt
-eines aus, tragen die anderen. Der Betreiber dieses Netzes stellt selbst eines. Der
+eines aus, tragen die anderen. Der
 Einzelne braucht keinen eigenen Server, und es gibt keinen zentralen Index. Das
 SBKIM-Paper setzt „server-los" deshalb in Anführungszeichen.
 
@@ -86,11 +90,19 @@ bewerten.
 
 ### 1.2 Was „sicher" hier heißen kann
 
-In einem solchen Netz gibt es niemanden, der Eintritt verlangt. Der Raum ist
-öffentlich, und das soll er bleiben: fremde Anwendungen sollen dazukommen können,
-ohne jemanden zu fragen. Daraus folgt eine Grenze, die alles Weitere bestimmt.
-**Abweisen kann nur der Empfänger.** Er sieht eine Karte, einen Zettel, eine Antwort,
-und entscheidet, ob er sie annimmt, markiert oder verwirft.
+In einem solchen Netz verlangt niemand Eintritt, der Zugang ist bisher kostenlos. Der
+öffentliche Raum ist für alle offen, und fremde Anwendungen können dazukommen, ohne
+jemanden zu fragen. Seit es Empfehlungen gibt (S5 und S5b, Abschnitt 8), gilt das mit
+einer Einschränkung: dazukommen kann weiter jeder, Vorrang bekommt aber nur, wer von
+einem Knoten empfohlen ist, dem der Leser selbst traut. Wer einen geschlossenen Raum
+will, legt ein eigenes Netz auf einem eigenen Relais an (1.1).
+
+Daraus folgt eine Grenze, die alles Weitere bestimmt. **Eine einzelne Nachricht im
+Raum kann nur der Empfänger abweisen.** Das Relais reicht jeden Zettel weiter, der seine
+Grundregeln einhält (Abschnitt 5, Zeile „Fluten des Raums"). Ob eine Karte, eine Frage
+oder eine Antwort gilt, entscheidet erst die Anwendung, bei der sie ankommt: sie nimmt
+sie an, markiert sie oder verwirft sie. Auch eine Sperrliste (S4) wirkt dort, beim
+Empfänger, und nicht am Relais.
 
 „Sicher" heißt hier darum nicht, dass nichts Schlechtes in den Raum gelangt. Es heißt:
 Was beim Empfänger ankommt, wird so geprüft, dass eine Fälschung auffällt, und so
@@ -123,8 +135,12 @@ brauchen.
 | **Browser-KI des Nutzers** | nichts, sie ist schon da | nichts Böses; sie liest aber die Seite und kann für den Nutzer handeln |
 
 Der letzte Eintrag ist kein Angreifer im üblichen Sinn. Er steht hier, weil eine KI im
-Browser alles liest, was die Anwendung anzeigt, auch fremden Text, und weil keine
-Prüfung in der Anwendung sie davon abhalten kann (Abschnitt 4.4).
+Browser alles liest, was die Anwendung anzeigt, auch fremden Text. Ein Teil davon lässt
+sich sichtbar machen: spricht eine fremde KI oder ein Browser-Agent die Anwendung über
+Nachrichten an, meldet die Membran (Modul 15) das an der Lampe „Fremd" und weist
+Absender ab, die nicht auf ihrer Liste stehen. Liest eine KI dagegen die angezeigte
+Seite direkt im Browser, sieht die Anwendung davon nichts und kann es nicht verhindern
+(Abschnitt 4.4).
 
 ### 2.2 Was ein Angreifer kann und was nicht
 
@@ -193,6 +209,13 @@ Adresse ist **gültig unterschrieben**. Die Prüfung meldet `{"valid":true}`, un
 richtig so: sie sagt, dass diese Spore von diesem Schlüssel kommt, und nichts weiter.
 Wer der Unterschrift mehr entnimmt, als sie aussagt, hat schon verloren.
 
+Das gilt auch für eine Spore, deren Bedeutungs-Vektor aus den Inhalten einer Anwendung
+gerechnet ist, beim Rezeptbuch etwa aus den Rezepten. Die Unterschrift bestätigt, dass
+dieser Vektor von diesem Schlüssel kommt, und sie deckt genau den Stand, der
+unterschrieben wurde. Ob der Vektor zu den Inhalten passt, kann der Empfänger nicht
+nachprüfen, denn die Inhalte kennt er nicht. Die Karte sagt dann „Bedeutung aus
+Inhalten, nicht nachprüfbar" (7.2).
+
 ### 4.2 Wohin der Text geht, entscheidet über den Schaden
 
 Ein fremder Name auf einer Karte ist harmlos, solange er als Text angezeigt wird. Wird
@@ -218,7 +241,8 @@ dieselbe Verwandtschaft (Abschnitt 5, Zeile „Kopierter Bedeutungs-Vektor").
 Ein Browser mit eingebauter KI liest die Seite, die der Nutzer sieht, und kann für ihn
 klicken, tippen und navigieren. Zeigt eine Anwendung fremden Text an, kann diese KI ihn
 als Anweisung lesen. Dagegen hilft keine Prüfung in der Anwendung, denn ein Agent
-braucht kein Skript, er bedient die Seite wie ein Mensch. Dieser Weg ist **vermutet,
+braucht kein Skript, er bedient die Seite wie ein Mensch. Sichtbar wird nur, wer die
+Anwendung über Nachrichten anspricht; das zeigt die Membran (2.1). Dieser Weg ist **vermutet,
 nicht gemessen**. Abschnitt 11 sieht nach, was die Browser-Hersteller selbst dazu sagen.
 
 ---
@@ -265,7 +289,7 @@ feste Wendungen leistet (Zeile „Anweisung an eine KI").
 
 ---
 
-## 6 · Was die Natur bewährt hat
+## 6 · Was sich in der Natur bewährt hat
 
 Der Betreiber hat diesen Abschnitt ausdrücklich gewünscht, mit einem Satz, der den
 Gedanken trägt: *„da ist es bewährt, das ist im Prinzip die Gegenprobe … durch Erhaltung
@@ -277,13 +301,13 @@ mit einer Hürde, sondern mit vielen.
 Die Biologie beschreibt die Trennung von Arten als Folge von Barrieren in der Reihenfolge
 des Lebenslaufs (Coyne und Orr 2004). Zuerst kommen die billigen: Balz, Paarungszeit,
 Lebensraum. Dann die Prüfung an der Zelle, wenn Spermium und Eizelle zusammentreffen.
-Erst danach, beim Mischling selbst, zeigt sich, ob die Erbanlagen zusammenpassen. Jede
+Erst danach, beim Hybriden selbst, zeigt sich, ob die Erbanlagen zusammenpassen. Jede
 Hürde filtert nur, was an der vorigen vorbeigekommen ist. Bei zwei Arten der Gauklerblume
 haben Ramsey, Bradshaw und Schemske (2003) die Hürden einzeln gemessen: zusammen
 verhindern sie etwa 99,87 % des Genflusses, der größte Teil davon, bevor überhaupt ein
-Mischling entsteht.
+Hybrid entsteht.
 
-Das ist das Muster, das dieser Bericht überträgt: **billige Prüfungen zuerst, teure erst im
+Das ist das Muster, das dieser Bericht überträgt: **die billigen Prüfungen zuerst, die teuren erst im
 Ernstfall, und keine Prüfung muss alles allein leisten.**
 
 ### 6.2 Die Stufen und ihre Entsprechung
@@ -294,7 +318,7 @@ Ernstfall, und keine Prüfung muss alles allein leisten.**
 | teure Balz, das Rad des Pfaus (Zahavi 1975) | Rechenaufwand je Zettel (S3) | mit Vorsicht: das Handicap-Prinzip war lange umstritten und wurde erst durch spätere Modelle gestützt |
 | Erkennung an der Eizelle: Bindin beim Seeigel (Vacquier und Swanson 2011), Izumo1 und Juno bei Säugetieren (Bianchi et al. 2014) | Unterschriften an Spore, Antwort und Frage (Bau 23.R, S1) | mit Abstrich: in der Natur bevorzugt dieses Schloss die eigene Art, schließt aber nicht absolut. Juno vom Hamster bindet menschliches Izumo1 (Bianchi und Wright 2015). Eine Unterschrift ist schärfer: sie passt oder passt nicht |
 | Fehlerkorrektur bei der Rekombination: Bakterien verweigern den Austausch mit zu fremdem Erbgut über die Reparatur-Proteine mutS und mutL (Rayssiguier, Thaler und Radman 1989), bei höheren Lebewesen leisten das MSH2 und seine Partner; die Suche nach dem passenden Gegenstück übernimmt RecA beziehungsweise Rad51 (Renkawitz et al. 2014) | Vektor gegen Text nachrechnen (S2) | gut: in beiden Fällen wird geprüft, ob zwei Dinge, die zusammengehören sollen, wirklich zusammenpassen |
-| Dobzhansky-Muller-Unverträglichkeit: Anlagen, die jede für sich harmlos sind, vertragen sich im Mischling nicht (Orr 1996) | das Siegel prüft, ob die Pflicht-Module zusammenpassen | gut als Bild für „jedes Teil für sich korrekt, zusammen kaputt" |
+| Dobzhansky-Muller-Unverträglichkeit: Anlagen, die jede für sich harmlos sind, vertragen sich im Hybriden nicht (Orr 1996) | das Siegel prüft, ob die Pflicht-Module zusammenpassen | gut als Bild für „jedes Teil für sich korrekt, zusammen kaputt" |
 | Restriktion und Modifikation bei Bakterien: die eigene DNA ist methyliert, fremde ohne diese Markierung wird zerschnitten (Tock und Dryden 2005) | eigene Einträge markieren (S6) | gut, aber S6 ist nicht freigegeben |
 | CRISPR: Bakterien bauen Stücke früherer Viren ins eigene Erbgut ein und erkennen sie wieder (Barrangou et al. 2007) | signierte Sperrliste (S4) | gut: ein Gedächtnis an Eindringlinge, das weitergegeben wird |
 | piRNA hält springende Gene in der Keimbahn still (Ozata et al. 2019) | Prüfliste vor dem KI-Richter (04.J, S7) | als Bild für „schütze, was weitergegeben wird" |
@@ -313,14 +337,15 @@ jedes öffentliche Signal ist kopierbar, und genau so wurde der Bedeutungs-Vekto
 Toleranz-Stufen versagt (Theofilopoulos et al. 2017). Im Netz: zu scharfe Abwehr trifft
 die eigenen Anwendungen. Deshalb wird markiert statt abgewiesen (7.1).
 
-**Mischlinge kommen vor.** Mindestens 25 % der Pflanzenarten und 10 % der Tierarten sind
+**Hybride kommen vor.** Hybride sind Kreuzungen zwischen zwei Arten, etwa das Maultier
+aus Pferd und Esel. Mindestens 25 % der Pflanzenarten und 10 % der Tierarten sind
 an Kreuzungen beteiligt (Mallet 2005). Die Hürden sind Filter, keine Mauer. Auch im Netz
 kommt eine Fälschung gelegentlich durch, und das System muss damit rechnen.
 
 **Die Bewährung zeigt nur die Überlebenden.** Arten, deren Hürden versagt haben, sind
 nicht mehr da, um es zu zeigen.
 
-**Was die Natur bewährt hat, ist das Muster, nicht dieser Code.** Ob die Umsetzung im Netz
+**Bewährt hat sich in der Natur das Muster, nicht dieser Code.** Ob die Umsetzung im Netz
 trägt, zeigt nur ihre eigene Probe mit Gegenprobe. Beides gehört nebeneinander, und keines
 ersetzt das andere.
 
@@ -331,12 +356,15 @@ ersetzt das andere.
 Der Betreiber liest die Niederlagen der Natur anders als üblich: *„ein Virus ist kein
 Schädling, ein Virus ist ein Prüfmechanismus … wenn ein System aus dem Gleichgewicht
 gerät, zeigen diese Prüfmechanismen, dass etwas nicht stimmt."* Viren, Autoimmunität und
-Mischlinge machen nach dieser Lesart eine schwache oder fehlgehende Abwehr sichtbar, bevor
+Hybride machen nach dieser Lesart eine schwache oder fehlgehende Abwehr sichtbar, bevor
 man sie anders bemerken würde.
 
-Die Biologie kennt keinen Planer. Ein Virus ist nicht als Prüfung gedacht, er **wirkt**
-aber wie eine, weil er als Auslesedruck aussortiert, was nicht hält. In diesem Sinn, und
-nur in diesem, trägt die Lesart auch im Netz: die nachgestellte gefälschte Antwort (N1)
+Gemeint ist das **Wirkprinzip**. Ein Virus ist nicht als Prüfung gedacht, er wirkt aber
+wie eine. Er greift in die Zelle ein und kopiert sich, und wer zusieht, erkennt, ob die
+Zelle standhält, ob andere Mechanismen sie schützen oder ob sie unterliegt. Ein
+Mechanismus hat für den Betreiber immer einen Urheber, auch wenn man ihn nicht kennt. So
+ist es auch im Netz: jeder Angriff und jede Flut geht von jemandem aus, nur ist die Quelle
+oft nicht zu bestimmen. In diesem Sinn trägt die Lesart auch im Netz: die nachgestellte gefälschte Antwort (N1)
 hat sichtbar gemacht, dass Antworten an niemanden gebunden waren. Daraus folgt ein
 praktischer Vorschlag: Angriffe, Fluten und Fehlmeldungen nicht nur abwehren, sondern
 **aufzeichnen**. Sie zeigen, wo das Netz instabil ist.
@@ -622,15 +650,6 @@ Es **ergänzt** sich dort, wo der Browser Seiten abwehrt und das Netz Zettel pr�
 Browsing weiß nichts von Sporen, und Modul 23 weiß nichts von Betrugsseiten. Beide
 Schichten sehen verschiedene Dinge.
 
-Eine weitere Schicht kann die Seite selbst setzen: eine **Content-Security-Policy**. Mit ihr
-sagt die Seite dem Browser, aus welchen Quellen er Skripte ausführen darf. Rutscht fremder
-Text doch einmal als HTML durch, führt der Browser ein eingeschleustes Skript dann nicht
-aus. Sie ist eine zweite Sperre hinter der Regel, fremden Text nur als Text anzuzeigen
-(Abschnitt 4.2). Sie hat einen Preis: eigene Skripte müssen aus Dateien kommen und dürfen
-nicht im Seitentext stehen. In den fünf Anwendungen, deren Quelltext für diese Fassung
-vorlag, steht keine (Sage-Protokol, PWA-Toolpoint, family-project, Perfect-Skin-Beauty,
-Auslieferung-Pruefer; im Quelltext nachgesehen am 2026-10-16, nicht abgerufen).
-
 Es **reibt** sich an drei Stellen:
 
 - **Die gemeinsame Herkunft.** Was der Browser trennt, sind Herkünfte, nicht Anwendungen.
@@ -638,8 +657,10 @@ Es **reibt** sich an drei Stellen:
   Anwendungen desselben Nutzers lesen. Die Nachstellung N3 hat genau das gezeigt: eine
   `javascript:`-Adresse ohne `target` las den Speicher der Anwendung.
 - **Die Browser-KI.** Sie sieht alles, was die Seite anzeigt. Googles Schutz für den Agenten
-  setzt bei der **Handlung** an, nicht beim Text. Eine Anwendung kann nicht wissen, welche
-  Browser-KI zusieht und wie sie geschützt ist. Ob die übrigen Browser (Edge, Brave, Opera,
+  setzt bei der **Handlung** an, nicht beim Text. Spricht eine KI die Anwendung über
+  Nachrichten an, zeigt die Membran das und weist unbekannte Absender ab. Welche
+  Browser-KI die angezeigte Seite liest und wie sie geschützt ist, kann die Anwendung
+  nicht wissen. Ob die übrigen Browser (Edge, Brave, Opera,
   Samsung Internet) Vergleichbares haben, ist **nicht nachgesehen**.
 - **Ein App-Schutz kann Verbindungen kappen.** Ein Tracker-Blocker, der über den VPN-Platz
   arbeitet, entscheidet nach seiner eigenen Liste. Ob er die Verbindung zum Relais je

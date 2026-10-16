@@ -385,6 +385,24 @@ weg): Einträge, die es nur in PWA Toolpoint gibt („Family Projekt“, KI-Schu
 Adresse) und Felder wie `video` gingen verloren. Verworfen, die drei neuen Einträge von Hand
 eingetragen (PWA-Toolpoint #176). Nicht repariert.
 
+### 34 · Content-Security-Policy als zweite Sperre (Klaus 2026-10-16, „wenn es Not tut")
+
+Stand bis 2026-10-16 als Absatz in Paper S 11.3; Klaus hat ihn dort herausgenommen und als
+Plan für spätere Arbeit eingereiht. Wortlaut:
+
+> Eine weitere Schicht kann die Seite selbst setzen: eine Content-Security-Policy. Mit ihr
+> sagt die Seite dem Browser, aus welchen Quellen er Skripte ausführen darf. Rutscht
+> fremder Text doch einmal als HTML durch, führt der Browser ein eingeschleustes Skript
+> dann nicht aus. Sie ist eine zweite Sperre hinter der Regel, fremden Text nur als Text
+> anzuzeigen (Paper S, Abschnitt 4.2).
+
+**Gemessen 2026-10-16:** im Quelltext von Sage-Protokol, PWA-Toolpoint, family-project,
+Perfect-Skin-Beauty und Auslieferung-Pruefer steht keine (`http-equiv="Content-Security-Policy"`
+nicht gefunden; nicht an den Seiten abgerufen). **Preis:** eigene Skripte müssen aus Dateien
+kommen, nicht aus dem Seitentext; die Apps tragen heute Inline-Skripte (z. B. der
+Sprachriegel im `<head>`). GitHub Pages setzt keine eigenen Kopfzeilen, dort ginge es nur
+über ein `<meta>`-Element.
+
 ## Erledigt
 
 ### ✅ 18 · `kanon-verteilen` zieht Manifest und festgenagelte Cache-Kennung mit — 2026-10-16
