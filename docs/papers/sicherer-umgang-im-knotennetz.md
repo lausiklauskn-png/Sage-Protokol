@@ -4,7 +4,7 @@
 
 **Ein Werkstattbericht aus einem laufenden Netz ohne Server**
 
-Klaus Nitzsche · Hamburg · **Fassung 1 (Entwurf, nicht veröffentlicht)**, 2026-10-15
+Klaus Nitzsche · Hamburg · **Fassung 2 (Entwurf, nicht veröffentlicht)**, 2026-10-16
 Lizenz: CC BY 4.0 · Code und Material: MIT
 Material: <https://github.com/lausiklauskn-png/Sage-Protokol>
 Ergänzung zu: *SBKIM: Ein Protokoll für Semantisches Bidirektionales KI-Matching in
@@ -14,6 +14,11 @@ Menschen- und Agentennetzwerken*, DOI 10.5281/zenodo.22277738
 > Prüfstand (gelesen · Auszug · offen, siehe Literatur). Die Zuordnung Natur ↔ Netz ist
 > an Fachquellen gegengelesen, aber noch nicht von einer Fachperson. Was in dieser Fassung
 > nicht gemessen ist, steht als solches da.
+>
+> **Fassung 2 (2026-10-16)** zieht den Stand der Schichten nach: S3, S4 und S5 standen in
+> Fassung 1 als „geplant" und sind seither gebaut und in alle 29 tragenden Anwendungen
+> verteilt, dazu S5b (Empfehlungen für fremde Apps in den Märkten). Drei Quellenangaben
+> sind ergänzt. Abschnitt 11.4 ist weiter nicht gemessen.
 
 ---
 
@@ -136,7 +141,7 @@ Knotennetz. Und warum?"* Die Tabelle beantwortet sie Quelle für Quelle.
 | Zimmermann 1994/1995, PGP-Handbuch | Web of Trust: jeder legt selbst fest, wem er beim Bestätigen fremder Schlüssel traut („unknown, untrusted, marginally trusted, completely trusted"). Das Vertrauen bleibt privat und wird nicht mit dem Schlüssel weitergegeben. | Vertrauen ist eine Entscheidung des Lesers, nicht des Netzes | Bürgen nach diesem Muster, dazu kurze Kette, Ablauf und Widerruf (Abschnitt 8), damit eine alte oder falsche Bürgschaft nicht ewig weiterwirkt |
 | Yu et al. 2006, *SybilGuard* | Ehrliche und gefälschte Identitäten hängen nur über wenige „Angriffskanten" zusammen, echte soziale Beziehungen, die schwer zu bekommen sind. | die Idee, dass eine echte Beziehung teurer ist als ein Schlüssel | der zweite Weg beim Bürgen: wer eine Bürgschaft will, meldet sich persönlich, telefonisch oder über eine bekannte Adresse |
 | Nostr NIP-01 | Ereignisse tragen Kennung (Prüfsumme des Inhalts) und Schnorr-Unterschrift; jedes Relais und jeder Client kann sie prüfen. | den Raum selbst: das Netz nutzt Nostr-Relais als Transport | die Spore trägt eine **zweite**, eigene Unterschrift (Ed25519). Der Nostr-Schlüssel kostet nichts und sagt nichts über den Knoten |
-| Nostr NIP-13, Back 2002 (Hashcash) | Rechenaufwand als Nachweis: die Kennung muss mit einer Zahl von Null-Bits beginnen. Jeder kann das billig prüfen. Laut NIP-13 lässt sich der Aufwand auslagern, er beweist also Arbeit, nicht Herkunft. | das Verfahren für S3 | milde Schwierigkeit, am Tablet gemessen; Zettel ohne Aufwand werden nicht verworfen, nur nachrangig behandelt, weil der Aufwand auch Ehrliche trifft |
+| Nostr NIP-13, Back 2002 (Hashcash) | Rechenaufwand als Nachweis: die Kennung muss mit einer Zahl von Null-Bits beginnen. Jeder kann das billig prüfen. Laut NIP-13 lässt sich der Aufwand auslagern, er beweist also Arbeit, nicht Herkunft. | das Verfahren für S3 | milde Schwierigkeit (12 Null-Bits); Zettel ohne Aufwand werden nicht verworfen, nur nachrangig behandelt, weil der Aufwand auch Ehrliche trifft. Die Rechenzeit am Tablet ist nicht gemessen |
 | Greshake et al. 2023 | Indirekte Prompt-Injektion: eine KI kann über Inhalte angegriffen werden, die sie liest, etwa Webseiten. | den Begriff und das Modell: jede Antwort eines fremden Knotens ist so ein Inhalt | unbestätigte Antworten gehen nicht an den KI-Richter; Prüfliste davor; S7 als offener Punkt |
 | OWASP Top 10 für LLM-Anwendungen, Fassung 2026 (LLM01 Prompt Injection) | Fremde Inhalte sollen über einen getrennten, nach Herkunft gekennzeichneten Kanal gehen; das helfe aber nur gegen nicht-anpassende Angreifer. | die Trennung nach Herkunft (bestätigt, unbestätigt) | die Herkunft am Zettel ist durch Unterschrift belegt, nicht nur behauptet |
 | OWASP Top 10 (Web), Fassung 2025 (A05 Injection) | Injektion heißt: nicht vertrauenswürdige Eingabe erreicht einen Interpreter; dazu gehört Cross-Site-Scripting. Abhilfe: Daten von Befehlen getrennt halten. | fremder Text nur als Text, nie als HTML | eine Probe für jede Anzeige-Stelle, weil jede neue Stelle denselben Fehler wieder einführen kann |
@@ -145,7 +150,8 @@ Knotennetz. Und warum?"* Die Tabelle beantwortet sie Quelle für Quelle.
 Eine Bemerkung zum Stand dieser Quellen. Douceur, NIP-01, NIP-13, das PGP-Handbuch, die
 OWASP-Fassungen und Hashcash sind im Wortlaut gelesen, teils über Spiegel auf GitHub.
 Bei Greshake et al., SybilGuard und Secure Scuttlebutt sind Titel und Kern über die Seiten
-der Autoren und Suchauszüge bestätigt, Seitenzahlen und DOI noch nicht an der Quelle.
+der Autoren und Suchauszüge bestätigt. DOI und Seiten von Greshake et al. und SybilGuard
+sind seit Fassung 2 über Suchauszüge der Verlagsseiten belegt, nicht an der Quelle selbst.
 
 ---
 
@@ -215,13 +221,14 @@ nur, was **gemessen** ist. Vermutetes ist als solches gekennzeichnet.
 | Gefälschte oder nachträglich veränderte Spore im Raum | galt als echt | Echtheit über das Ergebnisfeld `.valid` statt über `!== false` | gebaut 2026-10-14 (Bau 23.R), in 25 Anwendungen | Nachstellung N2/N2b; Probe 18 grün, Gegenprobe 10 von 10 | prüft Herkunft, nicht Inhalt (4.1) |
 | Namensvetter verdrängt den echten Knoten | echte Karte ausgeblendet | Echtheit **vor** dem Zusammenfassen nach Namen; die Karte sagt „derselbe Name noch N×" | gebaut 2026-10-14 | N2 a/b | ein gültig signierter Vetter bleibt möglich und wird angezeigt |
 | Gefälschte Antwort im Namen eines Knotens | ging an den KI-Richter, stand als „✓ Antwort von …" da | Antworten unterschrieben, nur der Gefragte zählt; unbestätigte gehen nicht an den Richter | gebaut 2026-10-14 | N1 | ältere Knoten antworten unbestätigt, bis sie die neue Fassung tragen |
-| Gefälschte oder veränderte Frage | wurde beantwortet | Fragen unterschrieben (S1); gefälschte werden nicht beantwortet, unsignierte höchstens 2 von 6 je Minute | gebaut und verteilt 2026-10-15, 26 von 26 Anwendungen | Probe 13 grün, Gegenprobe 7 von 7 | eine echte, aber lästige Frage bleibt eine echte Frage |
+| Gefälschte oder veränderte Frage | wurde beantwortet | Fragen unterschrieben (S1); gefälschte werden nicht beantwortet, unsignierte höchstens 2 von 6 je Minute | gebaut und verteilt 2026-10-15, 26 von 26 Anwendungen (heute 29) | Probe 13 grün, Gegenprobe 7 von 7 | eine echte, aber lästige Frage bleibt eine echte Frage |
 | Fremder Name oder Text als HTML | Skript lief (Mycel-Karte, Kimboard) | fremder Text nur als Text | gebaut 2026-10-14 | alte Fassung 3 rot, neue 4 grün | jede neue Anzeige-Stelle braucht denselben Riegel |
 | Kopierter Bedeutungs-Vektor | gleiche Verwandtschaft (0,504 = 0,504), Andock-Riegel 1,000 | Empfänger rechnet den Vektor aus der Beschreibung nach (S2); passt er nicht, kein Vorrang | gebaut und verteilt 2026-10-15, 28 Anwendungen | N2 b/c; Probe 27 grün, Gegenprobe 14 von 14 | braucht das Sprachmodell beim Empfänger; ein Vektor aus Inhalten ist nicht nachprüfbar |
 | Anweisung an eine KI in fremdem Text | klassische Wendungen auf Deutsch und Englisch ausgeschlossen | Prüfliste vor dem Richter (04.J) | gebaut | N1 | umformuliert, Französisch und ein kyrillisches „і" gehen durch |
 | `javascript:`-Adresse aus einer eingefügten KI-Antwort | lief über die Wege des Moduls nicht, aber nur, weil der Browser es so tut | Schema im Modul prüfen | **offen** | N3 (Chromium headless) | Android, DeX nicht gemessen |
-| Fluten des Raums | — | Grenzen am Relais (5 Nachrichten je Sekunde), je Lauf 200 Karten, je Nostr-Schlüssel 3; Rechenaufwand je Zettel (S3) | teilweise | Relais-Grenzen gemessen 2026-08-19 | ein Nostr-Schlüssel kostet nichts; Rechenaufwand trifft auch Ehrliche |
-| Selbst ausgestellte Vertrauensnachweise (Sybil) | — | Bürgschaft zählt nur über eigenes Vertrauen (S5) | geplant | — | braucht einen Anker |
+| Fluten des Raums | — | Grenzen am Relais (5 Nachrichten je Sekunde), je Lauf 200 Karten, je Nostr-Schlüssel 3; Rechenaufwand je Zettel (S3, 12 Null-Bits): ist der Raum voll, verdrängt eine Karte mit Aufwand die zuletzt gekommene ohne; Fragen ohne Aufwand höchstens 4 von 6 je Minute | gebaut und verteilt 2026-10-16, 29 Anwendungen | Relais-Grenzen gemessen 2026-08-19; S3 Probe 19 grün, Gegenprobe 14 von 14 | ein Nostr-Schlüssel kostet nichts; Rechenaufwand trifft auch Ehrliche; Rechenzeit am Tablet nicht gemessen |
+| Bekannter Störer kommt wieder | — | signierte Sperrliste (S4), gültig nur vom Netzadmin des Lesers; gesperrte Karten erscheinen nicht, ihre Fragen werden nicht beantwortet, ihre Antworten verworfen | gebaut und verteilt 2026-10-16, 29 Anwendungen | S4 Probe 33 grün, Gegenprobe 15 von 15 | trifft nur die bekannte Kennung, eine neue kostet nichts; eine echte, unterschriebene Liste gibt es noch nicht |
+| Selbst ausgestellte Vertrauensnachweise (Sybil) | — | Bürgschaft (in der Oberfläche „Empfehlung") zählt nur über eigenes Vertrauen (S5, S5b) | gebaut und verteilt 2026-10-15/16, 29 Anwendungen | S5 Probe 70 grün, Gegenprobe 31 von 31; S5b 44 grün, 24 von 24 | braucht einen Netzadmin als Anfang; zwischen zwei echten Geräten nicht gemessen |
 | Browser-KI liest und bedient die Seite | — | keine aus der Anwendung heraus | — | **vermutet** | von innen nicht schützbar |
 
 ### 5.1 Was die Tabelle über §7.3 des SBKIM-Papers sagt
@@ -329,13 +336,14 @@ Aus dem Muster der Natur ist eine Liste von Schichten entstanden. Jede ist eine 
 keine ist allein genug. Der Betreiber hat am 2026-10-15 die Reihenfolge S1 → S2 → S5 →
 S3 → S4 freigegeben; S6 und S7 sind nicht freigegeben.
 
-| Schicht | Vorbild | Was sie tut | Stand am 2026-10-15 |
+| Schicht | Vorbild | Was sie tut | Stand am 2026-10-16 |
 |---|---|---|---|
-| S1 Fragen unterschreiben | Schlüssel und Schloss | Frage-Zettel tragen Spore und Unterschrift; gefälschte Fragen werden nicht beantwortet, unsignierte gedrosselt | gebaut, in 26 von 26 Anwendungen |
-| S2 Vektor gegen Text nachrechnen | Fehlerkorrektur bei der Paarung der Chromosomen | der Empfänger rechnet den Vektor aus der Beschreibung nach; Schwelle 0,99 | gebaut, in 28 Anwendungen |
-| S3 Rechenaufwand je Zettel | teure Balz | der Sender rechnet vor dem Senden eine kleine Aufgabe (Nostr NIP-13) | geplant |
-| S4 Signierte Sperrliste | Gedächtnis an Eindringlinge | nur der Betreiber sperrt; gesperrte Kennungen erscheinen nicht | geplant |
-| S5 Bürgen | Verwandtenerkennung | ein bekannter Knoten unterschreibt „diese Kennung kenne ich" | geplant |
+| S1 Fragen unterschreiben | Schlüssel und Schloss | Frage-Zettel tragen Spore und Unterschrift; gefälschte Fragen werden nicht beantwortet, unsignierte gedrosselt | gebaut, in 29 Anwendungen |
+| S2 Vektor gegen Text nachrechnen | Fehlerkorrektur bei der Paarung der Chromosomen | der Empfänger rechnet den Vektor aus der Beschreibung nach; Schwelle 0,99 | gebaut, in 29 Anwendungen |
+| S3 Rechenaufwand je Zettel | teure Balz | der Sender rechnet vor dem Senden eine kleine Aufgabe (Nostr NIP-13, 12 Null-Bits); bei Enge haben Zettel mit Aufwand Vorrang | gebaut, in 29 Anwendungen |
+| S4 Signierte Sperrliste | Gedächtnis an Eindringlinge | nur der Netzadmin sperrt; gesperrte Kennungen erscheinen nicht und bekommen keine Antwort | gebaut, in 29 Anwendungen; noch keine echte Liste unterschrieben |
+| S5 Bürgen | Verwandtenerkennung | ein bekannter Knoten unterschreibt „diese Kennung kenne ich" | gebaut, in 29 Anwendungen |
+| S5b Empfehlen in den Märkten | Verwandtenerkennung | ein Markt bürgt für die fremden Apps, die er einlädt; Netz-Verwaltung als eigene Seite | gebaut, in 29 Anwendungen |
 | S6 Eigene Einträge markieren | Methylierung | was die App selbst ablegt, trägt eine eigene Prüfsumme | nicht freigegeben |
 | S7 Prüfliste über die Wortliste hinaus | piRNA | Weg offen | nicht freigegeben |
 
@@ -374,8 +382,10 @@ Prüfung nicht eigens geladen, weil es 118 MB groß ist.
 
 ## 8 · Vertrauen ohne Zentrale: Bürgen
 
-Bürgen sind als Schicht S5 geplant, noch nicht gebaut. Der Abschnitt beschreibt den
-Entwurf, damit er vor dem Bau diskutiert werden kann.
+Bürgen sind die Schicht S5. In Fassung 1 war sie ein Entwurf; seit dem 2026-10-15 ist sie
+gebaut und verteilt, am 2026-10-16 kam S5b dazu: Bürgschaften der Märkte für fremde Apps.
+In der Oberfläche heißt das Bürgen seit S5b **„Empfehlen"** (Wahl des Betreibers aus vier
+Vorschlägen). Im Protokoll und in diesem Abschnitt bleibt das Wort Bürgschaft.
 
 ### 8.1 Zwischen offenem Raum und geschlossenem Netz
 
@@ -407,18 +417,34 @@ traut, und dieses Vertrauen nicht weitergibt.
 
 ### 8.4 Vier Riegel
 
-- **Kurze Kette.** Höchstens zwei Schritte vom eigenen Vertrauen. Der genaue Wert ist eine
-  Entscheidung des Betreibers.
-- **Der Bürge haftet.** Fällt ein Verbürgter auf, verlieren die Bürgschaften seines Bürgen
-  an Gewicht.
-- **Widerruf.** Der Bürge zieht zurück, sofort wirksam. Der Widerruf ist selbst
-  unterschrieben.
-- **Ablauf.** Eine Bürgschaft gilt befristet, vorgeschlagen ist ein Jahr, und wird erneuert.
+- **Kurze Kette.** Höchstens zwei Schritte vom eigenen Vertrauen (Entscheid des Betreibers,
+  2026-10-15). Das reicht genau für den Weg Netzadmin → Markt → fremde App.
+- **Der Bürge haftet, aber nur für die eine App.** Fällt eine verbürgte App auf oder wird sie
+  gesperrt, verfällt diese eine Bürgschaft. Gebaut war zuerst etwas Schärferes: alle
+  Bürgschaften des Bürgen verloren ihr Gewicht. Der Betreiber hat das am 2026-10-16 geändert:
+  *„alle haften doch nicht für einen."* Der Preis ist benannt: eine automatische Folge für
+  einen Bürgen, der für schlechte Apps bürgt, gibt es nicht mehr. Es bleiben der Widerruf und
+  die Sperrliste.
+- **Widerruf mit Grund.** Der Bürge zieht zurück, sofort wirksam. Der Widerruf ist selbst
+  unterschrieben und trägt einen Grund; ohne Grund ist er ungültig. Prüfen lässt sich nur,
+  dass ein Grund dasteht, nicht ob er stimmt. Der Leser speichert gesehene Widerrufe, damit
+  sie auch wirken, wenn der Bürge gerade nicht im Raum ist.
+- **Ablauf.** Eine Bürgschaft gilt höchstens 180 Tage. Eine längere Frist ist ungültig, nicht
+  still gekürzt. Dreißig Tage vorher sagt die Anwendung, dass sie abläuft; verlängern kann
+  nur der Bürge.
+
+Eine Bürgschaft kommt von selbst an. Der Bürge legt sie auf seine Karte im Raum, die
+verbürgte Anwendung holt sie dort ab, aber nur von Ausstellern, die bei ihr selbst schon
+zählen. Eine Einstellung „nur Verbürgten antworten" macht aus der Bürgschaft eine
+Berechtigung, etwa in einem Firmennetz. Sie ist ab Werk aus.
 
 ### 8.5 Der Anker ist eine Mitte, und das wird gesagt
 
-Vertrauen muss irgendwo anfangen. Vorgeschlagen ist die Kennung des Betreibers, fest in
-der Anwendung, dazu die eigenen Kontakte des Nutzers. Das ist eine **Mitte** und keine
+Vertrauen muss irgendwo anfangen. Gebaut ist: der **Netzadmin** des jeweiligen Netzes,
+dazu die eigenen Kontakte des Nutzers. Im offenen Raum ist das die Kennung von
+Sage-Protokol, in einem eigenen Netz die Kennung, die in dessen Einstellung steht. Fest in
+den Code geschrieben ist sie nicht, sonst wäre sie in jedem fremden Netz mit verankert.
+Und sie gilt beim Leser nur in diesem Netz. Das ist eine **Mitte** und keine
 Gleichberechtigung. Wer das Netz nutzt, soll es wissen. Unverbürgte Knoten bleiben
 sichtbar, das offene Netz bleibt offen. Sie bekommen nur keinen Vorrang.
 
@@ -433,6 +459,23 @@ und zeigt, dass der Schutz greift. Die **Gegenprobe** kopiert den Code in einen
 Wegwerf-Ordner, baut genau einen Fehler ein (sie nimmt einen Riegel weg) und lässt die
 Probe laufen. Die Probe muss dann rot werden, und zwar an der Stelle, die den Namen
 dieses Riegels trägt.
+
+| Schicht | Probe | Gegenprobe gefangen |
+|---|---|---|
+| S1 Fragen unterschreiben | 13 grün | 7 von 7 |
+| S2 Vektor nachrechnen | 27 grün | 14 von 14 |
+| S3 Rechenaufwand | 19 grün | 14 von 14 |
+| S4 Sperrliste | 33 grün | 15 von 15 |
+| S5 Bürgen | 70 grün | 31 von 31 |
+| S5b Märkte, Teil 1 | 44 grün | 24 von 24 |
+| S5b Netz-Verwaltung und Übergabe | 42 + 13 + 11 grün | 31 von 31, 10 von 10 |
+
+Alle Zahlen sind am 2026-10-16 für diese Fassung neu gelaufen. Mehrere Fälle waren beim
+ersten Lauf blind und wurden erst dadurch gefunden; das steht bei jeder Schicht im Plan.
+Beim Nachlaufen fiel die Gegenprobe zu S3 mit **zwei toten Ankern** auf: ein späterer Bau
+(S5b) hatte die Stelle umgeschrieben, an der die Frage ihren Aufwand rechnet, und die
+Gegenprobe fand den alten Wortlaut nicht mehr. Die Probe war grün, die Gegenprobe meldete
+das selbst. Nachgezogen, danach wieder 14 von 14 (Abschnitt 9.2).
 
 Für S2 sieht das so aus: Die Gegenprobe kennt 14 Fälle, von „Schwelle zu mild (0,98
 statt 0,99)" bis „die Karte zeigt die Bedeutung nicht". Alle 14 wurden gefangen, jeder
@@ -483,8 +526,9 @@ Echtheitsprüfung stand deshalb nicht an einer Stelle, sondern in mindestens sie
 Anwendungen. Eine Lücke ist erst geschlossen, wenn sie in **allen** Kopien geschlossen
 ist.
 
-Bau 23.R ging in 25 Anwendungen, S1 in 26. Jede bekam einen eigenen Pull Request, ihre
-eigenen Proben liefen, und erst danach wurde gemergt.
+Bau 23.R ging in 25 Anwendungen, S1 in 26, S3, S4, S5 und S5b in 29. Jede bekam je
+Schicht einen eigenen Pull Request, ihre eigenen Proben liefen, und erst danach wurde
+gemergt.
 
 ### 10.2 Ein Kanon und ein Verteiler mit Herkunfts-Riegel
 
@@ -586,8 +630,9 @@ PWA-Toolpoint und family-projekt.de. Gemessen wird dort nur mit echtem Abruf, ni
 dem Quelltext geschlossen: was der Server wirklich herausgibt, welche Kopfzeilen er setzt,
 ob Server-Dateien als Klartext zu lesen sind.
 
-> **In dieser Fassung nicht gemessen.** Aus der Umgebung, in der dieser Entwurf entstand,
-> waren die Seiten nicht erreichbar. Der Abschnitt wird mit der nächsten Fassung gefüllt.
+> **Auch in Fassung 2 nicht gemessen.** Aus der Umgebung, in der dieser Entwurf entsteht,
+> sind die Seiten nicht erreichbar (am 2026-10-15 und am 2026-10-16 versucht, beide Male
+> gesperrt). Der Abschnitt wird gefüllt, sobald ein Abruf von einem anderen Ort vorliegt.
 
 ---
 
@@ -596,7 +641,13 @@ ob Server-Dateien als Klartext zu lesen sind.
 - **Die Prüfliste vor dem Richter** fängt nur feste Wendungen.
 - **`javascript:`-Adressen** aus eingefügten KI-Antworten prüft das Modul nicht selbst.
 - **Browser mit eingebauter KI** sind aus der Anwendung heraus nicht zu schützen.
-- **Bürgen, Rechenaufwand, Sperrliste** (S5, S3, S4) sind geplant, nicht gebaut.
+- **Bürgen, Rechenaufwand, Sperrliste** (S5, S3, S4) sind gebaut und verteilt, aber nur in
+  Proben gemessen: keine echte Sperrliste ist unterschrieben, keine Bürgschaft zwischen zwei
+  echten Geräten beobachtet, die Rechenzeit am Tablet nicht gemessen.
+- **Eine gesperrte Kennung** lässt sich durch eine neue ersetzen. Die Sperre trifft nur, wen
+  man schon kennt.
+- **Sperren und Bürgen regeln Antworten, nicht das Lesen.** Ein gesperrter Knoten sieht
+  Karten und Fragen im Raum weiter, denn das Relais nimmt jeden an.
 - **Ein gültig signierter Namensvetter** wird angezeigt, und nur wer die Kennung kennt,
   kann ihn vom echten unterscheiden.
 - **Am Tablet ist fast nichts gemessen**, dem Gerät, auf dem das Netz benutzt wird. Die
@@ -616,8 +667,8 @@ Drei Fragen an Leser:
 1. **Wo liegt die richtige Schwelle zwischen markieren und abweisen?** Dieses Netz
    markiert fast immer. Ein Netz mit Geld oder Gesundheitsdaten müsste vermutlich
    abweisen. Wo ist die Grenze?
-2. **Kann ein Bürgen-System ohne Mitte auskommen?** S5 setzt einen festen Anker, den
-   Betreiber. Das ist ehrlich benannt, aber es ist eine Mitte.
+2. **Kann ein Bürgen-System ohne Mitte auskommen?** S5 setzt je Netz einen Netzadmin als
+   Anfang. Das ist ehrlich benannt, aber es ist eine Mitte.
 3. **Was tun Browser-KIs mit fremdem Text auf Seiten, die ihn nur anzeigen?** Hier
    endet, was eine Anwendung leisten kann.
 
@@ -629,13 +680,15 @@ Der Text entstand in einer KI-Sitzung (Claude Code) im Auftrag des Betreibers. D
 Betreiber gab die Gliederung vor und stimmte sie am 2026-10-15 ab. Alle Messwerte stammen
 aus dem Depot und stehen dort mit Datum. Die Literaturangaben wurden in derselben
 Sitzung an der Quelle nachgesehen, nicht aus dem Gedächtnis übernommen. Die Lesart in
-Abschnitt 6.4 ist die des Betreibers und als solche gekennzeichnet.
+Abschnitt 6.4 ist die des Betreibers und als solche gekennzeichnet. Fassung 2 (2026-10-16)
+zieht den Stand der Schichten S3, S4, S5 und S5b nach, wie er im Depot steht, und ergänzt
+drei Quellenangaben über Suchauszüge.
 
 ---
 
 ## Literatur
 
-Prüfstand je Eintrag (2026-10-15): **[gelesen]** im Wortlaut an der Quelle oder einem
+Prüfstand je Eintrag (2026-10-15, ergänzt 2026-10-16): **[gelesen]** im Wortlaut an der Quelle oder einem
 Spiegel des Originaltexts · **[Auszug]** über Seiten der Autoren, Bibliothekseinträge oder
 Suchauszüge bestätigt, Volltext nicht gelesen · **[offen]** eine Angabe (Seiten, DOI) steht
 noch aus. Vor der Veröffentlichung wird jeder DOI einmal von Hand aufgelöst.
@@ -650,7 +703,8 @@ LNCS 2429, Springer, S. 251–260. DOI 10.1007/3-540-45748-8_24 [gelesen]
 
 **Greshake, K., Abdelnabi, S., Mishra, S., Endres, C., Holz, T., Fritz, M. (2023).**
 *Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with
-Indirect Prompt Injection.* arXiv:2302.12173; AISec '23 [Auszug; ACM-DOI und Seiten offen]
+Indirect Prompt Injection.* In: AISec '23, ACM, S. 79–90. DOI 10.1145/3605764.3623985;
+arXiv:2302.12173 [Auszug; DOI und Seiten über die ACM-Seite im Suchauszug]
 
 **Nostr (o. J.).** *NIP-01: Basic protocol flow description* und *NIP-13: Proof of Work.*
 <https://github.com/nostr-protocol/nips> [gelesen]
@@ -666,7 +720,8 @@ Identity-Centric Protocol for Subjective and Decentralized Applications.* ICN '1
 DOI 10.1145/3357150.3357396 [Auszug]
 
 **Yu, H., Kaminsky, M., Gibbons, P. B., Flaxman, A. (2006).** *SybilGuard: Defending
-Against Sybil Attacks via Social Networks.* ACM SIGCOMM 2006 [Auszug; DOI und Seiten offen]
+Against Sybil Attacks via Social Networks.* In: SIGCOMM '06, ACM, S. 267–278.
+DOI 10.1145/1159913.1159945 [Auszug; DOI und Seiten über die ACM-Seite im Suchauszug]
 
 **Zimmermann, P. (1994).** *PGP User's Guide, Volume I: Essential Topics* (PGP 2.6.2);
 Buchausgabe: *The Official PGP User's Guide*, MIT Press 1995 [Handbuch gelesen, Buch Auszug]
@@ -722,8 +777,8 @@ Mammalogy* 84, 1163–1181 [Auszug]
 1331–1335 [Auszug]
 
 **Ozata, D. M., Gainetdinov, I., Zoch, A., O'Carroll, D., Zamore, P. D. (2019).**
-PIWI-interacting RNAs: small RNAs with big functions. *Nature Reviews Genetics* 20, 89–108
-[Auszug; DOI offen]
+PIWI-interacting RNAs: small RNAs with big functions. *Nature Reviews Genetics* 20, 89–108.
+DOI 10.1038/s41576-018-0073-3 [Auszug]
 
 **Ramsey, J., Bradshaw, H. D., Schemske, D. W. (2003).** Components of reproductive
 isolation between the monkeyflowers *Mimulus lewisii* and *M. cardinalis*. *Evolution* 57,
@@ -757,7 +812,9 @@ in Menschen- und Agentennetzwerken.* Zweite Fassung, September 2026. DOI 10.5281
 
 Befund der Nachstellungen N1–N3: `docs/sessions/archiv/2026-10-14_angriffsflaeche_mycel.md`;
 Schichten: `docs/PLAN_MYCEL_SCHICHTEN.md`; Proben: `tests/smoke_bau23r_echtheit_antworten.mjs`,
-`tests/smoke_s1_fragen_signiert.mjs`, `tests/smoke_s2_bedeutung.mjs` und ihre Gegenproben.
+`tests/smoke_s1_fragen_signiert.mjs`, `tests/smoke_s2_bedeutung.mjs`, `tests/smoke_s3_aufwand.mjs`,
+`tests/smoke_s4_sperrliste.mjs`, `tests/smoke_s5_buergen.mjs`, `tests/smoke_s5b_buergen_maerkte.mjs`,
+`tests/smoke_23b_netzverwaltung.mjs`, `tests/smoke_s5b_empfehlung_ankommt.mjs` und ihre Gegenproben.
 
 ---
 
