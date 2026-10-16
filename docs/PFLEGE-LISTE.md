@@ -413,6 +413,24 @@ bei beiden „passt nicht", kein Vorrang. Ursache nicht untersucht (veraltete Sp
 Vektor aus Inhalten ohne Angabe?). Weg vermutlich: im Siegel der App neu signieren, danach
 neu messen. Steht so in Paper S 7.2.
 
+### 36 · Cache-Bump steht zweimal: `tools/lib/cache-bump.mjs` ist eine Kopie (2026-10-17)
+
+`tools/sicherheit-verteilen.mjs` braucht denselben Cache-Bump wie der Kanon-Verteiler
+(Geltungsbereich, `?v=` nur wo sie vorher passten, Proben-Kennung, `cache-stand.json`).
+`kanon-verteilen.mjs` läuft beim Import los und lässt sich nicht einbinden; seine Gegenproben
+zielen mit Ankern auf seinen Quelltext. Deshalb stehen die fünf Funktionen **wortgleich kopiert**
+in `tools/lib/cache-bump.mjs`. **Wer eine Regel im Kanon-Verteiler ändert, zieht sie dort nach.**
+Weg: `kanon-verteilen.mjs` auf die Bibliothek umbauen und dabei die Anker seiner Gegenproben
+nachziehen; dann gibt es eine Stelle.
+
+### 37 · Vier Träger verlieren ihr eigenes Aussehen der Erklärseite (2026-10-17)
+
+Mein-Mixarium, Mein-Rezeptbuch, Mein-Tresor und Jasons-Tresor trugen eine `sicherheit.html` in
+eigenem Aussehen (eigene Schrift, Verläufe, eigener Aufbau). Beim Überblick vom 2026-10-17 kamen
+nur Akzentfarbe, Rückweg und Titel mit; der Rest ist das gemeinsame dunkle Aussehen. Benannt
+statt still: wer das eigene Aussehen zurück will, legt es als `<!-- APP-EIGEN-KOPF -->`-Stil in
+die Kopie, `tools/sicherheit-verteilen.mjs` trägt es dann bei jedem Lauf mit.
+
 ## Erledigt
 
 ### ✅ 18 · `kanon-verteilen` zieht Manifest und festgenagelte Cache-Kennung mit — 2026-10-16

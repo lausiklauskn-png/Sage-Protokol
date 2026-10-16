@@ -31,6 +31,18 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-17 · Überblick „Mit dem Mycel verbinden“ und Siegel: sicherheit.html neu, DE/EN, in 27 Träger (Hauptsitzung)
+- **Startprüfung:** frisch von `origin/main`; Auftrag `sessions/BRIEF_2026-10-17_ueberblick_mycel_siegel.md`.
+- **Klaus' Antworten:** `sicherheit.html` **erweitern** (keine neue Seite) · **Deutsch und Englisch**. Mitten in der Sitzung dazu: die neuen Schutzschichten müssen hinein; **Wort-Links** („auf ein Hauptwort klicken, hinspringen, und wieder zurück“); **warum Schutz nötig ist** aus den Papers.
+- **Gebaut (Sage):** `sicherheit.html` als Überblick in Stichworten, 14 Abschnitte (Mycel, Nutzen, Fenster, Karten, Siegel, Lampen, **Warum es Schutz braucht**, Schichten S1–S5b samt Prüfliste und eigenem Netz, eigenes Netz einrichten, Empfehlen und Sperren, Regel, Grenzen aus Paper S § 12, Mehr lesen, Wörterbuch). Zwei Sprachblöcke `#de`/`#en`; Sprache: `?lang=` · `data-sprache-schluessel` · Seite drumherum · Browser. Jedes unterstrichene Wort springt; „↩ zurück“ schwebend und am Ziel, zweiter Tipp aufs Wort oder Tipp aufs erklärte Wort führt zurück; ohne Skript gehen die Sprünge trotzdem. Knopf- und Lampennamen aus dem Code gelesen (Modul 16, 16b, 17, 23-UI, 23b), nicht aus dem Gedächtnis.
+- **Befund aus dem Code, gegen den Brief:** im Raum gibt es kein Abzeichen „echt“ und keins „Namensvetter“. Eine gefälschte Karte wird verworfen; bei gleichem Namen steht „⚠ Derselbe Name noch …“. Die Seite nennt, was wirklich angezeigt wird. Die VERKEHR-Lampe ist gold, ihr Hinweistext sagt „grün“ (Modul 17, nicht geändert).
+- **Proben:** `tests/smoke_sicherheit_seite.mjs` 28 grün (Datei und echter Browser), Gegenprobe 23/23 · `tests/smoke_sicherheit_verteilen.mjs` 17 grün, Gegenprobe 11/11 (zuerst 1 blind: der gestellte Titel endete schon mit dem Namen, nachgestellt am echten Fall Mein-Rezeptbuch „· SBKIM“).
+- **Verteilen:** neues `tools/sicherheit-verteilen.mjs` (Liste gefunden; Akzent, Rückweg, Titel, Sprach-Schlüssel, canonical und die Marken `APP-EIGEN-DE/-EN/-KOPF/-FUSS` bleiben; Cache-Bump über `tools/lib/cache-bump.mjs`, Kopie aus dem Kanon-Verteiler, Pflege § 36). 27 Träger, drei davon hatten **gar keine** Seite (Workflow-Calculate, -Needs, -PDF: 404 hinter „Ausführlich erklärt“). Kimboard behält „Melden“ und „Private Nachrichten“ (jetzt auch englisch). family-project: indexierbar, Sprachriegel, `fp_lang`; dessen Übersetzungs-Probe auf zwei Sprachblöcke umgestellt (Tafel-Evolution, benannt), 55 grün, Gegenprobe 25 gefangen · 1 toter Anker in `assets/app.js` (nicht von hier). Zwölf Träger hatten kein `noindex`, jetzt ja (außer family-project).
+- **Eigener Fehler, benannt:** der zweite Lauf des Werkzeugs überschrieb family-projects Sprachriegel, weil das Erkennungsmerkmal `data-i18n` nach dem ersten Lauf weg war. Aus Git zurückgeholt, seitdem die Marken `APP-EIGEN-KOPF/-FUSS`.
+- **PRs (alle gemergt):** Alis-Moderaum #81 · Auslieferung-Pruefer #62 · Jasons-Tresor #195 · Kim-Bell #81 · Kim-sync #28 · Kimboard #161 · Kimseek #101 · Kuechenzettel #17 · Mein-In-and-Out-Book #17 · Mein-Mixarium #258 · Mein-Rezeptbuch #447 · Mein-Tresor #143 · Mein-WorkFloh #276 · Mein-Workfloh-Page #44 · Muttis-Rezeptbuch #252 · PWA-Toolpoint #177 · Perfect-Skin-Beauty #81 · Perfect-Skin-Fashion #53 · Privat-Brain #114 · SB-KIMTool-Point #195 · Sende-Pruefer #89 · Tomys-Hub #255 · Workflow-Calculate #30 · Workflow-Needs #27 · Workflow-PDF #125 · kim-hub-company #85 · family-project #369. Eigene Proben je Träger grün (`npm test` rc=0; Mixarium, Muttis, Tomys-Hub ohne `package.json`, dort kennt keine Probe die Seite). **Auf `main` nachgezählt: 27/27.**
+- **Nicht gemessen:** Tablet (Sprünge mit dem Finger, iframe im Siegel am Gerät). Vier Träger verlieren ihr eigenes Aussehen der Seite (Pflege § 37). Die russische Oberfläche des Auslieferungsprüfers bekommt die Seite auf Deutsch oder Englisch (die Seite kennt nur zwei Sprachen). Nach den Merges am Gerät ⟳ / Hard-Reload. SIGNAL `seq` 99.
+- **Offen:** Klaus' Sichttest; Paper S weiter im Gegenlesen; Pflege § 36/37.
+
 ## 2026-10-16 abends · Sammel-Brief: Schritt 6 wartet auf Klaus (Hauptsitzung)
 - **Startprüfung:** Sitzungsliste: nur diese Sitzung lief (zwei weitere untätig seit 13:58 und 16:33); kein offener PR in Sage. Erster offener Schritt: 6. Alle übrigen Schritte stehen auf `main` als erledigt.
 - **11.4 erneut versucht:** `family-projekt.de`, `pwa-toolpoint.de`, `…github.io/Perfect-Skin-Beauty/` antworten aus dem Container mit HTTP 000 (dritter Versuch nach 2026-10-15 und dem Mittag des 2026-10-16).
@@ -503,31 +515,11 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Nächster Schritt:** Kanon 05b/23 nach dem Brief, INTERFACES zuerst.
 
-## 2026-10-13 · Modul 03 netzweit verteilt, Weg A (die App setzt die Adresse)
+## Zwei Sitzungen vom 2026-10-13 (Modul 03 netzweit verteilt; Modell vom eigenen Server) — ausgelagert am 2026-10-17
 
-**Klaus' Wahl:** Weg A — jede App setzt `window.SBKIM_MODEL_ROOT = "https://family-projekt.de/models/"` selbst, Modul 03 in Sage bleibt neutral. Verteilt mit `tools/kanon-verteilen.mjs --nur 03_embedding --schreiben` (sha a6ac64d7536d…), Pins und Cache je Träger.
-
-**Gemergt:** Workflow-PDF #105 · Auslieferung-Pruefer #47 · BookLedgerPro #325 · Kim-Bell #68 · Kimseek #87 · Mein-WorkFloh #260 · Sende-Pruefer #74 · SB-KIMTool-Point #179 · PWA-Toolpoint #162 · Company-Brain #20 · Privat-Brain #98 · family-project #352 · Mein-Mixarium #242 · Tomys-Hub #239 · Mein-Rezeptbuch #430 · Muttis-Rezeptbuch #235 · Kimboard #146. Hier: Startseite, Such-Tool, Pinnwand setzen die Adresse; Impressum (DE/EN) und Such-Tool-Impressum nennen Programm (jsDelivr), Modell (family-projekt.de) und den Rückfall Hugging Face. Such-Tool-Cache v6, Pinnwand-Cache v25.
-
-**Benannt, nicht angefasst:** Sende-Prüfer setzt die Adresse in `assets/sbkim-init.js` (die vier Dateien stehen an der 96-KB-Grenze) · SB-KIMTool-Point `web/tools/mycelknoten.html` und Sages `docs/observatorium/tools/mycelknoten.html` bleiben unverändert (gepinnte Spiegelkopie bzw. alte Inline-Fassung) · BookLedgerPro `src/sbkim/embed.js` ist eigener Code, nicht Modul 03.
-
-**Vorbestehend rot, nicht von hier:** Sende-Prüfer „23_rendezvous_ui byte-gleich mit Sage" (Sage hat 23-UI am 2026-10-11 geändert, #1067 — Kanon-Verteilung offen) · PWA-Toolpoint `detailseiten --pruefen` + Zeitzone (frischere Messwerte im Nachbar-Klon, auf `main` ebenso rot) · SB-KIMTool-Point Probe 27 (Netz-Link, auf `main` ebenso rot).
-
-**Geprüft hier:** `node tests/run_alle.mjs` **111 grün · 0 rot · 1 nicht lauffähig** (vorrat_wirkung, Nachbar-Klone fehlen). ⚠ Das echte Modell ist im Behälter nicht gelaufen; am Tablet nicht gemessen.
-
-
-## 2026-10-13 · Modul 03: Modell vom eigenen Server auch für Apps auf fremder Adresse
-
-**Anlass (Klaus, aus einer Workflow-Calculate-Sitzung):** *„wir sind nicht angewiesen darauf, das von Hugging Face runterzuladen … auf dem Server ist das Embedding-Modell auch drauf."*
-
-**Gemessen (Klaus in Termux, 2026-10-13):** `https://family-projekt.de/models/Xenova/multilingual-e5-small/config.json` → `200`, `application/json` · `onnx/model_quantized.onnx` → `200`, **118 308 185 Bytes** · `access-control-allow-origin: *`. Das Modell liegt auf dem Hetzner-Server; im Repo family-project steht auf `main` nur `PLATZHALTER.md`.
-
-**Gebaut:** `src/modules/03_embedding.js` liest spät `window.SBKIM_MODEL_ROOT` (nur `https://` oder Pfad ab `/`) und probt dort zuerst, dann wie bisher `/models/` der eigenen Adresse, dann HuggingFace. Neu `getModelRoot()`, `_meta.modelRootSetting`, Test-Brücken `_configuredModelRoot`/`_modelRoot`. Ohne Einstellung byte-gleiches Verhalten. Kopien pinnwand · sbkim-bundle · sbkim-bundle-voll · such-tool byte-1:1, Pinnwand-Cache v24. Tafel INTERFACES § Modul 03 und Karte 03 nachgezogen.
-
-**Geprüft:** `smoke_a6_offline_model_source` **21/21** (vorher 11). Gegenprobe von Hand, Wegwerf-Kopie: **9 Sabotagen, 9 gefangen** — zwei erst nach Schärfen (die Wurzel stand vor dem Fehlschlag-Fall schon auf `/models/`; Art- und Inhalts-Prüfung decken einander und werden zusammen weggenommen). Regressionsfrei: standalone_such_tool, bundle_connect, a3, bau03_snippets, bau03_worker, inhaltstreuer_domainvektor, bauvorlagen, pinnwand/_smoke 74/74.
-
-**Offen:** netzweiter Rollout (bisher nur Workflow Calculate) · transformers.js kommt weiter von jsDelivr · im Browser am Tablet nicht gemessen. Die „~30 MB" in Texten der Apps sind falsch (gemessen 118 MB).
-
+> **↓ Ausgelagert.** Die zwei Einträge stehen **wortwörtlich** in
+> [`docs/sessions/archiv/2026-10_puls-auslagerung-26.md`](sessions/archiv/2026-10_puls-auslagerung-26.md)
+> (24 Zeilen). Nichts gekürzt.
 
 ## Vier Sitzungen vom 2026-10-11 (Sitzungsabschluss, Kopfleiste, Mycel-Knopf, Truhe-Raster) — ausgelagert am 2026-10-16
 

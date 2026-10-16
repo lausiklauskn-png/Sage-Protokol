@@ -107,7 +107,7 @@ selbst an der Wurzel) — nachgezogen am selben Tag.
 
 - **Vorlage:** `sicherheit.html` an Sages Wurzel — neutral, ohne App-Namen, mit
   `noindex` (sonst landet sie in gefundenen Sitemaps), Rückweg `./`. 1:1 kopieren.
-- **Kein Kanon, kein Drift-Guard:** wer den Text anpasst (Name, Farben), darf das.
+- **Kein Kanon, kein Drift-Guard:** wer den Text anpasst (Name, Farben), darf das — seit dem 2026-10-17 zwischen den Marken `APP-EIGEN-…`, sonst nimmt der nächste Lauf es nicht mit.
 - **Kein Cache-Bump nötig,** solange sie nicht im Installations-Vorrat steht; offline
   fehlt sie dann bis zum ersten Abruf. Wer sie in den Vorrat nimmt, erhöht die
   `CACHE_VERSION`.
@@ -116,6 +116,26 @@ selbst an der Wurzel) — nachgezogen am selben Tag.
   `sicherheit.html` neben der Siegel-Seite ist ein 404.
 - **Wer eine Abschirmung trägt** (Sende-Prüfer), nimmt genau diese eigene Seite von der
   Fremd-Meldung aus — sonst meldet das Siegel sich selbst als fremdes Fenster.
+
+**Seit dem 2026-10-17 ein Überblick in Stichworten, Deutsch und Englisch** (Klaus: „Handbuch
+oder besser Überblick, mit Stichworten … mit einer Link-Funktion“). Inhalt: Mycel, Fenster
+„Mit dem Knotennetz verbinden“, Karten im Raum, Siegel, Lampen, **warum es Schutz braucht**
+(aus Paper S), die Schichten S1–S5b, eigenes Netz, Empfehlen und Sperren, was noch nicht
+geht, Verweise auf die Papers, Wörterbuch.
+
+- **Zwei Sprachblöcke** `#de` und `#en` (ids im englischen Teil mit `en-` davor). Sprache:
+  `?lang=` · sonst `data-sprache-schluessel="<localStorage-Schlüssel der App>"` am `<html>`
+  (optional, je Träger) · sonst die Sprache der einbettenden Seite · sonst der Browser.
+- **Wort-Sprünge:** jedes unterstrichene Wort springt zur Erklärung; „↩ zurück“ (schwebend
+  und am Ziel), ein zweiter Tipp auf dasselbe Wort oder ein Tipp auf das erklärte Wort führen
+  zurück. Ohne Skript gehen die Sprünge trotzdem.
+- **Verteilen:** `node tools/sicherheit-verteilen.mjs` (nur nachsehen) · `--schreiben`. Die Liste
+  wird gefunden (jeder Nachbar-Klon mit `iframe.src = "sicherheit.html"`). Mit kommen Akzentfarbe,
+  Rückweg, Titel-Zusatz, `data-sprache-schluessel`, ein canonical (dann kein noindex) und alles
+  zwischen den Marken `APP-EIGEN-DE`/`-EN`/`-KOPF`/`-FUSS`. Cache-Bump wie beim Kanon-Verteiler.
+  Ein zweiter Lauf derselben Sitzung: `--ohne-bump`.
+- **Probe:** `node tests/smoke_sicherheit_seite.mjs [pfad] [--traeger]` — auch für die Kopie eines Trägers.
+  Gegenprobe `node tests/gegenprobe_sicherheit_seite.mjs` (Wegwerf-Kopie).
 
 ---
 
