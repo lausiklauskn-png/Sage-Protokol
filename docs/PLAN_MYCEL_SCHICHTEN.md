@@ -238,8 +238,33 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   (Unterschrift, Kennung passt); Knöpfe „Bürgen", „Verlängern", „Widerrufen (Grund)"; Liste
   „läuft bald ab"; „Sperren" widerruft zuerst und sperrt danach, bricht bei einem Fehler ab.
   Unterschrieben wird mit der Identität des Marktes im selben Browser.
+  **Netz-Verwaltung, ein eigenes Werkzeug im Studio (Klaus 2026-10-16):** *„die
+  Widerrufsliste, die Sperrliste und die Listen, wo ich sehen kann, welche Apps innerhalb
+  meines Mycels sind … ein separates Tool innerhalb des Studios, sowohl in Family Project als
+  auch in PWA Toolpoint und auch in Sage, falls ich das für privat öffne."*
+  - **Ein Baustein, drei Orte:** der Kanon steht in Sage (neue Datei neben 23-UI), family-
+    project und PWA Toolpoint tragen ihn byte-1:1 im Studio, Sage als eigene Seite. Drei
+    Fassungen liefen auseinander.
+  - **Vier Listen, je mit Suche:** (a) Apps in meinem Mycel: die Einträge des Studios mit
+    Kennung, dazu wer gerade im Raum ist, je Zeile Status (Netzadmin · verbürgt von … ·
+    unverbürgt · gesperrt) und Ablaufdatum der Bürgschaft · (b) meine Bürgschaften (wem,
+    bis wann, „läuft bald ab") · (c) Widerrufsliste mit Grund und Datum · (d) Sperrliste
+    des Netzadmins mit Stand.
+  - **Was man dort tun kann, hängt an der Identität der Seite.** Im Studio eines Marktes
+    unterschreibt der Markt: Bürgen, Verlängern, Widerrufen mit Grund. Die Sperrliste ist dort
+    nur zu lesen, denn unterschreiben kann sie nur der Netzadmin (im offenen Mycel
+    Sage-Protokol, Schlüssel auf der Sage-Page). In Sage gehen dazu Sperren und Lösen, und
+    Bürgschaften für die Märkte. In einem eigenen Netz ist es die Identität, die im Feld
+    `admin` steht.
+  - **Keine Höchstzahl für einen Bürgen.** Sage-Protokol und jeder Markt dürfen für beliebig
+    viele Apps bürgen; die 8 in `RDV_VOUCH_PER_CARD_MAX` sind die Bürgschaften, die EINE
+    Karte mitträgt.
+  - **Benannte Grenze:** „wer gerade im Raum ist" zeigt nur, wer in diesem Augenblick eine
+    Seite offen hat. Die dauerhafte Liste sind die Einträge des Studios mit Kennung; der
+    Raum ergänzt sie, ersetzt sie nicht.
   **Reihenfolge:** INTERFACES (Punkte 1, 2, 4, 5) → Modul 23 + 23-UI + Siegel-Aspekt →
-  Probe/Gegenprobe → Rollout → Studio in PWA Toolpoint und family-project.
+  Probe/Gegenprobe → Rollout → Netz-Verwaltung als Kanon in Sage → Studio in PWA Toolpoint
+  und family-project.
   **Was ein Konkurrent damit kann (gelesen im Code, 2026-10-16):** nur seine eigene
   Bürgschaft widerrufen (der Widerruf muss vom Bürgen unterschrieben sein). Unverbürgt heißt
   sichtbar und gefragt, nur nicht vorn; herausfallen geht nur über die Sperrliste des
