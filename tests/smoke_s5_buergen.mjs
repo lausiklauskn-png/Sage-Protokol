@@ -326,9 +326,9 @@ const SAGE = "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA";
   }
   const de = await zeige("de"), en = await zeige("en");
   await browser.close(); srv.close();
-  const erwartDe = ["verbuergt|🤝 verbürgt von Anna · kontakt-…", "verbuergt|🤝 verbürgt von fremd-99… (über 1 weiteren Schritt)", "anker|🤝 Netzadmin"];
+  const erwartDe = ["verbuergt|🤝 empfohlen von Anna · kontakt-…", "verbuergt|🤝 empfohlen von fremd-99… (über 1 weiteren Schritt)", "anker|🤝 Netzadmin"];   // Wort seit 2026-10-16: „empfohlen“
   t("B1 verbürgte Karten zeigen Bürge und Kennung, unverbürgte nichts (DE)", JSON.stringify(de.b) === JSON.stringify(erwartDe), JSON.stringify(de.b));
-  t("B2 englische Oberfläche: kein deutscher Satz", en.b.length === 3 && en.b.every((x) => !/verbürgt|Schritt|Anker|Netzadmin/.test(x)), JSON.stringify(en.b));
+  t("B2 englische Oberfläche: kein deutscher Satz", en.b.length === 3 && en.b.every((x) => !/verbürgt|empfohlen|Schritt|Anker|Netzadmin/.test(x)), JSON.stringify(en.b));
   t("B3 fremder Name nur als Text, keine Seitenfehler, kein Überlauf bei 360 px",
     de.img === 0 && en.img === 0 && !de.fehler.length && !en.fehler.length && de.sw <= 360, JSON.stringify({ img: de.img, f: de.fehler, sw: de.sw }));
 }
@@ -436,7 +436,7 @@ const SAGE = "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA";
     && de.kontaktZeilen.length === 1 && de.kontaktZeilen[0].includes("<b>Bert</b>"), JSON.stringify([de.kontakte, de.kontaktZeilen]));
   t("U5 widerrufen: Widerruf unterschrieben und in den eigenen Vorrat", de.ruf.includes("revoke:id-bert-0000000000000") && de.ruf.includes("carry:w"), JSON.stringify(de.ruf));
   t("U6 Kasten zeigt den Netzadmin des offenen Mycels", de.admin === SAGE && /Sage-Protokol/.test(de.adminText), JSON.stringify([de.admin, de.adminText]));
-  t("U7 Einfügen: Unsinn wird keine Bürgschaft, gemischt wird gezählt", /keine Bürgschaft/.test(de.muell) && /Übernommen: 1 · ungültig: 1/.test(de.gemischt), JSON.stringify([de.muell, de.gemischt]));
+  t("U7 Einfügen: Unsinn wird keine Bürgschaft, gemischt wird gezählt", /keine Empfehlung/.test(de.muell) && /Übernommen: 1 · ungültig: 1/.test(de.gemischt), JSON.stringify([de.muell, de.gemischt]));
   t("U8 Kontakt entfernen", de.nachWeg === 0);
   t("U9 der Netz-Link trägt den Netzadmin", de.link && de.link.a === "KlausKennung0000000000", JSON.stringify(de.link));
   t("U10 fremder Name nur als Text, keine Seitenfehler, kein Überlauf bei 360 px (DE und EN)",

@@ -344,13 +344,13 @@ const stand = (liste) => Object.fromEntries(liste.map(c => [c.nodeName, c.vouch.
   const de = await lauf("de"), en = await lauf("en");
   await browser.close(); srv.close();
   t("U1 Hinweis vor dem Ablauf: Bürge (Name aus den Kontakten, als Text) und Datum; Überschrift sagt es",
-    de.ablauf.length === 1 && de.ablauf[0].startsWith("markt-kennung-000000|⏳ Bürgschaft von <img src=x onerror=alert(1)>Markt · markt-kennun…") &&
+    de.ablauf.length === 1 && de.ablauf[0].startsWith("markt-kennung-000000|⏳ Empfehlung von <img src=x onerror=alert(1)>Markt · markt-kennun…") &&
     de.ablauf[0].includes("2026-11-01") && /läuft bald ab/.test(de.summary), JSON.stringify([de.ablauf, de.summary]));
   t("U2 ohne Grund wird nicht widerrufen", de.ohneGrund.ruf.length === 0 && /Grund/.test(de.ohneGrund.msg), JSON.stringify(de.ohneGrund));
   t("U3 mit Grund: Grund getrimmt an createRevocation", de.mitGrund[0] === "revoke:id-bert-0000000000000:Spam im Markt", JSON.stringify(de.mitGrund));
   t("U4 Schalter „Nur Verbürgten antworten“: aus → an, gespeichert", de.vorher === false && de.nachher === true, JSON.stringify([de.vorher, de.nachher]));
   t("U5 englische Oberfläche ohne deutschen S5b-Satz",
-    !/Bürgschaft von|läuft|Grund des Widerrufs|Nur Verbürgten|verbürgt ist/.test(en.text) && /expires|Answer only vouched|Reason for the revocation/.test(en.text) &&
+    !/Bürgschaft von|Empfehlung von|läuft|Grund des Widerrufs|Nur Verbürgten|Nur Empfohlenen|verbürgt ist|empfohlen ist/.test(en.text) && /expires|Answer only recommended|Reason for the revocation/.test(en.text) &&
     en.ablauf.length === 1 && /expires on 2026-11-01/.test(en.ablauf[0]), en.ablauf.concat([en.text.slice(0, 200)]).join(" | "));
   t("U6 fremder Name nur als Text, keine Seitenfehler, kein Überlauf bei 360 px (DE und EN)",
     de.img === 0 && en.img === 0 && !de.fehler.length && !en.fehler.length && de.sw <= 360 && en.sw <= 360, JSON.stringify({ i: [de.img, en.img], f: de.fehler.concat(en.fehler), sw: [de.sw, en.sw] }));

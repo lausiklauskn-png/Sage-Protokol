@@ -5763,10 +5763,110 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
           Netz-Verwaltung als Kanon in Sage, Studio in PWA Toolpoint und
           family-project (Feld nodeId je Eintrag, Bürgen/Verlängern/
           Widerrufen mit Grund, „Sperren" widerruft zuerst).
+          → Rollout erledigt 2026-10-16; Netz-Verwaltung: Modul 23b unten.
+
+    🔧 S5b Teil 2 „Die Empfehlung kommt von selbst an" (2026-10-16, Klaus:
+        „Von selbst über den Raum"). Keine neue Spore, alte Leser
+        ignorieren das neue Feld.
+        WORT (Klaus 2026-10-16): die Oberfläche sagt „Empfehlen" statt
+          „Bürgen" („bürgen klingt immer so, ich muss jemanden finden, der
+          für mich bürgt"). Protokoll, Feldnamen und Funktionsnamen bleiben
+          `vouch` — nur Anzeige-Texte in 23-UI, 23b und Siegel-Aspekt.
+        Aussteller: createVouch legt die neue Empfehlung zusätzlich in den
+          Bürgen-Speicher, Feld `issued` (≤ RDV_ISSUED_STORE_MAX = 64,
+          neueste zuerst; ältere desselben subject und abgelaufene fallen
+          heraus; ohne dbSuffix nicht gespeichert). createRevocation nimmt
+          alle Einträge dieses subject aus `issued`.
+        Karte: neues optionales Feld `issued` = die neuesten
+          RDV_ISSUED_PER_CARD_MAX = 8 nicht abgelaufenen aus `issued`. Steht
+          im Aufwand (S3) wie alle Kartenfelder.
+        Leser: discover() sammelt `issued` jeder Karte (≤ 8) mit in die
+          Zettel des Laufs (zählt damit auch für vouchTrust).
+        Empfänger holt ab (nur in discover(), nutzer-ausgelöst; beim Laden
+          kein Netz): jede Empfehlung mit subject = eigene Kennung, je
+          Aussteller die neueste, wird in den eigenen Vorrat (carried)
+          gelegt, WENN (a) der Aussteller beim Empfänger zählt — Netzadmin,
+          eigener Kontakt oder nach vouchTrust anker/kontakt/verbuergt — und
+          (b) vouchPruefen "gueltig" sagt. Eine ältere Empfehlung desselben
+          Ausstellers wird ersetzt. Ergebnis: discover() → `picked` (Zahl),
+          _meta.empfehlungenAbgeholt, _meta.issuedPerCardMax.
+        ⚠ Benannte Grenzen: abgeholt wird nur, wenn der Empfänger
+          „Wer ist im Raum?" drückt, solange die Karte des Ausstellers frisch
+          ist (freshSec). Wer mehr als 8 Apps kurz hintereinander empfiehlt,
+          trägt nur die neuesten 8; für die übrigen bleibt der Text-Weg
+          (vouchPassOn + addCarried), der unverändert gilt. Eine Empfehlung
+          eines Unbekannten wird NICHT von selbst abgeholt (sonst könnte
+          jeder fremde Vorräte füllen); für ihn bleibt ebenfalls der Text.
 
   Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
         (ehrlich leer); Raum/Announce/Handshake bleiben unberührt.
+
+---
+
+### Modul: 23b_netzverwaltung
+
+```
+Zweck:   Netz-Verwaltung als Studio-Bereich auf EIGENER Seite (S5b Teil 2,
+         Klaus 2026-10-16: „soll eine separate Seite werden … vom Umfang viel
+         zu groß, um einzeln im Studio aufzutauchen"). Ein Baustein, byte-1:1
+         in Sage, family-project und PWA Toolpoint. Marke im Kopf:
+         „SBKIM — Modul 23b —" (kanon-verteilen erkennt am Inhalt).
+Global:  window.SbkimNetzVerwaltung
+Konsumiert: Modul 23 (vouchTrust, createVouch, createRevocation, addCarried,
+         vouchPassOn, loadSeenRevocations, currentBlocklist, blockId,
+         createBlocklist, isBlocked, currentNetAdmin, discover, init) ·
+         Modul 02 (SbkimSpore.getOwnSpore, verifyForeignSpore). Kein anderes.
+Seite:   jede App legt netz-verwaltung.html an (gleiche Adresse, gleiche
+         Schublade wie die App → gleiche Identität), lädt 01/02/05b/23/23b und
+         ruft page({ nodeName, dbSuffix, entries }). Das Studio der App hat
+         nur einen Knopf dorthin; Sage: langer Druck (1,5 s) auf das © der
+         Sage-Page (assets/studio-sage.js) öffnet die Seite im selben Tab.
+API:
+  page(opts) → Promise<{root, refresh, ready}|null>
+      initialisiert Modul 01 und 23 mit dbSuffix/nodeName, mountet ganzseitig.
+  mount(container, { entries?, dbSuffix?, lang?, help? }) → {root, refresh, ready}|null
+      entries: Array oder () => Array von { label, nodeId?, url? }.
+      Ohne DOM → null. Fremde Namen/Texte nur als textContent.
+  open(opts) — dasselbe als schwebendes Fenster.
+  role() → { ownId, admin, isAdmin }   (isAdmin = eigene Kennung ist
+      currentNetAdmin()).
+  rows(entries, roomCards) → [{ nodeId, label, imRaum, status, by, exp, bald, reason }]
+      status: netzadmin | gesperrt | verbuergt-eigen | widerrufen-eigen |
+      verbuergt | kontakt | unverbuergt | ohne-kennung. Einträge ohne
+      gültige Kennung bleiben sichtbar („ohne-kennung"); jede Kennung einmal.
+  issued() → [{ subject, exp, ts, bald, zettel }]   eigene Empfehlungen, je App
+      die neueste GÜLTIGE; jeder Zettel einzeln über vouchTrust geprüft
+      (Wurzel = nur die eigene Kennung). bald = Ablauf ≤ 30 Tage.
+  revocations() → [{ voucher, subject, ts, reason, eigen }]   eigene (Ablage)
+      und gesehene (Modul 23), je Unterschrift einmal, neueste zuerst.
+  blocklist() → Stand von Modul 23 currentBlocklist().
+  vouch(nodeId, {days?}) → { ok, zettel, text, stored }   text = vouchPassOn.
+  extend(nodeId) = vouch mit voller Frist.
+  revoke(nodeId, reason) → createRevocation + addCarried (Grund Pflicht).
+  unrevoke(nodeId) = NEU empfehlen; wartet, bis die Sekunde des letzten
+      eigenen Widerrufs vorbei ist (ein Widerruf trifft ts ≤ Widerruf.ts).
+  block(nodeId, reason) — nur Netzadmin. Hat er eine eigene Empfehlung für
+      die Kennung, widerruft er ZUERST (Grund Pflicht); schlägt das fehl,
+      wird NICHT gesperrt.
+  unblock(nodeId) → createBlocklist(ohne nodeId). Nur Netzadmin.
+  checkSpore(spore, expectedId) → { ok, id, status }   status: gueltig |
+      falsch | andere-kennung | nicht-pruefbar. Für die Freigabe im Studio.
+  fetchSpore(url, expectedId) — nur https, nur auf Knopfdruck, ≤ 64 KiB.
+Speicher: "sbkim_ausgestellt_" + dbSuffix = { v:1, zettel:[…] } ≤ 512, eigene
+      ausgestellte Empfehlungen und Widerrufe. Nur Ablage; gezählt wird nur,
+      was Modul 23 beim Lesen neu bestätigt. Ohne dbSuffix nichts gespeichert.
+Beim Laden kein Netz: der Raum (discover) nur auf Knopfdruck, eine Spore nur
+      auf Knopfdruck.
+⚠ Benannte Grenzen: „wer im Raum ist" zeigt nur, wer gerade eine Seite offen
+      hat · ist eine App selbst eigener Kontakt oder Netzadmin, meldet Modul 23
+      „kontakt"/„anker", sie fehlt dann unter „Meine Empfehlungen" · das
+      Verstecken des Studios schützt nichts, geschützt ist das Ändern durch
+      die Unterschrift.
+Proben: tests/smoke_23b_netzverwaltung.mjs (Kern) ·
+      tests/smoke_23b_netzverwaltung_ui.mjs (Browser) ·
+      tests/gegenprobe_23b_netzverwaltung.mjs.
+```
 
 ---
 
