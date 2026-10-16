@@ -38,7 +38,12 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Entschieden:** Bürge haftet nur für die eine App (ersetzt „verliert alle", Tafel-Evolution
   benannt) · Ablauf höchstens 180 Tage · Hinweis 30 Tage vorher · Widerruf nur mit Grund ·
   Leser speichert Widerrufe · Widerruf reist nicht mit der Sperrliste (zurückgestellt).
-- **Offen:** Bau in der Reihenfolge des Planpunkts, zuerst INTERFACES.
+- **Dazu (Sage #1132–#1134):** Netz-Verwaltung als eigener Bereich im Studio (vier Listen mit
+  Suche, an drei Orten, Rechte nach Identität der Seite) · Firmennetz mitbedacht (Sperre und
+  Bürgschaft regeln Antworten, nicht das Lesen am Relais; „antworte nur Verbürgten") · Name
+  „Studio", Zugang über langen Druck auf das ©.
+- **Offen:** Bau als Schritt 5b im Sammel-Brief, zuerst INTERFACES. Übergabe:
+  `docs/sessions/archiv/2026-10-16_s5b-plan.md`.
 
 ## 2026-10-16 · S4 Sperrliste gebaut und in 29 Träger ausgerollt (Hauptsitzung)
 - **Startprüfung:** kein offener PR in Sage; erster offener Schritt: 5 (S4, Klaus' Entscheid fehlte). **Zwei Sitzungen am selben Brief, 53 s nacheinander gestartet** („Sage-Protokol 1/2 Abarbeitung“); die zweite fand die erste nur über die Sitzungsliste, nicht über PRs/Zweige (nichts gepusht), und brach ohne Bau ab (Kimhub #394). Diese Sitzung bestätigte sich danach über `list_sessions` als einzige laufende. Schritt 0 im Brief nennt jetzt die Sitzungsliste.
