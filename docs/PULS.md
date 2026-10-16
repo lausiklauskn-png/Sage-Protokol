@@ -31,6 +31,17 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 · Paper S Fassung 2 · Bestand: drei Knoten in beide Märkte, neun in die Mycel-Karte (Hauptsitzung)
+- **Startprüfung:** Sitzungsliste: nur diese Sitzung lief; kein offener PR in Sage. Erster offener Schritt: 6.
+- **Paper S Fassung 2 (Sage #1140):** S3/S4/S5 standen als „geplant“ → gebaut, 29 Träger; S5b in Abschnitt 8 (Empfehlen, Haftung je App, 180 Tage, Widerruf mit Grund). Proben-Tabelle 9.1, an dem Tag neu gelaufen (Proben 13/27/19/33/70/44/42/13/11, Gegenproben 7/14/14/15/31/24/31/10). Abschnitt 3 nannte S3 „am Tablet gemessen“ — berichtigt. DOI Greshake, SybilGuard, Ozata über Suchauszüge. 11.4 weiter nicht abgerufen (Proxy und WebFetch gesperrt).
+- **Gegenprobe S3:** auf `main` 2 tote Anker seit #1136 (Frage-Weg umgebaut); nachgezogen, 14/14, P2/P3 mit Namen.
+- **Klaus mitten in der Sitzung:** „ich habe nicht nur 14“. Bestand gegen Kataloge und Karte abgeglichen: In-and-Out-Book, Workflow Calculate, Workflow Bedarfsanalyse fehlten in beiden Märkten → Klaus: alle drei. family-project #FP_PR, PWA-Toolpoint #176 (je drei Einträge, Detailseiten, Sitemap, Cache-Bump; keine Messwerte erfunden; Klaus: „nichts von Geld“, der Stufe-1-Wächter fing ein „Preis“). Mycel-Karte: neun Knoten fehlten im Adressbuch (mycel-karte #33, Sage-Kopie hier); `kuechenzettel` traf „Küchenzettel“ nie (Umlaut fällt im Schlüssel weg), ergänzt.
+- **Auf `main` nachgezählt:** Sage #1140 (Fassung 2, Anker, DOI) · mycel-karte #33 (Schlüssel, v30) · PWA-Toolpoint #176 (3 Einträge, v100, 3 Detailseiten) · family-project #FP_PR.
+- **Eigener Fehler, benannt:** die family-project-Gegenproben liefen über ungesicherter Arbeit; danach waren `listings.js` und vier Seiten zurückgesetzt und eine Sabotage lag liegen (`sh_h1_AUS`). Wiederhergestellt, jede fremde Datei gegen `main` verglichen, erst dann committet (Pflege-Liste § 31).
+- **Rot und auf `main` genauso:** PWA-Toolpoint Detailseiten „Tablet quer“ (deshalb bricht `gegenprobe.sh` ab); family-project `smoke_kein_sprung`, Gegenproben `angleichen`, `detail_gestalt`, `fremdmarkt` (Pflege § 31).
+- **Nicht gemessen:** Tablet. Nach den Merges am Gerät ⟳ / Hard-Reload. SIGNAL `seq` 98.
+- **Offen:** Schritt 6 (Klaus' Gegenlesen; 11.4 von Klaus' Gerät; HTML und EN). Sporen für zehn Träger (Pflege § 32). Pflege § 33.
+
 ## 2026-10-16 · S5b Teil 2: Netz-Verwaltung, „Empfehlen“, Empfehlung kommt von selbst an — gebaut und in 29 Träger ausgerollt (Hauptsitzung)
 - **Startprüfung:** Sitzungsliste: die vorige Sammel-Brief-Sitzung war beendet (Übergabe #1137 gemergt, danach „Prompt is too long“), ihr Zweig ohne eigene Commits; kein offener PR in Sage. Erster offener Schritt: 5b (Teil 2).
 - **Klaus mitten in der Sitzung (2026-10-16):** (1) die Listen auf eine **eigene Seite**, nicht ins Studio („vom Umfang viel zu groß“), mit Klicks für Widerruf, Widerruf rückgängig, Bürgschaft erteilen; klar machen, wie andere Nutzer aus ihrer App bürgen. (2) Wort: gefragt mit vier Vorschlägen → **„Empfehlen“**. (3) Übergabe gefragt → **„Von selbst über den Raum“**.
