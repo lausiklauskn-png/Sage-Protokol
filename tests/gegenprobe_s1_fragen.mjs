@@ -13,7 +13,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const M23 = "src/modules/23_rendezvous.js";
 const FAELLE = [
   { name: "Frager unterschreibt die Frage nicht", datei: M23,
-    alt: "zettelSignieren({                       // S1: die Frage trägt spore + sig", neu: "Promise.resolve({", rot: "E1" },
+    alt: ").then(zettelSignieren                 // S1: die Frage trägt spore + sig", neu: ").then(function (z) { return z; }", rot: "E1" },
   { name: "Antworter prüft die Frage nicht", datei: M23,
     alt: "var stand = await zettelPruefen(q, null);", neu: "var stand = \"bestaetigt\";", rot: "F1" },
   { name: "Fälschung sperrt die qid der echten Frage", datei: M23,

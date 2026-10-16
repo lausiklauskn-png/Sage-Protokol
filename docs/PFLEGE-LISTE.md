@@ -294,6 +294,27 @@ aus dem gemeinsamen Netz-Code (PBKDF2); wer den Code hat, liest alles, es gibt k
 je Person, und wer das Netz verlässt, behält den Code, bis er gewechselt wird. Ob und welche
 Buchungsdaten an eine KI außerhalb des Geräts gehen (KI-Richter, BYOK), ist offen.
 
+### 22 · Toter Anker in `tests/gegenprobe_netz_ui.mjs` (gefunden 2026-10-16)
+
+Der Fall „NETZ: der Link trägt den Code im Klartext“ zeigt auf die Zeile, die den Netz-Link
+baut. Seit S5 Teil 2 (#1123) trägt der Link zusätzlich `a` (Netzadmin), die Zeile sieht anders
+aus, und `NUR_ANKER=1 node tests/gegenprobe_netz_ui.mjs` meldet „9 Anker · 1 tot“ — gemessen
+auf `origin/main` (afd49dc) und auf dem S3-Zweig gleich. Die Zusicherung ist damit seit #1123
+ohne Gegenprobe. **Nicht nebenbei repariert** (S3-Sitzung), nur eingereiht: Anker auf die neue
+Zeile ziehen, Fall von Hand nachstellen, rote Zeile lesen.
+
+### 23 · Ein voller Lauf überschrieb vier Dateien im echten Baum (gefunden 2026-10-16)
+
+Nach `node tests/run_alle.mjs` (S3-Zweig, alle 29 Nachbar-Klone daneben) standen
+`docs/antragsmappe-einreichbar.html`, `docs/unterlagen-forschungsaufgaben.html` und die zwei
+PDFs unter `sbkim-demo/papiere/` als geändert da; danach war `smoke_papiere_bereinigt` rot
+(4 Zeilen, „unlesbar: 14“ / „PDF enthält den Einordnungs-Kasten“). Zurückgestellt → wieder
+grün. **Einzeln nicht nachgestellt:** keine der sechs Proben, die diese Dateien nennen, und
+`smoke_ausgabe` schrieben beim Einzellauf etwas. Verdacht: eine Probe ruft
+`tools/antragsmappe-bauen.mjs` oder `tools/ausgabe-bauen.mjs` im echten Baum, nur unter einer
+Bedingung des vollen Laufs (Nachbar-Klone?). Vermutet, nicht gemessen. Bis dahin: nach einem
+vollen Lauf `git status` ansehen, bevor committet wird (LEHREN § 10).
+
 ## Erledigt
 
 ### ✅ 13 · `kanon-verteilen` zieht den Cache-Stand mit — 2026-10-15

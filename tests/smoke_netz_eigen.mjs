@@ -138,7 +138,20 @@ async function main() {
     const vorher = await lauf(alt);
     const nachher = await lauf(QUELLE_23);
     sage(vorher.ereignisse.length > 200, "Selbst-Riegel: der Vergleichslauf hat überhaupt Ereignisse erzeugt", vorher.ereignisse.length);
-    sage(vorher.ereignisse === nachher.ereignisse, "publizierte Ereignisse Zeichen für Zeichen gleich (Karte, Frage, Antwort)",
+    // S3 (2026-10-16, Tafel-Evolution benannt): Karte und Frage tragen zusätzlich
+    // `pow` (Rechenaufwand). Verglichen wird ohne das Feld, und das Feld selbst wird
+    // ausdrücklich verlangt — in Karte UND Frage, nicht in der Antwort.
+    const ohnePow = (j) => JSON.stringify(JSON.parse(j).map((e) => {
+      let c; try { c = JSON.parse(e.content); } catch (_e) { return e; }
+      delete c.pow; return { ...e, content: JSON.stringify(c) };
+    }));
+    const mitPow = JSON.parse(nachher.ereignisse).map((e) => { try { return JSON.parse(e.content); } catch (_e) { return {}; } });
+    sage(mitPow.filter((c) => c.kind === "sbkim-presence" || c.kind === "sbkim-query").every((c) => typeof c.pow === "string")
+      && mitPow.some((c) => c.kind === "sbkim-query") && mitPow.filter((c) => c.kind === "sbkim-query-res").every((c) => c.pow === undefined),
+      "Karte und Frage tragen pow, die Antwort nicht (S3)", nachher.ereignisse.slice(0, 300));
+    vorher.ereignisse = ohnePow(vorher.ereignisse);
+    nachher.ereignisse = ohnePow(nachher.ereignisse);
+    sage(vorher.ereignisse === nachher.ereignisse, "publizierte Ereignisse Zeichen für Zeichen gleich (Karte, Frage, Antwort; ohne das neue Feld pow)",
       `vorher ${vorher.ereignisse.slice(0, 160)}…\n        nachher ${nachher.ereignisse.slice(0, 160)}…`);
     // Bau 23.R (2026-10-14, Tafel-Evolution benannt): die Antwort trägt zusätzlich
     // `bestaetigt`. Die gestellte Spore hier kann nicht unterschreiben → false. Verglichen
@@ -151,8 +164,10 @@ async function main() {
     // Ohne Modul 03 heißt das „nicht-geprueft". Verglichen wird ohne das neue Feld,
     // und das Feld selbst wird ausdrücklich verlangt (wie `bestaetigt` oben).
     // S5 (2026-10-15, ebenso benannt): jede Karte trägt zusätzlich `vouch`.
-    const ohneMeaning = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "meaning" || k === "vouch" ? undefined : v));
-    sage(ohneMeaning(vorher.karten) === ohneMeaning(nachher.karten), "discover liefert dieselben Karten (ohne die neuen Felder meaning, vouch)", nachher.karten);
+    // S3: das Ergebnis von discover trägt zusätzlich `verdraengt` (hier 0, ausdrücklich verlangt).
+    const ohneMeaning = (j) => JSON.stringify(JSON.parse(j), (k, v) => (k === "meaning" || k === "vouch" || k === "verdraengt" ? undefined : v));
+    sage(ohneMeaning(vorher.karten) === ohneMeaning(nachher.karten), "discover liefert dieselben Karten (ohne die neuen Felder meaning, vouch, verdraengt)", nachher.karten);
+    sage(/"verdraengt":0/.test(nachher.karten), "discover sagt verdraengt: 0 (Raum nicht voll, S3)", nachher.karten);
     sage(/"vouch":\{"status":"unverbuergt"/.test(nachher.karten), "jede Karte sagt vouch: unverbuergt (kein Anker, keine Bürgschaft)", nachher.karten);
     sage(/"meaning":\{"status":"nicht-geprueft"/.test(nachher.karten), "jede Karte sagt meaning: nicht-geprueft (kein Modul 03 gestellt)", nachher.karten);
     sage(nachher.meta[0] === "sbkim-rdv" && nachher.meta[1] === "sbkim-qry", "_meta nennt sbkim-rdv / sbkim-qry", nachher.meta.join(" / "));
