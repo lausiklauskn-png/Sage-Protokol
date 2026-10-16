@@ -64,6 +64,18 @@ Browser ihres Nutzers. Damit sie einander finden, meldet sich jede in einem geme
 öffentlichen Raum an. Dieser Raum ist ein geliehenes Nostr-Relais: ein Dienst, der
 signierte Nachrichten annimmt und an alle weitergibt, die zuhören.
 
+**Was „ohne Server" hier heißt.** Ganz ohne Server geht es nicht: das Relais läuft auf
+einem. Gemeint ist etwas anderes. Es gibt keinen großen, übergeordneten Dienst wie bei
+Google oder einem sozialen Netzwerk, der alle Daten hält, die Nutzer verwaltet und
+entscheidet, wer was findet. So eine Mitte fehlt hier mit Absicht. Das Relais ist eine
+Poststelle. Es nimmt unterschriebene Zettel an und reicht sie weiter, es kennt keine
+Konten und führt kein Verzeichnis. Es kann Zettel zurückhalten, aber nicht unbemerkt
+verändern, denn dann passt die Unterschrift nicht mehr. Relais gibt es viele, von
+verschiedenen Betreibern, und eine Anwendung kann mehrere zugleich benutzen. Fällt
+eines aus, tragen die anderen. Der Betreiber dieses Netzes stellt selbst eines. Der
+Einzelne braucht keinen eigenen Server, und es gibt keinen zentralen Index. Das
+SBKIM-Paper setzt „server-los" deshalb in Anführungszeichen.
+
 Jede Anwendung trägt eine **Spore**, eine unterschriebene Visitenkarte. Darin stehen
 ihr Name, eine Beschreibung in Worten, ein Bedeutungs-Vektor (384 Zahlen, aus der
 Beschreibung oder aus den eigenen Inhalten gerechnet) und ihr öffentlicher Schlüssel.
