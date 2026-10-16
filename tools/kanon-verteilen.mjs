@@ -162,8 +162,41 @@ function traegerDateien(wurzel, tiefe = 0) {
     const p = join(wurzel, e);
     let st; try { st = statSync(p); } catch { continue; }
     if (st.isDirectory()) aus.push(...traegerDateien(p, tiefe + 1));
-    else if (/\.(js|html)$/.test(e) && st.size < 3_000_000) aus.push(p);
+    /* ⚠ DAS MANIFEST GEHOERT DAZU (Pflege-Liste § 18, viermal am 2026-10-15).
+     * In-and-Out-Book haengt seine Symbole mit `?v=12` an die Cache-Nummer;
+     * Seite und Vorrat zogen mit, das Manifest nicht — der Manifest-Waechter
+     * der App wurde rot, viermal an einem Tag, jedes Mal von Hand geflickt.
+     * Es gilt derselbe Riegel wie fuer Seiten: nur was VORHER auf der alten
+     * Nummer stand. */
+    else if ((/\.(js|html|webmanifest)$/.test(e) || e === "manifest.json") && st.size < 3_000_000) aus.push(p);
   }
+  return aus;
+}
+
+/* Die Proben eines Traegers — tests/ und test/ an der Wurzel, rekursiv.
+ * UEBERSPRINGEN laesst sie fuer die ?v= bewusst aus; hier werden sie nur nach
+ * der VOLLEN alten Cache-Kennung durchsucht (siehe cacheBump). */
+function probenDateien(rp) {
+  const aus = [];
+  const geh = (d, tiefe) => {
+    if (tiefe > 4) return;
+    let eintraege; try { eintraege = readdirSync(d); } catch { return; }
+    for (const e of eintraege) {
+      if (e === "node_modules" || e === ".git") continue;
+      const p = join(d, e);
+      let st; try { st = statSync(p); } catch { continue; }
+      if (st.isDirectory()) geh(p, tiefe + 1);
+      /* ⚠ tests/cache-stand.json NICHT. Sie gehoert tools/cache-stand.mjs
+       * (Pflege-Liste #13), und das Werkzeug VERLAESST sich darauf, dass ihre
+       * Version noch die alte ist: „Vorrat geaendert, Version gleich" ist sein
+       * Riegel. Zog dieser Lauf die Version vorher mit, hielt es den Stand fuer
+       * ungueltig und brach ab — gefunden am 2026-10-16 von
+       * tests/smoke_kanon_cachestand.mjs, nicht beim Bauen. */
+      else if (e === "cache-stand.json") continue;
+      else if (/\.(m?js|cjs|json)$/.test(e) && st.size < 3_000_000) aus.push(p);
+    }
+  };
+  for (const t of ["tests", "test"]) geh(join(rp, t), 0);
   return aus;
 }
 
@@ -597,6 +630,34 @@ function cacheBump(rp, zielPfad) {
        die Zahl da, statt es still zu tun. */
     if (gezogen) {
       console.log(`        ↳ ?v= mitgezogen: ${gezogen} Stellen in ${dateienGezogen} Dateien  ${altN} → ${neuN}`);
+    }
+
+    /* ── ⚠ UND DIE PROBEN, DIE DIE CACHE-KENNUNG FESTNAGELN ──────────────
+     *
+     * Pflege-Liste § 18, viermal am 2026-10-15: Kim-sync prueft in
+     * tests/smoke.mjs `CACHE ist kimsync-v19` — jeder Bump machte die Probe
+     * rot, und jedes Mal wurde es von Hand nachgezogen.
+     *
+     * Gezogen wird NUR die VOLLE alte Kennung (`kimsync-v19`), nie eine
+     * blosse Zahl: dieselbe Probe legt absichtlich einen Vorrat `kimsync-v4`
+     * an, und der darf nicht wandern. Davor kein Wortzeichen, dahinter keine
+     * Ziffer — `kimsync-v19` trifft nicht `kimsync-v190`. Und nur bei einer
+     * Vorsilbe mit Buchstaben und mindestens drei Zeichen: eine Kennung wie
+     * `v19` oder `19` stuende in jeder Probe fuer etwas anderes. */
+    const altK = m[4] + altN, neuK = m[4] + neuN;
+    if (m[4].length >= 3 && /[a-z]/i.test(m[4])) {
+      const kMuster = new RegExp(`(?<![\\w-])${altK.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?!\\d)`, "g");
+      let proben = 0, probenDateienGezogen = 0;
+      for (const d of probenDateien(rp)) {
+        let t; try { t = readFileSync(d, "utf8"); } catch { continue; }
+        const n = (t.match(kMuster) || []).length;
+        if (!n) continue;
+        writeFileSync(d, t.replace(kMuster, neuK));
+        proben += n; probenDateienGezogen++;
+      }
+      if (proben) {
+        console.log(`        ↳ Proben mitgezogen: ${proben} Stellen in ${probenDateienGezogen} Dateien  ${altK} → ${neuK}`);
+      }
     }
   }
   return gebumpt;
