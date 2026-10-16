@@ -39,7 +39,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 - **Gegenlesen, erste Runde (Klaus):** zwölf Stellen in Paper S geändert (Liste in `PLAN_PAPER_KNOTENNETZ.md`); die Membran-Aussage im Code von Modul 15 nachgesehen (zeigt und weist Zugriffe über Nachrichten ab, sieht das Lesen der Seite nicht); CSP-Absatz als Pflege-Liste § 34.
 - **Zweite Runde:** Stil wie im SBKIM-Paper („wir“, neutral; 6.4 ohne Person, Tafel-Evolution im Plan benannt), Abschirmung des Sende-Prüfers in 2.1, S2-Messung vom Tablet als Tabelle in 7.2 (2026-10-16: 9/11 Sporen 1,0000, Schnipsel ab 0,9949; SB-KIMTool-Point 0,8879 und BookLedgerPro 0,9020 passen nicht → Pflege-Liste § 35).
 - **Offen:** weitere Runden Gegenlesen · danach HTML und EN. Die Termux-Prüfung der drei Seiten ist jetzt Klaus' eigene Sache, nicht mehr Teil des Papers.
-- **Kein Forschungseintrag in Kimhub:** Kimhub ist in dieser Sitzung nicht eingebunden; die Sitzung hat außer diesem Eintrag keine Spur hinterlassen.
+- **Abschluss:** Übergabe `sessions/archiv/2026-10-16_paper-s-gegenlesen-abschluss.md`; neuer Auftrag `sessions/BRIEF_2026-10-17_ueberblick_mycel_siegel.md` (Überblick in Stichworten zu „Mit dem Mycel verbinden“ und Siegel; `sicherheit.html` stammt vom 2026-10-13 und kennt S1–S5b nicht). Forschungseintrag in Kimhub nachgetragen; offene Einträge früherer Sitzungen: keine mit Commits in den sieben hier geprüften Depots.
 
 ## 2026-10-16 · Paper S Fassung 2 · Bestand: drei Knoten in beide Märkte, neun in die Mycel-Karte (Hauptsitzung)
 - **Startprüfung:** Sitzungsliste: nur diese Sitzung lief; kein offener PR in Sage. Erster offener Schritt: 6.
