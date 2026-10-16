@@ -205,6 +205,46 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   gemessen (zwei echte Geräte, die einander bürgen); „aufgefallen“ weiter nur von Hand (bis
   S4/Modul 10); Privat-Brains eigenes Mycel-Fenster zeigt keine Bürgen-Oberfläche (PFLEGE § 19).
 
+- [ ] **S5b — Bürgen für fremde Apps in den Märkten** · `Bau` · ⏱ ~2–3 Sitzungen
+  Anlass: PWA Toolpoint und family-projekt.de laden fremde Apps offen ein, verwaltet im
+  Studio. Klaus 2026-10-16: *„Ich müsste für sie bürgen, zumindest einen Teilbürgen."*
+  Die Kette trägt das schon: Sage-Protokol (Netzadmin) bürgt einmal für jeden Markt, der
+  Markt bürgt für seine Gäste — zwei Schritte, das erlaubte Höchstmaß.
+  **Entscheid (Klaus 2026-10-16):**
+  1. **Der Bürge haftet nur für die eine App.** Fällt eine verbürgte App auf oder wird
+     gesperrt, verfällt nur diese eine Bürgschaft; die übrigen des Bürgen gelten weiter.
+     Klaus: *„alle haften doch nicht für einen."* **Tafel-Evolution, ausdrücklich benannt:**
+     INTERFACES § Modul 23 S5 sagt bisher, der Bürge verliert ALLE seine Bürgschaften
+     (`vouchTrust`, „haftet"). Das wird ersetzt. Benannter Preis: eine automatische Folge für
+     einen Bürgen, der für schlechte Apps bürgt, gibt es danach nicht mehr — dafür bleiben
+     der Widerruf der Bürgschaft für den Bürgen selbst und die Sperrliste (S4).
+  2. **Ablauf höchstens 180 Tage** statt 365 (`RDV_VOUCH_TTL_SEC`, netzweit). Eine längere
+     Frist ist ungültig, nicht still gekürzt. Echte Bürgschaften mit 365 Tagen sind nicht
+     bekannt; ob es welche gibt, steht nur in Klaus' Browser.
+  3. **Hinweis vor dem Ablauf:** 30 Tage vorher zeigt die verbürgte App im Siegel bzw. im
+     Netz-Fenster „Bürgschaft von ‹Bürge› läuft am … ab, Verlängerung anfragen". Verlängern
+     kann nur der Bürge (neu unterschreiben).
+  4. **Ein Widerruf trägt immer einen Grund.** Ohne Grund ist er ungültig (Protokoll, nicht
+     nur Studio): neues Pflichtfeld im Widerruf-Zettel, unter der Signatur. Geprüft werden
+     kann nur, dass ein Grund dasteht, nicht ob er stimmt. Im Studio steht der Grund mit
+     Datum öffentlich im Bericht des Wächters. Alte Widerrufe ohne Grund wären danach
+     ungültig; echte sind nicht bekannt.
+  5. **Der Leser speichert gesehene Widerrufe** (wie die Sperrliste, `sbkim_…_<dbSuffix>`,
+     beim Laden neu geprüft). Bisher wirkt ein Widerruf nur, solange der Bürge im Raum ist;
+     die verbürgte App trägt ihre alte Bürgschaft dagegen immer mit.
+  6. **Der Widerruf reist nicht mit der Sperrliste** (Weg 2 vom selben Tag): mit Punkt 1
+     schützt er niemanden mehr vor einer Mithaftung. Zurückgestellt, nicht verworfen.
+  **Studio (beide Märkte):** Feld `nodeId` je Eintrag; bei der Freigabe die Spore prüfen
+  (Unterschrift, Kennung passt); Knöpfe „Bürgen", „Verlängern", „Widerrufen (Grund)"; Liste
+  „läuft bald ab"; „Sperren" widerruft zuerst und sperrt danach, bricht bei einem Fehler ab.
+  Unterschrieben wird mit der Identität des Marktes im selben Browser.
+  **Reihenfolge:** INTERFACES (Punkte 1, 2, 4, 5) → Modul 23 + 23-UI + Siegel-Aspekt →
+  Probe/Gegenprobe → Rollout → Studio in PWA Toolpoint und family-project.
+  **Was ein Konkurrent damit kann (gelesen im Code, 2026-10-16):** nur seine eigene
+  Bürgschaft widerrufen (der Widerruf muss vom Bürgen unterschrieben sein). Unverbürgt heißt
+  sichtbar und gefragt, nur nicht vorn; herausfallen geht nur über die Sperrliste des
+  Netzadmins. Eine App holt ihre Bürgschaft deshalb vom Markt.
+
 - [ ] **S6 — Eigene Einträge markieren** (Bakterien-Methylierung) · `Entscheid`+`Bau`
   Was die App selbst ablegt, trägt eine eigene Prüfsumme; was von außen in den Speicher
   geschrieben wurde, fällt auf. Nutzen gegen Kosten noch ungeklärt.
