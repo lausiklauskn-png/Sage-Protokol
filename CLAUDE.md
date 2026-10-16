@@ -213,6 +213,18 @@ halten ein PR-Scope sauber und erlauben eine eigene Folge-Sitzung.
    ist — vollständig, selbst-erklärend (Absender, Datum, Bitte, **erwartete
    Rück-Aktion**, nachprüfbare Fundstellen). Klaus ist der Vermittler. Solange kein
    Briefkasten existiert, ist das der **einzige** Kanal.
+8. **Forschungseintrag in Kimhub** (Klaus 2026-10-16: *„Am Ende der Sitzung immer
+   die Forschungseinträge machen … mit den verschiedenen Läufen auf den verschiedenen
+   Armen. Die Daten ziehst du aus der Historie, aus den Commits und den PRs."*) — je
+   Abschnitt der Sitzung ein Eintrag über `node tools/sitzung-eintragen.mjs`, **mit
+   `arm`** (`voll` · `nur-regeln` · `nur-grundsaetze` · `nackt` — der Arm, unter dem
+   wirklich gearbeitet wurde, nicht der erhoffte) und **mit der Arbeitszeit**:
+   `beginn`/`ende` aus Reflog, Commits und PR-Merges, gerechnet in Unix-Zeit, Beginn
+   auf-, Ende abgerundet, `ende` erst **nach** dem letzten Merge. Was keine Spur
+   hinterlässt, fehlt in der Zahl und wird so benannt. Vor dem Bau der Seite die
+   Nachbar-Klone vertiefen (`git fetch --shallow-since=2026-08-20 origin
+   main:refs/remotes/origin/main`). Verfahren und Felder: Kimhubs `CLAUDE.md`
+   § „Jede Sitzung ist eine Messung".
 
 ## Vor dem nächsten Sitzungs-Brief (`Befehl schreiben`)
 
