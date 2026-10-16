@@ -307,7 +307,8 @@ Der Raum bleibt öffentlich: abweisen kann nur der **Empfänger**.
   S5-Probe ist nachgezogen (70 grün, Gegenprobe 31/31), ebenso S4 D7. Gefunden beim Bau: E1 war
   zweimal ein blinder Wächter (die fremde Bürgschaft kam vom selben Bürgen wie eine eigene und
   wurde von „neueste je Bürge“ verdeckt); erst ein Bürge, der sonst nirgends vorkommt, machte
-  den Fall sichtbar. **Offen:** Rollout in alle Träger; Netz-Verwaltung als Kanon; Studio in
+  den Fall sichtbar. **Ausgerollt 2026-10-16:** 29 Träger je ein PR, auf `main` 29/29 mit S5b-Code,
+  28 mit Siegel-Aspekt (Company-Brain ohne Siegel). **Offen:** Netz-Verwaltung als Kanon; Studio in
   PWA Toolpoint und family-project; Hinweis im Siegel der App (bisher nur im Netz-Fenster);
   Tablet nicht gemessen.
   **Was ein Konkurrent damit kann (gelesen im Code, 2026-10-16):** nur seine eigene

@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-10-16",
-  "seq": 95,
-  "headline": "S4 SPERRLISTE FERTIG: der Netzadmin eines Netzes (im offenen Mycel Sage-Protokol) kann Kennungen sperren. Die Liste ist oeffentlich und signiert und reist auf den Karten im Raum mit; jede App prueft die Unterschrift selbst, kein Abruf aus dem Netz. Gesperrte Karten fallen aus discover (Feld gesperrt), ihre Fragen werden nicht beantwortet, ihre Antworten verworfen. Ausgerollt in 29 Traeger, auf main nachgezaehlt. Keine neue Spore. Gegenstellen mit eigenem Mycel-Fenster: discover meldet zusaetzlich gesperrt; ein eigener Sperr-Knopf ist nicht noetig.",
+  "seq": 96,
+  "headline": "S5b TEIL 1 FERTIG UND AUSGEROLLT: der Buerge haftet nur fuer die eine App; Buergschaften gelten hoechstens 180 Tage (Hinweis 30 Tage vorher); ein Widerruf traegt immer einen Grund; gesehene Widerrufe werden gespeichert; neue Einstellung „Nur Verbuergten antworten“. Sage #1136, 29 Traeger. Nach dem Merge am Geraet einmal ⟳ / Hard-Reload.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 96,
+      "date": "2026-10-16",
+      "note": "S5b Teil 1 (Sage #1136: Haftung je App, 180 Tage, Widerruf mit Grund, Widerrufe gespeichert, antworte nur Verbuergten) in 29 Traeger verteilt."
+    },
     {
       "seq": 94,
       "date": "2026-10-16",

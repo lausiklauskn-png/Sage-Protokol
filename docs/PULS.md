@@ -31,6 +31,16 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-16 · S5b Teil 1 gebaut und in 29 Träger ausgerollt (Hauptsitzung)
+- **Startprüfung:** Sitzungsliste: nur diese Sitzung lief; kein offener PR in Sage. Erster offener Schritt: 5b.
+- **Gebaut (Sage #1136):** INTERFACES § Modul 23 S5b zuerst (Tafel-Evolution S5 benannt). Haftung je App · Frist 180 Tage (`RDV_VOUCH_TTL_SEC`) · `vouchExpiring` (30 Tage) · Widerruf mit Pflichtfeld `reason` (≤ 200) · gesehene Widerrufe gespeichert (`sbkim_widerrufe_<suffix>`, ≤ 256, beim Lesen neu geprüft, eigenes Budget) · „antworte nur Verbürgten“ (`setAnswerOnlyVouched`, Vorgabe aus; Frage trägt ≤ 4 Bürgschaften). 23-UI: Grund-Feld, Ablauf-Hinweis, Schalter. Siegel-Aspekt S5b; S5-Aspekt berichtigt („ein Jahr“, „verliert alle“). Bündel-Kopien nachgezogen.
+- **Gemessen:** `smoke_s5b_buergen_maerkte` 44 grün, Gegenprobe 24/24. S5 70 grün / 31/31, S4 33 / 15/15, `smoke_netz_eigen` 69. `run_alle` 4 rot vor dem Bündel-Nachzug, danach bleiben `geraetename_netzweit` und `service_worker_parst` (keine Nachbar-Klone im Behälter).
+- **Eigener Fehler, benannt:** E1 war zweimal ein blinder Wächter (fremde Bürgschaft vom selben Bürgen wie eine eigene, „neueste je Bürge“ verdeckte sie); erst die Gegenprobe zeigte es. Gegenprobe kopierte `docs/` nicht (Z3 stürzte ab), nachgezogen.
+- **Rollout:** `kanon-verteilen --nur 16_siegel,23_rendezvous --schreiben`, 84 Dateien in 29 Trägern, keine Handarbeit, je Träger eine Fassung (die aus S4). BookLedgerPro fehlte zuerst (Klon auf altem Zweig, § 17); danach meldet der Verteiler dort „1 Commit hinter origin“ — Vergleich gegen `origin/HEAD`, der auf den alten Zweig zeigt (Fehlalarm, § 17). Proben je Repo grün; rot und auf `main` genauso: PWA-Toolpoint `smoke_detail` (Tablet quer), BookLedgerPro `smoke_a5_antwortpfad`. Unter Parallel-Last je 1 rot, einzeln grün: Sende-Pruefer, Mixarium `smoke_bildausschnitt`. Nicht lauffähig, bis Links `/home/user/Workflow-PDF` und `/home/user/Auslieferung-Pruefer` (Großschreibung) gesetzt waren, danach grün: Company-/Privat-Brain, Reinigungs-Proben, Tomys `browser_eingang`/`browser_halt`.
+- **PRs:** Alis-Moderaum #79 · Auslieferung-Pruefer #60 · BookLedgerPro #341 · Company-Brain #31 · Jasons-Tresor #193 · Kim-Bell #79 · Kim-sync #26 · Kimboard #159 · Kimseek #99 · Kuechenzettel #15 · Mein-In-and-Out-Book #15 · Mein-Mixarium #256 · Mein-Rezeptbuch #445 · Mein-Tresor #141 · Mein-WorkFloh #274 · Mein-Workfloh-Page #42 · Muttis-Rezeptbuch #250 · PWA-Toolpoint #174 · Perfect-Skin-Beauty #79 · Perfect-Skin-Fashion #51 · Privat-Brain #112 · SB-KIMTool-Point #193 · Sende-Pruefer #87 · Tomys-Hub #253 · Workflow-Calculate #28 · Workflow-Needs #25 · Workflow-PDF #123 · family-project #366 · kim-hub-company #83. Auf `main` 29/29 mit S5b-Code, 28 mit Siegel-Aspekt; Verteiler danach „0 hängen zurück“.
+- **Nicht gemessen:** Tablet. Nach dem Merge am Gerät ⟳ / Hard-Reload. SIGNAL `seq` 96.
+- **Offen:** S5b Netz-Verwaltung als Kanon in Sage, dann Studio in PWA Toolpoint und family-project; Ablauf-Hinweis im Siegel der App; Paper S (Schritt 6).
+
 ## 2026-10-16 · S5b geplant: Bürgen für fremde Apps in den Märkten (Hauptsitzung)
 
 - **Getan:** Klaus' Entscheide zu Bürgschaften in PWA Toolpoint und family-projekt.de als
