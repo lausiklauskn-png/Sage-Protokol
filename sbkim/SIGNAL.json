@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-10-16",
-  "seq": 97,
-  "headline": "S5b TEIL 2 FERTIG UND AUSGEROLLT: im Netz-Fenster heisst Buergen jetzt „Empfehlen“; eine Empfehlung kommt von selbst ueber den Raum an (nur von Ausstellern, die beim Empfaenger schon zaehlen); neue Netz-Verwaltung als eigene Seite (Modul 23b) in Sage, PWA Toolpoint und family-project. Sage #1138, 29 Traeger. Nach dem Merge am Geraet einmal ⟳ / Hard-Reload.",
+  "seq": 98,
+  "headline": "BESTAND NACHGEZOGEN: Mein In-and-Out-Book, Workflow Calculate und Workflow Bedarfsanalyse stehen jetzt in beiden Maerkten (family-projekt.de, PWA Toolpoint); die Mycel-Karte kennt neun weitere Knoten mit Symbol und Link (mycel-karte #33). Paper S Fassung 2 (Sage #1140). Nach dem Merge am Geraet einmal ⟳ / Hard-Reload.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "BgjXhSApoOrJD6zFJ4uuEpAliGWPokpKn7UMWRm94PA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 97,
+      "date": "2026-10-16",
+      "note": "S5b Teil 2 (Sage #1138: Netz-Verwaltung als eigene Seite, Empfehlen, Empfehlung kommt von selbst an) in 29 Traeger verteilt."
+    },
     {
       "seq": 96,
       "date": "2026-10-16",

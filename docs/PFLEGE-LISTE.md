@@ -355,6 +355,36 @@ verwaister Unterlauf (`gegenprobe_uebersetzung.sh`) ließ eine Mutation in `asse
 zurück (von Hand zurückgelegt, Commit aus einem sauberen Worktree). Dieselbe Familie wie LEHREN § 10.
 Bis zum Umbau auf Wegwerf-Kopien: diese Gegenprobe nicht parallel zu anderen Arbeiten fahren.
 
+### 31 · family-project: Gegenproben im echten Baum setzen ungesicherte Arbeit zurück (2026-10-16)
+
+Gemessen in der Bestands-Sitzung: der Sammellauf `for f in tests/gegenprobe_*.sh` (31 Stück)
+lief über einem Baum mit noch nicht committeten Markt-Einträgen. Danach war `assets/config/listings.js`
+auf den letzten Commit zurückgesetzt (die drei neuen Einträge weg), vier Seiten trugen wieder
+`?v=161`, und `sicherheit.html` trug eine liegengebliebene Sabotage (`sh_h1_AUS`, aus
+`gegenprobe_uebersetzung.sh`, das nach 600 s per `timeout` abgebrochen wurde). Wiederhergestellt,
+jede fremde Datei gegen `main` verglichen. Dieselbe Familie wie § 30 und LEHREN § 10. **Bis zum
+Umbau auf Wegwerf-Kopien:** in family-project erst committen, dann Gegenproben fahren, danach
+`git status` lesen.
+
+Auf `main` ohne meine Änderung ebenso nicht sauber (eigener `main`-Worktree, 2026-10-16):
+`gegenprobe_angleichen` (2 blind), `gegenprobe_detail_gestalt` (1 toter Anker),
+`gegenprobe_fremdmarkt` (1 blind). Weitere sechs: siehe Übergabe 2026-10-16
+(paper-s-fassung2-und-bestand).
+
+### 32 · Sporen im Depot fehlen für zehn Träger (2026-10-16)
+
+`sbkim/NETZ-STAND.md` führt 21 Knoten mit Spore; nicht darunter: Alis-Moderaum, Company-Brain,
+Kim-sync (privat), Mein-Workfloh-Page, Perfect-Skin-Beauty, Perfect-Skin-Fashion, Sende-Pruefer,
+Workflow-Calculate, Workflow-Needs, Workflow-PDF. Eine Spore entsteht im Browser mit dem Schlüssel
+der App (Andock-Wizard); von einer Sitzung aus nicht nachziehbar. Klaus am Gerät.
+
+### 33 · PWA Toolpoint `tools/apps-uebernehmen.mjs` schreibt die ganze Liste neu (2026-10-16)
+
+Ein Probelauf gegen family-project ersetzte `assets/config/listings.js` vollständig (565 Zeilen
+weg): Einträge, die es nur in PWA Toolpoint gibt („Family Projekt“, KI-Schulung mit eigener
+Adresse) und Felder wie `video` gingen verloren. Verworfen, die drei neuen Einträge von Hand
+eingetragen (PWA-Toolpoint #176). Nicht repariert.
+
 ## Erledigt
 
 ### ✅ 18 · `kanon-verteilen` zieht Manifest und festgenagelte Cache-Kennung mit — 2026-10-16
