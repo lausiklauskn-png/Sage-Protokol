@@ -64,7 +64,7 @@ und stellt den Satz damit zur Diskussion. Quelle:
 4. **Die Wege fremden Texts.** Spore, Karte, Name, Frage, Antwort, Vektor, eingefügte
    KI-Antwort, Anzeige im Browser. Für jeden Weg: wohin er führt (Mensch, KI-Richter, Rangfolge).
 5. **Die Gegenüberstellung** (Herzstück, Tabelle unten).
-6. **Was die Natur bewährt hat** (eigenes Kapitel, Klaus 2026-10-15: *„da ist es bewährt,
+6. **Was sich in der Natur bewährt hat** (eigenes Kapitel, Klaus 2026-10-15: *„da ist es bewährt,
    das ist im Prinzip die Gegenprobe … durch Erhaltung der Arten"*). Die Artgrenzen sind eine
    Bewährungsprobe über sehr lange Zeit für das **Muster**: mehrere Hürden, billige zuerst,
    Ähnlichkeit erst beim Ernstfall, Gedächtnis, Schutz dessen, was weitergegeben wird. Je
@@ -215,6 +215,7 @@ nur ins Depot gelegt.
 3. **Fassung 1 geschrieben 2026-10-15** (`docs/papers/sicherer-umgang-im-knotennetz.md`, Entwurf, Klaus liest im Chat gegen). „Browser und Knotennetz“ steht dort als Abschnitt 11, damit die abgestimmten Nummern (Gegenüberstellung 5, Natur 6, Bürgen 8) bleiben. Jede Quelle trägt ihren Prüfstand (gelesen · Auszug · offen). Die drei Internetseiten (11.4) sind nicht abgerufen. HTML erst nach dem Gegenlesen, mit DOI.
    **Fassung 2 2026-10-16:** Stand der Schichten nachgezogen (S3, S4, S5 standen als „geplant"; dazu S5b, Wort „Empfehlen", Haftung nur für die eine App, Ablauf 180 Tage), Proben-Tabelle in 9.1 mit den Zahlen dieses Tages (Proben selbst gelaufen), drei Quellen ergänzt (Greshake: AISec '23 S. 79–90, DOI 10.1145/3605764.3623985; SybilGuard: SIGCOMM '06 S. 267–278, DOI 10.1145/1159913.1159945; Ozata: DOI 10.1038/s41576-018-0073-3), alle über Suchauszüge, nicht an der Quelle. Eine Zeile in Abschnitt 3 behauptete „am Tablet gemessen" für S3; nicht gemessen, berichtigt. 11.4 weiter nicht abgerufen (Container und WebFetch gesperrt, 2026-10-16). Offen: Klaus' Gegenlesen, 11.4, HTML, EN.
    **2026-10-16 abends (Klaus):** die drei Internetseiten (11.4) sind herausgenommen; sie beschreiben die Einrichtung eines Servers, nicht das Knotennetz, und ein Befund dort wäre eine Anleitung zu einer offenen Stelle. Dafür in 11.3 ein Absatz zur Content-Security-Policy (in den fünf Anwendungen dieser Sitzung im Quelltext keine gefunden, nicht abgerufen). Offen: Klaus' Gegenlesen, HTML, EN.
+   **Gegenlesen, erste Runde (Klaus 2026-10-16):** Artikel ergänzt („die billigen zuerst“); 1.1 eigenes Relais statt „geliehen“ (`relay.family-projekt.de`, eigenes Netz möglich); 1.2 Zugang bisher kostenlos, Einschränkung durch Empfehlungen, „eine einzelne Nachricht kann nur der Empfänger abweisen“; 2.1/4.4/11.3 Membran (Modul 15) zeigt eine KI, die über Nachrichten zugreift, und weist unbekannte Absender ab, das Lesen der Seite bleibt unsichtbar (im Code nachgesehen); 4.1 inhaltsbasierte Spore; Kapitel 6 „Was sich in der Natur bewährt hat“, „Hybride“ statt „Mischlinge“; 6.4 Wirkprinzip statt „Die Biologie kennt keinen Planer“, Klaus' Sicht zum Urheber eines Mechanismus; CSP-Absatz aus 11.3 in die Pflege-Liste (§ 34). Offen: Klaus' Bild der S2-Messung für 7.2, weitere Runden.
    Danach: 3. Fassung 1 auf Deutsch als Markdown (Quelle), HTML erzeugt wie bei Paper A
    (`tools/paper-md-zu-html.mjs`), mit eigenem Wächter.
 4. Englische Übersetzung, gleiche Gliederung (Wächter wie `smoke_paper_a.mjs`).
