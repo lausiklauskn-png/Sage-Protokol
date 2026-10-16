@@ -11,14 +11,15 @@ Ergänzung zu: *SBKIM: Ein Protokoll für Semantisches Bidirektionales KI-Matchi
 Menschen- und Agentennetzwerken*, DOI 10.5281/zenodo.22277738
 
 > **Stand dieser Fassung.** Entwurf zum Gegenlesen. Jede Literaturangabe trägt ihren
-> Prüfstand (gelesen · Auszug · offen, siehe Literatur). Die Zuordnung Natur ↔ Netz ist
+> Prüfstand (gelesen, Auszug oder offen, siehe Literatur). Die Zuordnung Natur ↔ Netz ist
 > an Fachquellen gegengelesen, aber noch nicht von einer Fachperson. Was in dieser Fassung
 > nicht gemessen ist, steht als solches da.
 >
 > **Fassung 2 (2026-10-16)** zieht den Stand der Schichten nach: S3, S4 und S5 standen in
 > Fassung 1 als „geplant" und sind seither gebaut und in alle 29 tragenden Anwendungen
 > verteilt, dazu S5b (Empfehlungen für fremde Apps in den Märkten). Drei Quellenangaben
-> sind ergänzt. Abschnitt 11.4 ist weiter nicht gemessen.
+> sind ergänzt. Die drei Internetseiten als Fallbeispiele (früher 11.4) sind herausgenommen:
+> sie beschreiben die Einrichtung eines Servers, nicht das Knotennetz.
 
 ---
 
@@ -62,6 +63,18 @@ Anwendung liegt als statische Seite im Netz, meist bei GitHub Pages, und läuft 
 Browser ihres Nutzers. Damit sie einander finden, meldet sich jede in einem gemeinsamen,
 öffentlichen Raum an. Dieser Raum ist ein geliehenes Nostr-Relais: ein Dienst, der
 signierte Nachrichten annimmt und an alle weitergibt, die zuhören.
+
+**Was „ohne Server" hier heißt.** Ganz ohne Server geht es nicht: das Relais läuft auf
+einem. Gemeint ist etwas anderes. Es gibt keinen großen, übergeordneten Dienst wie bei
+Google oder einem sozialen Netzwerk, der alle Daten hält, die Nutzer verwaltet und
+entscheidet, wer was findet. So eine Mitte fehlt hier mit Absicht. Das Relais ist eine
+Poststelle. Es nimmt unterschriebene Zettel an und reicht sie weiter, es kennt keine
+Konten und führt kein Verzeichnis. Es kann Zettel zurückhalten, aber nicht unbemerkt
+verändern, denn dann passt die Unterschrift nicht mehr. Relais gibt es viele, von
+verschiedenen Betreibern, und eine Anwendung kann mehrere zugleich benutzen. Fällt
+eines aus, tragen die anderen. Der Betreiber dieses Netzes stellt selbst eines. Der
+Einzelne braucht keinen eigenen Server, und es gibt keinen zentralen Index. Das
+SBKIM-Paper setzt „server-los" deshalb in Anführungszeichen.
 
 Jede Anwendung trägt eine **Spore**, eine unterschriebene Visitenkarte. Darin stehen
 ihr Name, eine Beschreibung in Worten, ein Bedeutungs-Vektor (384 Zahlen, aus der
@@ -609,6 +622,15 @@ Es **ergänzt** sich dort, wo der Browser Seiten abwehrt und das Netz Zettel pr�
 Browsing weiß nichts von Sporen, und Modul 23 weiß nichts von Betrugsseiten. Beide
 Schichten sehen verschiedene Dinge.
 
+Eine weitere Schicht kann die Seite selbst setzen: eine **Content-Security-Policy**. Mit ihr
+sagt die Seite dem Browser, aus welchen Quellen er Skripte ausführen darf. Rutscht fremder
+Text doch einmal als HTML durch, führt der Browser ein eingeschleustes Skript dann nicht
+aus. Sie ist eine zweite Sperre hinter der Regel, fremden Text nur als Text anzuzeigen
+(Abschnitt 4.2). Sie hat einen Preis: eigene Skripte müssen aus Dateien kommen und dürfen
+nicht im Seitentext stehen. In den fünf Anwendungen, deren Quelltext für diese Fassung
+vorlag, steht keine (Sage-Protokol, PWA-Toolpoint, family-project, Perfect-Skin-Beauty,
+Auslieferung-Pruefer; im Quelltext nachgesehen am 2026-10-16, nicht abgerufen).
+
 Es **reibt** sich an drei Stellen:
 
 - **Die gemeinsame Herkunft.** Was der Browser trennt, sind Herkünfte, nicht Anwendungen.
@@ -622,17 +644,6 @@ Es **reibt** sich an drei Stellen:
 - **Ein App-Schutz kann Verbindungen kappen.** Ein Tracker-Blocker, der über den VPN-Platz
   arbeitet, entscheidet nach seiner eigenen Liste. Ob er die Verbindung zum Relais je
   trifft, ist **nicht gemessen**.
-
-### 11.4 Drei Internetseiten als Fallbeispiele
-
-Der Betreiber hat drei eigene Seiten als Fallbeispiele benannt: Perfect-Skin-Beauty,
-PWA-Toolpoint und family-projekt.de. Gemessen wird dort nur mit echtem Abruf, nicht aus
-dem Quelltext geschlossen: was der Server wirklich herausgibt, welche Kopfzeilen er setzt,
-ob Server-Dateien als Klartext zu lesen sind.
-
-> **Auch in Fassung 2 nicht gemessen.** Aus der Umgebung, in der dieser Entwurf entsteht,
-> sind die Seiten nicht erreichbar (am 2026-10-15 und am 2026-10-16 versucht, beide Male
-> gesperrt). Der Abschnitt wird gefüllt, sobald ein Abruf von einem anderen Ort vorliegt.
 
 ---
 
@@ -652,7 +663,6 @@ ob Server-Dateien als Klartext zu lesen sind.
   kann ihn vom echten unterscheiden.
 - **Am Tablet ist fast nichts gemessen**, dem Gerät, auf dem das Netz benutzt wird. Die
   einzige Messung dort ist die Wiederholgenauigkeit für S2 (7.2).
-- **Die drei Internetseiten** aus Abschnitt 11.4 sind in dieser Fassung nicht abgerufen.
 
 ---
 
