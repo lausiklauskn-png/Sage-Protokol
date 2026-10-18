@@ -61,6 +61,12 @@
       font-size: 0.9rem; color: rgba(245,245,255,0.6);
       border-left: 2px solid rgba(110,231,211,0.5); padding: 0.2rem 0 0.2rem 0.8rem;
     }
+    /* Knopf „Installieren“ (2026-10-18): fest oben rechts, die Seite hat keine Kopfleiste und keine Einstellungen. */
+    .install-knopf {
+      font: inherit; font-size: 0.82rem; color: #6EE7D3; background: rgba(11,11,26,0.85);
+      border: 1px solid rgba(110,231,211,0.45); border-radius: 999px; padding: 0.35rem 0.8rem; cursor: pointer;
+    }
+    .install-knopf:hover { border-color: #6EE7D3; }
     footer {
       border-top: 1px solid rgba(255,255,255,0.08);
       padding: 18px 22px 28px; font-size: 0.78rem; color: rgba(245,245,255,0.5);
@@ -74,6 +80,7 @@
   </style>
 </head>
 <body>
+  <span id="install-platz" class="install-knopf" hidden></span>
   <main>
     <span class="badge"><img class="badge-mush" src="./icon-192.png" alt="" aria-hidden="true"> SBKIM · server-los</span>
     <h1>Such-Werkzeug — sucht nach <span class="accent">Bedeutung</span>, nicht nach Stichwörtern.</h1>
@@ -155,5 +162,6 @@
       }
     })();
   </script>
+  <script src="./assets/installieren.js" data-name="Such-Werkzeug" data-vor="install-platz" data-fest defer></script>
 </body>
 </html>

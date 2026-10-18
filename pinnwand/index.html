@@ -233,7 +233,7 @@
     body::before, .logo { animation: none; }
   }
   /* Werkzeug-Knöpfe (Topbar + leeren). */
-  .toolbar { display: flex; gap: 6px; align-items: center; }
+  .toolbar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }   /* bricht um (2026-10-18: auf main lief sie bei 360 px schon über, 421 px) */
   .tbtn {
     background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
     border-radius: 10px; padding: 7px 10px; font-size: 0.9rem; line-height: 1;
@@ -241,6 +241,7 @@
   }
   .tbtn:hover { border-color: var(--accent); background: rgba(93,214,160,0.08); }
   .tbtn:active { transform: translateY(1px); }
+  #installieren .t { display: none; }   /* nur ⬇, wie die übrigen Symbol-Knöpfe (2026-10-18) */
   .tbtn.mic-on { color: #fff; border-color: var(--bad); background: rgba(224,106,90,0.25); animation: micpulse 1s ease-in-out infinite; }
   @keyframes micpulse { 0%,100% { box-shadow: 0 0 0 0 rgba(224,106,90,0.5); } 50% { box-shadow: 0 0 0 6px rgba(224,106,90,0); } }
   #board-clear { font-size: 0.78rem; padding: 5px 9px; }
@@ -2456,5 +2457,6 @@ window.__pw = {
     }
   })();
   </script>
+<script src="./assets/installieren.js" data-name="Pinnwand" data-vor="tb-reload" defer></script>
 </body>
 </html>
