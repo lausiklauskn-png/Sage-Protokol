@@ -31,6 +31,15 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-18 · Installieren: Manifest-id, Rat, Kontrast, Knopf in jede App (Hauptsitzung)
+
+Manifest-`id` absolut im eigenen Ordner (Chrome rechnet vom Ursprung, `./` kollidierte), Rat ohne
+„Websitedaten löschen" (#1151), Kontrast-Sicherung der Meldung (#1152), `data-in` für den Knopf in den
+Einstellungen (#1153, #1154) — und der Knopf in jeder installierbaren App (rund 50 PRs, je im Browser
+gemessen). Papas Aktenschrank installierbar, kim-hub-company auf Kimhub-Stand. Offen: Workfloh-PDF-Page
+räumt fremde Vorräte weg → `docs/sessions/BRIEF_2026-10-18_workfloh-pdf-page-vorraete.md`.
+Übergabe: `docs/sessions/archiv/2026-10-18_installieren-knopf.md`. ⚠ Am Tablet nur die Manifest-id bestätigt.
+
 ## 2026-10-16 · Überblick „Mit dem Mycel verbinden“ und Siegel: sicherheit.html neu, DE/EN, in 27 Träger (Hauptsitzung)
 - **Startprüfung:** frisch von `origin/main`; Auftrag `sessions/BRIEF_2026-10-17_ueberblick_mycel_siegel.md`.
 - **Klaus' Antworten:** `sicherheit.html` **erweitern** (keine neue Seite) · **Deutsch und Englisch**. Mitten in der Sitzung dazu: die neuen Schutzschichten müssen hinein; **Wort-Links** („auf ein Hauptwort klicken, hinspringen, und wieder zurück“); **warum Schutz nötig ist** aus den Papers.
