@@ -797,6 +797,98 @@ auswählen: **jede App ist von sich aus ihr eigener Knoten.**
 
 ---
 
+## Lehre 14 — Chrome rechnet die Manifest-`id` von der HAUPTADRESSE aus — und hält dann zwölf Apps für eine
+
+**Beobachtung 2026-10-18 (Klaus, Galaxy Tab im Desktop-Modus, Chrome 154).**
+Seit einiger Zeit, bei fast allen Apps: Installieren über das **Chrome-Menü** (⋮ →
+„App installieren“) endet mit **„App konnte nicht geöffnet werden“**. Der
+**Installieren-Knopf in der App** dagegen klappt immer. Klaus: *„Das hast du schon
+mehrmals gehabt, dieses Problem … Browser sind wirklich schwarze Löcher.“*
+
+### Konkrete Phänomenologie
+
+- Das Menü zeigt ein Fenster „Installieren und Verknüpfung erstellen“ mit dem
+  Eintrag **„Diese App wurde bereits installiert – Klicke, um die App zu öffnen“** —
+  auch für eine App, die auf dem Gerät **nicht** installiert ist. Antippen →
+  „App konnte nicht geöffnet werden“.
+- `beforeinstallprompt` feuert dabei ganz normal (gemessen mit der Test-App
+  `Mein-Mixarium/installtest/`). Chrome hält die Seite also für installierbar und
+  für **nicht** installiert — und das Menü behauptet gleichzeitig das Gegenteil.
+- **chrome://webapks** am Tablet, Zeile „Manifest Id“:
+
+| App | `id` im Manifest | Manifest Id laut Chrome |
+|---|---|---|
+| Pinnwand, Kimboard, Kimseek, Kim-sync, Kim-Bell, Such-Werkzeug, Workflow Calculate, Workflow Bedarfsanalyse, Workfloh PDF, FP Videos | `"./"` | **`https://lausiklauskn-png.github.io/`** |
+| Mein Rezeptbuch, Muttis Rezeptbuch | `"./index.html"` | **`https://lausiklauskn-png.github.io/index.html`** |
+| Sage·Protokol, Mein-Tresor, Jasons-Bibliothek, SB·KIMTool·Point | `"/<Repo>/"` | `…/<Repo>/` ✓ |
+
+### Die Regel (technisch)
+
+**Chrome löst `id` gegen den URSPRUNG der `start_url` auf, nicht gegen den Ordner
+des Manifests.** Aus `"./"` wird deshalb auf `lausiklauskn-png.github.io` für
+**jede** App dieselbe Kennung. Chrome erkennt eine App an genau dieser Kennung —
+zehn verschiedene Apps sind für Chrome **eine**.
+
+Warum der Knopf in der App trotzdem ging: `beforeinstallprompt` fragt, ob für die
+**Adresse** (den Scope) schon eine App da ist. Das Menü-Fenster fragt nach der
+**Kennung** — und findet eine fremde App, die es dann nicht mit dieser Seite öffnen
+kann. *Abgeleitet aus Klaus' Messungen, nicht aus einer Chrome-Doku.* Früher legte
+das Menü einfach (auch doppelt) an; das „bereits installiert“-Fenster ist neuer —
+daher „seit einiger Zeit, bei allen Apps“.
+
+**Vorsicht beim Nachrechnen:** wer `new URL(id, start_url)` rechnet, bekommt den
+Ordner heraus und hält `"./"` für richtig. So ist es in Mein-Mixarium am selben Tag
+passiert (PR #259 setzte `"./index.html"`, #264 hat es zurückgenommen). Richtig:
+`new URL(id, new URL(start_url, manifestUrl).origin)` — oder Chromium fragen
+(CDP `Page.getAppId`).
+
+### In einfachen Worten (für Nicht-Programmierer)
+
+Jede App braucht im Manifest einen eigenen Namen für Chrome. Stand dort nur „./“,
+bekamen alle Apps denselben Namen — so als hätten zwölf Häuser dieselbe Hausnummer.
+Chrome klingelte beim falschen Haus.
+
+### Konsequenzen / Regel für alle Apps
+
+- **`id` immer als absoluter Pfad mit dem eigenen Ordner:**
+  `"id": "/<Repo>/"` bzw. `"/<Repo>/index.html"` — am besten genau der Pfad der
+  `start_url` (das ist auch die Kennung, die Chrome ohne `id` benutzt hätte).
+- Jedes Repo trägt seitdem eine Probe `smoke_manifest_id.mjs`, die wie Chrome
+  rechnet: Kennung im eigenen Ordner, keine doppelt. Hier: `tests/smoke_manifest_id.mjs`.
+- **Eine schon installierte App übernimmt eine geänderte `id` nicht.** Nach der
+  Reparatur einmal deinstallieren und neu installieren. Die Daten bleiben, sie
+  gehören der Adresse, nicht der installierten App.
+
+### Workarounds
+
+- Zum Nachsehen: **chrome://webapks** im normalen Chrome — Zeilen *Scope* und
+  *Manifest Id*.
+- Bis eine App repariert ist: über den Installieren-Knopf in der App installieren.
+- Testen im **normalen Chrome**, nicht im App-internen Fenster (schwarze Leiste mit
+  ✕ und ⌄, öffnet sich bei Links aus anderen Apps) — dort fehlt „Installieren“ oft.
+- Der Desktop-Modus des Tablets meldet sich als „Linux, Desktop“ (UA `X11; Linux
+  x86_64`). Wer Berichte auswertet: das ist trotzdem das Tablet.
+
+### Vorteile (denn jede Tiefe hat einen Boden)
+
+Die Kennung ist **eine Zeile** und lässt sich ohne Browser prüfen. Seit es die
+Probe gibt, kann der Fehler nicht mehr still zurückkommen. Und chrome://webapks
+ist ein echtes Messgerät: es zeigt, was Chrome *glaubt*, nicht was im Manifest steht.
+
+### Betroffen & Prüf-Stand (2026-10-18)
+
+Repariert in: Mein-Mixarium (#264, am Tablet bestätigt), Sage-Protokol
+(pinnwand, such-tool) und — je eigener PR — Kim-sync, Kim-Bell, Kimboard,
+Kimseek (auch `brain-manifest.json`), Workflow-Needs, Workflow-Calculate,
+Workflow-PDF, Family-Projekt.de-Video, Mein-In-and-Out-Book, SB-KIMTool-Point
+(such-tool), Mein-Rezeptbuch, Muttis-Rezeptbuch. Nicht betroffen: PWA Toolpoint
+und Family Projekt (eigene Domain). Unauffällig, aber nicht im Ordner:
+Sende-Prüfer (`/sende-pruefer-app`), Auslieferungsprüfer
+(`/auslieferungspruefer-app`) — eindeutig, deshalb nicht angefasst.
+⚠ Am Tablet bestätigt ist bisher nur Mixarium.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-
@@ -814,7 +906,7 @@ Verträgen passiert.
 
 ---
 
-**Letzte Aktualisierung:** 2026-07-10 · Lehre 13 „Welche Identität ein Fenster
+**Letzte Aktualisierung:** 2026-10-18 · Lehre 14 „Chrome rechnet die Manifest-`id` von der Hauptadresse aus“ (Auslöser: Klaus' „App konnte nicht geöffnet werden“, gemessen mit chrome://webapks und den Test-Apps in Mein-Mixarium). Davor: 2026-07-10 · Lehre 13 „Welche Identität ein Fenster
 benutzt, entscheidet der `dbSuffix`, nicht der Pfad — reine Anzeige-Tools
 erzeugen keine" (Auslöser: Klaus' Zwei-Mycel-Karten-Frage; mit Nicht-
 Programmierer-Erklärung). Davor: 2026-07-10 · Lehre 12 „Sauberer Cross-Knoten-
