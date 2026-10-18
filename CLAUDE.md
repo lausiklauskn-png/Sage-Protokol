@@ -347,7 +347,7 @@ jeweiligen Stelle baut.
   (`try_files`) ist **kein** Schutz. Geheimnisse nie ins Repo **und** hinter eine
   ausdrückliche Sperre. Prüfen statt annehmen — mit echtem Abruf. Skill
   `auslieferung-pruefen-und-sperren`.
-- **Eine PWA bekommt den Knopf „Installieren" gleich mit** (`assets/installieren.js`). Zweimal hat Chrome am Tablet „installiert" gemeldet, und es lag keine App da (Sende-Prüfer 2026-09-30, Kim-sync 2026-10-03); beim zweiten Mal wusste niemand mehr den Weg. Weg und Grenzen: [`docs/LEHREN.md` § 13](docs/LEHREN.md).
+- **Eine PWA bekommt den Knopf „Installieren" gleich mit** (`assets/installieren.js`). Zweimal hat Chrome am Tablet „installiert" gemeldet, und es lag keine App da (Sende-Prüfer 2026-09-30, Kim-sync 2026-10-03); beim zweiten Mal wusste niemand mehr den Weg. Weg und Grenzen: [`docs/LEHREN.md` § 13](docs/LEHREN.md). **2026-10-18:** auch die Unter-Apps `pinnwand/` (vor 🔄) und `such-tool/` (fest oben rechts, keine Kopfleiste) tragen den Knopf, je mit eigener byte-gleicher Kopie unter `assets/` (sie müssen eigenständig bleiben). `sbkim-demo/` hat keinen Service-Worker und bekommt keinen.
 - **Drei Maschinen auseinanderhalten**, nie erraten: **Tablet/Termux** (`pkg`) ·
   **Hetzner Cloud-Server**, Caddy im Docker (`apt`, Prompt `root@ubuntu…`) ·
   **Hetzner Webhosting**, Apache mit PHP und den echten Geheimnissen. Wer einen Befehl
