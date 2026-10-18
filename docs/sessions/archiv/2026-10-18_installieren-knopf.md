@@ -54,3 +54,38 @@ Kimhub `1332336` nachgezogen (#86), ohne private Daten; die Forschungsaufträge 
 
 Nichts aus Abschnitt 3 am Tablet. Eine schon installierte App zeigt die neue Fassung erst nach ⟳
 bzw. dem nächsten Öffnen; nach einer geänderten `id` einmal neu installieren.
+
+## 4 · Installieren-Knopf zusätzlich oben in der Kopfleiste (19:20–20:28 UTC)
+
+Klaus: *„setze den Installationsbutton oben in die Navi-Leiste zusätzlich. Da soll er aber
+verschwinden, wenn die App installiert ist … Macht das bitte überall so."* Gefahren in vier
+Helfergruppen; die Zahlen unten stammen aus deren Berichten, je im echten Browser gemessen.
+
+| App | was neu ist |
+|---|---|
+| Mein Rezeptbuch, Muttis Rezeptbuch, Mein Mixarium, Mein WorkFloh, Tomys WorkFloh, BookLedgerPro, Papas Aktenschrank | Knopf zusätzlich oben in der Kopfleiste; als App (oder nach `appinstalled`) weg |
+| Company Brain, Privat Brain, Mycel-Karte, Workflow PDF | zusätzlich oben (Workflow PDF: Knopf steht schon im HTML, kein Sprung) |
+| Sende-Prüfer (#92) · GPT-Kopie (#5) | oben auf jeder Breite, schmalere Rundknöpfe (32 px), auch auf `start.html` |
+| Auslieferungsprüfer (#65) · GPT-Kopie (#4) | `start.html` bekommt den Knopf; die GPT-Kopie zeigte als App „✓ App" statt zu verschwinden |
+| Kimseek `brain.html` (#104) | Kanon-Datei statt eigenem Knopf, der erst nach `beforeinstallprompt` kam |
+| SB·KIMTool·Point (#201) | auf allen vier Seiten in der Statusleiste |
+| kim-hub-company (#87) | Bündel-Prüfer mit festem Knopf (`data-fest`), im Drift-Guard gepinnt |
+
+Nur nachgesehen, stand schon oben: kimhub, Kim-Bell, Kimboard, PWA Toolpoint, family-projekt.de,
+Datei-Post, Kochfreunde, Küchenzettel, Alis Moderaum, Perfect Skin Fashion, semantic-match-demo,
+die drei Landingpages, isd-page-entwurf, Family-Projekt.de-Video, beide Tresore, Sage samt Pinnwand
+und Such-Werkzeug. Bewusst ohne Knopf: Unterseiten ohne eigenes Manifest
+(`perfect-skin-fashion/video-shop.html`, `Family-Projekt.de-Video/abspielen.html`,
+`such-werkzeug.html`, die Jason-Bibliothek, `sbkim-demo/`).
+
+### Benannt, nicht behoben
+
+- **Kanon `assets/installieren.js` verschwindet nicht nach `appinstalled` im selben Tab** — erst beim
+  nächsten Öffnen als App. Die Rezeptbuch-Familie tut es schon. Kandidat für Sage.
+- Vorher schon breiter als 320 px (Inhalt, nicht der Knopf): kimhub 184 px, Kim-Bell 143, Kimseek/brain 104,
+  Kimboard 24, Kochfreunde 12.
+- Sende-Prüfer: drei tote Gegenprobe-Anker; GPT-Prüfer `smoke_pruefer` bricht an `#leerKnopf` (beides auf main).
+
+### Nicht gemessen
+
+Nichts aus Abschnitt 4 am Tablet.

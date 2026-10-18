@@ -38,6 +38,8 @@ Manifest-`id` absolut im eigenen Ordner (Chrome rechnet vom Ursprung, `./` kolli
 Einstellungen (#1153, #1154) — und der Knopf in jeder installierbaren App (rund 50 PRs, je im Browser
 gemessen). Papas Aktenschrank installierbar, kim-hub-company auf Kimhub-Stand. Offen: Workfloh-PDF-Page
 räumt fremde Vorräte weg → `docs/sessions/BRIEF_2026-10-18_workfloh-pdf-page-vorraete.md`.
+Danach (19:20–20:28 UTC) der Knopf **zusätzlich oben in der Kopfleiste** jeder App mit Einstellungen, als App
+weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` erst beim nächsten Öffnen.
 Übergabe: `docs/sessions/archiv/2026-10-18_installieren-knopf.md`. ⚠ Am Tablet nur die Manifest-id bestätigt.
 
 ## 2026-10-16 · Überblick „Mit dem Mycel verbinden“ und Siegel: sicherheit.html neu, DE/EN, in 27 Träger (Hauptsitzung)
