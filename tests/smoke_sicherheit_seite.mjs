@@ -48,7 +48,7 @@ const fremd = [...ohneKommentar.matchAll(/<(script|img|iframe|link|source|video|
   .map((m) => m[3]).filter((u) => /^(https?:)?\/\//i.test(u));   // only what comes from another host
 t('A2 kein fremder Abruf (nichts wird von außen geladen)', fremd.length === 0, fremd.join(' '));
 const APPS = ['Mixarium', 'Rezeptbuch', 'Kimboard', 'Kim-Bell', 'Kimseek', 'BookLedger', 'Toolpoint', 'family-projekt',
-  'Küchenzettel', 'Kuechenzettel', 'Jasons', 'Tomys', 'WorkFloh', 'Workfloh', 'Company Brain', 'Privat-Brain', 'Alis',
+  'Küchenzettel', 'Kuechenzettel', 'Jasons', 'Tomys', 'WorkFloh', 'Workfloh', 'Company Brain', 'Privat-Brain', 'Private Brain', 'Alis',
   'Perfect Skin', 'Sende-Prüfer', 'Auslieferungsprüfer', 'In-and-Out', 'Tresor-App'];
 const sichtbar = (s) => s.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '')
   .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');

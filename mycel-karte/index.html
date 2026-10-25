@@ -479,7 +479,7 @@ var SEED_NODES = [
   { id: "kimseek",   label: "Kimseek",          hub: false },
   { id: "kimboard",  label: "Kimboard",         hub: false },
   { id: "kimbell",   label: "Kim-Bell",         hub: false },
-  { id: "privatbrain",label: "Private Brain",   hub: false },
+  { id: "privatbrain",label: "Private Brain V3", hub: false },  /* 2026-10-25: die alte Privat-Brain-PWA ist stillgelegt, V3 traegt dieselbe DB-Schublade */
   // Nachgezogen 2026-08-17: Sage fuehrt neunzehn Knoten, die Karte kannte
   // dreizehn. Die sechs hier tauchten deshalb nur auf, SOLANGE die App lief —
   // war sie aus, fehlten sie ganz, waehrend die anderen als graue Pille
@@ -580,8 +580,12 @@ var ADRESSBUCH = {
   kimsync:           { emo: "🔄", app: GH + "Kim-sync/",          was: "Abgleich zwischen Geräten." },
   kimhub:            { emo: "🧭", icon: "icons/kimhub-192.png", app: GH + "Kimhub/",            was: "Sammelpunkt der Kim-Werkzeuge." },
   tomyshub:          { emo: "🏪", icon: "icons/icon-192.png", app: GH + "Tomys-Hub/",         was: "Tomys Katalog und sein eigenes WorkFloh." },
-  privatebrain:      { emo: "🧠", icon: "icon-192.png", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: eigene Dateien einmal einlesen, danach nach Bedeutung durchsuchen." },
-  privatbrain:       { emo: "🧠", icon: "icon-192.png", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: nach Bedeutung suchen statt nach Stichwort." },
+  /* 2026-10-25 (Klaus): die alte Privat-Brain-PWA ist stillgelegt (Depot privat).
+   * Ersetzt durch die Browser-Fassung von Private Brain V3; Symbol laut deren
+   * Manifest icon-v3-192.png. Alle drei Schreibweisen fuehren dorthin. */
+  privatebrain:      { emo: "🧠", icon: "icon-v3-192.png", app: GH + "Privat-Brain-Pro-V3/", was: "Private Brain V3, das private zweite Gehirn: eigene Dateien einmal einlesen, danach nach Bedeutung durchsuchen." },
+  privatbrain:       { emo: "🧠", icon: "icon-v3-192.png", app: GH + "Privat-Brain-Pro-V3/", was: "Private Brain V3: nach Bedeutung suchen statt nach Stichwort." },
+  privatebrainv3:    { emo: "🧠", icon: "icon-v3-192.png", app: GH + "Privat-Brain-Pro-V3/", was: "Private Brain V3, das private zweite Gehirn: eigene Dateien einmal einlesen, danach nach Bedeutung durchsuchen." },
   companybrain:      { emo: "🏢", icon: "icon-192.png", app: GH + "Company-Brain/",     was: "Dasselbe für den Betrieb." },
   alismoderaum:      { emo: "👗", icon: "assets/icon-192.png", app: GH + "Alis-Moderaum/",     was: "Damenboutique: Kleider, Dessous, Taschen, Parfüm — mit eigener Warenwirtschaft für Bestand, Wareneingang und Kasse." },
   perfectskinbeauty: { emo: "💄", app: "https://perfectskinbeauty.de/", was: "Kosmetikstudio in Hamburg: Sugaring, Waxing, apparative Kosmetik — Behandlungen, Hautpflege, Termin." },
@@ -701,7 +705,7 @@ var SEED_ALIASES = {
   kimseek:   ["kimseek", "kim seek", "kim sieg"],
   kimboard:  ["kimboard", "kim board"],
   kimbell:   ["kim bell", "kim-bell", "kimbell"],
-  privatbrain:["private brain", "privat brain", "privatbrain"],
+  privatbrain:["private brain v3", "private brain", "privat brain", "privatbrain"],
   muttisrezeptbuch:["muttis rezeptbuch", "muttisrezeptbuch"],
   workfloh:["workfloh", "work floh", "mein workfloh"],
   alismoderaum:["alis moderaum", "alismoderaum"],
