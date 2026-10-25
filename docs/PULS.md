@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-10-25 · Private Brain V3 ersetzt Private Brain (Pflegesitzung)
+
+Die alte PWA `…/Privat-Brain/` ist stillgelegt. Mycel-Karte (Pille, Adressbuch, Symbol `icon-v3-192.png`),
+Knoten-Korpus, NETZ-STAND und DB-SUFFIXE zeigen jetzt auf `https://lausiklauskn-png.github.io/Privat-Brain-Pro-V3/`.
+DB-Suffix `privatbrain` und Spore `6rmW2Q…` bleiben (in V3 nachgesehen). Alte Messwerte, Mitschnitte und Archive
+unverändert. Offen: Karte im Browser ansehen, ob das V3-Symbol lädt (hier war die Adresse über den Proxy gesperrt).
+
 ## 2026-10-18 · Installieren: Manifest-id, Rat, Kontrast, Knopf in jede App (Hauptsitzung)
 
 Manifest-`id` absolut im eigenen Ordner (Chrome rechnet vom Ursprung, `./` kollidierte), Rat ohne

@@ -51,7 +51,7 @@ abgeschrieben. Wer einen Knoten andockt, trägt seinen Suffix **hier** nach.
 | `muttisrezeptbuch` | Muttis-Rezeptbuch |
 | `perfectskinbeauty` | Perfect-Skin-Beauty |
 | `perfectskinfashion` | Perfect-Skin-Fashion |
-| `privatbrain` | Privat-Brain |
+| `privatbrain` | Private Brain V3 (`Privat-Brain-Pro-V3`; seit 2026-10-25, Suffix unverändert übernommen. Die alte Privat-Brain-PWA ist stillgelegt) |
 | `pwatoolpoint` | PWA-Toolpoint — der **Marktplatz** |
 | `rezeptbuch` | Mein-Rezeptbuch |
 | `sage` | Sage-Protokol |
