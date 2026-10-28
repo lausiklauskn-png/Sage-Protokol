@@ -294,6 +294,18 @@ Es ist keine Erklärung aus der Doku von Chrome. Sagt eine spätere Messung etwa
 
 ---
 
+## 3c · Pro-Apps: eine Bedienung, baugleich (Klaus 2026-10-28)
+
+Alle Pro-Apps (Private Brain Pro, Workflow PDF Pro, BookLedgerPro, **jede künftige**) und ihre PWA- und Windows-Fassungen folgen
+**einem** Leitfaden für Einstellungen und Bedienung — gleiche Knöpfe, Namen, Reihenfolge; Knopf, ⓘ-Klapper und Fortschritt aus einer
+gemeinsamen, byte-gleich kopierten Datei. Kurz: Einstellungen als **Knöpfe, die ein eigenes Fenster öffnen** (kein Explorer), wenig Text,
+Erklärungen hinter ⓘ, flache Knöpfe, **ein farbiger Knopf für den nächsten Schritt**, nur **ein** Ding heißt „Tresor“, Pfad + „In Dateien
+öffnen“, Drehkreis bei allem über einer Sekunde, keine Web-Reste in der App, je Fassung nur die Knöpfe, die dort funktionieren.
+
+**Volltext (verbindlich, dort pflegen):**
+[`BookLedgerPro/docs/design/LEITFADEN-PRO-APPS-BEDIENUNG.md`](https://github.com/lausiklauskn-png/BookLedgerPro/blob/main/docs/design/LEITFADEN-PRO-APPS-BEDIENUNG.md).
+Entstanden aus der Probe am Tablet (Tresorordner Schritt E). Wer eine App zur Pro-App macht, liest ihn **vor** dem ersten Knopf.
+
 ## 4 · Ton
 
 Klaus ist **kein Programmierer** (lernt gern): Antworten auf **Deutsch**, ruhig
