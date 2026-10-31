@@ -306,6 +306,20 @@ Erklärungen hinter ⓘ, flache Knöpfe, **ein farbiger Knopf für den nächsten
 [`BookLedgerPro/docs/design/LEITFADEN-PRO-APPS-BEDIENUNG.md`](https://github.com/lausiklauskn-png/BookLedgerPro/blob/main/docs/design/LEITFADEN-PRO-APPS-BEDIENUNG.md).
 Entstanden aus der Probe am Tablet (Tresorordner Schritt E). Wer eine App zur Pro-App macht, liest ihn **vor** dem ersten Knopf.
 
+## 3d · Netzübergreifende Suche und Chefcode (Pro-Umbau 14, 2026-10-31)
+
+Wer eine App im Mycel **antworten** lässt (Modul 23 `configure({ prepareCorpus, match })` + `enableAnswering`), hält sich an vier Punkte:
+
+- Jeder Korpus-Vektor ist ein **`Float32Array`** — sonst wirft Modul 04 bei jeder Frage, und die App antwortet still leer
+  (so geschehen in BookLedgerPro 0.1.6, Private Brain Pro und V3).
+- Ein Korpus, der mitwachsen soll, wird erst **nach** `enableAnswering` gesetzt; vorher legt Modul 23 eine feste Liste ab.
+- **Öffentlich** nur Titel (Titel · Datum · Betrag, oder der Dateiname). **Im eigenen Netz** zusätzlich ein Ausschnitt ≤ 200 Zeichen,
+  mit einem Filter, der bei jeder Frage neu prüft, ob das Netz noch eigen ist.
+- Ein eigenes Netz richtet der gemeinsame Baustein **Chefcode** ein (Chef-PIN, Beitritts-Zettel, Mitarbeiter sehen den Code nie);
+  er ruft nur `saveNetwork`/`applyNetwork`. Später möglich: ein eigenes Relais (`wss://…`) dazu.
+
+Einzelheiten, Fundstellen und Befunde: [`INTERFACES.md`](INTERFACES.md), Modul 23, Abschnitt „Netzübergreifende Suche“.
+
 ## 4 · Ton
 
 Klaus ist **kein Programmierer** (lernt gern): Antworten auf **Deutsch**, ruhig

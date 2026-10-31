@@ -5802,6 +5802,61 @@ Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
         Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
         (ehrlich leer); Raum/Announce/Handshake bleiben unberührt.
 
+#### Netzübergreifende Suche (Antworten aus einer App) und Chefcode (Pro-Umbau 14, 2026-10-31)
+
+Reine Doku, keine Änderung an Modul 23 oder 04. Beschreibt, wie die Pro-Apps heute antworten; belegt mit Fundstellen in den Apps
+(Fremd-Repos, daher als Links). Vorbilder: BookLedgerPro
+[`src/sbkim/netz.js`](https://github.com/lausiklauskn-png/BookLedgerPro/blob/main/src/sbkim/netz.js) und Workflow PDF Pro
+[`native/native-netz.js`](https://github.com/lausiklauskn-png/Workflow-PDF-Pro/blob/main/native/native-netz.js).
+
+**1 · So antwortet eine App.** `configure({ prepareCorpus, match })`, danach `connectAndAnnounce` und `enableAnswering()`
+(Default aus, je Sitzung bewusst). `prepareCorpus` liefert `[{ label, text, anchorId, passageVec }]`; `match` ist optional
+(null = Modul 04 selbst) und erlaubt einen Filter vor `queryLocal`. Zwei Fallstricke, beide gemessen:
+
+- **`passageVec` muss ein `Float32Array` sein.** Modul 04 `validateCorpus` wirft sonst bei **jeder** Frage
+  („passageVec muss Float32Array sein“), und der Antwort-Pfad bleibt still leer. Befunde: BookLedgerPro 0.1.6 antwortete leer
+  (behoben in Pro-Umbau 13, `Float32Array.from(roh)` in `netzKorpusBauen`); Private Brain Pro und V3 antworteten nie (Vektor als
+  Liste, dazu Einträge ohne Vektor; behoben in Privat-Brain-Pro #119, Privat-Brain-Pro-V3 #32). Regel: nur Einträge mit Vektor,
+  jeder Vektor als `Float32Array`.
+- **Ein Korpus, der sich ändern soll, wird erst NACH `enableAnswering` gesetzt.** `enableAnswering` ruft einmal
+  `ensureAnswerCorpus()` und legt dabei das **Ergebnis** von `prepareCorpus()` als feste Liste in Modul 04 ab. Wer neue Dokumente
+  ohne Aus/An mitgefunden haben will, ruft danach selbst `SbkimMatch.setLocalCorpus(…)` mit dem aktuellen Stand (Workflow PDF Pro
+  setzt dort eine Funktion, PR #49; BookLedgerPro baut bei geänderten Belegen neu und setzt die neue Liste, Ereignis
+  `blp-belege-geaendert`).
+
+**2 · Öffentliches Netz: nur Titel.** Antwortzeilen tragen nie Inhalt. BookLedgerPro: `Beleg · Titel · Datum · Betrag`
+(`netzKorpusEintraege` in [`src/domain/ueberall.js`](https://github.com/lausiklauskn-png/BookLedgerPro/blob/main/src/domain/ueberall.js));
+Workflow PDF Pro: nur der Dateiname, **verglichen wird auch nur mit ihm** — sonst verrät schon die Trefferauswahl etwas über den Inhalt.
+
+**3 · Eigenes Netz zusätzlich: Ausschnitt.** Nur wenn `_meta.network === "eigen"`:
+
+- Ausschnitt um die Suchwörter, Zeile zusammen **≤ 200 Zeichen** (`RDV_LABEL_MAX = 200` in Modul 23 kappt jede Antwortzeile hart).
+- Der Filter wird **bei jeder Frage neu** geprüft und antwortet außerhalb eines eigenen Netzes **gar nicht** (auch wenn jemand das
+  Netz im Mycel-Fenster wechselt). Vorbild: `antwortFilter` in BookLedgerPro `src/domain/ueberall.js` (über `configure({ match })`,
+  erbt alles von Modul 04, ersetzt nur `queryLocal`).
+- Verglichen wird der **ganze** Text in Abschnitten, das Briefende immer dabei (sonst wird „Herr Meier“ am Schluss nicht gefunden);
+  mehrere Abschnitte eines Dokuments tragen dieselbe `anchorId`, die Antwort hat **eine Zeile je Dokument**. Probe:
+  BookLedgerPro [`tests/smoke_netzbrief.mjs`](https://github.com/lausiklauskn-png/BookLedgerPro/blob/main/tests/smoke_netzbrief.mjs).
+  Der Text selbst bleibt auf dem Gerät; hinaus geht nur der Ausschnitt.
+
+**4 · Chefcode: Bedienung vor `saveNetwork`/`applyNetwork`.** Gemeinsamer Baustein `native/pro-chefcode.js`, Quelle
+[Private Brain Pro](https://github.com/lausiklauskn-png/Privat-Brain-Pro/blob/main/native/pro-chefcode.js), byte-gleich in
+Workflow PDF Pro, BookLedgerPro und V3; Bedienung und Grenzen:
+[`docs/UEBERALL-SUCHEN.md`](https://github.com/lausiklauskn-png/Privat-Brain-Pro/blob/main/docs/UEBERALL-SUCHEN.md).
+Er ruft nur die öffentlichen Flächen von Modul 23: `saveNetwork({ name: "Chefcode", relay, code, auto: true })`, dann
+`applyNetwork(setting)`; Code mindestens 12 Zeichen (wie `NETZ_CODE_MIN`). Darüber:
+
+- Der Chef legt eine **Chef-PIN** (6–12 Ziffern) fest. Gespeichert wird nur ein Prüfwert (PBKDF2-SHA-256, 600 000 Runden, eigenes
+  Salz) unter `pro_chef_v1_<Schublade>` — **nie die PIN, nie der Code**. Gesperrt zeigt der Kasten nur den Zustand.
+- Mitarbeiter treten mit einem **Beitritts-Zettel** bei (Form `CHEF1-<…>`, trägt Code, Prüfwert der PIN, Prüfsumme). Sie sehen den
+  Code nie; ändern oder entfernen nur mit der Chef-PIN.
+- Grenze: der Zettel ist der Code in gepackter Form — wer ihn hat, ist im Netz.
+
+**5 · Hinweis: eigenes Relais (später selber bauen, nicht gebaut).** `checkNetSetting` nimmt als `relay` jede Adresse der Form
+`wss://<host>[:port][/pfad]` (≤ 200 Zeichen). Chefcode **und** eigenes Relais ergeben ein ganz eigenes Netz: verschlüsselt durch den
+Code, und die Umschläge liegen nicht mehr auf einem fremden Relais. Der Baustein nimmt heute das gespeicherte bzw. das Vorgabe-Relais
+von Modul 05b (`relais()` in `pro-chefcode.js`).
+
 ---
 
 ### Modul: 23b_netzverwaltung
