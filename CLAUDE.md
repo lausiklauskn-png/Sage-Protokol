@@ -1,3 +1,5 @@
+**🔬 Regel: Sage = öffentliche Forschung, Kimhub = Einträge (Klaus 2026-10-31):** hier stehen die öffentlichen Forschungsaufgaben, Papers und Unterlagen (Aufgaben und Hinweise, wie bisher dokumentiert). Detaillierte Forschungseinträge (Sitzungs-Befunde, Messungen, Herkunft, blinde Wächter, Stunden) kommen nur nach Kimhub `forschung/` (privat); Sitzungsbriefe hier verweisen darauf, statt sie zu führen.
+
 # Sage-Protokol — Sitzungs-Anker
 
 **Lies diese Datei zu Beginn jeder Sitzung.** Sie ist kurz gehalten; sie nennt die
