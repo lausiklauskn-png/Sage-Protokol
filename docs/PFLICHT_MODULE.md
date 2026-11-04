@@ -50,6 +50,10 @@ unlesbar war. Es steht jetzt in Liste A; hier bleibt der Rest:
 **Zusammen: 13 Dateien.** Weniger ist kein Knoten, sondern eine App mit
 Modulen darin.
 
+> **Seit 2026-11-04:** in Apps, deren Nutzer etwas anderes tun als ein Netz zu bedienen, läuft das
+> Mycel im Hintergrund, **ohne Modul 17**. Die Anker stellt dann die Seite selbst. Die Regel dazu:
+> [`BAUREGEL_MYCEL_IM_HINTERGRUND.md`](BAUREGEL_MYCEL_IM_HINTERGRUND.md).
+
 > **⚠ Wer andockt, entscheidet nebenbei über die SPRACHE** (seit 2026-09-14).
 > **23-UI** (Verbinden-Fenster, 237 Texte), **16** (Siegel, 55) und **17**
 > (Lampen, 28) sprechen Deutsch und Englisch. Ein Voll-Knoten ist damit

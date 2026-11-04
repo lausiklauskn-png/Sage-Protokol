@@ -164,6 +164,10 @@ Alles andere liest du **nicht**. Token-Budget.
 Verbindliche Liste: **[`docs/PFLICHT_MODULE.md`](docs/PFLICHT_MODULE.md).** Wer eine
 App zum SBKIM-Knoten macht — oder eine Bauvorlage anfasst — arbeitet sie ab.
 
+**Mycel im Hintergrund (Klaus 2026-11-04):** Arbeits-Apps laden die Module, aber kein
+schwebendes Fenster (Modul 17); sichtbar ist das Netz auf der Mycel-Karte. Regel:
+[`docs/BAUREGEL_MYCEL_IM_HINTERGRUND.md`](docs/BAUREGEL_MYCEL_IM_HINTERGRUND.md).
+
 **Die zwei Listen sind nicht dieselbe:** Modul 16 prüft für sein Siegel **acht**
 Module (01·02·03·04·**05**·**05b**·07·15); ein arbeitender Knoten braucht **dreizehn**
 (dazu 16, 17, 23, 23-UI, `noble-secp256k1`).
