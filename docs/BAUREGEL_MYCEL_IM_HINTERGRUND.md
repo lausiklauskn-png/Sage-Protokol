@@ -92,9 +92,15 @@ In den Apps ist das Netz verborgen, **sichtbar ist es an einer Stelle: auf der M
 - **Jede App braucht einen Gerätenamen** (z. B. „Workflow PDF Pro · Klaus-Tablet"). Sonst stehen zwei
   Geräte mit derselben App auf der Karte nur als Kennung da.
 - **Ausfall muss auf der Karte zu sehen sein.** Eine App, die sich nicht mehr meldet, darf nicht einfach
-  verschwinden. Sie bleibt stehen und wird als „zuletzt gesehen vor …" gekennzeichnet. Ob die Karte das
-  heute schon tut, ist **nicht nachgesehen** (das Depot `mycel-karte` lag in dieser Sitzung nicht vor).
-  Das ist der erste Prüfpunkt beim Rollout.
+  verschwinden. Sie bleibt stehen und wird als „zuletzt gesehen vor …" gekennzeichnet.
+  **Nachgesehen am 2026-11-04 (mycel-karte `c0be1f3`): das kann die Karte heute nicht.** Ein Knoten wird
+  beim ersten „Hier bin ich" auf `live` gesetzt und nie wieder zurück; „gehört vor …" steht nur in der
+  Karte, die ein Tipp öffnet. Und Modul 23 meldet sich nur beim Verbinden an, nicht in Abständen.
+  Ohne regelmäßiges Lebenszeichen lässt sich ein Ausfall von Ruhe nicht unterscheiden.
+- **Drei Zustände, nicht zwei:** *meldet sich* (Lebenszeichen in den letzten Minuten) · *still*
+  (zuletzt gesehen vor …, die App ist vermutlich nur zu) · *nicht erreichbar* (der nächtliche Wächter
+  in family-project bekommt von der Adresse keine Antwort). Eine Browser-App kann im Hintergrund nicht
+  senden; „still" ist deshalb kein Defekt und darf nicht rot aussehen. Rot ist nur „nicht erreichbar".
 - Die Karte bleibt **reine Anzeige**: sie lauscht und sendet nie. Das steht schon heute auf ihrer Seite.
 
 ## Geltungsbereich: alle Apps, mit denen wir weiterarbeiten
@@ -148,3 +154,5 @@ geschlossenen Einstellungen).
   nicht jede App ihre eigene Fassung schreibt. Das wäre die Gegenregel zu „Nacharbeit in 20 Repos".
   Entscheidung bei Klaus.
 - Am Tablet ist keine der Vorbild-Apps mit dieser Regel gemessen.
+- Lebenszeichen in Abständen: gehört als Option in Modul 23 (Kanon), nicht in jede App einzeln.
+  Abstand und Kosten am Relais sind nicht gemessen.
