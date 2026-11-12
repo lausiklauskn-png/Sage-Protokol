@@ -31,6 +31,13 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-12 · Briefkasten zwischen zwei KI-Systemen, erste Erprobung (Pflegesitzung, nur Doku)
+
+Neu: [`ZUSAMMENARBEIT_ANDERES_KI_SYSTEM.md`](ZUSAMMENARBEIT_ANDERES_KI_SYSTEM.md). Das Muster aus §11.6 (`seq`/`ack`) lief zum ersten Mal
+zwischen Claude und Codex: Ordner mit Aufträgen, Ergebnissen, Fähnchen und Puls je Seite; Verbindungsprobe in beide Richtungen belegt (einmal),
+erste unabhängige Prüfung darüber gelaufen. Kein Modul-Code, `INTERFACES.md` unverändert. Offen: ob daraus §11.6.2 wird (Klaus);
+kein Wecken zwischen den Systemen; Zahlen stehen in Kimhub. ⚠ PULS steht bei knapp 3000 Zeilen – beim nächsten Eintrag auslagern.
+
 ## 2026-10-25 · Private Brain V3 ersetzt Private Brain (Pflegesitzung)
 
 Die alte PWA `…/Privat-Brain/` ist stillgelegt. Mycel-Karte (Pille, Adressbuch, Symbol `icon-v3-192.png`),
