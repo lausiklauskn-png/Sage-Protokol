@@ -31,6 +31,14 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-13 · Erkennung anlernen und nachweisen: der Weg zum Wiederholen (Pflegesitzung, nur Doku)
+
+**Getan:** [`docs/VORGEHEN_ANLERNEN_UND_NACHWEIS.md`](VORGEHEN_ANLERNEN_UND_NACHWEIS.md) – zehn Schritte einer Prüfrunde (Regeln vorab, einfrieren, fremder Stapel, drei Einordner mit Codex, einmal messen, nur Gesichertes übernehmen), was die Runde 12./13.11. dazugelernt hat (gescannte Form, Kette bis zur Erinnerung, Folgejahr, Kreuztest), und wie es auf weitere Apps ausgedehnt wird. Keine Messzahlen hier; die stehen in Kimhub.
+
+**Offen:** Calculate und Workflow Needs in die Prüfreihe; echte Stichprobe am Gerät; Suche über die Knoten.
+
+**Nächster Schritt:** nächste Runde nach dem Blatt fahren (anderer Lebenslauf, frischer Stapel nach dem Einbau des Kerns in die Familienakte).
+
 ## 2026-11-12 · Briefkasten zwischen zwei KI-Systemen, erste Erprobung (Pflegesitzung, nur Doku)
 
 Neu: [`ZUSAMMENARBEIT_ANDERES_KI_SYSTEM.md`](ZUSAMMENARBEIT_ANDERES_KI_SYSTEM.md). Das Muster aus §11.6 (`seq`/`ack`) lief zum ersten Mal
@@ -527,19 +535,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 
 **Nächster Schritt:** Schritt 2 — 23-UI: Einstellung „Netz“ (Relais + Code, Code erzeugen/zeigen), Auto-Verbinden im eigenen Netz, Verteilung an den Sende-Prüfer.
 
-## 2026-10-13 · Mycel-Fenster netzweit · Plan „Eigenes Netz“
+## Eine Sitzung vom 2026-10-13 (Mycel-Fenster netzweit · Plan „Eigenes Netz“) — ausgelagert am 2026-11-13
 
-**Gemergt (Modul 23-UI aus #1067, a1bde67, `kanon-verteilen.mjs`):** Auslieferung-Pruefer #48 · BookLedgerPro #326 · Kim-Bell #69 · Kimboard #147 · Kimseek #88 · Mein-Mixarium #243 · Mein-Rezeptbuch #431 · Mein-WorkFloh #261 · Muttis-Rezeptbuch #236 · PWA-Toolpoint #163 · Sende-Pruefer #75 · Tomys-Hub #240 · family-project #354. Die gemerkte obere Lage rastet in den Leisten-Platz ein.
-
-**Rote Proben geklärt:** Sende-Prüfer (23-UI-Pin; die Postfach-Probe lud neu, bevor IndexedDB gespeichert hatte — wartet jetzt im Browser) · SB-KIMTool-Point #180 (Probe 27 suchte den alten Link, die Karte trägt seit 2026-06-22 Knöpfe) · PWA-Toolpoint: frischere Messwerte im Nachbar-Klon, auf `main` ebenso rot, kein Code-Fehler.
-
-✅ **Klaus' Sichttest (2026-10-13):** Tablet und Sage — „funktioniert … das Mycel-Fenster hakt sich wunderbar ein“.
-
-**Befund im Gespräch (gemessen im Code):** jede heruntergeladene App landet über `relay.family-projekt.de` im **festen** Raum `sbkim-rdv` (23, Z. 113) — Fremde und Klaus' eigene Apps im selben Netz. Mein Rezeptbuch lauscht nach dem Laden selbst (antwortet nur), Sende-Prüfer erst auf Tipp.
-
-**Entschieden mit Klaus, nicht gebaut:** Relais-Adresse und **Netz-Code** je Installation einstellbar (Raum-Marke und Schlüssel aus dem Code, Vorbild Kim-sync), öffentliches Relais bleibt Vorgabe, eigenes geschlossenes Firmen-Relais auf dem Hetzner Cloud-Server. Brief: [`docs/BRIEF_2026-10-13_eigenes-netz.md`](BRIEF_2026-10-13_eigenes-netz.md). Bezahlfunktion bewusst nicht Teil davon.
-
-**Nächster Schritt:** Kanon 05b/23 nach dem Brief, INTERFACES zuerst.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-27.md`](sessions/archiv/2026-11_puls-auslagerung-27.md)
+> (13 Zeilen). Nichts gekürzt.
 
 ## Zwei Sitzungen vom 2026-10-13 (Modul 03 netzweit verteilt; Modell vom eigenen Server) — ausgelagert am 2026-10-16
 
