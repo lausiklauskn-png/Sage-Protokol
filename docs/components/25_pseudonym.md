@@ -9,6 +9,9 @@ eingefügt werden kann"*). Generation 1 war der Code-Stub vom 2026-07-16 (B5 aus
 Zeile den Namen seiner Zusicherung trägt). Browser-Sichttest (Panel 25) wartet auf
 Klaus. **Spec:** `docs/E2E-VERTRAULICHKEIT.md §1.1`.
 
+**Generation 3 – Bauplan (14.11.2026):** `docs/components/25_pseudonym-gen3-bauplan.md` – Ausgangslage für jede weitere
+Verbesserung und jeden Einbau (deutsche Nummern mit Prüfziffer, Marke gegen doppeltes Pseudonymisieren, Profile im Pro-Tresor).
+
 ## Was Generation 2 ändert
 
 | | Generation 1 (2026-07-16) | Generation 2 (2026-09-28) |
