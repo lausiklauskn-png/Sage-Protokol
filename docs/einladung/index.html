@@ -829,6 +829,25 @@ section.scene-doorway .doorway-flash {
   will-change: opacity;
   mix-blend-mode: screen;
 }
+/* === Die Tür als laufender Film (Klaus 2026-11-15) ===========================
+   „Vielleicht ist es tatsächlich besser, das Video laufen zu lassen, statt einzelne Sequenzen,
+   die mit der Maus bewegt werden." Im Film-Modus steht das Türbild still und füllt die Bühne;
+   der Film beginnt auf genau diesem Bild, öffnet die Tür und fährt hindurch ins Licht. Ohne Film
+   (ruhige Darstellung, Datensparen, Ladefehler) bleibt die Fahrt beim Scrollen wie bisher. */
+section.scene-doorway .tuer-fahrt {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: var(--tuer-lage, 50% 50%);
+  pointer-events: none; opacity: 0; transition: opacity .5s ease; will-change: opacity;
+}
+section.scene-doorway .tuer-fahrt.laeuft { opacity: 1; }
+section.scene-doorway.film-modus { min-height: 240vh; }
+section.scene-doorway.film-modus .doorway-image {
+  background-size: cover; background-position: var(--tuer-lage, 50% 50%); background-color: transparent;
+}
+section.scene-doorway.film-modus .doorway-image .szenen-film { display: none; }
+/* Hochformat: der Ausschnitt liegt auf Tür und Lichtspalt (links der Bildmitte). */
+@media (max-width: 760px) { section.scene-doorway { --tuer-lage: 27% 50%; } }
+@media print { section.scene-doorway .tuer-fahrt { display: none; } }
 /* Sektion-Fades innerhalb der Doorway nicht sichtbar machen (Pinned
    Stage hat eigene Übergangs-Logik) */
 section.scene-doorway .scene-fade-top,
@@ -1319,6 +1338,8 @@ footer.foot h4 {
 <section class="scene scene-doorway" id="scene-5b" data-scene="5b" aria-hidden="true">
   <div class="doorway-stage">
     <div class="doorway-image"><video class="szenen-film" muted playsinline preload="none" aria-hidden="true" data-src="./vendor/video/scene-5-tuer.mp4"></video></div>
+    <!-- Klaus 2026-11-15: the door opens as one running film instead of a camera move driven by scrolling. -->
+    <video class="tuer-fahrt" muted playsinline preload="none" aria-hidden="true" data-src="./vendor/video/scene-5-tuer-fahrt.mp4"></video>
     <div class="doorway-flash"></div>
   </div>
 </section>
@@ -1731,12 +1752,57 @@ document.querySelectorAll('section.scene').forEach(sec => {
   const flash = sec && sec.querySelector('.doorway-flash');
   if (!sec || !image || !flash) return;
 
+  // --- Film mode: the door opens as one running film (Klaus 2026-11-15) ---
+  // Scrolling only brings the stage into view and, at the very end, lets the light give way to
+  // the clearing. Without the film everything below works as before.
+  const fahrt = sec.querySelector('.tuer-fahrt');
+  const sparsam = !!(navigator.connection && navigator.connection.saveData);
+  let filmModus = !!fahrt && !reducedMotion && !sparsam && ('IntersectionObserver' in window);
+  if (filmModus) {
+    sec.classList.add('film-modus');
+    let sichtbar = false, fertig = false;
+    const los = () => {
+      if (!sichtbar || !filmModus) return;
+      if (!fahrt.src) fahrt.src = fahrt.dataset.src;
+      if (fertig) return;                       // stays on its last picture until the stage has left
+      fahrt.play().then(() => fahrt.classList.add('laeuft')).catch(() => {});
+    };
+    fahrt.addEventListener('ended', () => { fertig = true; });
+    fahrt.addEventListener('timeupdate', () => { if (fahrt.currentTime < 1.5) update(); });
+    fahrt.addEventListener('error', () => {
+      // no film: back to the scroll-driven move
+      filmModus = false; sec.classList.remove('film-modus'); fahrt.remove(); update();
+    });
+    new IntersectionObserver((e) => {
+      sichtbar = e[0].isIntersecting;
+      if (sichtbar) los();
+      else {
+        fahrt.pause(); fahrt.classList.remove('laeuft');
+        fertig = false; try { fahrt.currentTime = 0; } catch (_e) {}
+      }
+    }, { threshold: 0.55 }).observe(sec.querySelector('.doorway-stage'));
+  } else if (fahrt) fahrt.remove();
+
   let raf = 0;
   function update() {
     const rect  = sec.getBoundingClientRect();
     const total = sec.offsetHeight - window.innerHeight;
     const scrolled = Math.max(0, -rect.top);
     const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
+
+    if (filmModus) {
+      // still picture at rest; over the last fifth the stage gives way to the clearing behind it
+      let o = 1;
+      if (progress > 0.8) { const t = (progress - 0.8) / 0.2; o = 1 - t * t * (3 - 2 * t); }
+      // once the film is running the still below it goes: otherwise the closed door would show
+      // through the light while the stage gives way
+      const traegt = fahrt.classList.contains('laeuft') && fahrt.currentTime > 0.7;
+      image.style.transform = 'none';
+      image.style.opacity = traegt ? '0' : o.toFixed(3);
+      fahrt.style.opacity = fahrt.classList.contains('laeuft') ? o.toFixed(3) : '';
+      flash.style.opacity = '0';
+      return;
+    }
 
     // Kleine Bildschirme (Handy, < Tablet): KEIN Seitwärts-Scrub — der fühlt
     // sich auf Touch schlecht an. Stattdessen wie die Sage-Page-Eingangstür:

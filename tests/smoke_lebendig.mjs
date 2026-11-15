@@ -37,7 +37,15 @@ function filme(seite, klassen, erwartet) {
 }
 
 const start = filme("index.html", ["ms-film", "sun-film", "universe-film"], 7);
+filme("index.html", ["vp-truhe-film"], 1);
 filme("docs/einladung/index.html", ["szenen-film"], 2);
+// Klaus 2026-11-15: the door opens as one running film; without it the scroll-driven move stays
+const einlFilm = filme("docs/einladung/index.html", ["tuer-fahrt"], 1);
+t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehler, ruhiger Darstellung, Datensparen)",
+  /fahrt\.addEventListener\('error'[\s\S]{0,200}filmModus = false; sec\.classList\.remove\('film-modus'\)/.test(einlFilm) &&
+  /let filmModus = !!fahrt && !reducedMotion && !sparsam/.test(einlFilm));
+t("Startseite: der Truhen-Film blendet nach dem Ende zurück und beginnt nach einer Pause neu (keine harte Schleife)",
+  !/class="vp-truhe-film"[^>]*\bloop\b/.test(start) && /film\.addEventListener\('ended', function \(\) \{\s*clearTimeout\(pause\);\s*pause = setTimeout\(function \(\) \{ film\.classList\.remove\('laeuft'\)/.test(start));
 
 // Schwarzes Loch
 t("index.html: lädt assets/schwarzes-loch.js", /<script src="assets\/schwarzes-loch\.js"><\/script>/.test(start));
