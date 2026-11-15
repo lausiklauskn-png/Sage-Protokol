@@ -438,8 +438,12 @@ em.gold { color: var(--gold); font-style: normal; }
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; pointer-events: none;
   opacity: 0; transition: opacity 1.6s ease;
+  /* Klaus 2026-11-15 (zwei Bildschirmfotos, Tür scharf / Tür im Film unscharf): der Film ersetzt
+     das Bild nicht mehr. Er ist schwarz bis auf das, was heller wird, und `screen` legt nur
+     dieses Licht auf das scharfe Standbild (gebaut mit tools/licht-film-bauen.py). */
+  mix-blend-mode: screen;
 }
-.szenen-film.laeuft { opacity: .9; }
+.szenen-film.laeuft { opacity: 1; }
 #scene-6 > .szenen-film { z-index: -1; inset: -8%; width: 116%; height: 116%; animation: scene6-drift 22s ease-in-out infinite alternate; }
 @media (max-width: 760px) { section.scene-doorway .szenen-film { object-fit: contain; } }
 @media print { .szenen-film { display: none; } }
@@ -826,6 +830,42 @@ section.scene-doorway .doorway-flash {
    Stage hat eigene Übergangs-Logik) */
 section.scene-doorway .scene-fade-top,
 section.scene-doorway .scene-fade-bot { display: none; }
+
+/* === FLIESSENDE ÜBERGÄNGE SCHLÜSSEL → TÜR → LICHTUNG (Klaus 2026-11-15) ======
+   Klaus: „dass die Videoübergänge fließend sind … der Übergang in die nächste Sequenz".
+   Gemessen bei 2000×1050: das Wirbelbild der Schlüssel-Szene endete mit einer geraden Linie auf
+   der Türwand, die Türwand mit einer geraden Linie auf der Lichtung, und um den Schlüssel stand
+   sein Bildkasten als dunkles Rechteck.
+
+   Die Naht wird von der Tür-Szene aus gelegt, nach beiden Seiten: ein Band, das über die Grenze
+   hinausreicht, an der Grenze dunkel ist und nach oben wie nach unten ausläuft. Beide Bilder
+   gehen so durch dasselbe Dunkel. Das Band hängt an der Sektion, nicht an der festgehaltenen
+   Bühne, und wandert beim Scrollen mit der Grenze.
+
+   ⚠ Reines CSS, mit Absicht. Die Verläufe `.scene-fade-top/-bot` weiter oben werden vom Skript
+   angelegt; im Messlauf dieser Sitzung standen davon null im Dokument, und Klaus' Bildschirmfotos
+   zeigen dieselben Kanten. Warum sie fehlen, ist nicht untersucht. */
+section.scene-doorway { z-index: 1; }
+section.scene-doorway::before, section.scene-doorway::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 84vh; z-index: 4; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(5,6,8,0) 0%, rgba(5,6,8,0.45) 22%, rgba(5,6,8,0.9) 40%, #050608 46%, #050608 54%, rgba(5,6,8,0.9) 60%, rgba(5,6,8,0.45) 78%, rgba(5,6,8,0) 100%);
+}
+section.scene-doorway::before { top: -42vh; }
+section.scene-doorway::after { bottom: -42vh; }
+/* Nach unten reicht das Band nur 16 % der Fensterhöhe in die Lichtung: ihre Überschrift steht
+   gleich oben und läge sonst im Dunkel, auch wenn die Szene ruhig im Fenster steht. */
+section.scene-doorway::after {
+  bottom: -16vh; height: 58vh;
+  background: linear-gradient(to bottom, rgba(5,6,8,0) 0%, rgba(5,6,8,0.45) 36%, rgba(5,6,8,0.9) 60%, #050608 69%, #050608 74%, rgba(5,6,8,0.6) 86%, rgba(5,6,8,0) 100%);
+}
+/* Schlüsselbild und Funken-Schicht laufen an ihren Kastenrändern weich aus. Die Maske sitzt an
+   den beiden Schichten selbst, nicht am Kasten: am Kasten würde sie die Schichten zu einer
+   eigenen Gruppe machen, und das Schwarz des Bildes würde wieder deckend. */
+#scene-5 .key-host .key-image, #scene-5 .key-host canvas {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 20%, #000 80%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 20%, #000 80%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
 
 /* === Sektion 6 Lichtung — Mesh-Gradient + Frage === */
 #scene-6 {

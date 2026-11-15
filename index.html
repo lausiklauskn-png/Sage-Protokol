@@ -91,7 +91,7 @@
     --status-stub: #4479EE;
     --status-fertig: #16A34A;
     --status-nextup: #F4B435;
-    --r-lg: 22px; --r: 16px; --r-sm: 10px; --max: 1280px;
+    --r-lg: 22px; --r: 16px; --r-sm: 10px; --max: 100%; /* Klaus 2026-11-15: die ganze Seite über die volle Breite (vorher 1280px) */
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
     --phase-cycle-ms: 3200ms;
@@ -110,6 +110,10 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
+  /* Klaus 2026-11-15: auf dem ganzen Bildschirm auch die Schrift größer. Bis rund 1270 px
+     Fensterbreite bleibt alles, wie es war (100 %); darüber wächst die Grundschrift stetig
+     bis 125 % bei 2000 px. Fast alle Maße der Seite sind in rem und wachsen mit. */
+  html { font-size: clamp(100%, 0.55vw + 9px, 125%); }
   body {
     background: var(--bg);
     color: var(--text);
@@ -167,9 +171,9 @@
     background-size: 64px 64px;
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   }
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 1.5rem 4rem; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 clamp(1rem, 2.4vw, 3rem) 4rem; }
   .topbar { position: sticky; top: 0; z-index: 40; background: rgba(8,8,26,0.72); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); border-bottom: 1px solid var(--line); }
-  .topbar-inner { max-width: var(--max); margin: 0 auto; padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+  .topbar-inner { max-width: var(--max); margin: 0 auto; padding: 0.85rem clamp(1rem, 2.4vw, 3rem); display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
   .brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--text); font-weight: 600; letter-spacing: -0.01em; }
   .brand img { width: 28px; height: 28px; }
   .brand-mark { font-size: 1.05rem; }
@@ -248,6 +252,35 @@
   #sbkim-siegel-badge[data-stufe="gold"] { /* Default-Render — keine Override */ }
   #sbkim-siegel-badge.stufenwechsel-gold { animation: siegel-stufenwechsel-gold 600ms ease-out; }
   @keyframes siegel-stufenwechsel-gold { 0% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } 40% { transform: scale(1.15); box-shadow: 0 0 24px 4px var(--siegel-gold-glow); filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); } 100% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } }
+  /* Klappkarten (Klaus 2026-11-15): Überschrift als Knopf, Inhalt erst auf Druck. */
+  .klapp-kopf { position: relative; cursor: pointer; padding-right: 2.6rem; border-radius: 10px; }
+  .klapp-kopf:focus-visible { outline: 2px solid var(--line-strong); outline-offset: 6px; }
+  .klapp-kopf h3 { margin-bottom: 0; }
+  .klapp-offen > .klapp-kopf h3 { margin-bottom: 0.7rem; }
+  .klapp-pfeil { position: absolute; right: 0.2rem; top: 50%; transform: translateY(-50%); width: 2rem; height: 2rem; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--muted); transition: transform .25s ease; }
+  .klapp-offen > .klapp-kopf .klapp-pfeil { transform: translateY(-50%) rotate(180deg); }
+  .card.klapp-bereit:not(.klapp-offen) { align-self: start; }
+  @media print { .klapp-inhalt[hidden] { display: block !important; } .klapp-pfeil { display: none; } }
+  /* Volle Breite (Klaus 2026-11-15): was mit der Seite mitwächst, bekommt auf breiten Schirmen
+     ein Maß, damit ein Film nicht höher wird als das Fenster und die Kacheln die Zeile füllen. */
+  .sequenz .sequenz-buehne, .einladung-card .einladung-stage { max-height: 72vh; }
+  .sequenz .sequenz-buehne { width: 100%; }
+  .sequenz .sequenz-buehne video { width: 100%; height: 100%; object-fit: cover; }
+  /* Klaus 2026-11-15: „Mach dann nicht die so breit, sondern mach zwei nebeneinander". On a wide
+     monitor the cards that are half empty at full width stand in pairs. An opened fold card takes
+     the whole row again, so its text has room. The sun card moved next to the black hole for this. */
+  @media (min-width: 1500px) {
+    .sun-scene, .blackhole-scene { max-width: 320px; }
+    .bento .card[data-back-anchor="stationen"], .bento .card[data-back-anchor="reading"],
+    .bento .card[data-back-anchor="einladung"], .bento .card[data-back-anchor="discovery"],
+    .bento .card[data-back-anchor="sage-identitaet"], .bento .card[data-back-anchor="andock"],
+    .bento .card[data-back-anchor="sonnen"], .bento .card[data-back-anchor="blackhole"] { grid-column: span 6; }
+    .bento .card.klapp-offen { grid-column: span 12 !important; }
+    .bento .discovery-card { display: flex; flex-direction: column; }
+    .bento .discovery-card .discovery-stage { flex: 1; min-height: 360px; }
+    .bento .discovery-card .discovery-overlay { justify-content: flex-end; }
+    .bento .discovery-card .discovery-earth { left: 66%; top: 36%; }
+  }
   .screen { display: none; padding-top: 2rem; }
   .screen.active { display: block; animation: fade-in 0.5s var(--ease-out-quart); }
   /* Der Start-Bildschirm blendet ein wie jeder andere — Klaus' Entscheidung
@@ -315,11 +348,14 @@
   .topology-sub { color: var(--muted); font-size: 0.88rem; margin-top: 0.18rem; }
   .topology-counts { font-family: "Geist Mono", monospace; font-size: 0.78rem; color: var(--dim); letter-spacing: 0.04em; }
   .topology-counts strong { color: var(--text); font-weight: 500; }
-  #topology-svg { width: 100%; height: clamp(420px, 50vw, 580px); display: block; position: relative; z-index: 1; }
+  /* Klaus 2026-11-15: „Modultopologie kann größer gestaltet werden … auch die Schrift größer".
+     The height used to be capped (clamp 420–580px); the drawing is taller than wide, so it sat
+     small in the middle. Now it takes the full card width and its height follows the viewBox. */
+  #topology-svg { width: 100%; height: auto; min-height: 420px; max-height: max(130vh, 900px); display: block; position: relative; z-index: 1; }
   /* Hochformat: 3-Spalten-Layout füllt die Breite (viewBox 360×600 ≈ Geräte-
      Breite → Knoten groß), Beschriftung mindestens Legenden-Größe. */
   @media (max-width: 760px) {
-    #topology-svg { height: auto; aspect-ratio: 360 / 600; }
+    #topology-svg { height: auto; max-height: none; } /* 2026-11-15: no fixed 360/600 any more — the viewBox grew to 1039 high and the drawing shrank inside the old frame */
     #topology-svg .topo-node-id { font-size: 18px; }
     #topology-svg .topo-node-label { font-size: 13px; }
   }
@@ -329,8 +365,14 @@
   #topology-svg .topo-node { cursor: pointer; }
   #topology-svg .topo-node:hover .topo-node-bg { fill: rgba(255,255,255,0.10); stroke: var(--text); }
   #topology-svg .topo-node-dot { pointer-events: none; }
-  #topology-svg .topo-node-label { fill: var(--muted); font-family: "Geist Mono", monospace; font-size: 9px; text-anchor: middle; pointer-events: none; letter-spacing: 0.02em; }
-  #topology-svg .topo-node-id { fill: var(--text); font-family: "Geist Mono", monospace; font-size: 10px; font-weight: 500; text-anchor: middle; pointer-events: none; }
+  #topology-svg .topo-node-label { fill: var(--muted); font-family: "Geist Mono", monospace; font-size: 11.5px; text-anchor: middle; pointer-events: none; letter-spacing: 0.02em; }
+  #topology-svg .topo-node-id { fill: var(--text); font-family: "Geist Mono", monospace; font-size: 13px; font-weight: 500; text-anchor: middle; pointer-events: none; }
+  /* The portrait sizes stand above the base rules and lost against them (same weight, later
+     wins) — measured 2026-11-15 at 390 px: 13px instead of 18px. Repeated here, after the base. */
+  @media (max-width: 760px) {
+    #topology-svg .topo-node-id { font-size: 18px; }
+    #topology-svg .topo-node-label { font-size: 13px; }
+  }
   #topology-svg .topo-node.s-schablone .topo-node-dot { fill: var(--status-schablone); }
   #topology-svg .topo-node.s-werkstatt .topo-node-dot { fill: var(--status-werkstatt); }
   #topology-svg .topo-node.s-spec .topo-node-dot { fill: var(--status-spec); }
@@ -339,7 +381,7 @@
   #topology-svg .topo-node.nextup .topo-node-dot { fill: var(--status-nextup); }
   #topology-svg .topo-node .topo-node-dot { animation: topo-breath var(--topology-breath-s) ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
   #topology-svg .topo-node.nextup .topo-node-ring { fill: none; stroke: var(--gold); stroke-width: 1.4; animation: nextup-glow var(--nextup-glow-s) ease-in-out infinite; }
-  #topology-svg .topo-cluster-label { fill: var(--dim); font-family: "Geist Mono", monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
+  #topology-svg .topo-cluster-label { fill: var(--dim); font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
   @keyframes topo-breath { 0%, 100% { transform: scale(1); opacity: 0.95; } 50% { transform: scale(1.06); opacity: 1; } }
   @keyframes nextup-glow { 0%, 100% { r: 17; stroke-opacity: 0.85; } 50% { r: 22; stroke-opacity: 0.3; } }
   .topology-legend { display: flex; flex-wrap: wrap; gap: 0.55rem; padding-top: 1.1rem; margin-top: 0.4rem; border-top: 1px solid var(--line); font-family: "Geist Mono", monospace; font-size: 0.74rem; }
@@ -448,10 +490,17 @@
      oder vier Spalten, und dann stuende neben jedem Namen mehr Rand als Inhalt.
      Klaus' Wort ist „erst einmal zweispaltig" — mehr wird gemessen, nicht
      geraten. */
-  @media (min-width: 1260px) { .endknoten-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .endknoten { padding: 0.85rem 0.95rem; background: rgba(0,0,0,0.32); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); transition: border-color .2s, background .2s; }
+  /* ⚠ ABGELÖST AM 2026-11-15 (Klaus: „die Apps … in der Rasteransicht auf die gesamte Breite
+     aufteilen … im Handy dann natürlich in anderen Raster"). Die Karte ist jetzt `span-12`,
+     die Modul-Liste daneben liegt unter einem Knopf. Was oben über `span-5` und „bewusst kein
+     auto-fill" steht, galt für die schmale Spalte und bleibt als Herkunft stehen. Übernommen
+     ist der gemessene Mindestbedarf einer Kachel (218 px, hier 230): so viele Spalten, wie mit
+     dieser Breite in die Karte passen, auf dem Handy eine. */
+  .endknoten-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr)); }
+  .endknoten { min-width: 0; padding: 0.85rem 0.95rem; background: rgba(0,0,0,0.32); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); transition: border-color .2s, background .2s; }
   .endknoten.live { border-style: solid; border-color: var(--accent); }
   .endknoten .name { font-weight: 500; font-size: 1.0rem; letter-spacing: -0.01em; }
+  .endknoten .name, .endknoten .domain { overflow-wrap: anywhere; }
   .endknoten .domain { color: var(--muted); font-size: 0.85rem; margin-top: 0.15rem; }
   .endknoten .pill { display: inline-block; margin-top: 0.5rem; padding: 0.2rem 0.55rem; background: rgba(0,0,0,0.4); border: 1px solid var(--line); border-radius: 999px; font-family: "Geist Mono", monospace; font-size: 0.7rem; color: var(--muted); }
   .endknoten.live .pill { color: var(--accent); border-color: var(--accent); }
@@ -657,15 +706,8 @@
     inset: 7%; width: 86%; height: 86%; max-width: none; object-fit: cover;
     -webkit-mask-image: radial-gradient(circle closest-side, #000 70%, transparent 99%); mask-image: radial-gradient(circle closest-side, #000 70%, transparent 99%); }
   .sun-scene.film-an { overflow: visible; }
-  /* Drei kleine Galaxien umkreisen die Sonne (Klaus 2026-11-15: „wie etwas um die Sonne herumfliegt").
-     Zwei Sinus-Bewegungen ergeben die Ellipse, die Ebene wechselt je halber Runde: vorn vorbei, hinten herum. */
-  .sun-bahn { display: none; position: absolute; inset: 0; pointer-events: none; z-index: 2; transform: rotate(var(--lage, -14deg)); animation: sun-vorn var(--t, 14s) steps(1) infinite; }
-  .sun-scene.film-an .sun-bahn { display: block; }
-  .sun-flieger { position: absolute; inset: 0; animation: sun-x calc(var(--t, 14s) / 2) cubic-bezier(.37,0,.63,1) infinite alternate; }
-  .sun-koerper { position: absolute; left: 50%; top: 50%; width: 20%; height: 20%; margin: -10% 0 0 -10%; animation: sun-y calc(var(--t, 14s) / 2) cubic-bezier(.37,0,.63,1) calc(var(--t, 14s) / -4) infinite alternate; }
-  @keyframes sun-vorn { 0% { z-index: 2; } 50%, 100% { z-index: 0; } }
-  @keyframes sun-x { from { transform: translateX(var(--r, 62%)); } to { transform: translateX(calc(var(--r, 62%) * -1)); } }
-  @keyframes sun-y { from { transform: translateY(-95%) scale(0.6); } to { transform: translateY(95%) scale(1.15); } }
+  /* Die drei kreisenden Galaxien sind wieder heraus (Klaus 2026-11-15: „Das sieht nicht gut aus …
+     Planeten wären da schon eher logisch, aber Galaxien"). Die Sonne steht allein. */
   .sun-scene.film-an .sun-corona, .sun-scene.film-an .sun-corona-shade { opacity: 0; animation: none; transition: opacity 1.2s ease; }
   .sun-film.laeuft { opacity: 1; }
   .sun-scene.film-an .sun-img:not(.sun-film) { opacity: 0; transition: opacity 1.2s ease; }
@@ -844,9 +886,13 @@
   /* Mini-Universen: einmal gemalt, danach dreht nur noch der Browser das fertige Bild. */
   .universe-galaxy.gemalt .galaxy-body, .station-galaxy.gemalt .galaxy-body { display: none; }
   .mu-tilt { position: absolute; inset: -14%; display: block; pointer-events: none; }
-  .mu-bild { width: 100%; height: 100%; display: block; animation: galaxy-spin 80s linear infinite; will-change: transform; }
-  .universe-galaxy.medium .mu-bild, .station-galaxy.medium .mu-bild { animation-duration: 100s; }
-  .universe-galaxy.large .mu-bild, .station-galaxy.large .mu-bild { animation-duration: 120s; }
+  /* Klaus 2026-11-15: die Galaxien „sollen sich auch nochmal in sich drehen, wie eine Galaxie das
+     macht. In die richtige Richtung". Before: one turn in 80–120 s, too slow to see, and clockwise.
+     The painted arms run clockwise from the core outwards (angle grows with radius, y points
+     down), so they trail only when the picture turns counter-clockwise: `reverse`. */
+  .mu-bild { width: 100%; height: 100%; display: block; animation: galaxy-spin 26s linear infinite reverse; will-change: transform; }
+  .universe-galaxy.medium .mu-bild, .station-galaxy.medium .mu-bild { animation-duration: 32s; }
+  .universe-galaxy.large .mu-bild, .station-galaxy.large .mu-bild { animation-duration: 38s; }
   .mu-kern { position: absolute; left: 50%; top: 50%; width: 30%; height: 30%; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(circle, rgba(255,250,235,0.95) 0%, rgba(255,222,170,0.5) 32%, rgba(255,200,140,0) 70%); }
   .mu-jet { position: absolute; left: 50%; top: 50%; width: 4%; height: 170%; pointer-events: none; mix-blend-mode: screen; filter: blur(2px); background: linear-gradient(180deg, rgba(190,240,255,0) 0%, rgba(190,240,255,0.75) 34%, #fff 50%, rgba(190,240,255,0.75) 66%, rgba(190,240,255,0) 100%); }
   @media (prefers-reduced-motion: reduce) { .mu-bild { animation: none; } }
@@ -932,6 +978,11 @@
   .sonnen-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,200,140,0.25); color: #fdf2e0; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
   .sonnen-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,200,140,0.5); }
   .sonnen-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; }
+  /* Klaus 2026-11-15: „immer Vollbildansicht … nicht mehr diese halbe Bildschirm". Both galaxy
+     screens sit inside .wrap (max-width) and were only as wide as the text column. While open
+     they now cover the whole window, on a wide desktop as on a phone turned sideways. */
+  .sonnen-screen.active, .observatorium-screen.active { position: fixed; inset: 0; z-index: 60; min-height: 0; }
+  .sonnen-screen.active .sonnen-stage, .observatorium-screen.active .observatorium-stage { height: 100%; min-height: 0; }
   /* Echter Milchstraßen-Hintergrund (aufbereitetes Panorama, heruntergerechnet +
      als WebP eingebettet). Liegt ganz hinten; Vignette dunkelt die Ränder ab,
      damit die Stations-Galaxien + Komet-Schweif davor lesbar bleiben.
@@ -1421,13 +1472,13 @@
             Hub-Ausfall bricht das Mycel nicht.</p>
           <div class="card-cta"><button onclick="window.open('./mycel-karte/','_blank','noopener')">↗ Mycel-Karte in Vollbild öffnen</button></div>
         </article>
-        <article class="card span-7" data-back-anchor="module-list">
+        <article class="card span-12" data-back-anchor="module-list" data-klapp>
           <span class="card-tag">Module · Schnellübersicht</span>
           <h3>Was steht, was wartet, was als nächstes</h3>
           <p>Genau eine Detail-Liste. Die Topologie oben ist die zentrale Visualisierung. Klick auf eine Zeile öffnet das Modul-Detail.</p>
           <div class="module-list" id="module-list"></div>
         </article>
-        <article class="card span-5" data-back-anchor="endknoten">
+        <article class="card span-12" data-back-anchor="endknoten">
           <span class="card-tag">Endknoten · live</span>
           <h3>Wer ist schon angedockt?</h3>
           <p>Die lebendigen Endknoten des Sage-Mycels, live aus <code>status.json</code>. Sage selbst ist seit V1-Sage-Hybrid (Brief 01) <strong>Hub und Knoten zugleich</strong>, neben Rezeptbuch, Mixarium und den weiteren unten angedockten Knoten (zuletzt Kimseek + Kimboard, verified-match 2026-07-09).</p>
@@ -1497,29 +1548,7 @@
           </div>
           <div class="bars-legend">UI: 00, 08 · Netzwerk: 05, 06 · Kern: 01–04, 07</div>
         </article>
-        <article class="card span-12 sun-card" data-back-anchor="sonnen">
-          <span class="card-tag">Sage-Geschichts-Galerie · auf den Spuren des Protokolls</span>
-          <a class="sun-stage" href="#sonnen"
-             onclick="goScreen('sonnen', 'sonnen'); return false;"
-             aria-label="Geschichts-Galerie öffnen — Sonnen-Galaxie">
-            <div class="sun-scene" aria-hidden="true">
-              <div class="sun-corona"></div>
-              <div class="sun-corona sun-corona-2"></div>
-              <div class="sun-corona-shade"></div>
-              <img class="sun-img" src="assets/sonne-web.webp" width="480" height="480" loading="lazy" decoding="async" alt="">
-              <video class="sun-img sun-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/sonne.mp4"></video>
-              <span class="sun-bahn" style="--t:6s;--lage:-16deg;--r:52%"><span class="sun-flieger"><span class="sun-koerper" data-form="galaxy-spiral"></span></span></span>
-              <span class="sun-bahn" style="--t:7s;--lage:12deg;--r:56%"><span class="sun-flieger"><span class="sun-koerper" data-form="galaxy-ring"></span></span></span>
-              <span class="sun-bahn" style="--t:8s;--lage:-4deg;--r:60%"><span class="sun-flieger"><span class="sun-koerper" data-form="galaxy-lenticular"></span></span></span>
-            </div>
-            <div class="sun-caption">
-              <h3>Auf welchen Spuren Sage gewachsen ist</h3>
-              <p>Was macht man, wenn man auf eine Antwort wartet? Man macht sich selber an die Arbeit. Hier liegen die Stationen, an denen das Protokoll seine Form gefunden hat: Namensgebung, das bidirektionale Match-Prinzip, die Geburt als Mycel, und das Paper, das die Theorie zusammenträgt.</p>
-              <p class="sun-hint">Klicke in die Sonne → die Stationen tanzen als Galaxien um sie herum.</p>
-            </div>
-          </a>
-        </article>
-        <article class="card span-12" data-back-anchor="stationen" style="overflow:hidden;">
+        <article class="card span-12" data-back-anchor="stationen" data-klapp style="overflow:hidden;">
           <span class="card-tag">Stationen · die Brücke steht, bewiesen 2026-05-30</span>
           <h3>Wie eine Verbindung entsteht: über die Synchronisations&shy;vereinbarung</h3>
           <p style="color:var(--muted); max-width:62ch; margin:0.2rem 0 1.3rem;">
@@ -1576,7 +1605,7 @@
           </p>
         </article>
 
-        <article class="card reading span-12" data-back-anchor="reading">
+        <article class="card reading span-12" data-back-anchor="reading" data-klapp>
           <span class="card-tag">Über das Protokoll · Lesematerial</span>
           <h3>Einblicke: wer das Konzept verstehen will</h3>
           <p>Zwei Texte: das Begleit-Paper für Nutzen und Geschäftsmodelle (laienverständlich), das technische Hauptpaper für Architektur und Algorithmen.</p>
@@ -1632,7 +1661,7 @@
             </div>
           </a>
         </article>
-        <article class="card span-12" data-back-anchor="sage-identitaet">
+        <article class="card span-12" data-back-anchor="sage-identitaet" data-klapp>
           <span class="card-tag">Sage als Knoten · eigene Identität &amp; Spore</span>
           <h3>Deine Sage-Identität erzeugen &amp; verwalten</h3>
           <p>Sage ist <strong>Hub und Knoten zugleich</strong> (<code>nodeType: hybrid</code>), der dritte Endknoten neben Rezeptbuch und Mixarium. Hier erzeugst du Sages eigene Ed25519-Identität, die signierte Spore mit Domain-Vektor und ein verschlüsseltes Backup. <em>Nicht zu verwechseln</em> mit „Endknoten anschließen" weiter unten. Das erzeugt nur eine Spore-Vorlage für <em>fremde</em> PWAs.</p>
@@ -1642,7 +1671,7 @@
           </div>
         </article>
 
-        <article class="card span-12" data-back-anchor="andock">
+        <article class="card span-12" data-back-anchor="andock" data-klapp>
           <span class="card-tag">Andock · 3 Klicks bis zum Spore-Vorschlag</span>
           <h3>Eigene PWA als Endknoten anschließen</h3>
           <p>Repo-URL + Domain + Knotentyp eintragen. Sage erzeugt eine Spore-Vorlage und einen vorgelinkten PR auf <code>status.json</code>. Der echte Andock-Pfad liegt in Modul 09 (<code>docs/components/09_einbau_pwa.md</code>).</p>
@@ -1700,6 +1729,37 @@
             </div>
           </div>
         </article>
+        <script>
+          // Klaus 2026-11-15: „die Erklärtexte … immer unter einem Button versteckt". Cards marked
+          // data-klapp keep tag and headline as a button; the rest is hidden until asked for and
+          // is neither laid out nor fetched (pictures) before. Without this script the cards
+          // simply stay open, as they were.
+          (function () {
+            document.querySelectorAll('.card[data-klapp]').forEach(function (karte, nr) {
+              var kopf = document.createElement('div'), inhalt = document.createElement('div');
+              kopf.className = 'klapp-kopf'; inhalt.className = 'klapp-inhalt'; inhalt.hidden = true;
+              inhalt.id = 'klapp-' + (karte.dataset.backAnchor || nr);
+              Array.prototype.slice.call(karte.childNodes).forEach(function (k) {
+                var istKopf = k.nodeType === 1 && !kopf.querySelector('h3') && (k.tagName === 'H3' || k.classList.contains('card-tag'));
+                (istKopf ? kopf : inhalt).appendChild(k);
+              });
+              var pfeil = document.createElement('span');
+              pfeil.className = 'klapp-pfeil'; pfeil.setAttribute('aria-hidden', 'true'); pfeil.textContent = '▾';
+              kopf.appendChild(pfeil);
+              kopf.setAttribute('role', 'button'); kopf.tabIndex = 0;
+              kopf.setAttribute('aria-expanded', 'false'); kopf.setAttribute('aria-controls', inhalt.id);
+              function schalten(auf) {
+                inhalt.hidden = !auf; karte.classList.toggle('klapp-offen', auf);
+                kopf.setAttribute('aria-expanded', auf ? 'true' : 'false');
+              }
+              kopf.addEventListener('click', function () { schalten(inhalt.hidden); });
+              kopf.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); schalten(inhalt.hidden); }
+              });
+              karte.appendChild(kopf); karte.appendChild(inhalt); karte.classList.add('klapp-bereit');
+            });
+          })();
+        </script>
         <article class="card span-12 vorteilspack-card" id="observatorium-vorteilspack" data-back-anchor="vorteilspack">
           <span class="card-tag">Schicht 4 · Observatoriums-Vorteilspack</span>
           <div class="vp-layout">
@@ -1719,6 +1779,25 @@
               <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Klick auf die Truhe → du trittst ein: jedes SBKIM-Werkzeug in eigener Verpackung, mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt. Klick + kopieren statt git clone.</p>
             </div>
           </div>
+        </article>
+        <article class="card span-12 sun-card" data-back-anchor="sonnen">
+          <span class="card-tag">Sage-Geschichts-Galerie · auf den Spuren des Protokolls</span>
+          <a class="sun-stage" href="#sonnen"
+             onclick="goScreen('sonnen', 'sonnen'); return false;"
+             aria-label="Geschichts-Galerie öffnen — Sonnen-Galaxie">
+            <div class="sun-scene" aria-hidden="true">
+              <div class="sun-corona"></div>
+              <div class="sun-corona sun-corona-2"></div>
+              <div class="sun-corona-shade"></div>
+              <img class="sun-img" src="assets/sonne-web.webp" width="480" height="480" loading="lazy" decoding="async" alt="">
+              <video class="sun-img sun-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/sonne.mp4"></video>
+            </div>
+            <div class="sun-caption">
+              <h3>Auf welchen Spuren Sage gewachsen ist</h3>
+              <p>Was macht man, wenn man auf eine Antwort wartet? Man macht sich selber an die Arbeit. Hier liegen die Stationen, an denen das Protokoll seine Form gefunden hat: Namensgebung, das bidirektionale Match-Prinzip, die Geburt als Mycel, und das Paper, das die Theorie zusammenträgt.</p>
+              <p class="sun-hint">Klicke in die Sonne → die Stationen tanzen als Galaxien um sie herum.</p>
+            </div>
+          </a>
         </article>
         <article class="card span-12 blackhole-card" data-back-anchor="blackhole">
           <span class="card-tag">Browser-Observatorium · Anziehung ins Detail</span>
@@ -1761,6 +1840,7 @@
           .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 1rem; }
           .ms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; align-items: start; }
           @media (max-width: 760px) { .ms-grid { grid-template-columns: 1fr; } }
+          @media (min-width: 1800px) { .ms-grid { grid-template-columns: repeat(5, 1fr); } }
           /* Jede Kachel quadratisch wie das Quell-Bild — nicht langgezogen */
           /* Der Verlauf liegt am .ms-tile SELBST, nicht erst an .ms-noimg. Er ist
              der Untergrund, auf dem das Bild landet — sichtbar, solange es lädt,
@@ -1809,6 +1889,7 @@
              Spalten und bleibt mindestens quadratisch (die Mindesthöhe setzt das Skript unten aus
              der Breite); mit langem Text wächst sie weiter. */
           .ms-grid { grid-auto-flow: dense; }
+          .ms-tile { cursor: pointer; }
           .ms-tile.is-open { aspect-ratio: auto; grid-column: span 2; }
           @media (max-width: 760px) { .ms-tile.is-open { grid-column: auto; } }
           /* Kleiner Film über dem Bild: dasselbe Bild, nur die Lichter leben. Ohne Film bleibt das Bild. */
@@ -1836,7 +1917,7 @@
                 <span class="ms-date">17.05.2026</span>
                 <h2 class="ms-h">Das Mycel verbindet sich nach Bedeutung</h2>
               </div>
-              <div class="ms-bot" onclick="this.closest('.ms-tile').classList.toggle('is-open')">
+              <div class="ms-bot">
                 <p class="ms-p">Zwei getrennte Knoten, <strong>Mein-Mixarium</strong> und
                   <strong>Mein-Rezeptbuch</strong>, gaben sich server-los im Browser die Hand. Der
                   Abgleich gelang über die <strong>verwandte Bedeutung der Domänen</strong> (Cosinus
@@ -1854,7 +1935,7 @@
                 <span class="ms-date">20.06.2026</span>
                 <h2 class="ms-h">Über den Ursprung hinaus</h2>
               </div>
-              <div class="ms-bot" onclick="this.closest('.ms-tile').classList.toggle('is-open')">
+              <div class="ms-bot">
                 <p class="ms-p">Mit <strong>BookLedgerPro</strong>, einer Buchhaltungs-App, die nicht
                   von hier gebaut wurde, dockte der erste <strong>eigenständige Fremd-Knoten</strong>
                   an. Identität kryptografisch verifiziert (Ed25519-Signatur, nodeId nachgerechnet).
@@ -1872,7 +1953,7 @@
                 <span class="ms-date">21.06.2026</span>
                 <h2 class="ms-h">⭐ Bedeutung wird suchbar</h2>
               </div>
-              <div class="ms-bot" onclick="if(event.target.closest('.ms-link'))return; this.closest('.ms-tile').classList.toggle('is-open')">
+              <div class="ms-bot">
                 <p class="ms-p">Das Such-Werkzeug versteht die <strong>Bedeutung hinter den Worten</strong>,
                   nicht Stichwörter, und ordnet Treffer danach. Server-los im Browser, mit eigenem
                   Schlüssel-Tresor und automatischem KI-Aufruf. An Referenz-Fällen bewiesen.</p>
@@ -1891,7 +1972,7 @@
                 <span class="ms-date">10.07.2026</span>
                 <h2 class="ms-h">⭐ Zwei Knoten unterhalten sich nach Bedeutung</h2>
               </div>
-              <div class="ms-bot" onclick="if(event.target.closest('.ms-link'))return; this.closest('.ms-tile').classList.toggle('is-open')">
+              <div class="ms-bot">
                 <p class="ms-p">Zum <strong>ersten Mal</strong> haben sich zwei Apps richtig unterhalten:
                   <strong>nach Bedeutung</strong>, server-los, in beide Richtungen. Sage fragte Mixarium
                   „Cocktails mit anderen Waldfrüchten" → 5 Drinks aus dessen Buch (39&nbsp;s); Mixarium
@@ -1913,7 +1994,7 @@
                 <span class="ms-date">23.07.2026</span>
                 <h2 class="ms-h">⭐ Fünf Knoten bilden ein Netz</h2>
               </div>
-              <div class="ms-bot" onclick="if(event.target.closest('.ms-link'))return; this.closest('.ms-tile').classList.toggle('is-open')">
+              <div class="ms-bot">
                 <p class="ms-p"><strong>Fünf Apps</strong> gleichzeitig im geteilten Raum haben sich in
                   einer Minute <strong>kreuz und quer verbunden</strong>: 10 Handshakes, alle
                   <strong>„established"</strong>, alles server-los über das Relais. <strong>7 von 10</strong>
@@ -2408,7 +2489,6 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     'assets/galaxien/pferdekopfnebel.webp',
     'assets/galaxien/orionnebel.webp',
     'assets/galaxien/helixnebel.webp',
-    'assets/galaxien/mycel-sonne-erde.webp',
     'assets/galaxien/mycel-kosmos.webp'
   ];
   let galaxieHintergrundNr = Math.floor(Math.random() * GALAXIE_HINTERGRUENDE.length);
@@ -5223,16 +5303,19 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       function masse() {
         kacheln.forEach(function (k) { k.style.minHeight = k.classList.contains('is-open') ? k.offsetWidth + 'px' : ''; });
       }
-      gitter.addEventListener('click', function () { masse(); requestAnimationFrame(masse); });
+      // Klaus 2026-11-15: „es ließ sich größer machen, aber nicht wieder zurückklicken". Only the
+      // text band at the bottom toggled; an open tile is mostly picture, and a tap there did
+      // nothing. Now the whole tile opens and closes, links inside excepted.
+      gitter.addEventListener('click', function (e) {
+        var kachel = e.target.closest('.ms-tile');
+        if (kachel && !e.target.closest('a, .ms-link')) kachel.classList.toggle('is-open');
+        masse(); requestAnimationFrame(masse);
+      });
       window.addEventListener('resize', masse);
 
       var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
       var sparsam = !!(navigator.connection && navigator.connection.saveData);
       if (ruhig || sparsam || !('IntersectionObserver' in window)) return;
-      // the small galaxies around the sun use the same painter as the Observatorium
-      document.querySelectorAll('.sun-koerper').forEach(function (k, i) {
-        try { malMiniUniversum(k, k.dataset.form, 70 + i); } catch (_e) {}
-      });
       var io = new IntersectionObserver(function (es) {
         es.forEach(function (e) {
           var film = e.target;

@@ -544,3 +544,25 @@ in allen drei Apps gebaut: Herkunfts-Kette am Rezept, stabile Kennung (`r.uid`),
 beide Import-Wege durch eine Tür, und der Import sagt, was unsichtbar mitkommt.
 Mein Rezeptbuch, Muttis Rezeptbuch und Mein Mixarium, jeweils gemessen und
 gemergt.
+
+
+### Einladung: die Szenen-Verläufe fehlen im Dokument — 2026-11-15
+
+Das Skript in `docs/einladung/index.html` hängt jeder `section.scene` zwei Verläufe an
+(`.scene-fade-top`, `.scene-fade-bot`). Im Messlauf (Chromium, 2000×1050, zwei Sekunden nach dem
+Laden) standen davon **null** im Dokument, ohne gemeldeten Seitenfehler. Klaus' Bildschirmfotos vom
+selben Tag zeigen die harten Kanten, die diese Verläufe verhindern sollten. Ursache nicht untersucht.
+Die Nähte um die Tür-Szene sind seitdem in reinem CSS gelegt; die übrigen Szenen-Grenzen hängen
+weiter an diesem Skript.
+
+### Topologie: „Rate-Limit & TTL“ überlappt „weitere Module“ — 2026-11-15
+
+Auf der Startseite steht die Zwischenzeile „weitere Module“ auf der Beschriftung von Modul 11.
+Seit die Topologie die Kartenbreite nimmt, ist es gut zu sehen. Die Zeile wird in `renderTopology`
+bei `maxY + rowH * 0.55` gesetzt.
+
+### Einladung Szene 1: der Mycel-Film liegt noch als Film über dem Bild — 2026-11-15
+
+Tür und Lichtung sind auf die Licht-Schicht umgestellt (`tools/licht-film-bauen.py`), Szene 1 nicht.
+Ob der Film dort auf dem Monitor ebenso unscharf wirkt, ist nicht angesehen.
+
