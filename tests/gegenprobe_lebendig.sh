@@ -43,6 +43,8 @@ fall "Kachel schließt nicht"        "die ganze Kachel schaltet"            "sed
 fall "Galaxie dreht falsch herum"   "mit nachlaufenden Armen"              "sed -i 's|galaxy-spin 26s linear infinite reverse|galaxy-spin 26s linear infinite|' index.html"
 fall "Apps wieder schmal"           "das Raster füllt die Kartenbreite"    "sed -i 's|class=\"card span-12\" data-back-anchor=\"endknoten\"|class=\"card span-5\" data-back-anchor=\"endknoten\"|' index.html"
 fall "Einladungs-Film ersetzt Bild" "liegt als Licht über dem Standbild"  "sed -i 's|  mix-blend-mode: screen;\$||' docs/einladung/index.html"
+fall "Klick-Hinweis wieder da"      "keine Klick-Hinweise"                 "sed -i 's|<div class=\"sun-caption\">|<div class=\"sun-caption\"><p class=\"sun-hint\">Klicke in die Sonne</p>|' index.html"
+fall "Topologie ohne Einpassung"    "richtet sich nach der Fensterhöhe"    "sed -i \"s|svg.style.maxHeight = Math.max(300, freieHoehe()) + 'px';||\" index.html"
 fall "Naht-Band fehlt"              "ein weiches Band über die Naht"       "sed -i 's|  bottom: -16vh; height: 58vh;|  height: 58vh;|' docs/einladung/index.html"
 fall "Schlüssel-Kasten hart"        "läuft an den Rändern aus"             "sed -i 's|#scene-5 .key-host .key-image, #scene-5 .key-host canvas {|#scene-5 .nichts {|' docs/einladung/index.html"
 fall "Licht wieder grell"           "liegt gedämpft über dem Bild"         "sed -i 's|.licht-film.laeuft { opacity: 0.3; }|.licht-film.laeuft { opacity: 1; }|' docs/discovery/index.html"

@@ -98,5 +98,9 @@ t("Sonne: keine kreisenden Galaxien mehr", !/sun-bahn|sun-koerper/.test(start));
 t("Galaxien: drehen sich sichtbar und mit nachlaufenden Armen", /\.mu-bild \{[^}]*galaxy-spin 26s linear infinite reverse/.test(start));
 t("Apps: das Raster füllt die Kartenbreite", /\.endknoten-grid \{ grid-template-columns: repeat\(auto-fill, minmax\(min\(100%, 14\.5rem\), 1fr\)\); \}/.test(start) && /class="card span-12" data-back-anchor="endknoten"/.test(start));
 
+// Klaus 2026-11-15: „Klicke in die Sonne … brauchst du nirgendwo zu schreiben" — der Mauszeiger sagt es.
+t("Startseite: keine Klick-Hinweise an Sonne, Schwarzem Loch, Tür und Truhe", !/class="(sun-hint|bh-hint|einladung-hint|vp-hint)"/.test(start) && !/Klicke (in|ins) /.test(start));
+t("Topologie: richtet sich nach der Fensterhöhe und zeichnet bei jeder Größenänderung neu", /svg\.style\.maxHeight = Math\.max\(300, freieHoehe\(\)\) \+ 'px'/.test(start) && /__topoResizeTimer = setTimeout/.test(start));
+
 console.log(`\n═══ ${gruen} grün · ${rot} ROT ═══`);
 process.exit(rot ? 1 : 0);

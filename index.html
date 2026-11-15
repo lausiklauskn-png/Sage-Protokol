@@ -381,6 +381,9 @@
   #topology-svg .topo-node.nextup .topo-node-dot { fill: var(--status-nextup); }
   #topology-svg .topo-node .topo-node-dot { animation: topo-breath var(--topology-breath-s) ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
   #topology-svg .topo-node.nextup .topo-node-ring { fill: none; stroke: var(--gold); stroke-width: 1.4; animation: nextup-glow var(--nextup-glow-s) ease-in-out infinite; }
+  /* wide layout (extra modules in columns to the right): columns stand 230 apart, room for larger type */
+  #topology-svg.topo-wide .topo-node-label { font-size: 13px; }
+  #topology-svg.topo-wide .topo-node-id { font-size: 15px; }
   #topology-svg .topo-cluster-label { fill: var(--dim); font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
   @keyframes topo-breath { 0%, 100% { transform: scale(1); opacity: 0.95; } 50% { transform: scale(1.06); opacity: 1; } }
   @keyframes nextup-glow { 0%, 100% { r: 17; stroke-opacity: 0.85; } 50% { r: 22; stroke-opacity: 0.3; } }
@@ -796,7 +799,6 @@
   }
   .sun-caption h3 { margin: 0 0 0.6rem; font-size: 1.3rem; color: #fff; letter-spacing: -0.005em; }
   .sun-caption p { margin: 0 0 0.7rem; line-height: 1.65; color: #d8d8e8; max-width: 56ch; }
-  .sun-caption .sun-hint { display: inline-block; padding: 0.32rem 0.7rem; background: linear-gradient(90deg, rgba(255,180,80,0.18) 0%, rgba(244,180,53,0.14) 100%); border: 1px solid rgba(244,180,53,0.4); border-radius: 999px; color: var(--gold); font-size: 0.92rem; font-weight: 500; margin-top: 0.3rem; }
   .sun-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
   @media (max-width: 780px) {
     .sun-stage { grid-template-columns: 1fr; gap: 1rem; }
@@ -832,7 +834,6 @@
   }
   .blackhole-caption h3 { margin: 0 0 0.6rem; font-size: 1.3rem; color: #fff; letter-spacing: -0.005em; }
   .blackhole-caption p { margin: 0 0 0.7rem; line-height: 1.65; color: #c2c2d8; max-width: 56ch; }
-  .blackhole-caption .bh-hint { display: inline-block; padding: 0.32rem 0.7rem; background: linear-gradient(90deg, rgba(244,180,53,0.14) 0%, rgba(139,92,246,0.12) 100%); border: 1px solid rgba(244,180,53,0.35); border-radius: 999px; color: var(--gold); font-size: 0.92rem; font-weight: 500; margin-top: 0.3rem; }
   .blackhole-card .card-tag, .blackhole-caption { position: relative; z-index: 3; }
   .bh-steuern { position: relative; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin: 0.6rem 0 0; }
   .bh-steuern:has(.sl-oeffnen[hidden]) { display: none; }
@@ -1120,24 +1121,6 @@
     transition: opacity 0.6s ease;
     z-index: 3;
   }
-  .einladung-hint {
-    position: absolute;
-    bottom: 1rem; right: 1.2rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(244, 230, 200, 0.85);
-    background: rgba(0,0,0,0.45);
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid rgba(214, 183, 106, 0.45);
-    backdrop-filter: blur(4px);
-    z-index: 4;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    pointer-events: none;
-  }
-  .einladung-stage.is-near .einladung-hint { opacity: 1; }
   /* Klick-Öffnungs-Animation: Flash voll, leichte Tür-Bewegung */
   .einladung-stage.is-opening .einladung-door {
     opacity: 1;
@@ -1150,7 +1133,6 @@
   @media (prefers-reduced-motion: reduce) {
     .einladung-door { opacity: 0.7; filter: none; transition: none; }
     .einladung-flash, .einladung-dust { display: none; }
-    .einladung-hint { opacity: 1; }
   }
 
   /* ===== Discovery-Expedition · Vorschau-Karte (2026-06-23) ===== */
@@ -1264,8 +1246,6 @@
   .vp-key-pulse { position: absolute; right: 10%; top: 40%; width: 28%; height: 28%; border-radius: 50%; pointer-events: none; z-index: 2; mix-blend-mode: screen; opacity: 0; transform: scale(0.8); transition: opacity .35s ease; background: radial-gradient(circle, rgba(110,231,211,0.6) 0%, rgba(110,231,211,0.22) 42%, rgba(110,231,211,0) 70%); }
   .vp-truhe:hover .vp-key-pulse, .vp-truhe.is-near .vp-key-pulse { opacity: 1; animation: vp-key-breath 2.4s ease-in-out infinite; }
   @keyframes vp-key-breath { 0%, 100% { transform: scale(0.82); } 50% { transform: scale(1.08); } }
-  .vp-hint { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-family: "Geist Mono", monospace; font-size: 0.66rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-shadow: 0 1px 5px rgba(0,0,0,0.85); pointer-events: none; z-index: 4; transition: opacity .4s; }
-  .vp-truhe.is-open .vp-hint { opacity: 0; }
   .vp-caption-col h3 { margin: 0 0 0.6rem; font-size: 1.4rem; }
   .vp-caption-col p { color: var(--muted); margin: 0 0 1rem; line-height: 1.6; }
   .vp-tier-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -1475,7 +1455,7 @@
         <article class="card span-12" data-back-anchor="module-list" data-klapp>
           <span class="card-tag">Module · Schnellübersicht</span>
           <h3>Was steht, was wartet, was als nächstes</h3>
-          <p>Genau eine Detail-Liste. Die Topologie oben ist die zentrale Visualisierung. Klick auf eine Zeile öffnet das Modul-Detail.</p>
+          <p>Genau eine Detail-Liste. Die Topologie oben ist die zentrale Visualisierung.</p>
           <div class="module-list" id="module-list"></div>
         </article>
         <article class="card span-12" data-back-anchor="endknoten">
@@ -1620,7 +1600,7 @@
               <span class="paper-arrow">→</span>
               <span class="paper-tag">Quelle · Markdown auf GitHub</span>
               <h4>Paper-Quelle bearbeiten / lesen</h4>
-              <p>Der Quelltext des Papers im Repo. Pflege-PRs gehen über GitHub. Klick öffnet die formatierte GitHub-Sicht.</p>
+              <p>Der Quelltext des Papers im Repo. Pflege-PRs gehen über GitHub.</p>
             </a>
           </div>
           <div class="backup-hint">
@@ -1634,19 +1614,18 @@
         <article class="card span-12 einladung-card" data-back-anchor="einladung">
           <span class="card-tag">Einladung in das Mycel · Türschwelle</span>
           <h3>Bevor du andockst, eine Einladung</h3>
-          <p>Eine Tür, die nichts fordert. Wer hineingeht, kann mitbauen oder zusehen oder weitergehen. Komm näher, dann wird sie sichtbar. Klick darauf, dann öffnet sie sich.</p>
+          <p>Eine Tür, die nichts fordert. Wer hineingeht, kann mitbauen oder zusehen oder weitergehen. Komm näher, dann wird sie sichtbar.</p>
           <a class="einladung-stage" href="docs/einladung/index.html"
              aria-label="Einladung in das Mycel öffnen">
             <div class="einladung-door"></div>
             <canvas class="einladung-dust" aria-hidden="true"></canvas>
             <div class="einladung-flash"></div>
-            <span class="einladung-hint">Klicken zum Öffnen</span>
           </a>
         </article>
         <article class="card span-12 discovery-card" data-back-anchor="discovery">
           <span class="card-tag">Discovery-Expedition · was wir von den Pilzen lernen</span>
           <h3>Vom Sternenstaub zum Geflecht</h3>
-          <p>Eine eigene Schöpfungs-Seite, neben der Einladung: vom Urknall-Staub bis zum lebendigen Mycel. Klick auf das Fenster, dann öffnet sich die ganze Reise.</p>
+          <p>Eine eigene Schöpfungs-Seite, neben der Einladung: vom Urknall-Staub bis zum lebendigen Mycel.</p>
           <a class="discovery-stage" href="docs/discovery/index.html"
              aria-label="Discovery-Expedition öffnen">
             <div class="discovery-bg" aria-hidden="true"></div>
@@ -1771,12 +1750,11 @@
                 <div class="vp-glow" aria-hidden="true"></div>
                 <div class="vp-flash" aria-hidden="true"></div>
                 <div class="vp-key-pulse" aria-hidden="true"></div>
-                <span class="vp-hint">Klicken → in die Truhe</span>
               </div>
             </div>
             <div class="vp-caption-col">
               <h3>Eine Truhe voll Werkzeug.</h3>
-              <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Klick auf die Truhe → du trittst ein: jedes SBKIM-Werkzeug in eigener Verpackung, mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt. Klick + kopieren statt git clone.</p>
+              <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Darin: jedes SBKIM-Werkzeug in eigener Verpackung, mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt. Klick + kopieren statt git clone.</p>
             </div>
           </div>
         </article>
@@ -1795,7 +1773,6 @@
             <div class="sun-caption">
               <h3>Auf welchen Spuren Sage gewachsen ist</h3>
               <p>Was macht man, wenn man auf eine Antwort wartet? Man macht sich selber an die Arbeit. Hier liegen die Stationen, an denen das Protokoll seine Form gefunden hat: Namensgebung, das bidirektionale Match-Prinzip, die Geburt als Mycel, und das Paper, das die Theorie zusammenträgt.</p>
-              <p class="sun-hint">Klicke in die Sonne → die Stationen tanzen als Galaxien um sie herum.</p>
             </div>
           </a>
         </article>
@@ -1827,7 +1804,6 @@
             <div class="blackhole-caption">
               <h3>Browser sind wie schwarze Löcher, neugierig?</h3>
               <p>Was wir auf dem Weg zum ersten Cross-Knoten-Handshake gelernt haben: über getrennte Browser-Instanzen (DeX vs. Tablet), IndexedDB-Persistenz-Risiken, BroadcastChannel-Bedingungen, Service-Worker-Cache-Schichten und Eruda-Eigenheiten. Eine lebende Sammlung für Andocker und Programmierer auf einem oder mehreren Rechnern, unterschiedlichsten Betriebssystemen, fremden Browsern.</p>
-              <p class="bh-hint">Klicke ins Loch → die Doku öffnet sich am anderen Ende des Ereignishorizonts.</p>
             </div>
           </a>
           <!-- Live gerechnetes Schwarzes Loch (assets/schwarzes-loch.js). Der Knopf bleibt
@@ -2331,7 +2307,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <div class="sonnen-nebula sonnen-nebula-3" aria-hidden="true"></div>
         <div class="sonnen-galaxies" id="sonnen-galaxies" aria-label="Stationen der Sage-Entwicklung"></div>
         <div class="sonnen-hint">
-          <span>Vier Stationen · Klick öffnet die Geschichte.</span>
+          <span>Vier Stationen</span>
         </div>
       </div>
       <div class="station-modal" id="station-modal" role="dialog" aria-modal="true" aria-labelledby="station-modal-title" hidden>
@@ -2767,13 +2743,14 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   };
   function topoIsPortrait() { return !!(window.matchMedia && window.matchMedia('(max-width: 760px)').matches); }
   // Bei Orientierungs-/Größenwechsel neu rendern, wenn sich Hoch-/Querformat ändert.
-  let __topoPortraitState = null;
+  // Since 2026-11-15 the drawing also follows the window height, so every size change redraws
+  // (after the window has come to rest).
+  let __topoResizeTimer = 0;
   window.addEventListener('resize', function () {
-    const p = topoIsPortrait();
-    if (p !== __topoPortraitState && typeof STATE !== 'undefined' && STATE.status) {
-      __topoPortraitState = p;
-      renderTopology(STATE.status);
-    }
+    clearTimeout(__topoResizeTimer);
+    __topoResizeTimer = setTimeout(function () {
+      if (typeof STATE !== 'undefined' && STATE.status) renderTopology(STATE.status);
+    }, 160);
   });
 
   function isNextUp(m, byId) {
@@ -2803,6 +2780,25 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     const portrait = topoIsPortrait();
     svg.setAttribute('viewBox', portrait ? '0 0 360 600' : '0 0 1000 520');
 
+    // Klaus 2026-11-15 (monitor): the whole card has to be visible at once, without scrolling.
+    // Landscape only: the drawing gets the room that is left under the top bar; if that room is
+    // much wider than high, the extra modules stand in columns to the right instead of rows below.
+    const karte = svg.closest('.hero-topology');
+    const leiste = document.querySelector('.topbar');
+    const freieHoehe = () => {
+      const drumherum = karte.getBoundingClientRect().height - svg.getBoundingClientRect().height;
+      return window.innerHeight - (leiste ? leiste.offsetHeight : 0) - drumherum - 12;
+    };
+    let wide = false;
+    // A low window (phone held sideways) keeps the old behaviour: fitted in, the labels would be
+    // under 6 px. There the drawing takes the width and the page scrolls.
+    const einpassen = !portrait && !!karte && window.innerHeight >= 640;
+    if (einpassen) {
+      const legendeLeer = !document.getElementById('topology-legend').children.length;
+      const h = freieHoehe() - (legendeLeer ? 48 : 0);
+      wide = h > 0 && svg.getBoundingClientRect().width / h > 1.7;
+    }
+
     function addClusterLabel(x, y, t) {
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       el.setAttribute('x', x); el.setAttribute('y', y);
@@ -2817,7 +2813,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       // 3 Spalten × 5 Zeilen, volle Breite (viewBox 360 ≈ Geräte-CSS-Breite),
       // keine Cluster-Labels (maximaler Platz für große, lesbare Knoten).
       const colX = [62, 180, 298];
-      const rowY = [80, 188, 296, 404, 496, 560];
+      // Every step is a full row (104): at 92 the first backlog row sat on the names above it, at 64 the second
+      // on the names of the first.
+      const rowY = [80, 188, 296, 404, 508, 612];
       all.forEach(m => {
         const lay = TOPO_LAYOUT_PORTRAIT[m.id]; if (!lay) return;
         if (BACKLOG_IDS.has(m.id)) return;
@@ -2865,13 +2863,25 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       let maxY = 0;
       Object.keys(positions).forEach(id => { if (positions[id].y > maxY) maxY = positions[id].y; });
       const rest = all.filter(m => !positions[m.id]);
-      if (rest.length) {
-        addClusterLabel(cols[Math.floor((cols.length - 1) / 2)], maxY + rowH * 0.55, 'weitere Module');
+      if (rest.length && wide) {
+        const rows = [80, 175, 270, 365, 480];
+        const spalten = Math.ceil(rest.length / rows.length);
+        addClusterLabel(1100 + 115 * (spalten - 1), 38, 'weitere Module');
         rest.forEach((m, i) => {
-          positions[m.id] = { x: cols[i % cols.length], y: maxY + rowH * (Math.floor(i / cols.length) + 1) };
+          positions[m.id] = { x: 1100 + 230 * Math.floor(i / rows.length), y: rows[i % rows.length] };
+        });
+        svg.setAttribute('viewBox', '0 0 ' + (1100 + 230 * (spalten - 1) + 130) + ' 550');
+      } else if (rest.length) {
+        // The heading sits below the name line of the row above (name baseline: 50 landscape,
+        // 66 portrait) and the extra rows move down by the same room, so it never lies on a label.
+        const labelY = maxY + (portrait ? 92 : 74);
+        const shift = portrait ? 34 : 30;
+        addClusterLabel(cols[Math.floor((cols.length - 1) / 2)], labelY, 'weitere Module');
+        rest.forEach((m, i) => {
+          positions[m.id] = { x: cols[i % cols.length], y: maxY + shift + rowH * (Math.floor(i / cols.length) + 1) };
         });
         const rowsNeeded = Math.ceil(rest.length / cols.length);
-        const needY = maxY + rowH * (rowsNeeded + 0.6);
+        const needY = maxY + shift + rowH * (rowsNeeded + 0.6);
         const vb = svg.getAttribute('viewBox').split(' ');
         if (needY > parseFloat(vb[3])) { vb[3] = String(Math.ceil(needY)); svg.setAttribute('viewBox', vb.join(' ')); }
       }
@@ -2952,6 +2962,12 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
     const legend = document.getElementById('topology-legend');
     legend.innerHTML = '';
+    // set after the legend is filled (below), so its height is part of the measurement
+    Promise.resolve().then(() => {
+      svg.classList.toggle('topo-wide', wide);
+      if (einpassen) { svg.style.minHeight = '0'; svg.style.maxHeight = Math.max(300, freieHoehe()) + 'px'; }
+      else { svg.style.minHeight = ''; svg.style.maxHeight = ''; }
+    });
     ['fertig', 'stub', 'spec', 'werkstatt', 'schablone'].forEach(key => {
       const meta = STATUS_META[key];
       const item = document.createElement('span');
