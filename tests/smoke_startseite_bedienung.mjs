@@ -146,6 +146,8 @@ try {
   t('Einladung, 390 breit: die Tür-Szene steht im Film-Modus', film.modus && film.da);
   const laeuft = await ein.waitForFunction(() => { const v = document.querySelector('.tuer-fahrt'); return !!v && v.classList.contains('laeuft') && v.currentTime > 0.8; }, null, { timeout: 15000 }).then(() => true, () => false);
   t('Einladung, 390 breit: der Tür-Film läuft von selbst, sobald die Bühne im Bild steht', laeuft);
+  // the still goes with the next time report of the film, not in the same instant: wait for it
+  await ein.waitForFunction(() => { const i = document.querySelector('section.scene-doorway .doorway-image'); return !!i && i.style.opacity === '0'; }, null, { timeout: 5000 }).catch(() => {});
   const unten = await ein.evaluate(() => { const i = document.querySelector('section.scene-doorway .doorway-image'); return i ? i.style.opacity : 'FEHLT'; });
   t('Einladung, 390 breit: unter dem laufenden Film ist das Standbild ausgeblendet', unten === '0', 'opacity ' + unten);
   await ein.close();

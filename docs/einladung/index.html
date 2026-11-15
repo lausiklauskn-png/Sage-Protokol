@@ -1768,7 +1768,9 @@ document.querySelectorAll('section.scene').forEach(sec => {
       fahrt.play().then(() => fahrt.classList.add('laeuft')).catch(() => {});
     };
     fahrt.addEventListener('ended', () => { fertig = true; });
-    fahrt.addEventListener('timeupdate', () => { if (fahrt.currentTime < 1.5) update(); });
+    // until the still below has gone: a slow device may report 0.6 s and then 1.6 s, and a
+    // fixed window of 1.5 s would leave the closed door showing through the light
+    fahrt.addEventListener('timeupdate', () => { if (fahrt.currentTime < 1.5 || image.style.opacity !== '0') update(); });
     fahrt.addEventListener('error', () => {
       // no film: back to the scroll-driven move
       filmModus = false; sec.classList.remove('film-modus'); fahrt.remove(); update();
