@@ -243,7 +243,9 @@ p { color: var(--ink-sec); }
   mix-blend-mode: screen; pointer-events: none;
   opacity: 0; transition: opacity 1.6s ease;
 }
-.licht-film.laeuft { opacity: 1; }
+/* Klaus 2026-11-15, Sichttest am Monitor: „Hier leuchten die Pilze zu grell … ganz dezent …
+   es blendet ja richtig." Die Schicht liegt deshalb nur noch zu 30 % über dem Bild (vorher 100 %). */
+.licht-film.laeuft { opacity: 0.3; }
 @media print { .licht-film { display: none; } }
 /* Graceful Platzhalter, solange das KI-Bild noch nicht abgelegt ist:
    museales, dunkles Kachel-Motiv mit goldenem Namen. Kein 404-Bruchbild. */

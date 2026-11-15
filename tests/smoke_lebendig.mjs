@@ -77,6 +77,8 @@ for (const e of licht) {
 }
 t("Discovery: der Licht-Film lädt nicht vorab und ist stumm", /film\.preload = 'none'/.test(disc) && /film\.muted = true/.test(disc) && /film\.dataset\.src = /.test(disc));
 t("Discovery: der Film liegt als Licht über dem Bild, nicht an seiner Stelle", /\.licht-film \{[^}]*mix-blend-mode: screen/.test(disc));
+const staerke = Number((disc.match(/\.licht-film\.laeuft \{ opacity: ([0-9.]+); \}/) || [])[1]);
+t("Discovery: die Licht-Schicht liegt gedämpft über dem Bild (höchstens 40 %)", staerke > 0 && staerke <= 0.4, `opacity ${staerke}`);
 t("Discovery: kein Film bei „Bewegung reduzieren“ oder Save-Data", /prefers-reduced-motion: reduce\)'\)\.matches\s*&& !\(navigator\.connection && navigator\.connection\.saveData\)/.test(disc));
 
 // Einladung: Film als Licht-Schicht, weiche Nähte zwischen den Szenen (Klaus 2026-11-15)

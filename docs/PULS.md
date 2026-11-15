@@ -45,6 +45,8 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Gemessen:** `tests/smoke_lebendig.mjs` 81 grün · 0 rot; `tests/gegenprobe_lebendig.sh` 23 Fälle, 23 gefangen. Gesamtlauf 137 Proben: 129 grün, 6 rot, 2 nicht lauffähig; die sechs sind auf dem unveränderten Stand ebenfalls rot. Im Browser (Chromium, Software-Renderer): Screens 2000×1050, 844×390, 390×844, 1280×800 je volle Fläche, alle Galaxien im Fenster; Startseite 390/820/1280/1920/2000 nicht breiter als das Fenster, keine Seitenfehler; Kachel auf/zu/auf/zu in drei Breiten; Discovery 8 Filme laufen, 0 Abrufe vor dem Scrollen, 0 Filme bei reduzierter Bewegung. **Nicht gemessen:** Klaus' Geräte (Monitor, Tab S6, Handy quer). `docs/einladung/_smoke.mjs` und `docs/discovery/_smoke.mjs` nicht gelaufen.
 
+**Nachtrag am selben Abend (Klaus am Monitor: „Hier leuchten die Pilze zu grell … ganz dezent … es blendet ja richtig“):** die Licht-Schicht der Discovery-Seite liegt nur noch zu 30 % über dem Bild (vorher 100 %). Probe 82 grün, Gegenprobe 24 von 24. Tür und Lichtung der Einladung unverändert.
+
 **Gefunden, nicht verfolgt** (in [`PFLEGE-LISTE.md`](PFLEGE-LISTE.md)): die Verläufe `.scene-fade-top/-bot` der Einladung standen im Messlauf null Mal im Dokument · die Hochformat-Schriftgrößen der Topologie verloren gegen die Grundregel (hier behoben) · „Rate-Limit & TTL“ überlappt in der Topologie die Zeile „weitere Module“.
 
 **Offen:** Klaus' Sichttest · Einladung als ein durchgehender Film (Schlüssel → Tür → Lichtung) statt Scrollen · `sbkim-demo` („Wie zwei sich finden“) als kleiner Film mit gesprochener Erklärung · ein schärferes Hintergrundbild von Klaus (Querformat 16:9, mindestens 2560×1440) · die offenen Punkte der beiden Einträge darunter.
