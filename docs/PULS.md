@@ -31,6 +31,22 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Hochformat-Namen brechen um, Licht-Film-Werkzeug bricht ab (Hauptsitzung)
+
+**Auftrag:** Startbrief mit acht offenen Punkten nach #1172/#1173. Bearbeitet: zwei der drei Pflege-Einträge aus Punkt 6, weil sie ohne Rückmeldung gehen. Die Punkte 1 bis 5 und 7 warten auf Klaus (Sichttest, drei Fragen, Material).
+
+**Getan, Topologie im Hochformat (`index.html`, nur `renderTopology`):** Modul-Namen, die breiter sind als eine Spalte (112 von 118 Einheiten), brechen nach Leerzeichen, Bindestrich oder Schrägstrich in Zeilen um. Eine Reihe mit mehrzeiligen Namen schiebt die Reihen darunter und die Zeile „weitere Module“ um denselben Raum (15 je Zeile) nach unten; die Zeichnung endet unter der letzten Namenszeile. Ein einzelnes Wort, das breiter ist als die Spalte, wird kleiner gesetzt (derzeit eines: „Pseudonymisierung“, 10,6 statt 13 px). Das Querformat ist unverändert.
+
+**Getan, `tools/licht-film-bauen.py`:** liegt der Restfehler über `--max-restfehler` (Vorgabe 12 von 255) oder deckt der Clip weniger als `--min-deckung` (Vorgabe 30 %) des Rahmens, bricht das Werkzeug mit Rückgabewert 2 ab und schreibt nichts. `--trotzdem` schreibt dennoch und lässt die Meldung stehen.
+
+**Gemessen:** `tests/smoke_topologie_beschriftung.mjs` 21 grün · 0 rot (vorher 18 Prüfungen; neu im Hochformat: keine Beschriftung auf der eines anderen Knotens, kein Name über den Rand, mindestens ein Name mehrzeilig als Anker). Gegenprobe am unveränderten `main`: 18 grün · 3 rot („22“ und „Such-Widget“ auf „Rendezvous (gemeinsamer Raum)“; „OCR-/Bild-Eingabe“, „Pseudonymisierung (E2E Grad B)“, „Tool-PWA-Container“ über den Rand; kein mehrzeiliger Name). `tests/smoke_licht_film_schwelle.mjs` (neu, erzeugt sein Material selbst, etwa 7 Sekunden): 10 grün · 0 rot; mit dem Werkzeug von `main` 5 grün · 5 rot. Restfehler an echtem Material: Lichtung-Standbild gegen einen daraus geschnittenen, weichgezeichneten Clip 6,8 bei 64 % Deckung; Mycel-Standbild gegen den Mycel-Clip 17,2 bei 14 % (wie am Vortag); Tür-Standbild gegen den Lichtung-Ausschnitt 17,1 bei 37 %. Die Original-Clips von Tür und Lichtung liegen nicht im Depot, ihre Restfehler sind nicht nachgemessen. Gesamtlauf 139 Proben: 130 grün, 7 rot, 2 nicht lauffähig. Die sieben einzeln am unveränderten `main` nachgestellt: fünf dort ebenfalls rot (`pinnwand/_smoke_mikrofon`, `smoke_bau23_mycel_platz`, `smoke_bau23_uebersetzung`, `smoke_geraetename_netzweit`, `smoke_sbkim_demo_knoten`); `smoke_sicherheit_seite` ist einzeln im Arbeitsbaum grün (28 · 0) und nur im Gesamtlauf rot; `smoke_service_worker_parst` ist im Arbeitsbaum rot („es gibt Service-Worker zu prüfen (1)“) und in der Kopie von `main` ohne `.git` grün, wie in der Sitzung davor. **Nicht gemessen:** Klaus' Geräte; das Hochformat an einem echten Handy.
+
+**Nicht angefasst:** Bauanleitungen, Prompts, Modul-Code, `sicherheit.html`. **Higgsfield:** nicht benutzt, nichts abgebucht.
+
+**Offen:** Punkte 1 bis 5 und 7 des Startbriefs unverändert · Pflege-Liste: Szenen-Verläufe der Einladung an Klaus' Gerät · `smoke_sicherheit_seite` fällt im Gesamtlauf um und läuft einzeln durch (neu in der Pflege-Liste).
+
+Übergabe: [`sessions/archiv/2026-11-15_hochformat-namen-licht-schwelle.md`](sessions/archiv/2026-11-15_hochformat-namen-licht-schwelle.md)
+
 ## 2026-11-15 · Topologie auf einen Blick, Klick-Hinweise heraus, drei Pflege-Einträge (Hauptsitzung)
 
 **Auftrag:** Startbrief mit sieben offenen Punkten. Begonnen mit den drei Pflege-Einträgen vom selben Tag (Punkt 5), weil sie ohne Rückmeldung gehen. Während der Sitzung kam Klaus' Sichttest vom Monitor (DeX) in drei Nachrichten mit Bildschirmfotos.
@@ -473,37 +489,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 
 **Nicht gemessen:** echte OK-Antworten von `relay.family-projekt.de`, `relay-intern` und fremden Relais · das Tablet · Muttis-Rezeptbuch (keine Probe dort bewacht SBKIM).
 
-## 2026-10-13 · Firmennetz am Tablet bestätigt, Workflow-PDF-Kopfzeile bei 481–499 px behoben
+## Eine Sitzung vom 2026-10-13 (Firmennetz am Tablet, Workflow-PDF-Kopfzeile) — ausgelagert am 2026-11-15
 
-**Brief:** [`docs/BRIEF_2026-10-14_firmennetz-sichttest-2.md`](BRIEF_2026-10-14_firmennetz-sichttest-2.md). Übergabe: [`sessions/archiv/2026-10-13_firmennetz-sichttest-2.md`](sessions/archiv/2026-10-13_firmennetz-sichttest-2.md).
-
-**Klaus' Sichttest im Firmennetz:**
-- Am Anfang sah jedes Gerät nur sich selbst.
-- Gemessen mit einem Skript in Termux (Tablet), das das eigene Relais nach Karten der eigenen Netz-Marke fragt: erst 1 Absender, danach 2.
-- Die Ursache war, dass das zweite Gerät nicht im selben eigenen Netz stand. Am Relais lag es nicht.
-- Danach sehen sich Handy (family-projekt.de) und Tablet (Sende-Prüfer) gegenseitig im Raum, „verbunden“ (Bilder von Klaus).
-- Der Netz-Code steht in keinem Depot, keinem Commit und keinem Dokument.
-
-**Gebaut:** Workflow-PDF #107 (Cache v82).
-- Die 480er-Verdichtung der Kopfzeile gilt jetzt bis 520 px. Auf `main` schnitt sie bei 481 und 490 px ab: Schriftzug 133 px, Platz 120 px.
-- `tests/bibliothek.mjs` misst 13 Breiten, auch 470/481/490/500/520.
-- Ein neuer Gegenprobe-Fall prüft das; dazu kam der Filter `NUR_FALL`.
-
-**Gemessen:**
-- `bibliothek`: auf `main` 87 grün · 3 ROT, danach 90 grün · 0 ROT.
-- Nachbarproben unverändert grün: knoten 126 · schieber 30 · sprache 49 · zuschneiden 17.
-- Gegenprobe (Wegwerf-Kopie): 2 gefangen · 0 blind · `NUR_ANKER` 26 · 0 tot.
-
-⚠ **Kanon-Befund, nicht gebaut:** 05b und 23 werten nur `EVENT` aus, nicht die Antwort `["OK", id, false, grund]` des Relais.
-- „✓ Du bist im Raum“ belegt deshalb nur einen offenen Socket. Ob das Relais die Karte angenommen hat, belegt es nicht.
-- Das ist der nächste Brief: [`BRIEF_2026-10-15_relais-ok-antwort.md`](BRIEF_2026-10-15_relais-ok-antwort.md).
-
-⚠ **Nicht gemessen:** die Kopfzeile am Tablet · Fragen eines Firmennetzes in der Mycel-Karte am echten Relais.
-
-⚠ **Sages `npm test` in diesem Behälter (ohne `npm install`): 87 grün · 2 ROT · 25 nicht lauffähig. Beide roten sind auch auf `main` ohne diese Doku-Änderung rot.**
-- `smoke_netz_ui` meldet „⊘ nicht lauffähig: playwright-core fehlt“, zählt im Läufer aber als ROT. Die Probe gibt kein `stumm` zurück.
-- `smoke_laeufer_nachbar` (7 grün · 4 ROT) misst die Lage „Nachbar fehlt“. Hier liegen die Nachbar-Klone daneben.
-- Eingereiht, nicht nebenbei repariert.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-32.md`](sessions/archiv/2026-11_puls-auslagerung-32.md)
+> (31 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-13 (Firmennetz: Fragen-Marke, Siegelprobe) — ausgelagert am 2026-11-15
 

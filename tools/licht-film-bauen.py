@@ -16,6 +16,10 @@ Die Seite legt das Ergebnis mit `mix-blend-mode: screen` über das Bild: schwarz
 
 Braucht numpy, Pillow und ffmpeg. Gibt die gefundene Lage und den Restfehler aus; ein hoher
 Restfehler heißt, dass der Clip das Bild nicht mehr zeigt.
+
+Passt der Clip nicht zum Bild (Restfehler über --max-restfehler oder Deckung des Rahmens unter
+--min-deckung), bricht das Werkzeug mit Rückgabewert 2 ab und schreibt nichts. --trotzdem schreibt
+den Film dennoch.
 """
 import argparse
 import subprocess
@@ -92,6 +96,11 @@ def main():
     p.add_argument("--staerke", type=float, default=1.6)
     p.add_argument("--vorschau", help="schreibt ein JPEG: Bild plus hellste Licht-Schicht")
     p.add_argument("--ohne-rueck", action="store_true", help="der Clip ist schon eine Hin-und-zurück-Schleife")
+    p.add_argument("--max-restfehler", type=float, default=12.0,
+                   help="über diesem Restfehler (von 255) gilt das Ausrichten als gescheitert")
+    p.add_argument("--min-deckung", type=float, default=30.0,
+                   help="deckt der Clip weniger Prozent des Rahmens, gilt das Ausrichten als gescheitert")
+    p.add_argument("--trotzdem", action="store_true", help="auch bei gescheitertem Ausrichten schreiben")
     a = p.parse_args()
 
     bild = Image.open(a.bild).convert("RGB")
@@ -128,7 +137,20 @@ def main():
     for i, f in enumerate(licht):
         g = np.asarray(Image.fromarray(f).resize((zw, zh), Image.BILINEAR), np.float32) * maske
         aus[i, y0:y1, x0:x1] = g[y0 - py:y1 - py, x0 - px:x1 - px].astype(np.uint8)
-    print(f"Rahmen {W}×{H}, Clip deckt {100 * (x1 - x0) * (y1 - y0) / (W * H):.0f} % davon")
+    deckung = 100 * max(0, x1 - x0) * max(0, y1 - y0) / (W * H)
+    print(f"Rahmen {W}×{H}, Clip deckt {deckung:.0f} % davon")
+
+    gruende = []
+    if e > a.max_restfehler:
+        gruende.append(f"Restfehler {e:.1f} über {a.max_restfehler:g}")
+    if deckung < a.min_deckung:
+        gruende.append(f"Deckung {deckung:.0f} % unter {a.min_deckung:g} %")
+    if gruende:
+        text = "Ausrichten gescheitert: " + ", ".join(gruende) + ". Der Clip zeigt das Bild nicht."
+        if not a.trotzdem:
+            print(text + " Nichts geschrieben (--trotzdem schreibt dennoch).", file=sys.stderr)
+            sys.exit(2)
+        print(text + " Wird wegen --trotzdem geschrieben.", file=sys.stderr)
 
     schleife = aus if a.ohne_rueck else np.concatenate([aus, aus[-2:0:-1]])
     subprocess.run(
