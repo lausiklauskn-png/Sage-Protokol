@@ -60,5 +60,11 @@ t("Meilenstein: die offene Kachel bleibt mindestens quadratisch", /k\.style\.min
 t("Observatorium: die Mini-Universen werden gemalt", /function malMiniUniversum\(/.test(start) && /try \{ malMiniUniversum\(el, lehre\.shape, lehre\.n\); \} catch/.test(start));
 t("Observatorium: die Schleife ruht, solange ein anderer Screen offen ist", /if \(stage\.offsetParent === null\) \{\s*filmSchalten\(false\);/.test(start));
 
+// Wechselnde Hintergründe der beiden Galaxien-Screens
+const liste = ((start.match(/const GALAXIE_HINTERGRUENDE = \[([\s\S]*?)\];/) || [])[1] || "").match(/'([^']+)'/g) || [];
+t("Galaxien-Hintergründe: mindestens zwei Bilder zum Wechseln", liste.length >= 2, `${liste.length} gefunden`);
+for (const e of liste) t(`Galaxien-Hintergrund ${e}: liegt im Depot`, da(join(WURZEL, e.replace(/'/g, ""))));
+t("Galaxien-Hintergründe: gewechselt wird beim Öffnen beider Screens", /if \(id === 'sonnen' \|\| id === 'observatorium'\) wechsleGalaxieHintergrund\(id\);/.test(start));
+
 console.log(`\n═══ ${gruen} grün · ${rot} ROT ═══`);
 process.exit(rot ? 1 : 0);
