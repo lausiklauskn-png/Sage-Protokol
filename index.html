@@ -253,6 +253,15 @@
   #sbkim-siegel-badge.stufenwechsel-gold { animation: siegel-stufenwechsel-gold 600ms ease-out; }
   @keyframes siegel-stufenwechsel-gold { 0% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } 40% { transform: scale(1.15); box-shadow: 0 0 24px 4px var(--siegel-gold-glow); filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); } 100% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } }
   /* Klappkarten (Klaus 2026-11-15): Überschrift als Knopf, Inhalt erst auf Druck. */
+  /* Klaus 2026-11-15: long explanations sit behind a button; the figure next to them stays visible. */
+  .mehr-text { margin: 0.2rem 0 0.9rem; }
+  .mehr-text > summary { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; list-style: none; padding: 0.45rem 0.9rem; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 0.86rem; color: var(--text); user-select: none; }
+  .mehr-text > summary::-webkit-details-marker { display: none; }
+  .mehr-text > summary::after { content: "▾"; font-size: 0.8em; transition: transform .2s ease; }
+  .mehr-text[open] > summary::after { transform: rotate(180deg); }
+  .mehr-text > summary:focus-visible { outline: 2px solid var(--line-strong); outline-offset: 3px; }
+  .mehr-text > p { margin-top: 0.8rem; }
+  @media print { .mehr-text > summary { display: none; } }
   .klapp-kopf { position: relative; cursor: pointer; padding-right: 2.6rem; border-radius: 10px; }
   .klapp-kopf:focus-visible { outline: 2px solid var(--line-strong); outline-offset: 6px; }
   .klapp-kopf h3 { margin-bottom: 0; }
@@ -837,7 +846,6 @@
   .blackhole-card .card-tag, .blackhole-caption { position: relative; z-index: 3; }
   .bh-steuern { position: relative; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin: 0.6rem 0 0; }
   .bh-steuern:has(.sl-oeffnen[hidden]) { display: none; }
-  .bh-steuern-hinweis { color: #9a9ab4; font-size: 0.86rem; }
   .blackhole-scene.sl-aktiv .bh-chrome { z-index: 2; }
   .blackhole-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
   @media (max-width: 780px) {
@@ -1339,7 +1347,7 @@
         <span class="lamp-label">lebt</span>
         <span class="lamp" id="lamp-traffic" title="Verkehr — pulst kurz bei status.json-Fetch"></span>
         <span class="lamp-label">verkehr</span>
-        <span class="lamp" id="lamp-fremd" title="Fremdzugriff — rot bei Zugriff von außen (Klick öffnet Liste)"></span>
+        <span class="lamp" id="lamp-fremd" title="Fremdzugriff — rot bei Zugriff von außen"></span>
         <span class="lamp-label">fremd</span>
         <!-- Platz-Anker fuer das SBKIM-Siegel (Modul 16, Option β "vor-injiziert").
              Warum leer und trotzdem hier: das Badge ist 40 px hoch und wurde
@@ -1467,7 +1475,7 @@
         <article class="card span-7" data-back-anchor="demoanteil">
           <span class="card-tag">Real-Anteil · live aus status.json</span>
           <h3>Wie viel ist Theater, wie viel ist real?</h3>
-          <p><strong>Das Mycel lebt.</strong> Module live bewiesen (03 Embedding, 04 Match, 05 Anastomose, 09 Einbau-PWA, 22 Suche, 23 Rendezvous), beide Endknoten direkt verbunden. <strong>10.07.2026: die bidirektionale Cross-Knoten-Bedeutungs-Suche ist live bewiesen</strong>. Zwei Knoten fragen einander und antworten aus dem eigenen Inhalt. Der grüne Bogen misst die <em>Modul-Fertigstellung</em> (dein Browser-Sichttest grün); seit deinem Browser-Sichttest am 24.07.2026 sind alle funktionalen Module bestätigt. Der Demo-Anteil steht auf <strong>0 %</strong>. Die noch als „Schablone" geführten Schutz-Module (10–12, 14) sind bewusst reaktive Zukunfts-Bauten und zählen nicht mit; die Rechnung bleibt ehrlich, nichts wird schöngerechnet.</p>
+          <details class="mehr-text"><summary>Was dahinter steht</summary><p><strong>Das Mycel lebt.</strong> Module live bewiesen (03 Embedding, 04 Match, 05 Anastomose, 09 Einbau-PWA, 22 Suche, 23 Rendezvous), beide Endknoten direkt verbunden. <strong>10.07.2026: die bidirektionale Cross-Knoten-Bedeutungs-Suche ist live bewiesen</strong>. Zwei Knoten fragen einander und antworten aus dem eigenen Inhalt. Der grüne Bogen misst die <em>Modul-Fertigstellung</em> (dein Browser-Sichttest grün); seit deinem Browser-Sichttest am 24.07.2026 sind alle funktionalen Module bestätigt. Der Demo-Anteil steht auf <strong>0 %</strong>. Die noch als „Schablone" geführten Schutz-Module (10–12, 14) sind bewusst reaktive Zukunfts-Bauten und zählen nicht mit; die Rechnung bleibt ehrlich, nichts wird schöngerechnet.</p></details>
           <div class="demoanteil-inner">
             <div class="ring-wrap" id="ring-wrap" data-tip="Hub(10) + Σ Module + Σ Endknoten">
               <svg viewBox="0 0 200 200">
@@ -1760,8 +1768,10 @@
         </article>
         <article class="card span-12 sun-card" data-back-anchor="sonnen">
           <span class="card-tag">Sage-Geschichts-Galerie · auf den Spuren des Protokolls</span>
-          <a class="sun-stage" href="#sonnen"
-             onclick="goScreen('sonnen', 'sonnen'); return false;"
+          <!-- Klaus 2026-11-15: a button, not a link: the browser shows no link address on hover. -->
+          <div class="sun-stage" role="button" tabindex="0"
+             onclick="goScreen('sonnen', 'sonnen');"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"
              aria-label="Geschichts-Galerie öffnen — Sonnen-Galaxie">
             <div class="sun-scene" aria-hidden="true">
               <div class="sun-corona"></div>
@@ -1774,13 +1784,13 @@
               <h3>Auf welchen Spuren Sage gewachsen ist</h3>
               <p>Was macht man, wenn man auf eine Antwort wartet? Man macht sich selber an die Arbeit. Hier liegen die Stationen, an denen das Protokoll seine Form gefunden hat: Namensgebung, das bidirektionale Match-Prinzip, die Geburt als Mycel, und das Paper, das die Theorie zusammenträgt.</p>
             </div>
-          </a>
+          </div>
         </article>
         <article class="card span-12 blackhole-card" data-back-anchor="blackhole">
           <span class="card-tag">Browser-Observatorium · Anziehung ins Detail</span>
-          <a class="blackhole-stage"
-             href="#observatorium"
-             onclick="return bhStageClick(event);"
+          <div class="blackhole-stage" role="button" tabindex="0"
+             onclick="bhStageClick(event);"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"
              aria-label="Browser-Observatorium öffnen — wandernde Galaxien-Konstellation">
             <div class="blackhole-scene" aria-hidden="true">
               <div class="bh-disk"></div>
@@ -1805,11 +1815,10 @@
               <h3>Browser sind wie schwarze Löcher, neugierig?</h3>
               <p>Was wir auf dem Weg zum ersten Cross-Knoten-Handshake gelernt haben: über getrennte Browser-Instanzen (DeX vs. Tablet), IndexedDB-Persistenz-Risiken, BroadcastChannel-Bedingungen, Service-Worker-Cache-Schichten und Eruda-Eigenheiten. Eine lebende Sammlung für Andocker und Programmierer auf einem oder mehreren Rechnern, unterschiedlichsten Betriebssystemen, fremden Browsern.</p>
             </div>
-          </a>
+          </div>
           <!-- Live gerechnetes Schwarzes Loch (assets/schwarzes-loch.js). Der Knopf bleibt
                versteckt, bis die Darstellung wirklich läuft: kein toter Knopf. -->
-          <p class="bh-steuern"><button type="button" class="sl-oeffnen" id="bh-steuern" hidden>Selbst steuern</button>
-            <span class="bh-steuern-hinweis">Ziehen dreht die Ansicht. Im Vollbild gibt es Regler und einen Kinoflug.</span></p>
+          <p class="bh-steuern"><button type="button" class="sl-oeffnen" id="bh-steuern" hidden>Selbst steuern</button></p>
         </article>
         <style>
           /* Meilenstein-Container — EIN Card-Container wie die Werkzeugkiste, drei Bilder darin */
@@ -1992,7 +2001,7 @@
       <button class="screen-back" onclick="goScreen('overview', 'cycle')">← Zurück</button>
       <div class="section-head">
         <h2 class="section-title">Lebenszyklus · Detail-Tour</h2>
-        <p class="section-sub">Zwei Schichten: Anfrage-Reise und Knoten-Leben. Klick auf eine Phase, dann läuft die Sequenz ab.</p>
+        <p class="section-sub">Zwei Schichten: Anfrage-Reise und Knoten-Leben. Jede Phase läuft als Sequenz ab.</p>
       </div>
       <div class="tour-tabs" role="tablist">
         <button class="tour-tab active" id="tour-tab-layer1" data-layer="layer1" role="tab" onclick="setTourLayer('layer1')">Anfrage-Reise</button>
@@ -2162,7 +2171,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       </section>
       <section class="warum-section">
         <div class="warum-section-head"><span class="warum-num">02</span><h2>Probier es aus</h2></div>
-        <p class="warum-sub">Klick auf eine Frage. Schau, wer antwortet, und wer höflich schweigt.</p>
+        <p class="warum-sub">Schau, wer antwortet, und wer höflich schweigt.</p>
         <div class="demo-questions" id="demo-questions">
           <button type="button" class="demo-q-btn" data-q="cocktail">„Cocktail mit Tequila ohne Limette"</button>
           <button type="button" class="demo-q-btn" data-q="hefeteig">„Hefeteig für Pizza"</button>
@@ -2193,7 +2202,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
             <g class="demo-node" data-domain="lehrer" transform="translate(300 240)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">LEHRER</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Schulrätsel</text></g>
             <g class="demo-node" data-domain="wandern" transform="translate(480 220)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">WANDERN</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Touren, Karten</text></g>
           </svg>
-          <div class="demo-result" id="demo-result"><div class="demo-result-empty">↑ Klick auf eine Frage oben.</div></div>
+          <div class="demo-result" id="demo-result"><div class="demo-result-empty">Noch keine Frage gestellt.</div></div>
         </div>
       </section>
       <section class="warum-section">
@@ -2257,7 +2266,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <div class="universe-nebula universe-nebula-3" aria-hidden="true"></div>
         <div class="universe-galaxies" id="universe-galaxies" aria-label="Sieben wandernde Galaxien — eine pro Lehre"></div>
         <div class="universe-hint" id="universe-hint">
-          <span>Sieben Galaxien · sieben Lehren · tippe an, was dich neugierig macht.</span>
+          <span>Sieben Galaxien · sieben Lehren</span>
         </div>
       </div>
       <div class="universe-modal" id="universe-modal" role="dialog" aria-modal="true" aria-labelledby="universe-modal-title" hidden>
@@ -2278,7 +2287,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       <div class="vp-screen-hero" aria-hidden="true"></div>
       <div class="section-head">
         <h2 class="section-title">Im Inneren der Truhe</h2>
-        <p class="section-sub">Du bist eingetreten. Jedes SBKIM-Werkzeug liegt hier in eigener Verpackung. Klick aufs Werkzeug öffnet Beschreibung, Einbau-Schritte, Code zum Kopieren <em>oder Herunterladen</em> und einen fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung. Die beiden <strong>Ein-Datei-PWAs</strong> oben (Andock-Werkzeug, Mycel-Knoten) lädst du direkt herunter und legst sie 1:1 ins eigene Repo.</p>
+        <p class="section-sub">Du bist eingetreten. Jedes SBKIM-Werkzeug liegt hier in eigener Verpackung. Zu jedem Werkzeug gibt es Beschreibung, Einbau-Schritte, Code zum Kopieren <em>oder Herunterladen</em> und einen fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung. Die beiden <strong>Ein-Datei-PWAs</strong> oben (Andock-Werkzeug, Mycel-Knoten) lädst du direkt herunter und legst sie 1:1 ins eigene Repo.</p>
       </div>
       <div class="vp-tier-pills" id="vp-tier-pills">
         <button class="vp-pill vp-pill-all" data-tier="" type="button">● Werkzeuge (alle)</button>
@@ -3497,7 +3506,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     const hint = document.getElementById('tour-learnpath-hint');
     if (hint && !learnSequenceTimer) {
       const remaining = phases.length - clicked.size;
-      if (clicked.size === 0) hint.textContent = 'Lernpfad: jede Phase einzeln anklicken. Am Ende läuft die Gesamt-Sequenz von alleine.';
+      if (clicked.size === 0) hint.textContent = 'Lernpfad: Phase für Phase. Am Ende läuft die Gesamt-Sequenz von alleine.';
       else if (remaining === 0) hint.textContent = '';
       else hint.textContent = 'Noch ' + remaining + ' Phase' + (remaining === 1 ? '' : 'n') + ' bis zur Gesamt-Sequenz.';
     }

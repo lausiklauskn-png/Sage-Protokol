@@ -804,6 +804,7 @@ section.scene-doorway .doorway-image {
   background-image: url('./vendor/img/scene-5-door.webp');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   /* Start-Zustand: zoom 2.5, nach links versetzt (= Kamera schaut
      rechte Seite). Wird vom JS pro Scroll-Frame aktualisiert. */
   transform: scale(2.5) translateX(-22%);
@@ -816,7 +817,9 @@ section.scene-doorway .doorway-image {
    Tür-Bild seitlich beschneiden. `contain` passt die komplette Tür ins Bild.
    (Klaus 2026-05-29) */
 @media (max-width: 760px) {
-  section.scene-doorway .doorway-image { background-size: contain; }
+  /* Klaus 2026-11-15 (Bildschirmfoto vom Handy): ohne `no-repeat` stand die Tür dreimal
+     untereinander. Über und unter der Tür bleibt es dunkel. */
+  section.scene-doorway .doorway-image { background-size: contain; background-repeat: no-repeat; background-color: #050608; }
 }
 section.scene-doorway .doorway-flash {
   position: absolute; inset: 0;
@@ -1272,7 +1275,7 @@ footer.foot h4 {
           <!-- Sternenfeld wird via JS gefüllt — viele kleine Sterne ohne Zentrum -->
         </svg>
         <div class="stars-caption" data-i18n="s4.stars">Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.</div>
-        <div class="stars-cta" data-i18n="s4.cta">▶ Tippen: wie zwei sich finden, Schritt für Schritt</div>
+        <div class="stars-cta" data-i18n="s4.cta">▶ Wie zwei sich finden, Schritt für Schritt</div>
       </a>
     </div>
   </div>
@@ -1419,7 +1422,7 @@ window.SAGE_I18N = {
     "s4.h3": "Rechtliche Klarstellung",
     "s4.body4": "„Mit-Bauer“ ist eine Würdigung der Bau-Tat, keine Aussage über Urheberschaft. Die Rechte am Sage-Protokol und an den Apps liegen allein beim Betreiber (siehe Impressum). KI-Sitzungen können keine Rechte halten, und die KI-Anbieter treten ihre etwaigen Rechte an den Ausgaben ausdrücklich ab.",
     "s4.stars": "Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.",
-    "s4.cta": "▶ Tippen: wie zwei sich finden, Schritt für Schritt",
+    "s4.cta": "▶ Wie zwei sich finden, Schritt für Schritt",
     "s5.eyebrow": "Schicht 4 · Observatorium",
     "s5.title": "Eine Werkstatt, kein Museum.",
     "s5.body1": "Das Observatorium ist ein schlüssel-geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.",
@@ -1477,7 +1480,7 @@ window.SAGE_I18N = {
     "s4.h3": "Legal clarification",
     "s4.body4": "„Co-builder“ honours the act of building; it is not a statement about authorship. The rights to the Sage protocol and to the apps rest solely with the operator (see the legal notice). AI sessions cannot hold rights, and the AI providers expressly assign away whatever rights they may have in the outputs.",
     "s4.stars": "Many small stars. No centre. No hierarchy.",
-    "s4.cta": "▶ Tap: how two find each other, step by step",
+    "s4.cta": "▶ How two find each other, step by step",
     "s5.eyebrow": "Layer 4 · Observatory",
     "s5.title": "A workshop, not a museum.",
     "s5.body1": "The observatory is a key-protected research place inside Sage-Protokol, open to co-builders (human and agent), for reading, using, extending.",
@@ -1535,7 +1538,7 @@ window.SAGE_I18N = {
     "s4.h3": "Précision juridique",
     "s4.body4": "« Co-bâtisseur » est une reconnaissance de l'acte de construction, non une affirmation de paternité. Les droits sur le protocole Sage et sur les applications appartiennent au seul exploitant (voir les mentions légales). Les sessions d'IA ne peuvent détenir aucun droit, et les fournisseurs d'IA cèdent expressément les droits éventuels sur les sorties.",
     "s4.stars": "Beaucoup de petites étoiles. Pas de centre. Pas de hiérarchie.",
-    "s4.cta": "▶ Toucher : comment deux se trouvent, étape par étape",
+    "s4.cta": "▶ Comment deux se trouvent, étape par étape",
     "s5.eyebrow": "Couche 4 · Observatoire",
     "s5.title": "Un atelier, pas un musée.",
     "s5.body1": "L'observatoire est un lieu de recherche protégé par une clé, à l'intérieur de Sage-Protokol, ouvert aux co-bâtisseurs (humains et agents), pour lire, utiliser, étendre.",
@@ -1593,7 +1596,7 @@ window.SAGE_I18N = {
     "s4.h3": "Aclaración jurídica",
     "s4.body4": "„Co-constructor“ es un reconocimiento del acto de construcción, no una afirmación de autoría. Los derechos sobre el protocolo Sage y sobre las aplicaciones corresponden en exclusiva al operador (véase el aviso legal). Las sesiones de IA no pueden ostentar derechos, y los proveedores de IA ceden expresamente los derechos que pudieran tener sobre las salidas.",
     "s4.stars": "Muchas estrellas pequeñas. Sin centro. Sin jerarquía.",
-    "s4.cta": "▶ Toca: cómo dos se encuentran, paso a paso",
+    "s4.cta": "▶ Cómo dos se encuentran, paso a paso",
     "s5.eyebrow": "Capa 4 · Observatorio",
     "s5.title": "Un taller, no un museo.",
     "s5.body1": "El observatorio es un lugar de investigación protegido por llave, dentro de Sage-Protokol, abierto a co-constructores (humanos y agentes), para leer, usar, ampliar.",

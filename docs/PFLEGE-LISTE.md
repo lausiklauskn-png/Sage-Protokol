@@ -609,3 +609,15 @@ Lichtung liegen nicht im Depot; ob sie unter 12 bleiben, ist nicht gemessen.
 Absturzes), `node tests/smoke_sicherheit_seite.mjs` allein läuft 28 grün · 0 rot durch. Einmal
 beobachtet, im Container, während 139 Proben nacheinander liefen. Ursache nicht untersucht.
 
+### `docs/einladung/_smoke.mjs` startet im Container nicht — 2026-11-15
+
+Die Probe ruft `chromium.launch()` ohne Pfad und sucht `chromium_headless_shell-1194`; im Container
+liegt der Browser unter `/opt/pw-browsers/chromium`. Sie bricht vor der ersten Prüfung ab, am
+unveränderten `main` ebenso. Die Einladung ist in dieser Zeit nur über
+`tests/smoke_startseite_bedienung.mjs` (drei Prüfungen) und `tests/smoke_lebendig.mjs` gemessen.
+
+### Lampen-Texte aus Modul 17 tragen „Klick öffnet …“ — 2026-11-15
+
+Klaus hat die Klick-Sätze der Seite herausnehmen lassen. Vier Kurzhinweise der Lampen stehen in
+`src/modules/17_floating_widget.js` (Kanon, samt englischer Tafel) und sind nicht angefasst.
+

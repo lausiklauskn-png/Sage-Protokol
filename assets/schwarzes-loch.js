@@ -121,13 +121,11 @@
     de: { titel: 'Singularität', unter: 'Gekrümmtes Licht · live im Browser gerechnet', regler: 'Regler',
           groesse: 'Scheibengröße', temp: 'Temperatur', rot: 'Rotation', doppler: 'Doppler-Stärke', qual: 'Qualität',
           schritte: 'Schritte', flug: 'Kinoflug', farben: 'Farben', bunt: 'Browser', natur: 'Natur', zurueck: 'Ansicht zurücksetzen', zu: 'Schließen',
-          hilfe: 'Ziehen: Umlauf · Zwei Finger oder Mausrad: Zoom · Doppeltipp: zurück',
-          knopf: 'Selbst steuern', aufl: 'Auflösung', aufnahme: 'Aufnahme' },
+          knopf: 'Selbst steuern', aufl: 'Auflösung', auto: 'automatisch', aufnahme: 'Aufnahme' },
     en: { titel: 'Singularity', unter: 'Bent light · computed live in your browser', regler: 'Controls',
           groesse: 'Disk size', temp: 'Temperature', rot: 'Rotation', doppler: 'Doppler strength', qual: 'Quality',
           schritte: 'steps', flug: 'Cinema flight', farben: 'Colours', bunt: 'Browser', natur: 'Nature', zurueck: 'Reset view', zu: 'Close',
-          hilfe: 'Drag: orbit · Two fingers or wheel: zoom · Double tap: reset',
-          knopf: 'Steer it yourself', aufl: 'resolution', aufnahme: 'Recording' }
+          knopf: 'Steer it yourself', aufl: 'Resolution', auto: 'automatic', aufnahme: 'Recording' }
   };
   function T() { return TEXTE[(document.documentElement.lang || 'de').slice(0, 2)] || TEXTE.de; }
 
@@ -144,7 +142,14 @@
     '.sl-kopf span{display:block;margin-top:.35rem;font:400 .62rem/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:rgba(243,234,217,.55);}',
     '.sl-tafel{position:absolute;right:max(1rem,env(safe-area-inset-right));top:max(1rem,env(safe-area-inset-top));width:min(15.5rem,62vw);padding:.85rem .95rem .8rem;border-radius:18px;background:rgba(14,10,8,.46);border:1px solid rgba(255,226,180,.14);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);color:#eadfcb;font:400 .7rem/1.3 "Geist","Inter",system-ui,sans-serif;box-shadow:0 18px 50px rgba(0,0,0,.5);transition:opacity .4s ease,transform .4s ease;}',
     '.sl-tafel.sl-ruhe{opacity:.0;transform:translateY(-6px);pointer-events:none;}',
-    '.sl-tafel h4{margin:0 0 .55rem;font:500 .6rem/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:rgba(234,223,203,.55);}',
+    // the heading is the switch that folds the panel away (Klaus 2026-11-15: on a phone the panel filled the view)
+    '.sl-tafel-kopf{display:flex;align-items:center;justify-content:space-between;gap:.6rem;width:100%;margin:0;padding:.15rem 0;border:0;background:none;cursor:pointer;font:500 .6rem/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:rgba(234,223,203,.75);}',
+    '.sl-tafel-kopf::after{content:"▾";font-size:.9rem;letter-spacing:0;transition:transform .2s ease;transform:rotate(180deg);}',
+    '.sl-tafel-kopf:focus-visible{outline:2px solid #f1c98a;outline-offset:4px;border-radius:6px;}',
+    '.sl-tafel.sl-eingeklappt{width:auto;}',
+    '.sl-tafel.sl-eingeklappt .sl-tafel-kopf::after{transform:none;}',
+    '.sl-tafel.sl-eingeklappt .sl-tafel-inhalt{display:none;}',
+    '.sl-tafel-inhalt{margin-top:.4rem;}',
     '.sl-tafel label{display:grid;grid-template-columns:1fr auto;gap:.1rem .5rem;margin:.5rem 0 0;}',
     '.sl-tafel label i{font-style:normal;color:rgba(234,223,203,.6);font-variant-numeric:tabular-nums;}',
     '.sl-tafel input[type=range]{grid-column:1/-1;width:100%;height:22px;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;-webkit-appearance:none;appearance:none;}',
@@ -160,11 +165,10 @@
     '.sl-reihe button:focus-visible,.sl-zu:focus-visible,.sl-oeffnen:focus-visible{outline:2px solid #f1c98a;outline-offset:2px;}',
     '.sl-mess{margin-top:.6rem;font:400 .58rem/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.06em;color:rgba(234,223,203,.4);font-variant-numeric:tabular-nums;}',
     '.sl-zu{position:absolute;left:max(1.1rem,env(safe-area-inset-left));bottom:max(1.1rem,env(safe-area-inset-bottom));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:.7rem 1.05rem;}',
-    '.sl-hilfe{position:absolute;right:max(1.1rem,env(safe-area-inset-right));bottom:max(1.2rem,env(safe-area-inset-bottom));max-width:60vw;text-align:right;font:400 .6rem/1.5 "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,234,217,.42);pointer-events:none;}',
     '.sl-oeffnen{display:inline-flex;align-items:center;gap:.5rem;font-size:.86rem;padding:.6rem 1rem;}',
     '.sl-oeffnen[hidden]{display:none;}',
     '.sl-oeffnen::before{content:"";width:.7rem;height:.7rem;border-radius:50%;background:radial-gradient(circle,#000 38%,#ffe2b4 44%,#d68c54 70%,transparent 72%);}',
-    '@media (max-width:560px){.sl-hilfe{display:none;}.sl-tafel{width:min(13.5rem,58vw);padding:.7rem .8rem;}}',
+    '@media (max-width:560px){.sl-tafel{width:min(13.5rem,58vw);padding:.7rem .8rem;}.sl-tafel.sl-eingeklappt{width:auto;}}',
     '@media (prefers-reduced-motion:reduce){.sl-buehne,.sl-tafel{transition:none;}}'
   ].join('\n');
 
@@ -285,7 +289,7 @@
       st.dist = Math.max(4.2, Math.min(34, st.dist));
 
       var css = canvas.getBoundingClientRect();
-      var dpr = Math.min(window.devicePixelRatio || 1, gross ? 1.5 : 2);
+      var dpr = Math.min(window.devicePixelRatio || 1, gross ? (st.fest ? 3 : 1.5) : 2);
       var W = Math.max(2, Math.round(css.width * dpr)), H = Math.max(2, Math.round(css.height * dpr));
       if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
       var w = Math.max(2, Math.round(W * st.scale)), h = Math.max(2, Math.round(H * st.scale));
@@ -337,6 +341,7 @@
       if (mess && bilder % 20 === 0) {
         mess.textContent = Math.round(1000 / dtMittel) + ' fps · ' + Math.round(st.scale * 100) + ' % ' + T().aufl + ' · ' + w + '×' + h;
       }
+      api.letzte = { w: w, h: h, W: W, H: H };
       var bewegt = st.flug || !ruhig || ziehen || Math.abs(st.vaz) + Math.abs(st.vel) > 1e-4 || schmutz;
       schmutz = false;
       if (bewegt) raf = requestAnimationFrame(zeichne);
@@ -435,17 +440,30 @@
       var kb = document.createElement('b'), ks = document.createElement('span'); kb.textContent = t.titel; ks.textContent = t.unter;
       kopf.appendChild(kb); kopf.appendChild(ks);
       tafel = document.createElement('div'); tafel.className = 'sl-tafel';
-      var h = document.createElement('h4'); h.textContent = t.regler; tafel.appendChild(h);
+      var h = document.createElement('button'); h.type = 'button'; h.className = 'sl-tafel-kopf'; h.textContent = t.regler;
+      var aussen = tafel; tafel = document.createElement('div'); tafel.className = 'sl-tafel-inhalt'; tafel.id = 'sl-tafel-inhalt';
+      h.setAttribute('aria-controls', tafel.id);
+      var klappen = function (zu) { aussen.classList.toggle('sl-eingeklappt', !!zu); h.setAttribute('aria-expanded', zu ? 'false' : 'true'); };
+      h.addEventListener('click', function () { klappen(!aussen.classList.contains('sl-eingeklappt')); });
+      // on a small screen the panel starts folded: the picture comes first
+      klappen(window.innerWidth <= 560 || window.innerHeight <= 480);
+      aussen.appendChild(h); aussen.appendChild(tafel);
       regler(tafel, t.groesse, 6, 20, 0.5, st.outer, function (v) { return nf(v) + ' rₛ'; }, function (v) { st.outer = v; });
       regler(tafel, t.temp, 3000, 16000, 100, st.temp, function (v) { return nf(v) + ' K'; }, function (v) { st.temp = v; });
       regler(tafel, t.rot, 0, 3, 0.05, st.rot, function (v) { return nf(v) + '×'; }, function (v) { st.rot = v; });
       regler(tafel, t.doppler, 0, 1, 0.01, st.doppler, function (v) { return Math.round(v * 100) + ' %'; }, function (v) { st.doppler = v; });
       regler(tafel, t.qual, 50, 220, 10, st.steps, function (v) { return v + ' ' + t.schritte; }, function (v) { st.steps = v; });
+      // Resolution by hand (Klaus 2026-11-15: sharper when enlarged). The lowest stop hands it back to the
+      // measured frame time; any other stop fixes the share of the device pixels that is computed.
+      regler(tafel, t.aufl, 15, 100, 5, 15, function (v) { return v < 20 ? t.auto : v + ' %'; }, function (v) {
+        if (v < 20) { st.fest = false; sperreBis = 0; bilder = 0; }
+        else { st.fest = true; st.scale = v / 100; }
+      });
       var reihe = document.createElement('div'); reihe.className = 'sl-reihe';
       flugKnopf = document.createElement('button'); flugKnopf.type = 'button'; flugKnopf.textContent = t.flug;
       flugKnopf.setAttribute('aria-pressed', 'false');
       flugKnopf.addEventListener('click', function () { flugSetzen(!st.flug); wach(); });
-      var rk = document.createElement('button'); rk.type = 'button'; rk.textContent = '↺'; rk.title = t.zurueck;
+      var rk = document.createElement('button'); rk.type = 'button'; rk.textContent = '↺';
       rk.setAttribute('aria-label', t.zurueck); rk.style.flex = '0 0 auto'; rk.addEventListener('click', heim);
       var fk = document.createElement('button'); fk.type = 'button';
       var fkText = function () { fk.textContent = t.farben + ': ' + (st.bunt > 0.5 ? t.bunt : t.natur); };
@@ -456,10 +474,10 @@
       mess = document.createElement('div'); mess.className = 'sl-mess'; mess.textContent = ' '; tafel.appendChild(mess);
       var zu = document.createElement('button'); zu.type = 'button'; zu.className = 'sl-zu'; zu.textContent = '← ' + t.zu;
       zu.addEventListener('click', schliessen);
-      var hilfe = document.createElement('div'); hilfe.className = 'sl-hilfe'; hilfe.textContent = t.hilfe;
 
       platz = document.createComment('sl'); canvas.parentNode.insertBefore(platz, canvas);
-      buehne.appendChild(canvas); buehne.appendChild(kopf); buehne.appendChild(tafel); buehne.appendChild(zu); buehne.appendChild(hilfe);
+      tafel = aussen;
+      buehne.appendChild(canvas); buehne.appendChild(kopf); buehne.appendChild(tafel); buehne.appendChild(zu);
       document.body.appendChild(buehne);
       buehne.addEventListener('pointermove', wach); buehne.addEventListener('pointerdown', wach);
       vorScale = st.scale; st.scale = Math.min(st.scale, 0.5); sperreBis = 0; sperrDauer = 3000; bilder = 0;
@@ -477,7 +495,7 @@
       if (platz && platz.parentNode) { platz.parentNode.insertBefore(canvas, platz); platz.remove(); }
       var b = buehne; buehne = null; mess = null; flugKnopf = null; tafel = null;
       if (b) b.remove();
-      st.scale = vorScale; heim(); bilder = 0; pruefeLauf(); anstoss();
+      st.fest = false; st.scale = vorScale; heim(); bilder = 0; pruefeLauf(); anstoss();
       if (knopf) knopf.focus({ preventScroll: true });
     }
     function taste(e) { if (e.key === 'Escape') schliessen(); }
