@@ -22,9 +22,12 @@ Siehe PULS-Eintrag „Topologie auf einen Blick, Klick-Hinweise heraus“. Datei
 - Punkt 6 (Clips in `sicherheit.html`, `<dt>Protokoll</dt>`): Fragen an Klaus, unbeantwortet.
 - Szene 1 der Einladung: keine Licht-Schicht, der Clip zeigt ein anderes Motiv (Pflege-Liste).
 - Klick-Sätze auf anderen Seiten als der Startseite: nicht durchgesehen.
-- Punkt 7, Forschungseintrag in Kimhub: nicht geschrieben. Der Zugriff dieser Sitzung reicht nur auf Sage-Protokol;
-  das Werkzeug `tools/sitzung-eintragen.mjs` liegt in Kimhub.
 - Bauanleitungen, Prompts, Modul-Code, `sicherheit.html`: nicht angefasst.
+
+## Nachtrag
+
+Der Forschungseintrag steht in Kimhub (Kimhub #464, nach dem Merge von #1172 geschrieben). Die erste Fassung
+dieser Übergabe nannte ihn als nicht geschrieben; Kimhub ließ sich danach der Sitzung hinzufügen.
 
 ## Gemessen
 
@@ -36,4 +39,3 @@ Siehe PULS-Eintrag. Alles im Container (Chromium, Software-Renderer).
 - Der Link-Hinweis, den der Browser über dem Schwarzen Loch zeigt (Titel und Adresse des Verweises): Klaus' erste
   Nachricht dazu kam abgeschnitten an. Er verschwindet nur, wenn die Fläche kein Verweis mehr ist.
 - Szene 1 der Einladung: Film behalten, entfernen oder neuer Clip.
-- Forschungseintrag für diese Sitzung in Kimhub nachtragen (Arm, Beginn/Ende aus Commits und PR-Merge).
