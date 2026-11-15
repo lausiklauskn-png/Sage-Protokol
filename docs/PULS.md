@@ -31,6 +31,18 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Lebendige Bilder: Schwarzes Loch, Observatorium, Meilensteine, Sonne, Einladung (Hauptsitzung)
+
+**Getan:** `assets/schwarzes-loch.js` (neu): das Schwarze Loch der Observatoriums-Karte wird im Browser gerechnet (WebGL2, gekrümmte Lichtwege), in den vier Browser-Farben, mit Umlauf per Ziehen und einem Vollbild mit Reglern, Kinoflug und Farbschalter. Die Rechen-Auflösung folgt der gemessenen Bildrate; reicht die kleinste Stufe nicht oder fehlt WebGL2, übernimmt ein Film, ohne beides bleibt die CSS-Fassung. Observatorium: Film hinter den Galaxien (`ereignishorizont.mp4`), die Galaxien einmal gemalt und danach nur noch vom Browser gedreht, mit Tiefe; die Bild-Schleife ruht, solange ein anderer Screen offen ist, und liest die Größen nicht mehr je Bild. Meilensteine: je Kachel ein kleiner Film aus genau dem Bild (`ms-1` bis `ms-5`); die offene Kachel wächst (zwei Spalten, mindestens quadratisch) statt zu schrumpfen (Klaus: „beim Draufklicken wird das Ganze kleiner statt größer“). Sonne: Film (`sonne.mp4`) im durchsichtigen Kreis, der farbige Ring fällt weg, der Rand läuft weich aus; drei kleine Galaxien umkreisen sie in 6, 7 und 8 Sekunden (Klaus: „wie etwas um die Sonne herumfliegt“). Sonnen-Galerie: Hintergrund ist jetzt das Säulen-Bild, das im Observatorium frei wurde, die Stationen sind gemalt. Einladung: Tür (Szene 5b) und Lichtung (Szene 6) je mit Film über dem Standbild, eigene Kopien unter `docs/einladung/vendor/video/`.
+
+**Clips:** zwölf über Higgsfield (Seedance 2.5, je 6 s; ein dreizehnter Auftrag schlug fehl und wurde wiederholt), ohne Ton verkleinert, als Hin-und-zurück-Schleife; acht davon aus den vorhandenen Bildern als Startbild. Zehn liegen im Depot; zwei sind ersetzt und liegen nicht dort (der erste, bernsteinfarbene Schwarze-Loch-Clip und die erste Sonne aus dem Sonnenbild, statt ihrer eine Sonne ohne harten Rand). Guthaben vorher 730, nachher 113 Credits; die Vorab-Auskunft nannte 42 je Clip, abgebucht wurden zusammen rund 617. Zusammen 3,0 MB, jeder lädt erst bei Sichtbarkeit, keiner bei „Bewegung reduzieren“ oder Save-Data.
+
+**Gemessen:** `tests/smoke_lebendig.mjs` 41 grün · 0 rot; `tests/gegenprobe_lebendig.sh` an einer Wegwerf-Kopie, zehn Fälle, zehn gefangen. `smoke_sequenz` 26, `smoke_startseite_einstiege` 16, `smoke_observatorium_truhe` 22/22, `smoke_package_json` 7 grün. Im Browser (1280 und 390 breit): Filme laufen, keine Konsolen-Fehler, Seite nicht breiter als das Fenster; Kachel 382 → 782 Pixel beim Öffnen; Vollbild öffnet und schließt. Der Gesamtlauf wurde nicht wiederholt. **Nicht gemessen:** Tablet (Tab S6). Die Live-Rechnung lief hier nur im Software-Renderer, ihre Bildrate am Gerät ist offen. `docs/einladung/_smoke.mjs` nicht gelaufen (wie am selben Tag vermerkt).
+
+**Nicht angefasst:** Discovery-Seite, `sicherheit.html`, Modul-Code, Anleitungstexte. `assets/milchstrasse-web.webp` wird von keiner Seite mehr geladen und liegt weiter im Depot.
+
+**Offen:** Klaus' Sichttest am Tablet · Discovery-Seite · die offenen Punkte des Eintrags darunter.
+
 ## 2026-11-15 · Film-Sequenzen auf Startseite, Paper und Einladung (Hauptsitzung)
 
 **Getan:** Fünf kurze stumme Clips (je 6 s, 960×540, zusammen rund 2 MB) liegen unter `assets/video/`. Neues `assets/sequenz.js`: ein Clip mit Stationen-Text, lädt erst bei Sichtbarkeit, Anhalten-Knopf, kein Autoplay bei „Bewegung reduzieren“ und Save-Data, fail-soft. Eingebaut: Startseite (Observatorium nach dem Kopf, Sternbild in Warum-Tour 01, Siegel in Warum-Tour 04), `paper.html` (Fernrohr, nicht im Druck), Einladung Szene 1 (Mycel-Film über dem Standbild, eigene Kopie unter `docs/einladung/vendor/video/`). Die Observatorium-Sequenz nennt den Ort als Quelle der Lehren und Bauanleitungen für die Bau-Sitzungen. Grammatik: „kein Cloud“ → „keine Cloud“.
@@ -493,39 +505,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 
 **Nächster Schritt:** Klaus' Sichttest im Firmennetz (mehrere Apps über denselben Beitritts-Link). Danach die `sbkim-qry`-Marke in der Mycel-Karte.
 
-## 2026-10-13 · Eigenes Netz Schritt 2+3 · Einstellung „Netz“ in 23-UI, internes Relais, erster Träger Sende-Prüfer
+## Eine Sitzung vom 2026-10-13 (Eigenes Netz Schritt 2+3) — ausgelagert am 2026-11-15
 
-**Brief:** [`docs/BRIEF_2026-10-13_eigenes-netz-schritt2.md`](BRIEF_2026-10-13_eigenes-netz-schritt2.md).
-
-**Gebaut:**
-- **23-UI (#1075):** Box „Netz“ in der Mycel-Blase (`<details data-sbkim-netz-box>`, Knopf `data-sbkim-netz` = oeffentlich · eigen · ungueltig).
-  - Ein Netz anlegen oder per Code beitreten.
-  - **Beitritts-Link** `#sbkim-netz=` + base64url({v:1,n,r,c}): Die App fragt vor der Übernahme und nennt dabei Name und Relais; danach wird die Adresse geputzt. Daneben der Weg von Hand.
-  - „Zurück zum öffentlichen Netz“ löscht die Einstellung.
-  - Im eigenen Netz wird beim Öffnen automatisch verbunden.
-  - Eine kaputte Einstellung verbindet nicht und fällt nicht still zurück.
-  - INTERFACES ist zuerst geschrieben. Die Bündel sind nachgezogen; `smoke_vollbundle` prüft jetzt den Inhalt statt eines sha.
-- **Internes Relais (family-project #355):** `server/relais-intern/` mit `einrichten.sh`, `config.toml`, Caddy-Block und `EINRICHTEN.md`.
-  - Zweiter Container `relay-intern` neben `relay`; die Software ist abgelesen.
-  - Flut-Grenzen gesetzt, **keine pubkey_whitelist** (Klaus: „jederzeit ein neues Tool hinzufügen“).
-  - Caddy wird nur nach `validate` neu geladen; das Werkzeug ist wiederholbar.
-- **Sende-Prüfer (#76):** 05b, 23 und 23-UI byte-1:1 per `kanon-verteilen` (die Nachbarn eingeengt auf einen Verweis), Pins nachgezogen, Cache v66.
-
-**Gemessen:**
-- `smoke_netz_ui` 44 grün; `gegenprobe_netz_ui` 9 gefangen · 0 blind · 0 tot.
-- `smoke_relais_intern` 21 grün; `gegenprobe_relais_intern` 9 gefangen · 0 blind · 0 tot.
-- Sende-Prüfer: `npm test` 675 grün. Im Browser steht die Netz-Box da, und beim Laden geht kein ws hinaus.
-
-⚠ **Nicht gemessen:**
-- das interne Relais am echten Server (Klaus: INWX-DNS, dann `einrichten.sh` auf dem Hetzner Cloud-Server)
-- der Beitritt per Link am Tablet
-
-⚠ **Offen:**
-- 16 weitere Träger hängen bei Modul 23 nach, Modul 23-UI sogar in **zwei** älteren Fassungen (Jasons- und Mein-Tresor eigen). Das ist ein Generationssprung; die Proben laufen je im Ziel-Repo.
-- Workflow PDF, Workflow-Needs und Workflow-Calculate sind noch nicht angedockt.
-- Der Knopf in der Mycel-Karte fehlt noch.
-
-**Nächster Schritt:** Klaus richtet das Relais ein und macht den Sichttest im Sende-Prüfer. Danach Schritt 4 (Träger nachziehen) und Schritt 5 (Mycel-Karte).
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-29.md`](sessions/archiv/2026-11_puls-auslagerung-29.md)
+> (34 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-13 (Eigenes Netz Schritt 1) — ausgelagert am 2026-11-15
 

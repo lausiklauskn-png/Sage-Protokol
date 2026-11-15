@@ -26,7 +26,7 @@
     'precision highp float;',
     'out vec4 o;',
     'uniform vec2 uRes; uniform float uTime; uniform vec3 uCam; uniform mat3 uBasis;',
-    'uniform float uFov, uOuter, uTemp, uRot, uDoppler, uCompress;',
+    'uniform float uFov, uOuter, uTemp, uRot, uDoppler, uCompress, uBunt;',
     'uniform int uSteps;',
     'const float RIN = 2.6;',
     'float h11(float n){ return fract(sin(n)*43758.5453123); }',
@@ -54,35 +54,43 @@
     '  float g=vnoise(d*1.7+20.); c += smoothstep(.62,.95,g)*vec3(.035,.02,.05);',
     '  return c; }',
     // accretion disk: emission (rgb) and opacity (a) at a plane crossing
-    'vec4 disk(vec3 hit, vec3 v){',
+    'vec4 disk(vec3 hit, vec3 v, int order){',
     '  float r=length(hit.xz); if(r<RIN||r>uOuter) return vec4(0.);',
     '  float rr=(r-RIN)/(uOuter-RIN);',
     '  float dens=smoothstep(0.,.07,rr)*pow(1.-rr,1.35);',
     '  float ang=atan(hit.z,hit.x); float om=uRot*2.4*pow(r,-1.5);',
     '  float n=0.;',
     '  for(int k=0;k<2;k++){ float ph=fract(uTime*.045+float(k)*.5); float w=1.-abs(2.*ph-1.);',
-    '    float a=ang+om*(ph-.5)*22.+float(k)*1.7; vec3 q=vec3(cos(a)*1.6,sin(a)*1.6,r*1.9+float(k)*7.);',
+    '    float a=ang-om*(ph-.5)*22.+float(k)*1.7; vec3 q=vec3(cos(a)*1.6,sin(a)*1.6,r*1.9+float(k)*7.);',
     '    float f=vnoise(q)*.55+vnoise(q*vec3(2.1,2.1,2.6)+3.)*.3+vnoise(q*vec3(4.3,4.3,6.1)+8.)*.15; n+=w*f; }',
-    '  float streak=smoothstep(.18,.85,n);',
+    '  float streak=order>1 ? .5 : smoothstep(.18,.85,n);',
     '  float beta=sqrt(.5/r); vec3 vd=normalize(vec3(-hit.z,0.,hit.x));',
     '  float D=sqrt(1.-beta*beta)/(1.-beta*dot(vd,-normalize(v)));',
     '  float s=mix(1.,D*sqrt(1.-1./r),uDoppler);',
     '  float T=uTemp*pow(RIN/r,.75)*s;',
+    // fantasy palette: three swirling streams (red, yellow, green) around a blue inner ring
+    '  float ca=ang-uTime*.22*uRot+2.3*log(r)+(n-.5)*.9;',
+    '  vec3 w=pow(max(vec3(0.),.5+.5*cos(ca-vec3(0.,2.0944,4.1888))),vec3(2.2)); w/=(w.x+w.y+w.z+1e-4);',
+    '  vec3 bunt=w.x*vec3(.92,.10,.07)+w.y*vec3(1.,.62,.02)+w.z*vec3(.06,.62,.16);',
+    '  float innen=smoothstep(.34,.0,rr);',
+    '  bunt=mix(bunt,vec3(.04,.20,1.),innen); bunt=mix(bunt,vec3(.35,.6,1.),innen*innen*.35);',
+    '  bunt*=mix(.8,1.25,clamp((uTemp-3000.)/13000.,0.,1.));',
+    '  vec3 farbe=mix(bb(T),bunt*mix(1.5,.55,innen),uBunt);',
     '  float I=pow(RIN/r,2.1)*pow(s,3.6)*(.25+1.6*streak)*5.5;',
     '  float a=clamp(dens*(.35+.9*streak),0.,1.);',
-    '  return vec4(bb(T)*I*a, a); }',
+    '  return vec4(farbe*I*a, a); }',
     'void main(){',
     '  vec2 uv=(gl_FragCoord.xy-.5*uRes)/min(uRes.x,uRes.y);',
     '  vec3 v=normalize(uBasis*vec3(uv*uFov,1.)); vec3 p=uCam;',
     '  vec3 hv=cross(p,v); float h2=dot(hv,hv);',
-    '  vec3 col=vec3(0.); float A=0.; bool escaped=false;',
+    '  vec3 col=vec3(0.); float A=0.; bool escaped=false; int order=0;',
     '  for(int i=0;i<220;i++){ if(i>=uSteps) break;',
     '    float r2=dot(p,p); if(r2<1.02) break;',
     '    if(r2>1600.&&dot(p,v)>0.){ escaped=true; break; }',
     '    float r=sqrt(r2); float dt=clamp(r*.16,.05,3.)*min(1.,.35+abs(p.y)*1.2+max(0.,r-uOuter)*.2);',
     '    dt=max(dt*mix(.45,1.,smoothstep(1.6,4.,r)),.04);',
     '    v+=-1.5*h2*p/(r2*r2*r)*dt; vec3 pn=p+v*dt;',
-    '    if(p.y*pn.y<0.){ vec3 hit=mix(p,pn,p.y/(p.y-pn.y)); vec4 d=disk(hit,v);',
+    '    if(p.y*pn.y<0.){ vec3 hit=mix(p,pn,p.y/(p.y-pn.y)); vec4 d=disk(hit,v,order); order++;',
     '      col+=(1.-A)*d.rgb; A+=(1.-A)*d.a; if(A>.985) break; }',
     '    p=pn; }',
     '  if(escaped) col+=(1.-A)*sky(normalize(v));',
@@ -112,19 +120,19 @@
   var TEXTE = {
     de: { titel: 'Singularität', unter: 'Gekrümmtes Licht · live im Browser gerechnet', regler: 'Regler',
           groesse: 'Scheibengröße', temp: 'Temperatur', rot: 'Rotation', doppler: 'Doppler-Stärke', qual: 'Qualität',
-          schritte: 'Schritte', flug: 'Kinoflug', zurueck: 'Ansicht zurücksetzen', zu: 'Schließen',
+          schritte: 'Schritte', flug: 'Kinoflug', farben: 'Farben', bunt: 'Browser', natur: 'Natur', zurueck: 'Ansicht zurücksetzen', zu: 'Schließen',
           hilfe: 'Ziehen: Umlauf · Zwei Finger oder Mausrad: Zoom · Doppeltipp: zurück',
           knopf: 'Selbst steuern', aufl: 'Auflösung', aufnahme: 'Aufnahme' },
     en: { titel: 'Singularity', unter: 'Bent light · computed live in your browser', regler: 'Controls',
           groesse: 'Disk size', temp: 'Temperature', rot: 'Rotation', doppler: 'Doppler strength', qual: 'Quality',
-          schritte: 'steps', flug: 'Cinema flight', zurueck: 'Reset view', zu: 'Close',
+          schritte: 'steps', flug: 'Cinema flight', farben: 'Colours', bunt: 'Browser', natur: 'Nature', zurueck: 'Reset view', zu: 'Close',
           hilfe: 'Drag: orbit · Two fingers or wheel: zoom · Double tap: reset',
           knopf: 'Steer it yourself', aufl: 'resolution', aufnahme: 'Recording' }
   };
   function T() { return TEXTE[(document.documentElement.lang || 'de').slice(0, 2)] || TEXTE.de; }
 
   var CSS = [
-    '.sl-canvas,.sl-video{position:absolute;inset:-22%;width:144%;height:144%;display:block;pointer-events:auto;touch-action:pan-y;cursor:grab;border-radius:50%;}',
+    '.sl-canvas,.sl-video{position:absolute;inset:-16%;width:132%;height:132%;display:block;pointer-events:auto;touch-action:pan-y;cursor:grab;border-radius:50%;}',
     '.sl-video{object-fit:cover;-webkit-mask-image:radial-gradient(circle,#000 52%,transparent 70%);mask-image:radial-gradient(circle,#000 52%,transparent 70%);cursor:pointer;}',
     '.sl-canvas.sl-zieht{cursor:grabbing;}',
     '.sl-aktiv>.bh-disk,.sl-aktiv>.bh-horizon,.sl-aktiv>.bh-core{display:none;}',
@@ -139,7 +147,7 @@
     '.sl-tafel h4{margin:0 0 .55rem;font:500 .6rem/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:rgba(234,223,203,.55);}',
     '.sl-tafel label{display:grid;grid-template-columns:1fr auto;gap:.1rem .5rem;margin:.5rem 0 0;}',
     '.sl-tafel label i{font-style:normal;color:rgba(234,223,203,.6);font-variant-numeric:tabular-nums;}',
-    '.sl-tafel input[type=range]{grid-column:1/-1;width:100%;height:22px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;}',
+    '.sl-tafel input[type=range]{grid-column:1/-1;width:100%;height:22px;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;-webkit-appearance:none;appearance:none;}',
     '.sl-tafel input[type=range]::-webkit-slider-runnable-track{height:2px;border-radius:2px;background:linear-gradient(90deg,#f1c98a,rgba(241,201,138,.18));}',
     '.sl-tafel input[type=range]::-moz-range-track{height:2px;border-radius:2px;background:linear-gradient(90deg,#f1c98a,rgba(241,201,138,.18));}',
     '.sl-tafel input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-7px;border-radius:50%;background:#fff5e2;box-shadow:0 0 0 4px rgba(241,201,138,.18),0 0 14px rgba(255,214,150,.7);}',
@@ -190,7 +198,7 @@
     var knopf = opt.knopf || null;
 
     var st = { az: 0.6, el: 0.2, dist: 17, vaz: 0, vel: 0, outer: 12, temp: 8500, rot: 1, doppler: 1, steps: 110,
-               flug: false, flugT: 0, scale: 0.7, zeit: 0 };
+               flug: false, flugT: 0, scale: 0.7, zeit: 0, bunt: opt.farben === 'natur' ? 0 : 1 };
     var HEIM = { az: 0.6, el: 0.2, dist: 17 };
     var api = { zustand: 'aus', st: st };
     szene.__sl = api;
@@ -201,10 +209,12 @@
       if (knopf) knopf.hidden = true;
       if (!opt.video) return;
       var v = document.createElement('video');
-      v.className = 'sl-video'; v.muted = true; v.loop = true; v.autoplay = !ruhig; v.playsInline = true;
-      v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true'); v.preload = 'metadata';
+      var sparsam = !!(navigator.connection && navigator.connection.saveData);
+      v.className = 'sl-video'; v.muted = true; v.loop = true; v.autoplay = !ruhig && !sparsam; v.playsInline = true;
+      v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true'); v.preload = sparsam ? 'none' : 'metadata';
       if (opt.poster) v.poster = opt.poster;
       v.addEventListener('loadeddata', function () { szene.classList.add('sl-aktiv'); api.zustand = 'aufnahme'; });
+      if (sparsam && opt.poster) { szene.classList.add('sl-aktiv'); api.zustand = 'aufnahme'; }
       v.addEventListener('error', function () { v.remove(); szene.classList.remove('sl-aktiv'); });
       v.src = opt.video;
       szene.insertBefore(v, szene.firstChild);
@@ -298,7 +308,7 @@
       gl.uniform3fv(u.uCam, cam); gl.uniformMatrix3fv(u.uBasis, false, r2.concat(u2, fw));
       gl.uniform1f(u.uFov, gross ? 1.15 : 1.75);
       gl.uniform1f(u.uOuter, st.outer); gl.uniform1f(u.uTemp, st.temp); gl.uniform1f(u.uRot, st.rot);
-      gl.uniform1f(u.uDoppler, st.doppler); gl.uniform1f(u.uCompress, halb ? 0 : 1); gl.uniform1i(u.uSteps, st.steps);
+      gl.uniform1f(u.uDoppler, st.doppler); gl.uniform1f(u.uBunt, st.bunt); gl.uniform1f(u.uCompress, halb ? 0 : 1); gl.uniform1i(u.uSteps, st.steps);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       gl.bindTexture(gl.TEXTURE_2D, tex); gl.generateMipmap(gl.TEXTURE_2D);
@@ -437,7 +447,12 @@
       flugKnopf.addEventListener('click', function () { flugSetzen(!st.flug); wach(); });
       var rk = document.createElement('button'); rk.type = 'button'; rk.textContent = '↺'; rk.title = t.zurueck;
       rk.setAttribute('aria-label', t.zurueck); rk.style.flex = '0 0 auto'; rk.addEventListener('click', heim);
+      var fk = document.createElement('button'); fk.type = 'button';
+      var fkText = function () { fk.textContent = t.farben + ': ' + (st.bunt > 0.5 ? t.bunt : t.natur); };
+      fkText(); fk.addEventListener('click', function () { st.bunt = st.bunt > 0.5 ? 0 : 1; fkText(); anstoss(); wach(); });
       reihe.appendChild(flugKnopf); reihe.appendChild(rk); tafel.appendChild(reihe);
+      var reihe2 = document.createElement('div'); reihe2.className = 'sl-reihe'; reihe2.style.marginTop = '.45rem';
+      reihe2.appendChild(fk); tafel.appendChild(reihe2);
       mess = document.createElement('div'); mess.className = 'sl-mess'; mess.textContent = ' '; tafel.appendChild(mess);
       var zu = document.createElement('button'); zu.type = 'button'; zu.className = 'sl-zu'; zu.textContent = '← ' + t.zu;
       zu.addEventListener('click', schliessen);
