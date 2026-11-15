@@ -31,6 +31,24 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Sonne und Loch als Knopf, Klick-Sätze heraus, Auflösungs-Regler, Türbild am Handy einmal (Hauptsitzung)
+
+**Auftrag:** Klaus' Antworten auf die drei offenen Fragen und sein Sichttest am Handy (zwei Bildschirmfotos der Einladung). Discovery und Einladung laufen bei ihm im Hoch- und Querformat, das Schwarze Loch ebenfalls.
+
+**Getan, Startseite (`index.html`):** Sonne und Schwarzes Loch sind Knöpfe (`role="button"`, Eingabe- und Leertaste), keine Verweise mehr; der Browser zeigt beim Überfahren keine Adresse. Der Satz neben „Selbst steuern“ ist heraus. Heraus oder umgeschrieben sind sieben Klick-Sätze (Detail-Tour, Frage-Demo samt Leerzustand, Galaxien-Zeile, Truhe innen, Lernpfad-Hinweis, Kurzhinweis der Fremd-Lampe). Der Text unter „Wie viel ist Theater, wie viel ist real?“ (669 Zeichen) steht hinter dem Knopf „Was dahinter steht“; der Ring daneben bleibt sichtbar.
+
+**Getan, Schwarzes Loch (`assets/schwarzes-loch.js`):** neuer Regler „Auflösung“ im Vollbild: unterster Anschlag „automatisch“ (wie bisher nach der Bildrate), sonst 20 bis 100 % der Gerätepixel fest; von Hand gestellt gilt die volle Pixeldichte des Geräts (bis 3, vorher im Vollbild höchstens 1,5). Der Kopf „Regler“ klappt die Leiste ein und aus; unter 560 px Breite oder 480 px Höhe startet sie eingeklappt. Die Bedien-Zeile unten rechts und der Kurzhinweis am ↺-Knopf sind heraus.
+
+**Getan, Einladung (`docs/einladung/index.html`):** das Türbild stand am Handy dreimal untereinander (`background-size: contain` ohne `no-repeat`, Klaus' Bildschirmfoto); es steht jetzt einmal, darüber und darunter dunkel. „▶ Tippen:“ ist in allen vier Sprachen aus der Sternen-Zeile heraus.
+
+**Gemessen:** `tests/smoke_startseite_bedienung.mjs` (neu, Browser, 1280×800 und 390×844): 39 grün · 0 rot; am unveränderten `main` 7 grün · 32 rot. Im Container bei 390×844: Auflösung 100 % rechnet 390×844 von 390×844, 50 % 195×422; eingeklappte Leiste 44 px hoch (offen 381). `tests/gegenprobe_lebendig.sh` 26 gefangen · 0 durch. Gesamtlauf 140 Proben: 131 grün, 7 rot, 2 nicht lauffähig; die sieben sind dieselben wie im Eintrag darunter. `docs/einladung/_smoke.mjs` startet hier nicht (sucht `chromium_headless_shell-1194`, den es im Container nicht gibt), am unveränderten `main` ebenso. **Nicht gemessen:** Klaus' Geräte nach dem Umbau; die Schärfe bei 100 % am Tab S6 und die Bildrate dort.
+
+**Nicht angefasst:** Bauanleitungen, Prompts, Modul-Code (die Lampen-Texte aus Modul 17 tragen weiter „Klick öffnet …“), `sicherheit.html`.
+
+**Offen:** Tür als laufender Film statt Scroll-Fahrt · Film „Schlüssel geht in die Werkzeugkiste“ · Sternen-Szene und `sbkim-demo` als Film mit Arthurs Stimme (Klaus 2026-11-15, Material aus dem Depot mit den Datei-Organizer-Videos) · Punkte 5 und 7 des Startbriefs.
+
+Übergabe: [`sessions/archiv/2026-11-15_knoepfe-aufloesung-tuerbild.md`](sessions/archiv/2026-11-15_knoepfe-aufloesung-tuerbild.md)
+
 ## 2026-11-15 · Hochformat-Namen brechen um, Licht-Film-Werkzeug bricht ab (Hauptsitzung)
 
 **Auftrag:** Startbrief mit acht offenen Punkten nach #1172/#1173. Bearbeitet: zwei der drei Pflege-Einträge aus Punkt 6, weil sie ohne Rückmeldung gehen. Die Punkte 1 bis 5 und 7 warten auf Klaus (Sichttest, drei Fragen, Material).
