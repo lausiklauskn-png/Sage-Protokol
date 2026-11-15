@@ -12,6 +12,7 @@ fall() { # name · erwartete rote Zeile · Sabotage-Befehl (läuft im Kopie-Ordn
   cp "$QUELLE/index.html" "$A/"; cp "$QUELLE/assets/schwarzes-loch.js" "$A/assets/"
   cp -r "$QUELLE/assets/video" "$A/assets/"; cp "$QUELLE/docs/einladung/index.html" "$A/docs/einladung/"
   cp -r "$QUELLE/docs/einladung/vendor/video" "$A/docs/einladung/vendor/"
+  mkdir -p "$A/assets/discovery"; cp "$QUELLE/assets/milchstrasse-web.webp" "$QUELLE/assets/observatorium-galaxien-bg.jpg" "$A/assets/"; cp "$QUELLE/assets/discovery/galaxie-hintergrund.webp" "$A/assets/discovery/"
   ( cd "$A" && eval "$3" )
   local AUS; AUS="$(LEBENDIG_WURZEL="$A" node "$QUELLE/tests/smoke_lebendig.mjs" 2>&1)"
   if echo "$AUS" | grep -q "✗ .*$2"; then gefangen=$((gefangen+1)); echo "  gefangen: $1"
@@ -30,5 +31,7 @@ fall "Kachel schrumpft wieder"      "die offene Kachel nimmt zwei Spalten" "sed 
 fall "Mindesthöhe entfernt"         "bleibt mindestens quadratisch"        "sed -i \"s|k.offsetWidth + 'px' : ''|''|\" index.html"
 fall "Mini-Universen nicht gemalt"  "die Mini-Universen werden gemalt"     "sed -i 's|try { malMiniUniversum(el, lehre.shape, lehre.n); } catch (_e) {}||' index.html"
 fall "Schleife läuft immer"         "die Schleife ruht"                    "sed -i 's|if (stage.offsetParent === null) {|if (false) {|' index.html"
+fall "Hintergrund-Bild fehlt"       "gibt-es-nicht.webp.: liegt im Depot" "sed -i \"s|'assets/discovery/galaxie-hintergrund.webp',|'assets/discovery/gibt-es-nicht.webp',|\" index.html"
+fall "Hintergrund wechselt nicht"   "gewechselt wird beim Öffnen"          "sed -i \"s#if (id === 'sonnen' || id === 'observatorium') wechsleGalaxieHintergrund(id);##\" index.html"
 echo "═══ $gefangen gefangen · $durch durchgerutscht ═══"
 [ "$durch" -eq 0 ]
