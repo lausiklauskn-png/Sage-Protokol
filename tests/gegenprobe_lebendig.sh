@@ -45,5 +45,6 @@ fall "Apps wieder schmal"           "das Raster füllt die Kartenbreite"    "sed
 fall "Einladungs-Film ersetzt Bild" "liegt als Licht über dem Standbild"  "sed -i 's|  mix-blend-mode: screen;\$||' docs/einladung/index.html"
 fall "Naht-Band fehlt"              "ein weiches Band über die Naht"       "sed -i 's|  bottom: -16vh; height: 58vh;|  height: 58vh;|' docs/einladung/index.html"
 fall "Schlüssel-Kasten hart"        "läuft an den Rändern aus"             "sed -i 's|#scene-5 .key-host .key-image, #scene-5 .key-host canvas {|#scene-5 .nichts {|' docs/einladung/index.html"
+fall "Licht wieder grell"           "liegt gedämpft über dem Bild"         "sed -i 's|.licht-film.laeuft { opacity: 0.3; }|.licht-film.laeuft { opacity: 1; }|' docs/discovery/index.html"
 echo "═══ $gefangen gefangen · $durch durchgerutscht ═══"
 [ "$durch" -eq 0 ]
