@@ -31,6 +31,24 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Vollbild, Klappkarten, volle Breite, Licht-Schichten auf Discovery und Einladung (Hauptsitzung)
+
+**Auftrag:** Klaus' Rückmeldung vom Monitor (DeX, 2000 px breit) einarbeiten, Discovery-Seite „Bilder bleiben, nur Lichter leben“. Die Rückmeldung kam während der Sitzung in Sprachnachrichten und Bildschirmfotos.
+
+**Getan, Startseite (`index.html`):** beide Galaxien-Screens füllen offen das ganze Fenster (vorher nur die 1280-px-Spalte). Fünf Karten liegen unter einem Knopf (Modul-Liste, „Wie eine Verbindung entsteht“, „Einblicke“, Sage-Identität, Andock); ihr Inhalt wird erst beim Öffnen gezeichnet, ohne Skript bleiben sie offen. Der Text steht weiter in der Datei, nachgeladen wird nichts. Einladung, Discovery, Mycel-Karte und Topologie bleiben offen. Die Apps („Wer ist schon angedockt?“) stehen als Raster über die ganze Kartenbreite (4 Spalten bei 1280, 6 bei 2000, 3 bei 820, 1 bei 390). Die ganze Seite nutzt die volle Breite; ab 1500 px stehen acht Karten paarweise, die Sonnen-Karte ist dafür neben das Schwarze Loch gerückt. Grundschrift wächst ab rund 1270 px bis 125 % bei 2000 px. Modul-Topologie nimmt die Kartenbreite, Beschriftung 11,5/13 px statt 9/10. Meilenstein-Kachel: die ganze Kachel schaltet auf und zu (vorher nur das Textband; Klaus: „ließ sich größer machen, aber nicht wieder zurückklicken“), ab 1800 px fünf in einer Reihe. Die drei kreisenden Galaxien um die Sonne sind entfernt. Galaxien drehen sich in 26/32/38 s statt 80/100/120 s und gegen den Uhrzeigersinn (Arme laufen nach). `assets/galaxien/mycel-sonne-erde.webp` ist aus der Hintergrund-Liste und dem Depot (640 px hoch, auf dem Monitor unscharf); die Liste hat sieben Bilder.
+
+**Getan, Licht-Schichten:** `tools/licht-film-bauen.py` (neu) richtet einen Clip am Bild aus, zieht je Bildpunkt das Dunkelste über die Zeit ab und passt den Rest auf den Rahmen der Seite ein. Übrig bleibt ein schwarzer Film mit dem, was heller wird; die Seite legt ihn mit `mix-blend-mode: screen` über das unveränderte Bild. Discovery (`docs/discovery/index.html`): acht von zwölf Bildern tragen eine Schicht (`assets/discovery/licht/`, zusammen 1,1 MB), geladen erst bei Sichtbarkeit, nicht bei „Bewegung reduzieren“ oder Save-Data. Ohne Schicht: Physarum, Plastik, Flechte, Ophiocordyceps. Einladung: die Filme über Tür und Lichtung sind auf dieselbe Art umgebaut (Klaus' zwei Bildschirmfotos: Standbild scharf, Film unscharf); 197 → 85 KB und 212 → 24 KB. Der Mycel-Film in Szene 1 ist unverändert.
+
+**Getan, Einladung (`docs/einladung/index.html`):** weiche Nähte Schlüssel → Tür → Lichtung als Band an der Tür-Szene, reines CSS; Schlüsselbild und Funken-Schicht laufen am Kastenrand aus.
+
+**Clips:** acht über Higgsfield (Seedance 2.5, 4 s, 480p, je 12 Credits laut Auskunft und laut Abbuchung), zwei Aufträge wurden wegen Taktgrenze (429) abgewiesen und einer davon wiederholt. Guthaben 113,43 → 17,43. Die Abbuchungsliste vom Nachmittag zeigt für die 720p-Clips 42 und zweimal 56 Credits, dazu Posten „Eleven v4“ und „GPT Image“ im selben Zeitraum.
+
+**Gemessen:** `tests/smoke_lebendig.mjs` 81 grün · 0 rot; `tests/gegenprobe_lebendig.sh` 23 Fälle, 23 gefangen. Gesamtlauf 137 Proben: 129 grün, 6 rot, 2 nicht lauffähig; die sechs sind auf dem unveränderten Stand ebenfalls rot. Im Browser (Chromium, Software-Renderer): Screens 2000×1050, 844×390, 390×844, 1280×800 je volle Fläche, alle Galaxien im Fenster; Startseite 390/820/1280/1920/2000 nicht breiter als das Fenster, keine Seitenfehler; Kachel auf/zu/auf/zu in drei Breiten; Discovery 8 Filme laufen, 0 Abrufe vor dem Scrollen, 0 Filme bei reduzierter Bewegung. **Nicht gemessen:** Klaus' Geräte (Monitor, Tab S6, Handy quer). `docs/einladung/_smoke.mjs` und `docs/discovery/_smoke.mjs` nicht gelaufen.
+
+**Gefunden, nicht verfolgt** (in [`PFLEGE-LISTE.md`](PFLEGE-LISTE.md)): die Verläufe `.scene-fade-top/-bot` der Einladung standen im Messlauf null Mal im Dokument · die Hochformat-Schriftgrößen der Topologie verloren gegen die Grundregel (hier behoben) · „Rate-Limit & TTL“ überlappt in der Topologie die Zeile „weitere Module“.
+
+**Offen:** Klaus' Sichttest · Einladung als ein durchgehender Film (Schlüssel → Tür → Lichtung) statt Scrollen · `sbkim-demo` („Wie zwei sich finden“) als kleiner Film mit gesprochener Erklärung · ein schärferes Hintergrundbild von Klaus (Querformat 16:9, mindestens 2560×1440) · die offenen Punkte der beiden Einträge darunter.
+
 ## 2026-11-15 · Lebendige Bilder: Schwarzes Loch, Observatorium, Meilensteine, Sonne, Einladung (Hauptsitzung)
 
 **Getan:** `assets/schwarzes-loch.js` (neu): das Schwarze Loch der Observatoriums-Karte wird im Browser gerechnet (WebGL2, gekrümmte Lichtwege), in den vier Browser-Farben, mit Umlauf per Ziehen und einem Vollbild mit Reglern, Kinoflug und Farbschalter. Die Rechen-Auflösung folgt der gemessenen Bildrate; reicht die kleinste Stufe nicht oder fehlt WebGL2, übernimmt ein Film, ohne beides bleibt die CSS-Fassung. Observatorium: Film hinter den Galaxien (`ereignishorizont.mp4`), die Galaxien einmal gemalt und danach nur noch vom Browser gedreht, mit Tiefe; die Bild-Schleife ruht, solange ein anderer Screen offen ist, und liest die Größen nicht mehr je Bild. Meilensteine: je Kachel ein kleiner Film aus genau dem Bild (`ms-1` bis `ms-5`); die offene Kachel wächst (zwei Spalten, mindestens quadratisch) statt zu schrumpfen (Klaus: „beim Draufklicken wird das Ganze kleiner statt größer“). Sonne: Film (`sonne.mp4`) im durchsichtigen Kreis, der farbige Ring fällt weg, der Rand läuft weich aus; drei kleine Galaxien umkreisen sie in 6, 7 und 8 Sekunden (Klaus: „wie etwas um die Sonne herumfliegt“). Sonnen-Galerie: Hintergrund ist jetzt das Säulen-Bild, das im Observatorium frei wurde, die Stationen sind gemalt. Einladung: Tür (Szene 5b) und Lichtung (Szene 6) je mit Film über dem Standbild, eigene Kopien unter `docs/einladung/vendor/video/`.
@@ -484,28 +502,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 
 **Nächster Schritt:** Klaus' Sichttest im Firmennetz. Danach die Fragen eines Firmennetzes in der Karte am echten Relais.
 
-## 2026-10-13 · Eigenes Netz Schritt 4+5 · 17 Träger nachgezogen, 4 neue Knoten, Firmennetz-Knopf in der Mycel-Karte
+## Eine Sitzung vom 2026-10-13 (Eigenes Netz Schritt 4+5) — ausgelagert am 2026-11-15
 
-**Brief:** [`docs/BRIEF_2026-10-13_eigenes-netz-schritt4.md`](BRIEF_2026-10-13_eigenes-netz-schritt4.md). Übergabe: [`sessions/archiv/2026-10-13_eigenes-netz-schritt4-5.md`](sessions/archiv/2026-10-13_eigenes-netz-schritt4-5.md).
-
-**Gebaut:**
-- **Schritt 4, Kanon 05b · 23 · 23-UI nachgezogen** per `kanon-verteilen --nur` (kann seit #1077 mehrere Teile mit Komma), je Pins und Cache-Bump, Proben im Ziel-Repo: Auslieferung-Pruefer #49 · Company-Brain #21 · PWA-Toolpoint #164 · SB-KIMTool-Point #182 · Kimboard #148 · Jasons-Tresor #184 · Kim-Bell #70 · Kimseek #89 · Mein-Rezeptbuch #432 · Mein-Tresor #132 · Mein-WorkFloh #262 · Privat-Brain #99 · Tomys-Hub #241 · BookLedgerPro #327 · Mein-Mixarium #244 · Muttis-Rezeptbuch #237 · family-project #356.
-- **Neue SBKIM-Knoten** (Bauart Sende-Prüfer, kein Modul 17, feste Leiste, Box „Netz“): Workflow-Calculate #18 (Cache v37) · Workflow-Needs #15 (v21) · Workflow-PDF #106 (v81, Modul 03 bleibt hinter „Modell laden“, Leiste bis 600 px als Lasche).
-- **Schritt 5, Firmennetz-Knopf in der Mycel-Karte** (mycel-karte #30, Cache v27): Beitritt nur per Link `#sbkim-netz=` nach Rückfrage (nennt Name und Relais, nie den Code), gemerkt nur unter `sbkim_netz_mycelkarte` auf diesem Rechner, nie im Depot, nie in einem Ereignis. Ungültig → kein Socket, rot benannt. Die Ableitung ist eine zweite Fassung von Modul 23 und wird gegen dieselben Zahlen geprüft. Übernommen nach `mycel-karte/` in diesem Depot.
-
-**Gemessen:**
-- Workflow-PDF: `npm test` 1235 grün · 0 ROT (`knoten.mjs` 126), Gegenprobe 13 gefangen · 0 blind · 0 tot; Pages-Lauf nach dem Merge erfolgreich.
-- mycel-karte: `browser_netz` 28 grün, `gegenprobe_netz` 10 gefangen · 0 blind · 0 tot, Bestand unverändert grün.
-- Die übrigen Träger: Proben je im Ziel-Repo, Angaben in den PRs.
-
-⚠ **Benannt, nicht behoben:**
-- Privat-Brain `e2e-siegel`: 4 rote Zeilen, gleich auf `main` (Andock-Wizard-Injektion), nicht von hier.
-- Die Mycel-Karte lauscht öffentlich auf `sbkim-query`, Modul 23 sendet `sbkim-qry` — öffentliche Fragen sieht die Karte nicht.
-- Bei 481 px schneidet Workflow PDFs Kopfzeile „Workfloh PDF“ ab, auch auf `main` ohne Knoten.
-
-⚠ **Nicht gemessen:** der Beitritt per Link am Tablet in den einzelnen Apps · „Wer ist im Raum?“ über das echte interne Relais mit mehreren Apps zugleich.
-
-**Nächster Schritt:** Klaus' Sichttest im Firmennetz (mehrere Apps über denselben Beitritts-Link). Danach die `sbkim-qry`-Marke in der Mycel-Karte.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-30.md`](sessions/archiv/2026-11_puls-auslagerung-30.md)
+> (22 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-13 (Eigenes Netz Schritt 2+3) — ausgelagert am 2026-11-15
 

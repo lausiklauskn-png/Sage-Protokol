@@ -66,5 +66,35 @@ t("Galaxien-Hintergründe: mindestens zwei Bilder zum Wechseln", liste.length >=
 for (const e of liste) t(`Galaxien-Hintergrund ${e}: liegt im Depot`, da(join(WURZEL, e.replace(/'/g, ""))));
 t("Galaxien-Hintergründe: gewechselt wird beim Öffnen beider Screens", /if \(id === 'sonnen' \|\| id === 'observatorium'\) wechsleGalaxieHintergrund\(id\);/.test(start));
 
+// Discovery-Seite: Licht-Schichten über den Bildern
+const disc = readFileSync(join(WURZEL, "docs/discovery/index.html"), "utf8");
+const licht = ((disc.match(/const LICHT_FILME = \[([^\]]*)\];/) || [])[1] || "").match(/'([^']+)'/g) || [];
+t("Discovery: mindestens ein Bild trägt eine Licht-Schicht", licht.length >= 1, `${licht.length} gefunden`);
+for (const e of licht) {
+  const n = e.replace(/'/g, "");
+  t(`Discovery · ${n}: Licht-Film liegt im Depot`, da(join(WURZEL, "assets/discovery/licht", n + ".mp4")));
+  t(`Discovery · ${n}: das Bild dazu liegt im Depot`, da(join(WURZEL, "assets/discovery", n + ".webp")));
+}
+t("Discovery: der Licht-Film lädt nicht vorab und ist stumm", /film\.preload = 'none'/.test(disc) && /film\.muted = true/.test(disc) && /film\.dataset\.src = /.test(disc));
+t("Discovery: der Film liegt als Licht über dem Bild, nicht an seiner Stelle", /\.licht-film \{[^}]*mix-blend-mode: screen/.test(disc));
+t("Discovery: kein Film bei „Bewegung reduzieren“ oder Save-Data", /prefers-reduced-motion: reduce\)'\)\.matches\s*&& !\(navigator\.connection && navigator\.connection\.saveData\)/.test(disc));
+
+// Einladung: Film als Licht-Schicht, weiche Nähte zwischen den Szenen (Klaus 2026-11-15)
+const einl = readFileSync(join(WURZEL, "docs/einladung/index.html"), "utf8");
+t("Einladung: der Szenen-Film liegt als Licht über dem Standbild", /\.szenen-film \{[^}]*mix-blend-mode: screen/.test(einl) && /\.szenen-film\.laeuft \{ opacity: 1; \}/.test(einl));
+t("Einladung: die Tür-Szene legt nach oben und unten ein weiches Band über die Naht", /section\.scene-doorway::before, section\.scene-doorway::after \{/.test(einl) && /section\.scene-doorway::before \{ top: -42vh; \}/.test(einl) && /section\.scene-doorway::after \{\s*bottom: -16vh; height: 58vh;/.test(einl));
+t("Einladung: der Schlüssel-Kasten läuft an den Rändern aus", /#scene-5 \.key-host \.key-image, #scene-5 \.key-host canvas \{\s*-webkit-mask-image/.test(einl));
+
+// Startseite: Vollbild, Klappkarten, Meilenstein-Kachel, Sonne (Klaus 2026-11-15)
+t("Galaxien-Screens: füllen offen das ganze Fenster", /\.sonnen-screen\.active, \.observatorium-screen\.active \{ position: fixed; inset: 0;/.test(start));
+const klapp = [...start.matchAll(/data-back-anchor="([^"]+)" data-klapp/g)].map((m) => m[1]);
+t("Klappkarten: die fünf benannten Karten liegen unter einem Knopf", ["module-list", "stationen", "reading", "sage-identitaet", "andock"].every((k) => klapp.includes(k)), klapp.join(","));
+t("Klappkarten: Einladung und Discovery bleiben offen", !klapp.includes("einladung") && !klapp.includes("discovery"));
+t("Klappkarten: der Inhalt startet versteckt und der Kopf ist bedienbar", /inhalt\.hidden = true/.test(start) && /kopf\.setAttribute\('role', 'button'\)/.test(start) && /e\.key === 'Enter'/.test(start));
+t("Meilenstein: die ganze Kachel schaltet auf und zu", /if \(kachel && !e\.target\.closest\('a, \.ms-link'\)\) kachel\.classList\.toggle\('is-open'\)/.test(start) && !/class="ms-bot" onclick=/.test(start));
+t("Sonne: keine kreisenden Galaxien mehr", !/sun-bahn|sun-koerper/.test(start));
+t("Galaxien: drehen sich sichtbar und mit nachlaufenden Armen", /\.mu-bild \{[^}]*galaxy-spin 26s linear infinite reverse/.test(start));
+t("Apps: das Raster füllt die Kartenbreite", /\.endknoten-grid \{ grid-template-columns: repeat\(auto-fill, minmax\(min\(100%, 14\.5rem\), 1fr\)\); \}/.test(start) && /class="card span-12" data-back-anchor="endknoten"/.test(start));
+
 console.log(`\n═══ ${gruen} grün · ${rot} ROT ═══`);
 process.exit(rot ? 1 : 0);

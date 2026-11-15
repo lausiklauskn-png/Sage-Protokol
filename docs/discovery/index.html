@@ -236,6 +236,15 @@ p { color: var(--ink-sec); }
   opacity: 0; transition: opacity 0.8s ease;
 }
 .fungus-figure img.loaded { opacity: 1; }
+/* Licht-Schicht (Klaus 2026-11-15: „Bilder bleiben, nur Lichter leben"). Der Film ist schwarz bis
+   auf das, was im Bild heller wird; `screen` legt nur dieses Licht auf das unveränderte Bild. */
+.licht-film {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  mix-blend-mode: screen; pointer-events: none;
+  opacity: 0; transition: opacity 1.6s ease;
+}
+.licht-film.laeuft { opacity: 1; }
+@media print { .licht-film { display: none; } }
 /* Graceful Platzhalter, solange das KI-Bild noch nicht abgelegt ist:
    museales, dunkles Kachel-Motiv mit goldenem Namen. Kein 404-Bruchbild. */
 .fungus-figure .placeholder {
@@ -533,13 +542,38 @@ window.DISCOVERY_FUNGI = [
   });
   list.appendChild(frag);
 
+  // Licht-Schicht über dem Bild: nur für Bilder dieser Liste, erst wenn das Bild steht, erst bei
+  // Sichtbarkeit geladen, nie bei „Bewegung reduzieren" oder Save-Data. Fehlt ein Film, bleibt das Bild.
+  const LICHT_FILME = ['mykorrhiza', 'radiotroph', 'weissfaeule', 'armillaria', 'biolumineszenz', 'mitbauer', 'hyphendruck', 'schlussbild'];
+  const lichtErlaubt = 'IntersectionObserver' in window
+    && !matchMedia('(prefers-reduced-motion: reduce)').matches
+    && !(navigator.connection && navigator.connection.saveData);
+  const lichtIO = lichtErlaubt ? new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      const film = e.target;
+      if (e.isIntersecting) { if (!film.src) film.src = film.dataset.src; film.play().catch(() => {}); }
+      else film.pause();
+    });
+  }, { threshold: 0.2 }) : null;
+  function lichtFilm(fig, img, base) {
+    if (!lichtIO || !LICHT_FILME.includes(base) || fig.querySelector('.licht-film')) return;
+    const film = document.createElement('video');
+    film.className = 'licht-film'; film.muted = true; film.loop = true; film.playsInline = true;
+    film.preload = 'none'; film.setAttribute('aria-hidden', 'true');
+    film.dataset.src = `../../assets/discovery/licht/${base}.mp4`;
+    film.addEventListener('playing', () => film.classList.add('laeuft'));
+    film.addEventListener('error', () => { lichtIO.unobserve(film); film.remove(); });
+    img.after(film);
+    lichtIO.observe(film);
+  }
+
   // Bilder versuchen zu laden; bei Erfolg Platzhalter ausblenden, sonst bleibt
   // die museale Kachel stehen (kein 404-Bruchbild). Real-Bild → swap genügt.
   document.querySelectorAll('.fungus-figure, .schluss-figure').forEach((fig) => {
     const base = fig.getAttribute('data-image');
     const img  = fig.querySelector('img');
     if (!base || !img) return;
-    img.addEventListener('load', () => { fig.classList.add('has-image'); img.classList.add('loaded'); });
+    img.addEventListener('load', () => { fig.classList.add('has-image'); img.classList.add('loaded'); lichtFilm(fig, img, base); });
     img.addEventListener('error', () => { /* Platzhalter bleibt sichtbar */ });
     img.src = `../../assets/discovery/${base}.webp`;
   });
