@@ -279,6 +279,8 @@
     .paper-sheet table { page-break-inside: avoid; break-inside: avoid-page; }
     .paper-sheet hr { background: #ccc !important; }
   }
+  .sequenz { max-width: 860px; margin: 0 auto 1.6rem; }
+  @media print { .sequenz { display: none !important; } }
   </style>
 </head>
 <body>
@@ -299,6 +301,14 @@
   </header>
 
   <main class="paper-wrap">
+    <!-- Sequenz: kurzer Einstieg vor dem Paper (assets/sequenz.js). Nicht im Druck/PDF. -->
+    <figure class="sequenz" data-video="assets/video/fernrohr.mp4" data-poster="assets/video/fernrohr.webp">
+      <ol class="sequenz-stationen">
+        <li><strong>Erst hinsehen.</strong> Das Paper beschreibt, was das Protokoll leistet, und in Abschnitt 1.3 ausdrücklich, was es nicht leistet.</li>
+        <li><strong>Ein Geflecht ohne Mitte.</strong> Kleine Apps finden einander über Bedeutung, ohne zentralen Index, ohne Konto, ohne Cloud. Abschnitt 3 zeigt die Architektur in Kurzform.</li>
+        <li><strong>Wofür es taugt.</strong> Suche zwischen einzelnen Apps, geteiltes Wissen unter Freunden, Kleinunternehmen und Vereine. Die Anwendungsfälle stehen in Abschnitt 4.</li>
+      </ol>
+    </figure>
     <article class="paper-sheet" id="paper">
       <div class="paper-state" id="paper-loading">
         <strong>Lade Paper …</strong>
@@ -307,6 +317,7 @@
     </article>
   </main>
 
+  <script src="assets/sequenz.js"></script>
   <script>
   // =========================================================
   // Minimaler Markdown-Renderer
