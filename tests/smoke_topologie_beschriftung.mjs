@@ -12,6 +12,9 @@
  * Seit dem 2026-11-15 misst sie auch, dass die Karte im Querformat ganz ins Fenster passt
  * (Klaus am Monitor: „dass ich alles sehe, nicht scrollen muss").
  *
+ * Im Hochformat (390 breit) misst sie außerdem, dass kein Modul-Name auf einem anderen liegt oder
+ * über den Rand der Zeichnung läuft (Pflege-Liste 2026-11-15: „Rendezvous (gemeinsamer Raum)").
+ *
  * Braucht `playwright-core`. Fehlt es: nicht lauffähig, nicht rot.
  */
 import { createServer } from 'node:http';
@@ -77,6 +80,8 @@ try {
         hochformat: matchMedia('(max-width: 760px)').matches,
         karteHoehe: document.querySelector('.hero-topology').getBoundingClientRect().height,
         platz: innerHeight - document.querySelector('.topbar').offsetHeight,
+        rand: kasten(svg),
+        namen: [...svg.querySelectorAll('.topo-node-label')].map((e) => ({ ...kasten(e), zeilen: e.querySelectorAll('tspan').length })),
       };
     });
     // 0.5 px tolerance: touching boxes are not an overlap
@@ -97,11 +102,21 @@ try {
       // Klaus 2026-11-15: the whole card is visible at once, without scrolling.
       t(`${breite}×${hoehe}: die Topologie-Karte passt ganz unter die Kopfleiste`, bild.karteHoehe <= bild.platz + 0.5,
         `Karte ${Math.round(bild.karteHoehe)} px, Platz ${bild.platz} px`);
+    }
+    {
       const textAufText = [];
       bild.gruppen.forEach((g, i) => bild.gruppen.forEach((h, j) => {
         if (i < j) for (const x of g.texte) for (const y of h.texte) if (schneidet(x, y)) textAufText.push(`„${x.text}" auf „${y.text}"`);
       }));
       t(`${breite} breit: keine Beschriftung liegt auf der eines anderen Knotens`, textAufText.length === 0, textAufText.slice(0, 3).join(' · '));
+    }
+    if (bild.hochformat) {
+      // Pflege-Liste 2026-11-15: long names lay on their neighbours and ran over the edge of the drawing.
+      const draussen = bild.namen.filter((n) => n.l < bild.rand.l - 0.5 || n.r > bild.rand.r + 0.5 || n.b > bild.rand.b + 0.5).map((n) => `„${n.text}"`);
+      t(`${breite} breit: kein Modul-Name läuft über den Rand der Zeichnung`, draussen.length === 0, draussen.slice(0, 3).join(' · '));
+      // anchor: without a broken name the two tests above have nothing long to measure
+      t(`${breite} breit: mindestens ein Name steht in mehreren Zeilen`, bild.namen.some((n) => n.zeilen > 1),
+        'kein langer Name im Bild — Anker nachziehen');
     }
     await seite.close();
   }

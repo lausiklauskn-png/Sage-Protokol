@@ -2806,6 +2806,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       el.setAttribute('class', 'topo-cluster-label');
       el.textContent = t;
       svg.appendChild(el);
+      return el;
     }
 
     const positions = {};
@@ -2860,6 +2861,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     {
       const cols = portrait ? [62, 180, 298] : [180, 410, 640, 870];
       const rowH = portrait ? 104 : 95;
+      var restLabel = null;
       let maxY = 0;
       Object.keys(positions).forEach(id => { if (positions[id].y > maxY) maxY = positions[id].y; });
       const rest = all.filter(m => !positions[m.id]);
@@ -2876,7 +2878,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         // 66 portrait) and the extra rows move down by the same room, so it never lies on a label.
         const labelY = maxY + (portrait ? 92 : 74);
         const shift = portrait ? 34 : 30;
-        addClusterLabel(cols[Math.floor((cols.length - 1) / 2)], labelY, 'weitere Module');
+        restLabel = addClusterLabel(cols[Math.floor((cols.length - 1) / 2)], labelY, 'weitere Module');
         rest.forEach((m, i) => {
           positions[m.id] = { x: cols[i % cols.length], y: maxY + shift + rowH * (Math.floor(i / cols.length) + 1) };
         });
@@ -2885,6 +2887,51 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         const vb = svg.getAttribute('viewBox').split(' ');
         if (needY > parseFloat(vb[3])) { vb[3] = String(Math.ceil(needY)); svg.setAttribute('viewBox', vb.join(' ')); }
       }
+    }
+
+    // Portrait: a column is 118 wide, a long name ("Rendezvous (gemeinsamer Raum)") is twice that and
+    // lay on its neighbours. Names break into lines there, and a row with more lines pushes the
+    // rows below it down by the same room.
+    const nameLines = {};
+    if (portrait) {
+      const MAXW = 112, LINE = 15;
+      const mess = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      mess.setAttribute('class', 'topo-node-label');
+      svg.appendChild(mess);
+      const width = (t) => { mess.textContent = t; return mess.getComputedTextLength() || t.length * 8.1; };
+      all.forEach(m => {
+        if (!positions[m.id]) return;
+        const lines = [];
+        let cur = '';
+        // break after a space, a hyphen or a slash
+        const re = /(\s*)([^\s\-\/]*[\-\/]+|[^\s\-\/]+)/g;
+        let hit;
+        while ((hit = re.exec(String(m.name || '')))) {
+          const next = cur + (cur && hit[1] ? ' ' : '') + hit[2];
+          if (cur && width(next) > MAXW) { lines.push(cur); cur = hit[2]; }
+          else cur = next;
+        }
+        if (cur) lines.push(cur);
+        // a single word wider than the column is set smaller instead of running over the edge
+        nameLines[m.id] = lines.map(t => { const w = width(t); return { t, scale: w > MAXW ? MAXW / w : 1 }; });
+      });
+      svg.removeChild(mess);
+      const rows = {};
+      Object.keys(positions).forEach(id => { (rows[positions[id].y] = rows[positions[id].y] || []).push(id); });
+      const labelY0 = restLabel ? parseFloat(restLabel.getAttribute('y')) : null;
+      let add = 0;
+      Object.keys(rows).map(Number).sort((a, b) => a - b).forEach(y => {
+        if (restLabel && labelY0 > y) restLabel.setAttribute('y', labelY0 + add);
+        let most = 1;
+        rows[y].forEach(id => { positions[id].y = y + add; most = Math.max(most, nameLines[id].length); });
+        add += (most - 1) * LINE;
+        if (restLabel && labelY0 > y) restLabel.setAttribute('y', labelY0 + add);
+      });
+      // the drawing ends below the last name line (baseline 66, then one LINE each), not in it
+      let bottom = 0;
+      Object.keys(positions).forEach(id => { bottom = Math.max(bottom, positions[id].y + 66 + (nameLines[id].length - 1) * LINE + 10); });
+      const vb = svg.getAttribute('viewBox').split(' ');
+      if (bottom > parseFloat(vb[3])) { vb[3] = String(Math.ceil(bottom)); svg.setAttribute('viewBox', vb.join(' ')); }
     }
 
     all.forEach(m => {
@@ -2938,7 +2985,17 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
       const nameLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       nameLabel.setAttribute('class', 'topo-node-label'); nameLabel.setAttribute('y', nameY);
-      nameLabel.textContent = m.name;
+      if (nameLines[m.id] && nameLines[m.id].length) {
+        nameLines[m.id].forEach((line, i) => {
+          const ts = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+          ts.setAttribute('x', 0); ts.setAttribute('dy', i ? 15 : 0);
+          if (line.scale < 1) ts.style.fontSize = (13 * line.scale).toFixed(1) + 'px';
+          ts.textContent = line.t;
+          nameLabel.appendChild(ts);
+        });
+      } else {
+        nameLabel.textContent = m.name;
+      }
       g.appendChild(nameLabel);
 
       const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');

@@ -582,14 +582,30 @@ Standbild zeigt leuchtende Pilze über einem goldenen Geflecht). `tools/licht-fi
 keine Lage: Clip deckt 14 % des Rahmens, Restfehler 17,2 von 255. Aus diesem Clip entsteht keine
 Licht-Schicht; dafür bräuchte es einen Clip mit dem Standbild als Startbild. Nichts geändert.
 
-### Topologie im Hochformat: lange Modul-Namen liegen aufeinander — 2026-11-15
+### ✅ Topologie im Hochformat: lange Modul-Namen liegen aufeinander — 2026-11-15
 
 Bei 390 px Breite überdecken sich die Namenszeilen benachbarter Knoten („Rendezvous (gemeinsamer
 Raum)“ auf „Such-Widget“ und „OCR-/Bild-Eingabe“), und die äußeren laufen über den Rand der
 Zeichnung. `tests/smoke_topologie_beschriftung.mjs` prüft Text auf Text deshalb nur im Querformat.
 
-### `tools/licht-film-bauen.py` schreibt auch bei gescheitertem Ausrichten — 2026-11-15
+**Erledigt am 2026-11-15 (Folgesitzung):** die Namen brechen im Hochformat in Zeilen um, die Reihen
+darunter rücken nach. Die Probe prüft Text auf Text jetzt auch im Hochformat, dazu den Rand der
+Zeichnung (am Stand davor rot in drei Prüfungen).
+
+### ✅ `tools/licht-film-bauen.py` schreibt auch bei gescheitertem Ausrichten — 2026-11-15
 
 Passt der Clip nicht zum Bild, gibt das Werkzeug Lage und Restfehler aus und schreibt trotzdem einen
 Film. Eine Schwelle (Deckung, Restfehler), ab der es abbricht, gibt es nicht.
+
+**Erledigt am 2026-11-15 (Folgesitzung):** Abbruch mit Rückgabewert 2 bei Restfehler über 12 oder
+Deckung unter 30 % (`--max-restfehler`, `--min-deckung`, `--trotzdem`). Bewacht von
+`tests/smoke_licht_film_schwelle.mjs` (mit dem Werkzeug davor rot in fünf Prüfungen). Die Vorgaben
+stehen auf drei Messungen: 6,8 (passend), 17,2 und 17,1 (unpassend). Die Original-Clips von Tür und
+Lichtung liegen nicht im Depot; ob sie unter 12 bleiben, ist nicht gemessen.
+
+### `smoke_sicherheit_seite` ist im Gesamtlauf rot und einzeln grün — 2026-11-15
+
+`node tests/run_alle.mjs` meldet die Probe rot (Ausgabe endet mit der Node-Versionszeile eines
+Absturzes), `node tests/smoke_sicherheit_seite.mjs` allein läuft 28 grün · 0 rot durch. Einmal
+beobachtet, im Container, während 139 Proben nacheinander liefen. Ursache nicht untersucht.
 
