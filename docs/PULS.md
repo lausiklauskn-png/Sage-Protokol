@@ -31,6 +31,22 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Zwei Filme: Schlüssel in die Truhe, Tür als laufender Film (Hauptsitzung)
+
+**Auftrag:** Klaus am selben Abend: „Schlüssel steckt sich in die Werkzeugkiste“ und die Tür der Einladung als laufendes Video statt Sequenzen, die mit dem Scrollen bewegt werden. Higgsfield mit seinem Wort freigegeben.
+
+**Getan, Startseite (`index.html`):** in der Truhen-Karte liegt ein Film über dem Bild (`assets/video/truhe-schluessel.mp4`, 6 s, 640 px breit, 189 KB, stumm): ein goldener Schlüssel fliegt herein, steckt sich ins Schloss, der Deckel hebt sich. Er läuft, solange die Karte zur Hälfte im Bild steht, blendet nach dem Ende auf das Standbild zurück und beginnt nach fünf Sekunden neu.
+
+**Getan, Einladung (`docs/einladung/index.html`):** die Tür-Szene läuft im Film-Modus (`docs/einladung/vendor/video/scene-5-tuer-fahrt.mp4`, 8 s, 1280 px breit, 878 KB, stumm): der Film beginnt auf dem Türbild, die Tür schwingt auf, die Kamera fährt hindurch ins Licht. Er startet von selbst, sobald die Bühne zu gut der Hälfte im Bild steht, bleibt auf seinem letzten Bild und gibt im letzten Fünftel der Scroll-Strecke die Lichtung frei. Die Sektion ist dabei 240 statt 320/360 Fensterhöhen lang. Im Hochformat liegt der Ausschnitt auf Tür und Lichtspalt. Bei ruhiger Darstellung, Datensparen oder Ladefehler bleibt die Fahrt beim Scrollen wie bisher; die Licht-Schicht `scene-5-tuer.mp4` gehört zu diesem Rückfall.
+
+**Higgsfield:** zwei Clips mit Seedance 2.5, 1080p, ohne Ton, je mit dem vorhandenen Bild als Startbild: Truhe 6 s (96 Credits), Tür 8 s (128 Credits). Guthaben vorher 1.515,94. Für den Upload der Startbilder hat Klaus `upload.higgsfield.ai` in der Umgebung „Standard“ freigegeben.
+
+**Gemessen:** `tests/smoke_lebendig.mjs` 94 grün · 0 rot (vorher 84); `tests/gegenprobe_lebendig.sh` 30 Fälle, 30 gefangen (vier neue). `tests/smoke_startseite_bedienung.mjs` 42 grün · 0 rot: bei 390×844 steht die Tür-Szene im Film-Modus, der Film läuft von selbst, das Standbild darunter ist ausgeblendet. Im Browser angesehen bei 1280×800 und 390×844: Tür offen, Licht füllt das Bild, danach Lichtung; Truhe mit Schlüssel im Schloss. **Nicht gemessen:** Klaus' Geräte; ob der Film am Tab S6 ruckelt.
+
+**Offen:** Sternen-Szene der Einladung und `sbkim-demo` als Film mit Arthurs Stimme und den Blasen als Agenten (Klaus 2026-11-15; Tonspuren und Stadt-Filme liegen im Datei-Organizer, Drehbuch steht aus) · Punkte 5 und 7 des Startbriefs.
+
+Übergabe: [`sessions/archiv/2026-11-15_filme-truhe-tuer.md`](sessions/archiv/2026-11-15_filme-truhe-tuer.md)
+
 ## 2026-11-15 · Sonne und Loch als Knopf, Klick-Sätze heraus, Auflösungs-Regler, Türbild am Handy einmal (Hauptsitzung)
 
 **Auftrag:** Klaus' Antworten auf die drei offenen Fragen und sein Sichttest am Handy (zwei Bildschirmfotos der Einladung). Discovery und Einladung laufen bei ihm im Hoch- und Querformat, das Schwarze Loch ebenfalls.
@@ -472,40 +488,17 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 
 **Offen:** die übrigen Module der Mycel-Knoten-Seite (01/02/03/05/15/16/17) stehen in einer älteren Generation — das heutige Siegel verlangt 05b, das sich nicht einbetten lässt (README dort) · BookLedgerPro-Arbeitsbaum 317 Commits hinter origin (Automat lässt ihn aus) · nichts am Tablet gemessen.
 
-## 2026-10-14 · Prüfung vor dem KI-Richter (04.J), Reinigung vor der Texterkennung (24.R)
+## Eine Sitzung vom 2026-10-14 (Prüfung vor dem KI-Richter (04.J), Reinigung vor der Texterkennung (24) — ausgelagert am 2026-11-15
 
-**Anlass:** Klaus' Brief für BookLedgerPro und seine Frage, wo „dieses Tool“ noch hinein muss. Die Bestandsaufnahme über rund 30 Repos ergab den Sage-Kanon als ersten Schritt. Klaus' drei Antworten: **Ausschließen und zeigen** · **Richter aus, wenn die Prüfliste fehlt (und ich verteile sie)** · **PDF wie die Rezeptbücher**. Dazu mitten in der Arbeit: *„Die Qualität muss 100 % stimmen“* und *„nur die Segmente … neu zeichnen und die anderen 1:1“*.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-34.md`](sessions/archiv/2026-11_puls-auslagerung-34.md)
+> (14 Zeilen). Nichts gekürzt.
 
-**Gebaut (INTERFACES zuerst):**
-- `assets/pruefer-mail.js` byte-1:1 aus dem Auslieferungsprüfer (Pin in `smoke_bau04j`), auch in Pinnwand, Such-Tool und beiden Bundles; die Seiten laden sie, der Installer der Voll-Box nimmt sie mit.
-- **Modul 04 · `hybridMatch`:** prüft Frage, Namen und jeden Kandidaten. Ohne Liste → Richter aus. Fund in der Frage → Richter aus. Fund in einem Kandidaten → geht nicht an die KI, steht mit `passt:false`, `sicherheit:"gefahr"`, `ausgeschlossen:"ki-anweisung"` im Urteil. Prompt nennt die Texte DATEN (Hürde, kein Schutz).
-- **Modul 22:** ausgeschlossene Treffer stehen mit ⚠ am Ende, ohne Link; der Hinweis nennt die Zahl. Ein abgeschalteter Richter nennt seinen Grund.
-- **Pinnwand:** derselbe Ausschluss an den Antworten (`richterAuswahl`), ohne Liste startet der Richter nicht; Cache v26.
-- **Modul 24 · Reinigung:** nie das Original. JPEG → Bildpunkte 1:1, nur Metadaten und Angehängtes hinter dem Bildende weg. Andere Fotos → volle Größe neu gezeichnet (PNG bleibt PNG). PDF → Seiten mit **300 dpi** über pdf.js + `reinigung.js` von `/Workflow-PDF/`, versteckter Text zugedeckt, `isEvalSupported:false`. Geht das nicht: nichts senden. Erkannter Text geht durch die Liste; Aufrufer halten einmal an.
+## Eine Sitzung vom 2026-10-14 (Die Antwort des Relais wird ausgewertet (05b und 23), in alle 21 Träge) — ausgelagert am 2026-11-15
 
-**Gemessen:** kleine blassgraue Schrift (20 Zeilen): 1400 px/JPEG 85 % → 9 falsch · 300 dpi/JPEG 92 % → 0; PNG ohne Gewinn. Die Browser-Probe las mit den alten Einstellungen die IBAN einer 5-pt-Zeile falsch, mit den neuen richtig. `run_alle` **115 grün · 1 rot** (`geraetename_netzweit`, auch auf main rot — Nachbar-Repos fehlen) · `smoke_bau04j` 30 · `smoke_bau24` 75 · `smoke_bau24r` 17 · `smoke_bau22` 278 · `pinnwand/_smoke` 86 · Gegenprobe `gegenprobe_bau04j_24r.mjs` **17 gefangen · 0 durchgerutscht · 0 gestolpert · 0 tote Anker** (erst 1 gestolpert: eine zu breite Sabotage, enger geschnitten und einzeln nachgefahren).
-
-**Offen:** Verteilung an die Träger (Prüfliste + 04/22/24, Kimhub nie) · `docs/observatorium/tools/mycelknoten.html` trägt Modul 04 eingebettet und ist nicht nachgezogen · am Tablet und mit echtem Mistral/Google nicht gemessen · die Rezeptbücher und Mixarium öffnen PDFs ohne `isEvalSupported:false` und zeichnen mit 1400 px (Fund, gehört in deren Sitzung).
-
-
-## 2026-10-14 · Die Antwort des Relais wird ausgewertet (05b und 23), in alle 21 Träger
-
-**Brief:** [`docs/BRIEF_2026-10-15_relais-ok-antwort.md`](BRIEF_2026-10-15_relais-ok-antwort.md). Übergabe: [`sessions/archiv/2026-10-14_relais-antwort.md`](sessions/archiv/2026-10-14_relais-antwort.md). Nächster Brief: [`docs/BRIEF_2026-10-16_relais-antwort-sichttest.md`](BRIEF_2026-10-16_relais-antwort-sichttest.md).
-
-**Gebaut (#1080, INTERFACES zuerst):**
-- 05b liest die `["OK", id, bool, grund]`-Zeile je Relais. Drei Ausgänge: angenommen · abgelehnt mit Grund · keine Antwort binnen Frist. Keine Antwort heißt `unbekannt`, nie angenommen.
-- `publish` gibt dafür `antwort` zurück (ein Versprechen); Frist `okFristMs` 5000, gewählt, nicht gemessen.
-- 23 zeigt „✓ Du bist im Raum“ nur, wenn mindestens ein Relais `true` geantwortet hat. Eine Ablehnung nennt Relais und Grund; ohne Antwort steht „angemeldet, Bestätigung fehlt“.
-
-**Verteilt** mit `kanon-verteilen --schreiben` (Herkunfts-Riegel ohne Befund) in **21 Träger**, alle gemergt, auf jedem `main` nachgezählt.
-
-**Gemessen:**
-- `smoke_relais_ok` 48 grün gegen ein gestelltes Relais.
-- `gegenprobe_relais_ok` (Kopie) 12 gefangen · 0 blind · 0 aus falschem Grund · 0 tote Anker, darunter die zwei verlangten Fälle (Auswertung weg · fehlende Antwort zählt als angenommen).
-- Sage `npm test` 115 Proben: 114 grün · 0 rot · 1 nicht lauffähig (`vorrat_wirkung`, Kuechenzettel-Klon fehlt).
-- Die Proben der Träger sind grün. Sende-Prüfer war unter paralleler Last einmal 2 ROT, allein 675 grün. Workflow-Calculate/-Needs brauchten `tools/cache-stand.mjs`, das der Verteiler nicht ruft.
-
-**Nicht gemessen:** echte OK-Antworten von `relay.family-projekt.de`, `relay-intern` und fremden Relais · das Tablet · Muttis-Rezeptbuch (keine Probe dort bewacht SBKIM).
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-33.md`](sessions/archiv/2026-11_puls-auslagerung-33.md)
+> (18 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-13 (Firmennetz am Tablet, Workflow-PDF-Kopfzeile) — ausgelagert am 2026-11-15
 

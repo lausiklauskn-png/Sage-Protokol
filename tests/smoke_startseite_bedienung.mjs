@@ -134,9 +134,20 @@ try {
     const cta = document.querySelector('.stars-cta');
     return { da: !!e, wiederholung: c ? c.backgroundRepeat : '', groesse: c ? c.backgroundSize : '', cta: cta ? cta.textContent : '', i18n: document.documentElement.innerHTML };
   });
-  t('Einladung, 390 breit: das Türbild ist da und füllt den Rahmen mit „contain"', tuer.da && tuer.groesse === 'contain', tuer.groesse);
+  t('Einladung, 390 breit: das Türbild ist da', tuer.da, tuer.groesse);
   t('Einladung, 390 breit: das Türbild steht einmal (keine Wiederholung)', tuer.wiederholung === 'no-repeat', tuer.wiederholung);
   t('Einladung: die Sternen-Szene trägt keinen Tipp-Satz', tuer.cta.length > 10 && !/Tippen|Tap:|Toucher|Toca:/.test(tuer.i18n), tuer.cta);
+  // the door as a running film: scrolling to the stage starts it, nobody has to scrub
+  const film = await ein.evaluate(() => {
+    const sec = document.querySelector('section.scene-doorway'); const v = sec && sec.querySelector('.tuer-fahrt');
+    if (sec) scrollTo(0, sec.getBoundingClientRect().top + scrollY + innerHeight * 0.3);
+    return { modus: !!sec && sec.classList.contains('film-modus'), da: !!v };
+  });
+  t('Einladung, 390 breit: die Tür-Szene steht im Film-Modus', film.modus && film.da);
+  const laeuft = await ein.waitForFunction(() => { const v = document.querySelector('.tuer-fahrt'); return !!v && v.classList.contains('laeuft') && v.currentTime > 0.8; }, null, { timeout: 15000 }).then(() => true, () => false);
+  t('Einladung, 390 breit: der Tür-Film läuft von selbst, sobald die Bühne im Bild steht', laeuft);
+  const unten = await ein.evaluate(() => { const i = document.querySelector('section.scene-doorway .doorway-image'); return i ? i.style.opacity : 'FEHLT'; });
+  t('Einladung, 390 breit: unter dem laufenden Film ist das Standbild ausgeblendet', unten === '0', 'opacity ' + unten);
   await ein.close();
 } finally {
   await browser.close();
