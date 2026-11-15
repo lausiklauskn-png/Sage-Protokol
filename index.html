@@ -649,6 +649,26 @@
      es pulsiert nur der äußere Korona-Ring (.sun-corona), farblich an die
      orange Außenkante der Sonne angeglichen. (Klaus 2026-06-05) */
   .sun-img { position: absolute; inset: 0; margin: auto; width: 86%; height: 86%; object-fit: contain; z-index: 1; }
+  /* Lebendige Sonne: derselbe Platz wie das Bild, blendet nur ein, solange der Film läuft. */
+  /* Klaus 2026-11-15: „Die Sonne sieht aus, als hätte sie einen scharfen Rand … soll transparent
+     sein." Läuft der Film, fällt der farbige Ring weg; der Kreis bleibt als durchsichtiger Knopf,
+     und der Film läuft über seinen Rand hinaus weich ins Dunkel aus. */
+  .sun-film { opacity: 0; transition: opacity 1.2s ease; pointer-events: none;
+    inset: 7%; width: 86%; height: 86%; max-width: none; object-fit: cover;
+    -webkit-mask-image: radial-gradient(circle closest-side, #000 70%, transparent 99%); mask-image: radial-gradient(circle closest-side, #000 70%, transparent 99%); }
+  .sun-scene.film-an { overflow: visible; }
+  /* Drei kleine Galaxien umkreisen die Sonne (Klaus 2026-11-15: „wie etwas um die Sonne herumfliegt").
+     Zwei Sinus-Bewegungen ergeben die Ellipse, die Ebene wechselt je halber Runde: vorn vorbei, hinten herum. */
+  .sun-bahn { display: none; position: absolute; inset: 0; pointer-events: none; z-index: 2; transform: rotate(var(--lage, -14deg)); animation: sun-vorn var(--t, 14s) steps(1) infinite; }
+  .sun-scene.film-an .sun-bahn { display: block; }
+  .sun-flieger { position: absolute; inset: 0; animation: sun-x calc(var(--t, 14s) / 2) cubic-bezier(.37,0,.63,1) infinite alternate; }
+  .sun-koerper { position: absolute; left: 50%; top: 50%; width: 20%; height: 20%; margin: -10% 0 0 -10%; animation: sun-y calc(var(--t, 14s) / 2) cubic-bezier(.37,0,.63,1) calc(var(--t, 14s) / -4) infinite alternate; }
+  @keyframes sun-vorn { 0% { z-index: 2; } 50%, 100% { z-index: 0; } }
+  @keyframes sun-x { from { transform: translateX(var(--r, 62%)); } to { transform: translateX(calc(var(--r, 62%) * -1)); } }
+  @keyframes sun-y { from { transform: translateY(-95%) scale(0.6); } to { transform: translateY(95%) scale(1.15); } }
+  .sun-scene.film-an .sun-corona, .sun-scene.film-an .sun-corona-shade { opacity: 0; animation: none; transition: opacity 1.2s ease; }
+  .sun-film.laeuft { opacity: 1; }
+  .sun-scene.film-an .sun-img:not(.sun-film) { opacity: 0; transition: opacity 1.2s ease; }
   /* Äußere weiche Korona (radial, pulsierend) */
   /* Korona = äußerer Halo-Ring: über der Sonnenscheibe transparent (damit die
      Scheibe + Plasma NICHT mit aufleuchten), nur außen ein orange-Ring in der
@@ -771,6 +791,11 @@
   .blackhole-caption h3 { margin: 0 0 0.6rem; font-size: 1.3rem; color: #fff; letter-spacing: -0.005em; }
   .blackhole-caption p { margin: 0 0 0.7rem; line-height: 1.65; color: #c2c2d8; max-width: 56ch; }
   .blackhole-caption .bh-hint { display: inline-block; padding: 0.32rem 0.7rem; background: linear-gradient(90deg, rgba(244,180,53,0.14) 0%, rgba(139,92,246,0.12) 100%); border: 1px solid rgba(244,180,53,0.35); border-radius: 999px; color: var(--gold); font-size: 0.92rem; font-weight: 500; margin-top: 0.3rem; }
+  .blackhole-card .card-tag, .blackhole-caption { position: relative; z-index: 3; }
+  .bh-steuern { position: relative; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin: 0.6rem 0 0; }
+  .bh-steuern:has(.sl-oeffnen[hidden]) { display: none; }
+  .bh-steuern-hinweis { color: #9a9ab4; font-size: 0.86rem; }
+  .blackhole-scene.sl-aktiv .bh-chrome { z-index: 2; }
   .blackhole-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
   @media (max-width: 780px) {
     .blackhole-stage { grid-template-columns: 1fr; gap: 1rem; }
@@ -809,6 +834,22 @@
 
   /* Hintergrund-Sterne via Canvas (Maus-Schweif-Glow) */
   .universe-stars { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Film hinter dem Ereignishorizont: liegt über dem Standbild und blendet nur ein, solange er läuft. */
+  .universe-film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; opacity: 0; transition: opacity 1.8s ease; }
+  .observatorium-stage.film-laeuft .universe-film { opacity: 0.9; }
+  .observatorium-stage.film-laeuft .universe-nebula { display: none; }
+  .observatorium-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, rgba(2,2,12,0) 35%, rgba(2,2,12,0.55) 100%); }
+  .observatorium-stage > .universe-galaxies, .observatorium-stage > .universe-hint { z-index: 2; }
+  /* Mini-Universen: einmal gemalt, danach dreht nur noch der Browser das fertige Bild. */
+  .universe-galaxy.gemalt .galaxy-body, .station-galaxy.gemalt .galaxy-body { display: none; }
+  .mu-tilt { position: absolute; inset: -14%; display: block; pointer-events: none; }
+  .mu-bild { width: 100%; height: 100%; display: block; animation: galaxy-spin 80s linear infinite; will-change: transform; }
+  .universe-galaxy.medium .mu-bild, .station-galaxy.medium .mu-bild { animation-duration: 100s; }
+  .universe-galaxy.large .mu-bild, .station-galaxy.large .mu-bild { animation-duration: 120s; }
+  .mu-kern { position: absolute; left: 50%; top: 50%; width: 30%; height: 30%; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(circle, rgba(255,250,235,0.95) 0%, rgba(255,222,170,0.5) 32%, rgba(255,200,140,0) 70%); }
+  .mu-jet { position: absolute; left: 50%; top: 50%; width: 4%; height: 170%; pointer-events: none; mix-blend-mode: screen; filter: blur(2px); background: linear-gradient(180deg, rgba(190,240,255,0) 0%, rgba(190,240,255,0.75) 34%, #fff 50%, rgba(190,240,255,0.75) 66%, rgba(190,240,255,0) 100%); }
+  @media (prefers-reduced-motion: reduce) { .mu-bild { animation: none; } }
 
   /* Galaxien-Schicht */
   .universe-galaxies { position: absolute; inset: 0; pointer-events: none; }
@@ -1465,7 +1506,11 @@
               <div class="sun-corona"></div>
               <div class="sun-corona sun-corona-2"></div>
               <div class="sun-corona-shade"></div>
-              <img class="sun-img" src="assets/sonne-web.webp" width="480" height="480" loading="lazy" decoding="async" alt="" alt="" decoding="async">
+              <img class="sun-img" src="assets/sonne-web.webp" width="480" height="480" loading="lazy" decoding="async" alt="">
+              <video class="sun-img sun-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/sonne.mp4"></video>
+              <span class="sun-bahn" style="--t:6s;--lage:-16deg;--r:52%"><span class="sun-flieger"><span class="sun-koerper" data-form="galaxy-spiral"></span></span></span>
+              <span class="sun-bahn" style="--t:7s;--lage:12deg;--r:56%"><span class="sun-flieger"><span class="sun-koerper" data-form="galaxy-ring"></span></span></span>
+              <span class="sun-bahn" style="--t:8s;--lage:-4deg;--r:60%"><span class="sun-flieger"><span class="sun-koerper" data-form="galaxy-lenticular"></span></span></span>
             </div>
             <div class="sun-caption">
               <h3>Auf welchen Spuren Sage gewachsen ist</h3>
@@ -1706,6 +1751,10 @@
               <p class="bh-hint">Klicke ins Loch → die Doku öffnet sich am anderen Ende des Ereignishorizonts.</p>
             </div>
           </a>
+          <!-- Live gerechnetes Schwarzes Loch (assets/schwarzes-loch.js). Der Knopf bleibt
+               versteckt, bis die Darstellung wirklich läuft: kein toter Knopf. -->
+          <p class="bh-steuern"><button type="button" class="sl-oeffnen" id="bh-steuern" hidden>Selbst steuern</button>
+            <span class="bh-steuern-hinweis">Ziehen dreht die Ansicht. Im Vollbild gibt es Regler und einen Kinoflug.</span></p>
         </article>
         <style>
           /* Meilenstein-Container — EIN Card-Container wie die Werkzeugkiste, drei Bilder darin */
@@ -1755,7 +1804,17 @@
              Hover verschiebt das Layout unter dem Mauszeiger, dadurch geht Hover an/aus
              und die Kachel FLACKERT/ZITTERT (Klaus-Befund 2026-07-23). Antippen/Klicken
              ist stabil und wirkt auf Tablet + Desktop gleich. */
-          .ms-tile.is-open { aspect-ratio: auto; }
+          /* Klaus 2026-11-15: „beim Draufklicken wird das Ganze kleiner statt größer". Die offene
+             Kachel gab ihr Quadrat auf und fiel auf die Texthöhe zusammen. Jetzt nimmt sie zwei
+             Spalten und bleibt mindestens quadratisch (die Mindesthöhe setzt das Skript unten aus
+             der Breite); mit langem Text wächst sie weiter. */
+          .ms-grid { grid-auto-flow: dense; }
+          .ms-tile.is-open { aspect-ratio: auto; grid-column: span 2; }
+          @media (max-width: 760px) { .ms-tile.is-open { grid-column: auto; } }
+          /* Kleiner Film über dem Bild: dasselbe Bild, nur die Lichter leben. Ohne Film bleibt das Bild. */
+          .ms-film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+          .ms-film.laeuft { opacity: 1; }
+          @media print { .ms-film { display: none; } }
           .ms-tile.is-open .ms-p { font-size: 0.84rem; line-height: 1.5; -webkit-line-clamp: 99; }
           .ms-tile.is-open .ms-bot { background: linear-gradient(0deg, rgba(7,5,18,0.97) 0%, rgba(7,5,18,0.9) 62%, rgba(7,5,18,0.4) 100%); padding-bottom: 1rem; }
           .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.72rem; margin-top: 0.6rem; }
@@ -1771,6 +1830,7 @@
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-1-web.webp" alt="Erster Cross-Knoten-Handschlag nach Bedeutung"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <video class="ms-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/ms-1.mp4"></video>
               <span class="ms-emoji">🤝</span>
               <div class="ms-top">
                 <span class="ms-date">17.05.2026</span>
@@ -1788,6 +1848,7 @@
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-2-web.webp" alt="Erster eigenständiger Fremd-Knoten"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <video class="ms-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/ms-2.mp4"></video>
               <span class="ms-emoji">🌐</span>
               <div class="ms-top">
                 <span class="ms-date">20.06.2026</span>
@@ -1805,6 +1866,7 @@
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-web.webp" alt="Semantische Bedeutungs-Suche"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <video class="ms-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/ms-3.mp4"></video>
               <span class="ms-emoji">⭐</span>
               <div class="ms-top">
                 <span class="ms-date">21.06.2026</span>
@@ -1823,6 +1885,7 @@
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-2026-07-10-web.webp" alt="Zwei Knoten unterhalten sich nach Bedeutung durchs Mycel"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <video class="ms-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/ms-4.mp4"></video>
               <span class="ms-emoji">⭐</span>
               <div class="ms-top">
                 <span class="ms-date">10.07.2026</span>
@@ -1844,6 +1907,7 @@
               <img class="ms-img" loading="lazy" decoding="async" width="720" height="576" src="assets/meilenstein-2026-07-23-web.webp" alt="Fünf SBKIM-Knoten bilden live ein server-loses Mesh durchs Mycel"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <video class="ms-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/ms-5.mp4"></video>
               <span class="ms-emoji">⭐</span>
               <div class="ms-top">
                 <span class="ms-date">23.07.2026</span>
@@ -2129,6 +2193,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     <main id="screen-observatorium" class="screen observatorium-screen">
       <button class="screen-back observatorium-back" onclick="goScreen('overview', 'blackhole')">← Zurück zum Mycel</button>
       <div class="observatorium-stage" id="observatorium-stage">
+        <video class="universe-film" id="universe-film" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/ereignishorizont.mp4"></video>
         <canvas id="universe-stars" class="universe-stars" aria-hidden="true"></canvas>
         <div class="universe-nebula universe-nebula-1" aria-hidden="true"></div>
         <div class="universe-nebula universe-nebula-2" aria-hidden="true"></div>
@@ -2178,7 +2243,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     <main id="screen-sonnen" class="screen sonnen-screen">
       <button class="screen-back sonnen-back" onclick="goScreen('overview', 'sonnen')">← Zurück zur Sage</button>
       <div class="sonnen-stage" id="sonnen-stage">
-        <div class="sonnen-bg" aria-hidden="true" style="--milkyway-bg:url(assets/milchstrasse-web.webp)"></div>
+        <div class="sonnen-bg" aria-hidden="true" style="--milkyway-bg:url(assets/observatorium-galaxien-bg.jpg)"></div>
         <canvas id="sonnen-stars" class="sonnen-stars" aria-hidden="true"></canvas>
         <div class="sonnen-nebula sonnen-nebula-1" aria-hidden="true"></div>
         <div class="sonnen-nebula sonnen-nebula-2" aria-hidden="true"></div>
@@ -3614,6 +3679,103 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   let universeTrail = []; // Komet-Schweif: {x, y, age, speed}
   let universeGalaxyEls = [];
 
+  // ---- Mini-Universen: jede Lehre bekommt ein gemaltes Sternsystem ----
+  // Painted once per galaxy into a small canvas (a few thousand additive dots). After that only
+  // CSS rotates the finished picture, so the seven systems cost nothing per frame.
+  const MINI_UNIVERSEN = {
+    'galaxy-spiral':     { neigung: 56, lage: -18, kern: 26 },
+    'galaxy-sombrero':   { neigung: 79, lage: -12, kern: 46 },
+    'galaxy-ring':       { neigung: 42, lage: 24,  kern: 20 },
+    'galaxy-irregular':  { neigung: 28, lage: 8,   kern: 0  },
+    'galaxy-elliptical': { neigung: 36, lage: 30,  kern: 40 },
+    'galaxy-lenticular': { neigung: 68, lage: -34, kern: 30 },
+    'galaxy-quasar':     { neigung: 60, lage: 16,  kern: 22, jet: true },
+    'galaxy-edgeon':     { neigung: 80, lage: -6,  kern: 24 }
+  };
+  function malMiniUniversum(el, shape, seed) {
+    const art = MINI_UNIVERSEN[shape];
+    if (!art) return;
+    const cv = document.createElement('canvas');
+    const S = 340; cv.width = S; cv.height = S; cv.className = 'mu-bild';
+    const c = cv.getContext('2d');
+    if (!c) return;
+    let a = (seed * 2654435761) >>> 0;
+    const rnd = () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const gauss = () => Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(6.2832 * rnd());
+    const R = S / 2 * 0.92, M = S / 2;
+    c.globalCompositeOperation = 'lighter';
+    const punkt = (r, th, farbe, alpha, gr) => {
+      const x = M + Math.cos(th) * r * R, y = M + Math.sin(th) * r * R;
+      c.fillStyle = 'rgba(' + farbe + ',' + alpha.toFixed(3) + ')';
+      if (gr < 1.1) c.fillRect(x - gr / 2, y - gr / 2, gr, gr);
+      else { c.beginPath(); c.arc(x, y, gr / 2, 0, 6.2832); c.fill(); }
+    };
+    const schein = (r, farbe, alpha, x, y) => {
+      const g = c.createRadialGradient(x || M, y || M, 0, x || M, y || M, r * R);
+      g.addColorStop(0, 'rgba(' + farbe + ',' + alpha + ')'); g.addColorStop(1, 'rgba(' + farbe + ',0)');
+      c.fillStyle = g; c.fillRect(0, 0, S, S);
+    };
+    const WARM = '255,226,176', BLAU = '150,190,255', ROSA = '255,110,170', TUERKIS = '130,255,222', VIOLETT = '190,140,255';
+    if (shape === 'galaxy-spiral') {
+      schein(0.95, '120,150,255', 0.10); schein(0.4, WARM, 0.5);
+      for (let i = 0; i < 3200; i++) {
+        const t = Math.pow(rnd(), 0.62), arm = i % 2;
+        const th = arm * Math.PI + t * 3.3 + gauss() * 0.3 * (1 - t * 0.3);
+        const knoten = rnd() < 0.06 && t > 0.3;
+        punkt(0.07 + 0.9 * t + gauss() * 0.02, th, knoten ? ROSA : (t < 0.22 ? WARM : BLAU), knoten ? 0.8 : 0.55 * (1 - t * 0.55), knoten ? 2.6 : 0.7 + rnd() * 1.2);
+      }
+      for (let i = 0; i < 900; i++) punkt(Math.sqrt(rnd()) * 0.95, rnd() * 6.2832, BLAU, 0.12, 1);
+    } else if (shape === 'galaxy-ring') {
+      schein(0.28, WARM, 0.75);
+      for (let i = 0; i < 500; i++) punkt(Math.abs(gauss()) * 0.1, rnd() * 6.2832, WARM, 0.5, 1 + rnd());
+      for (let i = 0; i < 2600; i++) { const k = rnd() < 0.07; punkt(0.7 + gauss() * 0.065, rnd() * 6.2832, k ? ROSA : BLAU, k ? 0.8 : 0.5, k ? 2.4 : 0.7 + rnd() * 1.3); }
+      for (let i = 0; i < 400; i++) punkt(0.2 + rnd() * 0.4, rnd() * 6.2832, VIOLETT, 0.1, 1);
+    } else if (shape === 'galaxy-sombrero') {
+      schein(0.98, '255,214,160', 0.28);
+      for (let i = 0; i < 2600; i++) punkt(Math.sqrt(rnd()) * 0.96, rnd() * 6.2832, WARM, 0.32, 0.7 + rnd() * 1.1);
+      c.globalCompositeOperation = 'destination-out';
+      c.lineWidth = 0.13 * R; c.strokeStyle = 'rgba(0,0,0,0.82)'; c.beginPath(); c.arc(M, M, 0.74 * R, 0, 6.2832); c.stroke();
+      c.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 700; i++) punkt(0.9 + gauss() * 0.025, rnd() * 6.2832, '255,236,200', 0.45, 1);
+    } else if (shape === 'galaxy-irregular') {
+      const farben = [TUERKIS, BLAU, VIOLETT, TUERKIS, ROSA];
+      for (let k = 0; k < 5; k++) {
+        const cr = rnd() * 0.42, cth = rnd() * 6.2832, sig = 0.12 + rnd() * 0.12;
+        const cx = M + Math.cos(cth) * cr * R, cy = M + Math.sin(cth) * cr * R;
+        schein(sig * 2.4, farben[k], 0.22, cx, cy);
+        for (let i = 0; i < 520; i++) {
+          const x = cx + gauss() * sig * R, y = cy + gauss() * sig * R;
+          c.fillStyle = 'rgba(' + farben[k] + ',' + (0.3 + rnd() * 0.35).toFixed(3) + ')';
+          const g = 0.7 + rnd() * 1.4; c.fillRect(x, y, g, g);
+        }
+      }
+    } else if (shape === 'galaxy-elliptical') {
+      schein(0.95, '255,206,150', 0.5); schein(0.5, '255,236,206', 0.6);
+      for (let i = 0; i < 2600; i++) punkt(Math.abs(gauss()) * 0.3, rnd() * 6.2832, WARM, 0.22, 0.7 + rnd());
+    } else if (shape === 'galaxy-lenticular') {
+      schein(0.95, '170,150,255', 0.3); schein(0.45, '236,226,255', 0.55);
+      for (let i = 0; i < 2200; i++) punkt(Math.abs(gauss()) * 0.34, rnd() * 6.2832, '214,200,255', 0.25, 0.7 + rnd());
+      for (let i = 0; i < 900; i++) punkt(0.82 + gauss() * 0.04, rnd() * 6.2832, VIOLETT, 0.3, 1);
+    } else if (shape === 'galaxy-edgeon') {
+      schein(0.95, '110,190,255', 0.3); schein(0.4, '220,242,255', 0.6);
+      for (let i = 0; i < 2600; i++) punkt(Math.sqrt(rnd()) * 0.95, rnd() * 6.2832, i % 9 ? '170,214,255' : ROSA, 0.3, 0.7 + rnd() * 1.1);
+    } else if (shape === 'galaxy-quasar') {
+      schein(0.8, '90,120,255', 0.22); schein(0.3, '220,246,255', 0.9);
+      for (let i = 0; i < 2400; i++) {
+        const t = Math.pow(rnd(), 0.8);
+        punkt(0.06 + 0.62 * t, (i % 3) * 2.0944 + t * 7.2 + gauss() * 0.2, t < 0.3 ? '220,246,255' : TUERKIS, 0.55 * (1 - t * 0.6), 0.7 + rnd() * 1.2);
+      }
+    }
+    const tilt = document.createElement('span');
+    tilt.className = 'mu-tilt';
+    tilt.style.transform = 'rotate(' + art.lage + 'deg) scaleY(' + Math.cos(art.neigung * Math.PI / 180).toFixed(3) + ')';
+    tilt.appendChild(cv);
+    if (art.jet) { const j = document.createElement('span'); j.className = 'mu-jet'; j.style.transform = 'translate(-50%, -50%) rotate(' + art.lage + 'deg)'; el.insertBefore(j, el.firstChild); }
+    el.insertBefore(tilt, el.querySelector('.galaxy-label'));
+    if (art.kern) { const k = document.createElement('span'); k.className = 'mu-kern'; k.style.width = k.style.height = art.kern + '%'; el.insertBefore(k, el.querySelector('.galaxy-label')); }
+    el.classList.add('gemalt');
+  }
+
   function setupObservatoriumUniverse() {
     if (universeInited) return;
     universeInited = true;
@@ -3632,6 +3794,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       el.dataset.idx = i;
       el.innerHTML = '<div class="galaxy-body"></div><div class="galaxy-label">Lehre ' + lehre.n + ' · ' + lehre.name + '</div>';
       el.addEventListener('click', () => openUniverseModal(i));
+      // Fail-soft: if painting fails, the CSS galaxy underneath stays.
+      try { malMiniUniversum(el, lehre.shape, lehre.n); } catch (_e) {}
       galaxiesEl.appendChild(el);
 
       // Orbit-Parameter pro Galaxie (Lissajous-artig)
@@ -3645,6 +3809,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         fy: 0.038 + Math.random() * 0.05,     // Frequenz y (rad/s)
         px: Math.random() * Math.PI * 2,      // Phase x
         py: Math.random() * Math.PI * 2,      // Phase y
+        fz: 0.05 + Math.random() * 0.05,      // depth: slow drift towards and away from the viewer
+        pz: Math.random() * Math.PI * 2,
         wakeBoost: 0                          // 0..1, vergrößert sich bei Nähe
       };
       universeGalaxyEls.push(el);
@@ -3657,6 +3823,24 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    const messeGalaxien = () => universeGalaxyEls.forEach(el => { el._w = el.offsetWidth; el._h = el.offsetHeight; });
+    messeGalaxien();
+    window.addEventListener('resize', messeGalaxien);
+    // Film behind the horizon: loads on first visit, plays only while this screen is shown.
+    const film = document.getElementById('universe-film');
+    const filmErlaubt = film && !(navigator.connection && navigator.connection.saveData) &&
+      !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (film) {
+      film.addEventListener('playing', () => stage.classList.add('film-laeuft'));
+      film.addEventListener('error', () => { stage.classList.remove('film-laeuft'); film.remove(); });
+    }
+    let filmAn = false;
+    const filmSchalten = (an) => {
+      if (!filmErlaubt || !film.isConnected || an === filmAn) return;
+      filmAn = an;
+      if (an) { if (!film.src) film.src = film.dataset.src; film.play().catch(() => {}); }
+      else film.pause();
+    };
 
     const STAR_COUNT = window.innerWidth < 720 ? 180 : 320;
     universeStars = [];
@@ -3704,6 +3888,14 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     let lastT = performance.now();
 
     function frame(now) {
+      // While another screen is shown, this one does no work: no drawing, no film.
+      if (stage.offsetParent === null) {
+        filmSchalten(false);
+        setTimeout(() => { universeRAF = requestAnimationFrame(frame); }, 400);
+        return;
+      }
+      filmSchalten(true);
+      if (!universeGalaxyEls[0]._w) messeGalaxien();
       const dt = Math.min(48, now - lastT);
       lastT = now;
       const t = now / 1000;
@@ -3719,7 +3911,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         const y01 = (o.cy + Math.sin(tt * o.fy + o.py) * o.ry) / 100;
         const px = x01 * vw;
         const py = y01 * vh;
-        el.style.transform = 'translate(' + (px - el.offsetWidth / 2) + 'px, ' + (py - el.offsetHeight / 2) + 'px)';
+        const tiefe = 1.05 + 0.22 * Math.sin(tt * o.fz + o.pz) + o.wakeBoost * 0.16;
+        el.style.transform = 'translate(' + (px - el._w / 2).toFixed(1) + 'px, ' + (py - el._h / 2).toFixed(1) + 'px) scale(' + tiefe.toFixed(3) + ')';
+        el.style.zIndex = tiefe > 1.1 ? 2 : 1;
 
         // Nähe-Detection für Wake-Effekt
         if (universeMouse.active) {
@@ -3968,6 +4162,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       el.dataset.idx = i;
       el.innerHTML = '<div class="galaxy-body"></div><div class="galaxy-label">' + s.tag + ' · ' + s.title + '</div>';
       el.addEventListener('click', () => openStationModal(i));
+      // Same painted mini universes as in the Observatorium; the CSS galaxy stays if painting fails.
+      try { malMiniUniversum(el, s.shape, 40 + i); } catch (_e) {}
       galaxiesEl.appendChild(el);
       el._wakeBoost = 0;
       sonnenGalaxyEls.push(el);
@@ -4990,6 +5186,55 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
        Klick — ~30 MB Modell-Download nur wenn nötig). sbkim-init.js
        koordiniert die Kette mit fail-soft-Behandlung pro Modul. -->
   <script src="assets/sequenz.js"></script>
+  <script>
+    // Meilenstein-Kacheln: (1) an open tile grows instead of shrinking, (2) the small films
+    // load and play only while their tile is on screen.
+    (function () {
+      var gitter = document.querySelector('.ms-grid');
+      if (!gitter) return;
+      var kacheln = [].slice.call(gitter.querySelectorAll('.ms-tile'));
+      function masse() {
+        kacheln.forEach(function (k) { k.style.minHeight = k.classList.contains('is-open') ? k.offsetWidth + 'px' : ''; });
+      }
+      gitter.addEventListener('click', function () { masse(); requestAnimationFrame(masse); });
+      window.addEventListener('resize', masse);
+
+      var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var sparsam = !!(navigator.connection && navigator.connection.saveData);
+      if (ruhig || sparsam || !('IntersectionObserver' in window)) return;
+      // the small galaxies around the sun use the same painter as the Observatorium
+      document.querySelectorAll('.sun-koerper').forEach(function (k, i) {
+        try { malMiniUniversum(k, k.dataset.form, 70 + i); } catch (_e) {}
+      });
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          var film = e.target;
+          if (e.isIntersecting) {
+            if (!film.src) film.src = film.dataset.src;
+            film.play().catch(function () {});
+          } else film.pause();
+        });
+      }, { threshold: 0.2 });
+      document.querySelectorAll('.ms-film, .sun-film').forEach(function (film) {
+        film.addEventListener('playing', function () { film.classList.add('laeuft'); film.parentElement.classList.add('film-an'); });
+        film.addEventListener('error', function () { io.unobserve(film); film.remove(); });
+        io.observe(film);
+      });
+    })();
+  </script>
+  <script src="assets/schwarzes-loch.js"></script>
+  <script>
+    // Fail-soft: without the script or without WebGL2 the CSS black hole stays as it was.
+    (function () {
+      var szene = document.querySelector('.blackhole-scene');
+      if (!szene || !window.SchwarzesLoch) return;
+      window.SchwarzesLoch.einbauen(szene, {
+        knopf: document.getElementById('bh-steuern'),
+        video: 'assets/video/schwarzes-loch.mp4',
+        poster: 'assets/video/schwarzes-loch.webp'
+      });
+    })();
+  </script>
   <script src="src/modules/00_doku_fenster.js"></script>
   <script src="src/modules/01_storage.js"></script>
   <script src="src/modules/02_spore.js"></script>
