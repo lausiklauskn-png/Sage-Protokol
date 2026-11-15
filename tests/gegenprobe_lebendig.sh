@@ -12,7 +12,7 @@ fall() { # name · erwartete rote Zeile · Sabotage-Befehl (läuft im Kopie-Ordn
   cp "$QUELLE/index.html" "$A/"; cp "$QUELLE/assets/schwarzes-loch.js" "$A/assets/"
   cp -r "$QUELLE/assets/video" "$A/assets/"; cp "$QUELLE/docs/einladung/index.html" "$A/docs/einladung/"
   cp -r "$QUELLE/docs/einladung/vendor/video" "$A/docs/einladung/vendor/"
-  mkdir -p "$A/assets/discovery"; cp "$QUELLE/assets/milchstrasse-web.webp" "$QUELLE/assets/observatorium-galaxien-bg.jpg" "$A/assets/"; cp "$QUELLE/assets/discovery/galaxie-hintergrund.webp" "$A/assets/discovery/"
+  mkdir -p "$A/assets/discovery"; cp "$QUELLE/assets/milchstrasse-web.webp" "$QUELLE/assets/observatorium-galaxien-bg.jpg" "$A/assets/"; cp "$QUELLE/assets/discovery/galaxie-hintergrund.webp" "$A/assets/discovery/"; cp -r "$QUELLE/assets/galaxien" "$A/assets/"
   ( cd "$A" && eval "$3" )
   local AUS; AUS="$(LEBENDIG_WURZEL="$A" node "$QUELLE/tests/smoke_lebendig.mjs" 2>&1)"
   if echo "$AUS" | grep -q "✗ .*$2"; then gefangen=$((gefangen+1)); echo "  gefangen: $1"
