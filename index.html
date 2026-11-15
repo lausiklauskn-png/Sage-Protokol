@@ -348,6 +348,8 @@
   .topology-legend-item .count { color: var(--text); font-weight: 500; margin-left: 0.18rem; }
   .topology-legend-item.nextup .swatch { border: 1px solid var(--gold); background: transparent; box-shadow: 0 0 5px var(--gold); }
   .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.1rem; margin-top: 3rem; }
+  .sequenz { --sequenz-akzent: var(--accent); --sequenz-linie: var(--line-strong); }
+  .sequenz-weiter { margin: 0; padding: 0 1.2rem 1.2rem; }
   .card { background: var(--glass); border: 1px solid var(--line); border-radius: var(--r); padding: 1.4rem 1.5rem; position: relative; overflow: hidden; transition: border-color .25s, transform .25s var(--ease-spring), background .25s; }
   .card:hover { border-color: var(--line-strong); background: var(--glass-strong); }
   .card.span-4, .card.span-5, .card.span-6, .card.span-7, .card.span-8, .card.span-12 { grid-column: span 12; }
@@ -1347,6 +1349,15 @@
                darüber steht. -->
         </div>
       </section>
+      <!-- Sequenz: das Observatorium als Ausgangspunkt (assets/sequenz.js, Clips unter assets/video/) -->
+      <figure class="sequenz" data-video="assets/video/observatorium.mp4" data-poster="assets/video/observatorium.webp">
+        <ol class="sequenz-stationen">
+          <li><strong>Ein fester Punkt zum Hinsehen.</strong> Im Observatorium steht, was beim Andocken echter Apps wirklich passiert ist. Jeder Befund trägt ein Datum und einen Weg, ihn nachzustellen.</li>
+          <li><strong>Hier holt sich Claude, was es zum Bauen braucht.</strong> Bevor eine Sitzung eine App anfasst, liest sie die Lehren und die Bauanleitungen aus diesem Ort. Ein Fehler, der einmal bezahlt wurde, muss nicht zweimal bezahlt werden.</li>
+          <li><strong>Und es wächst mit jeder App.</strong> Neue Befunde werden unten angehängt, alte bleiben stehen. So lernt der nächste App-Bau vom letzten.</li>
+        </ol>
+        <p class="sequenz-weiter"><button type="button" class="primary" onclick="goScreen('observatorium')">Ins Observatorium →</button></p>
+      </figure>
       <div class="bento">
         <article class="card lifecycle" data-back-anchor="lifecycle">
           <span class="card-tag">Lebenszyklus · scroll-aware</span>
@@ -2020,6 +2031,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
             <p class="vergleich-text">Du fragst nach dem <em>was</em>, nicht nach dem <em>wo</em>. Knoten, die das Thema kennen, antworten. Die anderen schweigen höflich.</p>
           </div>
         </div>
+        <figure class="sequenz" data-video="assets/video/sternbild.mp4" data-poster="assets/video/sternbild.webp">
+          <ol class="sequenz-stationen">
+            <li><strong>Jeder Stern ist ein Knoten.</strong> Eine kleine App, die ihr Thema kennt. Keiner davon ist größer oder wichtiger als die anderen.</li>
+            <li><strong>Die Linien sind Bedeutung.</strong> Zwei Knoten verbinden sich, weil sie vom Gleichen handeln, nicht weil jemand ihre Adresse eingetragen hat.</li>
+            <li><strong>Es gibt keine Mitte.</strong> Fällt ein Stern aus, bleibt das Bild stehen. Genau das unterscheidet das Geflecht vom Index.</li>
+          </ol>
+        </figure>
       </section>
       <section class="warum-section">
         <div class="warum-section-head"><span class="warum-num">02</span><h2>Probier es aus</h2></div>
@@ -2068,6 +2086,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       </section>
       <section class="warum-section">
         <div class="warum-section-head"><span class="warum-num">04</span><h2>Drei Tatsachen</h2></div>
+        <figure class="sequenz" data-video="assets/video/siegel.mp4" data-poster="assets/video/siegel.webp">
+          <ol class="sequenz-stationen">
+            <li><strong>Jede Karte ist unterschrieben.</strong> Ein Knoten stellt sich mit einer signierten Visitenkarte vor, der Spore. Wer sie verändert, bricht die Unterschrift.</li>
+            <li><strong>Geprüft wird bei dir.</strong> Deine App rechnet die Unterschrift selbst nach, bevor sie etwas glaubt. Sie muss dafür niemanden fragen.</li>
+            <li><strong>Das Siegel zeigt den Stand.</strong> Es sagt, dass die Schutz-Bausteine beim Start da waren. Es ist ein Prüfergebnis, kein Versprechen.</li>
+          </ol>
+        </figure>
         <div class="versprechen-grid">
           <div class="versprechen-card">
             <div class="versprechen-icon"><svg viewBox="0 0 48 48"><path d="M14 22V16a10 10 0 0 1 20 0v6h2a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4h2zm4 0h12V16a6 6 0 0 0-12 0v6z" fill="#F4B435"/></svg></div>
@@ -2077,7 +2102,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           <div class="versprechen-card">
             <div class="versprechen-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#6EE7D3" stroke-width="3"/><path d="M14 24l8 8 14-16" fill="none" stroke="#6EE7D3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <h3>Du musst niemandem vertrauen</h3>
-            <p>Es läuft im Browser des Besuchers. Kein Google, kein Cloud, kein Konto. Stecker raus, alles weg. Sauber.</p>
+            <p>Es läuft im Browser des Besuchers. Kein Google, keine Cloud, kein Konto. Stecker raus, alles weg. Sauber.</p>
           </div>
           <div class="versprechen-card">
             <div class="versprechen-icon"><svg viewBox="0 0 48 48"><path d="M24 4l16 8v12c0 10-7 18-16 20-9-2-16-10-16-20V12l16-8z" fill="none" stroke="#8B5CF6" stroke-width="3" stroke-linejoin="round"/><path d="M16 24l6 6 12-12" fill="none" stroke="#8B5CF6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -4964,6 +4989,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
        geladen (Andock-Wizard ruft `SbkimEmbedding.init()` erst auf Klaus'
        Klick — ~30 MB Modell-Download nur wenn nötig). sbkim-init.js
        koordiniert die Kette mit fail-soft-Behandlung pro Modul. -->
+  <script src="assets/sequenz.js"></script>
   <script src="src/modules/00_doku_fenster.js"></script>
   <script src="src/modules/01_storage.js"></script>
   <script src="src/modules/02_spore.js"></script>

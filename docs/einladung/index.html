@@ -423,6 +423,15 @@ em.gold { color: var(--gold); font-style: normal; }
   0%   { transform: scale(1.08) translate(-3.5%, 0.5%); }
   100% { transform: scale(1.04) translate(0, 0); }
 }
+#scene-1 .scene1-film {
+  /* Sits between the photo (::before) and the vignette (::after). Fades in only while it plays,
+     so the photo carries the scene before, between runs, and when no film can load. */
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: -1; pointer-events: none;
+  opacity: 0; transition: opacity 1.4s ease;
+}
+#scene-1 .scene1-film.laeuft { opacity: .85; }
+@media print { #scene-1 .scene1-film { display: none; } }
 #scene-1::after {
   /* Leichte zusätzliche Vignette auf der linken Hälfte, damit der
      Text-Bereich noch eine Spur dunkler wird. */
@@ -1092,6 +1101,8 @@ footer.foot h4 {
      Sektion 1 — Eröffnung
 ============================================================ -->
 <section class="scene" id="scene-1" data-scene="1">
+  <!-- Film über dem Standbild: lädt erst, wenn die Szene zu sehen ist; ohne Film bleibt das Foto. -->
+  <video class="scene1-film" muted playsinline preload="none" aria-hidden="true" data-src="./vendor/video/scene-1-mycel.mp4"></video>
   <div class="inner">
     <p class="eyebrow" data-i18n="s1.eyebrow">Eine Einladung</p>
     <h1 class="lede" data-i18n-html="s1.lede">
@@ -1558,6 +1569,31 @@ window.SAGE_I18N = {
 import * as THREE from 'three';
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// --- Scene 1 film: plays over the still photo, only while the scene is in view ---
+(() => {
+  const film = document.querySelector('#scene-1 .scene1-film');
+  const sparsam = !!(navigator.connection && navigator.connection.saveData);
+  if (!film || reducedMotion || sparsam || !('IntersectionObserver' in window)) return;
+  let sichtbar = false, pause = 0;
+  const start = () => {
+    if (!sichtbar) return;
+    if (!film.src) film.src = film.dataset.src;
+    film.currentTime = 0;
+    film.play().then(() => film.classList.add('laeuft')).catch(() => {});
+  };
+  film.addEventListener('timeupdate', () => {
+    // fade back to the photo shortly before the end, so the restart is never a cut
+    if (film.duration && film.duration - film.currentTime < 1.2) film.classList.remove('laeuft');
+  });
+  film.addEventListener('ended', () => { clearTimeout(pause); pause = setTimeout(start, 2600); });
+  film.addEventListener('error', () => film.remove());
+  new IntersectionObserver((e) => {
+    sichtbar = e[0].isIntersecting;
+    clearTimeout(pause);
+    if (sichtbar) start(); else { film.pause(); film.classList.remove('laeuft'); }
+  }, { threshold: 0.25 }).observe(film.parentElement);
+})();
 const isMobile      = matchMedia('(max-width: 900px)').matches;
 
 // --- GPU-Schonung (Klaus' S21-Befund 2026-06-05) ---

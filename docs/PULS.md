@@ -31,6 +31,16 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Film-Sequenzen auf Startseite, Paper und Einladung (Hauptsitzung)
+
+**Getan:** Fünf kurze stumme Clips (je 6 s, 960×540, zusammen rund 2 MB) liegen unter `assets/video/`. Neues `assets/sequenz.js`: ein Clip mit Stationen-Text, lädt erst bei Sichtbarkeit, Anhalten-Knopf, kein Autoplay bei „Bewegung reduzieren“ und Save-Data, fail-soft. Eingebaut: Startseite (Observatorium nach dem Kopf, Sternbild in Warum-Tour 01, Siegel in Warum-Tour 04), `paper.html` (Fernrohr, nicht im Druck), Einladung Szene 1 (Mycel-Film über dem Standbild, eigene Kopie unter `docs/einladung/vendor/video/`). Die Observatorium-Sequenz nennt den Ort als Quelle der Lehren und Bauanleitungen für die Bau-Sitzungen. Grammatik: „kein Cloud“ → „keine Cloud“.
+
+**Nicht angefasst (Klaus 2026-11-15: Bauanleitungen bleiben, sie dienen anderen App-Bauten):** kein Anleitungstext, kein Prompt, kein Modul-Code. `sicherheit.html` blieb unverändert, weil `tools/sicherheit-verteilen.mjs` sie als Vorlage in alle Träger kopiert; ein Clip dort wäre in jedem Träger ein Verweis ins Leere.
+
+**Gemessen:** `tests/smoke_sequenz.mjs` 26 grün · 0 rot; Gegenprobe an einer Kopie, vier Fälle (Clip fehlt, Skript fehlt, Einladungs-Film fehlt, toter Knopf), jeder fällt um. Im Browser (1280 und 390 breit): Clips laufen, keine Konsolen-Fehler, Seite nicht breiter als das Fenster. Gesamtlauf 135 Proben: 127 grün, 6 rot, 2 nicht lauffähig; dieselben 6 sind auf dem unveränderten Stand ebenfalls rot. `docs/einladung/_smoke.mjs` hier nicht lauffähig (sucht ein Chromium, das im Container fehlt).
+
+**Offen:** Sichttest am Tablet · ob `sicherheit.html` Clips bekommen soll (dann müsste der Verteiler sie mittragen) · `<dt>Protokoll</dt>` neben „Bewusst mit einem L“ in der Warum-Tour und im Über-Fenster: Absicht oder Schreibfehler?
+
 ## 2026-11-13 · Erkennung anlernen und nachweisen: der Weg zum Wiederholen (Pflegesitzung, nur Doku)
 
 **Getan:** [`docs/VORGEHEN_ANLERNEN_UND_NACHWEIS.md`](VORGEHEN_ANLERNEN_UND_NACHWEIS.md) – zehn Schritte einer Prüfrunde (Regeln vorab, einfrieren, fremder Stapel, drei Einordner mit Codex, einmal messen, nur Gesichertes übernehmen), was die Runde 12./13.11. dazugelernt hat (gescannte Form, Kette bis zur Erinnerung, Folgejahr, Kreuztest), und wie es auf weitere Apps ausgedehnt wird. Keine Messzahlen hier; die stehen in Kimhub.
@@ -517,23 +527,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 
 **Nächster Schritt:** Klaus richtet das Relais ein und macht den Sichttest im Sende-Prüfer. Danach Schritt 4 (Träger nachziehen) und Schritt 5 (Mycel-Karte).
 
-## 2026-10-13 · Eigenes Netz Schritt 1 · Relais und Netz-Code einstellbar (Kanon 05b + 23)
+## Eine Sitzung vom 2026-10-13 (Eigenes Netz Schritt 1) — ausgelagert am 2026-11-15
 
-**Brief:** [`docs/BRIEF_2026-10-13_eigenes-netz.md`](BRIEF_2026-10-13_eigenes-netz.md), Schritt 1. INTERFACES zuerst (05b Relais-Einstellung, 23 „EIGENES NETZ“), dann Code.
-
-**Gebaut:**
-- **05b:** `configure({relays})` nimmt nur `wss://`; ein schlechter Eintrag weist die **ganze** Liste ab. `{reset:true}` holt die Vorgabe zurück, `_meta.defaultRelays` nennt sie. Verbindungen zu Relais, die nicht mehr in der Liste stehen, werden geschlossen.
-- **23:** `setNetwork({code})` / `applyNetwork({relay, code})` / `checkNetSetting` / `newNetCode` / Speicher `sbkim_netz_<dbSuffix>` (ohne Suffix wird nichts gespeichert). Aus dem Code (normalisiert, mindestens 12 Zeichen): Raum-Marke `sbkim-netz-…`, Frage-Marke `sbkim-netzq-…` (SHA-256), Schlüssel PBKDF2-SHA256 150 000 → AES-GCM-256. Inhalt als Umschlag `{v:1, iv, ct}`, die Marke als AAD; was nicht aufgeht, fällt still weg. Lage `net.lage`: oeffentlich · eigen · raum · wird-abgeleitet · ungueltig. **Eine ungültige Einstellung fällt nie ins öffentliche Netz zurück**, der Code gewinnt über `roomTag`.
-- **Ohne Einstellung byte-gleich:** gemessen gegen `origin/main` mit eingefrorener Uhr und eingefrorenem Zufall.
-
-**Gemessen:** `tests/smoke_netz_eigen.mjs` **63 grün · 0 rot** · `tests/gegenprobe_netz_eigen.mjs` (Wegwerf-Kopie) **14 gefangen · 0 blind · 0 aus falschem Grund · 0 tote Anker**. Bündel (`sbkim-bundle`, `-voll`) nachgezogen, Pin 6c25b63b.
-
-⚠ **Benannte Grenzen:** der Handschlag `sbkim-anastomosis` (Modul 05) bleibt Klartext · noch **keine App** trägt die neue Fassung (Verteilung ist Schritt 2) · das Relais „intern Family Project“ (`wss://relay-intern.family-projekt.de`) gibt es noch nicht — DNS, Container und Caddy sind Schritt 4 · Kartenechtheit (Stufe 2b) unverändert.
-⚠ **Vorbestehend, nicht von hier:** `sbkim-bundle-voll` meldet `siegel-inhalt.js` als nicht byte-1:1 — auf `origin/main` genauso (Arbeitskopie nachgemessen).
-
-**Entschieden mit Klaus:** Relais „intern Family Project“ unter **`relay-intern.family-projekt.de`** (Klaus 2026-10-13: „Dieser Name ist okay.“) · im eigenen Netz soll die App **beim Öffnen automatisch** verbinden · Mein Rezeptbuch lauscht im öffentlichen Netz weiter selbst · erster Träger: Sende-Prüfer.
-
-**Nächster Schritt:** Schritt 2 — 23-UI: Einstellung „Netz“ (Relais + Code, Code erzeugen/zeigen), Auto-Verbinden im eigenen Netz, Verteilung an den Sende-Prüfer.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-28.md`](sessions/archiv/2026-11_puls-auslagerung-28.md)
+> (17 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-13 (Mycel-Fenster netzweit · Plan „Eigenes Netz“) — ausgelagert am 2026-11-13
 
