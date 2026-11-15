@@ -47,7 +47,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Higgsfield:** nicht benutzt, nichts abgebucht.
 
-**Offen:** Punkte 2, 3, 4, 6 des Startbriefs unverändert · Szene 1 der Einladung: Film behalten, entfernen oder neuer Clip aus dem Standbild (Klaus) · der Link-Hinweis des Browsers über dem Schwarzen Loch (Klaus' erste Nachricht kam abgeschnitten an) · Forschungseintrag in Kimhub (siehe Übergabe).
+**Offen:** Punkte 2, 3, 4, 6 des Startbriefs unverändert · Szene 1 der Einladung: Film behalten, entfernen oder neuer Clip aus dem Standbild (Klaus) · der Link-Hinweis des Browsers über dem Schwarzen Loch (Klaus' erste Nachricht kam abgeschnitten an). Der Forschungseintrag steht in Kimhub (#464).
 
 Übergabe: [`sessions/archiv/2026-11-15_topologie-einpassen-klickhinweise.md`](sessions/archiv/2026-11-15_topologie-einpassen-klickhinweise.md)
 
