@@ -31,6 +31,26 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-15 · Topologie auf einen Blick, Klick-Hinweise heraus, drei Pflege-Einträge (Hauptsitzung)
+
+**Auftrag:** Startbrief mit sieben offenen Punkten. Begonnen mit den drei Pflege-Einträgen vom selben Tag (Punkt 5), weil sie ohne Rückmeldung gehen. Während der Sitzung kam Klaus' Sichttest vom Monitor (DeX) in drei Nachrichten mit Bildschirmfotos.
+
+**Getan, Topologie (`index.html`):** die Zwischenzeile „weitere Module“ steht unter der Namenszeile der Reihe darüber, die Zusatz-Reihen sind um denselben Raum nach unten gerückt. Im Hochformat stehen alle Reihen 104 auseinander (vorher 92 und 64; die Kreise der Backlog-Reihen lagen auf den Namen darüber). Klaus am Monitor: „dass es auf einer Seite alles zu sehen ist, dass ich nicht scrollen muss“. Im Querformat richtet sich die Zeichnung jetzt nach der Höhe, die unter der Kopfleiste frei ist; ist der Platz deutlich breiter als hoch, stehen die weiteren Module in Spalten rechts statt in Reihen darunter, mit Schrift 13/15 statt 11,5/13. Jede Größenänderung zeichnet neu. Fenster unter 640 px Höhe (Handy quer) und das Hochformat bleiben beim Scrollen.
+
+**Getan, Klick-Hinweise (`index.html`), Klaus: „jeder weiß, wenn die Maus eine Hand zeigt, kannst du draufklicken … brauchst du nirgendwo zu schreiben“:** heraus sind die vier Hinweis-Marken an Sonne, Schwarzem Loch, Einladungs-Tür und Truhe samt ihren Stilregeln, dazu sechs Klick-Sätze in den Karten-Texten (Einladung, Discovery, Truhe, Modul-Liste, Paper-Quelltext, Stationen). Stehen geblieben sind die Bedien-Sätze der zwei Demos („Klick auf eine Phase“, „Klick auf eine Frage“), der Text im Inneren der Truhe und der Lampen-Titel „Klick öffnet Liste“. Andere Seiten (Einladung, Discovery, Paper) sind nicht durchgesehen.
+
+**Gemessen:** `tests/smoke_topologie_beschriftung.mjs` (neu, im Browser, 1280×800, 2000×1050, 390×844): 18 grün · 0 rot; am unveränderten `main` 12 grün · 6 rot (Zwischenzeile auf „Rate-Limit & TTL“ in beiden Querformaten und auf „15“/„Membran“ im Hochformat, Kreise auf Namen im Hochformat, Karte 1158 px bei 719 px Platz und 1610 px bei 960 px Platz). Karte nach dem Umbau: 939 von 960 px bei 2000×1050, 905 von 991 bei 1920×1080, 637 von 719 bei 1280×800; Beschriftung am Schirm 16,4 / 15,7 / 10,4 px. `tests/smoke_lebendig.mjs` 84 grün · 0 rot; `tests/gegenprobe_lebendig.sh` 26 Fälle, 26 gefangen. Gesamtlauf 138 Proben: 129 grün, 7 rot, 2 nicht lauffähig. Die sieben einzeln am unveränderten `main` nachgestellt: sechs dort ebenfalls rot; `smoke_service_worker_parst` ist hier rot („es gibt Service-Worker zu prüfen (1)“) und war in der Nachstellung grün, im ersten Gesamtlauf dieser Sitzung standen 6 rot. Welche der sieben dort grün war, ist nicht festgehalten. **Nicht gemessen:** Klaus' Geräte nach dem Umbau.
+
+**Befunde zu den zwei anderen Pflege-Einträgen** (Einzelheiten in [`PFLEGE-LISTE.md`](PFLEGE-LISTE.md)): die Szenen-Verläufe der Einladung standen im Messlauf sieben von sieben im Dokument und zeichnen (drei sind per CSS abgeschaltet, mit Absicht); die Null vom Vortag ließ sich nicht nachstellen. Der Mycel-Film in Szene 1 zeigt ein anderes Motiv als das Standbild (Wurzeln mit Geflecht, das Bild zeigt leuchtende Pilze); `tools/licht-film-bauen.py` fand keine Lage (Clip deckt 14 % des Rahmens, Restfehler 17,2 von 255). Eine Licht-Schicht lässt sich aus diesem Clip nicht bauen. Nichts geändert.
+
+**Gefunden, nicht verfolgt:** im Hochformat liegen lange Modul-Namen aufeinander und laufen über den Rand (z. B. „Rendezvous (gemeinsamer Raum)“) · `tools/licht-film-bauen.py` schreibt auch bei gescheitertem Ausrichten einen Film, ohne Warnung.
+
+**Higgsfield:** nicht benutzt, nichts abgebucht.
+
+**Offen:** Punkte 2, 3, 4, 6 des Startbriefs unverändert · Szene 1 der Einladung: Film behalten, entfernen oder neuer Clip aus dem Standbild (Klaus) · der Link-Hinweis des Browsers über dem Schwarzen Loch (Klaus' erste Nachricht kam abgeschnitten an) · Forschungseintrag in Kimhub (siehe Übergabe).
+
+Übergabe: [`sessions/archiv/2026-11-15_topologie-einpassen-klickhinweise.md`](sessions/archiv/2026-11-15_topologie-einpassen-klickhinweise.md)
+
 ## 2026-11-15 · Vollbild, Klappkarten, volle Breite, Licht-Schichten auf Discovery und Einladung (Hauptsitzung)
 
 **Auftrag:** Klaus' Rückmeldung vom Monitor (DeX, 2000 px breit) einarbeiten, Discovery-Seite „Bilder bleiben, nur Lichter leben“. Die Rückmeldung kam während der Sitzung in Sprachnachrichten und Bildschirmfotos.
@@ -485,24 +505,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 - `smoke_laeufer_nachbar` (7 grün · 4 ROT) misst die Lage „Nachbar fehlt“. Hier liegen die Nachbar-Klone daneben.
 - Eingereiht, nicht nebenbei repariert.
 
-## 2026-10-13 · Firmennetz: Fragen-Marke der Mycel-Karte, Privat-Brain-Siegelprobe grün
+## Eine Sitzung vom 2026-10-13 (Firmennetz: Fragen-Marke, Siegelprobe) — ausgelagert am 2026-11-15
 
-**Brief:** [`docs/BRIEF_2026-10-14_firmennetz-sichttest.md`](BRIEF_2026-10-14_firmennetz-sichttest.md). Übergabe: [`sessions/archiv/2026-10-13_firmennetz-fragenmarke-siegel.md`](sessions/archiv/2026-10-13_firmennetz-fragenmarke-siegel.md).
-
-**Gebaut:**
-- **Mycel-Karte hört Fragen über Modul 23** (mycel-karte #31, Cache v28): die Karte abonnierte nur `sbkim-query`/`-reply` (Modul 05). Modul 23 sendet unter **einer** Marke `sbkim-qry` und nennt die Art in `content.kind`. Die Karte abonniert jetzt beide und deutet `sbkim-qry` **vor** dem Mitschnitt um. Eine unbekannte Art wird verworfen, nicht geraten. Übernommen nach `mycel-karte/` in diesem Depot (`tools/mycelkarte-uebernehmen.mjs`, nur diese 12 Zeilen).
-- **Privat-Brain `e2e-siegel` grün** (Privat-Brain #100): der Code war richtig. Die Probe suchte noch die alten Kennungen `pb-*`, seit A18 heißen sie `sbkim-si-*`. Damit laufen die drei Pinnwand-Proben dahinter wieder (57 · 21 · 15).
-
-**Gemessen:**
-- mycel-karte: `browser_netz` 32 grün · `gegenprobe_netz` 14 gefangen · 0 blind · 0 tot · `gegenprobe_wiedergabe` 40/40. Ihr Anker traf seit #30 die falsche Stelle (`handleRelayEvent({` steht zweimal) und ist eindeutig gemacht.
-- Sage-Kopie: `smoke_mycelkarte_kopie` 32 grün · `gegenprobe_mycelkarte_kopie` 18 gefangen · 0 blind · 0 tot (Wegwerf-Kopie).
-- Privat-Brain: `e2e-siegel` 16 grün · 0 rot · `npm test` Rückgabe 0. Von Hand gegengeprüft: ohne die Wizard-Zeile 4 rot.
-
-⚠ **Nicht gemessen:** Klaus' Sichttest im Firmennetz am Tablet (seine Rückmeldung lag nicht vor) · echter Modul-23-Fragenverkehr in der Karte (gestellt) · das echte interne Relais.
-
-⚠ **Weiter offen:** bei 481 px schneidet Workflow PDFs Kopfzeile „Workfloh PDF" ab, auch auf `main`.
-
-**Nächster Schritt:** Klaus' Sichttest im Firmennetz. Danach die Fragen eines Firmennetzes in der Karte am echten Relais.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-31.md`](sessions/archiv/2026-11_puls-auslagerung-31.md)
+> (18 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-13 (Eigenes Netz Schritt 4+5) — ausgelagert am 2026-11-15
 

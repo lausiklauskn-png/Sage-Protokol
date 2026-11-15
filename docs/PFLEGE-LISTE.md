@@ -555,14 +555,41 @@ selben Tag zeigen die harten Kanten, die diese Verläufe verhindern sollten. Urs
 Die Nähte um die Tür-Szene sind seitdem in reinem CSS gelegt; die übrigen Szenen-Grenzen hängen
 weiter an diesem Skript.
 
-### Topologie: „Rate-Limit & TTL“ überlappt „weitere Module“ — 2026-11-15
+**Nachgemessen am 2026-11-15 (Folgesitzung):** Chromium, 2000×1050, 2,5 Sekunden nach dem Laden, über
+einen lokalen Server: sieben `.scene-fade-top` und sieben `.scene-fade-bot` im Dokument, kein
+Seitenfehler. Bei Szene 1 bis 5 zeichnen beide (126 px hoch, volle Breite, Verlauf gesetzt); an der
+Tür-Szene sind beide und an Szene 6 der obere per CSS abgeschaltet, das steht so im Stylesheet. Die
+Null des ersten Messlaufs ließ sich nicht nachstellen; unter welchen Bedingungen sie entstand, ist
+nicht festgehalten. Eintrag bleibt offen, bis die harten Kanten an Klaus' Gerät angesehen sind.
+
+### ✅ Topologie: „Rate-Limit & TTL“ überlappt „weitere Module“ — 2026-11-15
 
 Auf der Startseite steht die Zwischenzeile „weitere Module“ auf der Beschriftung von Modul 11.
 Seit die Topologie die Kartenbreite nimmt, ist es gut zu sehen. Die Zeile wird in `renderTopology`
 bei `maxY + rowH * 0.55` gesetzt.
 
+**Erledigt am 2026-11-15:** die Zeile steht unter der Namenszeile, die Zusatz-Reihen sind nachgerückt.
+Bewacht von `tests/smoke_topologie_beschriftung.mjs` (am Stand davor rot in allen drei Breiten).
+
 ### Einladung Szene 1: der Mycel-Film liegt noch als Film über dem Bild — 2026-11-15
 
 Tür und Lichtung sind auf die Licht-Schicht umgestellt (`tools/licht-film-bauen.py`), Szene 1 nicht.
 Ob der Film dort auf dem Monitor ebenso unscharf wirkt, ist nicht angesehen.
+
+**Nachgesehen am 2026-11-15 (Folgesitzung):** der Clip `vendor/video/scene-1-mycel.mp4` zeigt ein
+anderes Motiv als `vendor/img/scene-1-mycel.webp` (Wurzeln mit hellem Geflecht in Nahaufnahme; das
+Standbild zeigt leuchtende Pilze über einem goldenen Geflecht). `tools/licht-film-bauen.py` findet
+keine Lage: Clip deckt 14 % des Rahmens, Restfehler 17,2 von 255. Aus diesem Clip entsteht keine
+Licht-Schicht; dafür bräuchte es einen Clip mit dem Standbild als Startbild. Nichts geändert.
+
+### Topologie im Hochformat: lange Modul-Namen liegen aufeinander — 2026-11-15
+
+Bei 390 px Breite überdecken sich die Namenszeilen benachbarter Knoten („Rendezvous (gemeinsamer
+Raum)“ auf „Such-Widget“ und „OCR-/Bild-Eingabe“), und die äußeren laufen über den Rand der
+Zeichnung. `tests/smoke_topologie_beschriftung.mjs` prüft Text auf Text deshalb nur im Querformat.
+
+### `tools/licht-film-bauen.py` schreibt auch bei gescheitertem Ausrichten — 2026-11-15
+
+Passt der Clip nicht zum Bild, gibt das Werkzeug Lage und Restfehler aus und schreibt trotzdem einen
+Film. Eine Schwelle (Deckung, Restfehler), ab der es abbricht, gibt es nicht.
 
