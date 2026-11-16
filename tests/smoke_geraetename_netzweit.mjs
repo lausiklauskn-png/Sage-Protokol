@@ -119,11 +119,13 @@ console.log(`\nErgebnis: ${gruen} grün, ${rot} rot` +
 // Der Fall, der sonst als „bestanden" durchginge: liegt KEINES der Repos neben
 // Sage, hat diese Probe nichts geprüft — und meldete trotzdem grün. Ein grüner
 // Haken über einem Loch ist schlimmer als ein roter, denn man sieht ihn nicht.
-// Darum wird das ausdrücklich rot.
+// Darum ist es nie grün. Es ist aber auch kein Befund: der Läufer kennt dafür
+// „nicht lauffähig" (Rückgabewert 3 UND die Zeile am Zeilenanfang, siehe
+// `run_alle.mjs`). Bis zum 2026-11-16 stand hier Rückgabewert 1, und die Probe
+// war in jedem Behälter ohne Nachbar-Klone rot (PFLEGE-LISTE § 12).
 if (gruen === 0 && rot === 0) {
-  console.error("✗ ROT — NICHTS GEPRÜFT: keines der Knoten-Repos liegt neben Sage.\n" +
-                "   Diese Probe braucht die Nachbar-Klone (../PWA-Toolpoint usw.).\n" +
-                "   „Grün\" hieße hier nur: es wurde nicht hingesehen.\n");
-  process.exit(1);
+  console.log("⊘ NACHBAR FEHLT: " + EIGENE_ADRESSE.map((k) => k.repo).join(", ") +
+              " — keines der Knoten-Repos liegt neben Sage. Nichts geprüft, nicht grün.");
+  process.exit(3);
 }
 process.exit(rot ? 1 : 0);
