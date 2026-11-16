@@ -89,9 +89,11 @@ t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehle
 // the text sections around them are gone, "Drei Tatsachen" stays
 {
   const tour = (start.match(/<main id="screen-warum"[\s\S]*?<\/main>/) || [""])[0];
-  const kopf = (tour.match(/<figure class="warum-film">\s*<video\b([^>]*)>/) || [])[1] || "";
-  const src = (tour.match(/<source src="([^"]+)"/) || [])[1], poster = (kopf.match(/poster="([^"]+)"/) || [])[1];
-  const spur = (tour.match(/<track\b[^>]*src="([^"]+)"/) || [])[1];
+  // the main film is the figure WITHOUT an id; the facts film behind the mushroom carries one
+  const haupt = (tour.match(/<figure class="warum-film">[\s\S]*?<\/figure>/) || [""])[0];
+  const kopf = (haupt.match(/<video\b([^>]*)>/) || [])[1] || "";
+  const src = (haupt.match(/<source src="([^"]+)"/) || [])[1], poster = (kopf.match(/poster="([^"]+)"/) || [])[1];
+  const spur = (haupt.match(/<track\b[^>]*src="([^"]+)"/) || [])[1];
   t("Tour: der Erklärfilm liegt im Depot", !!src && da(join(WURZEL, src)), src || "kein <source>");
   t("Tour: das Standbild des Erklärfilms liegt im Depot", !!poster && da(join(WURZEL, poster)), poster || "kein poster");
   t("Tour: der Erklärfilm startet nur auf Tipp (Bedienleiste, kein autoplay, lädt nicht vorab)",
@@ -101,6 +103,19 @@ t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehle
   t("Tour: Frage-Demo, Wachstums-Zeichnung und die Abschnitte 01, 02, 03, 05 sind heraus",
     !/id="demo-questions"/.test(tour) && !/id="wachstum-svg"/.test(tour) && !/warum-num">0[1235]</.test(tour));
   t("Tour: die drei Tatsachen stehen weiter da", /Jede Karte ist unterschrieben/.test(tour) && /Geprüft wird bei dir/.test(tour) && /Das Siegel zeigt den Stand/.test(tour));
+  // Klaus 2026-11-16: the three facts are a narrated film behind the pulsing mushroom
+  const tat = (tour.match(/<figure class="warum-film" id="tatsachen-film"([^>]*)>([\s\S]*?)<\/figure>/) || []);
+  const tKopf = ((tat[2] || "").match(/<video\b([^>]*)>/) || [])[1] || "";
+  const tSrc = ((tat[2] || "").match(/<source src="([^"]+)"/) || [])[1], tPoster = (tKopf.match(/poster="([^"]+)"/) || [])[1];
+  const tSpur = ((tat[2] || "").match(/<track\b[^>]*src="([^"]+)"/) || [])[1];
+  t("Tatsachen-Film: liegt zugeklappt hinter dem Pilz-Knopf", /\bhidden\b/.test(tat[1] || "") &&
+    /<button type="button" class="warum-hero-mark" id="tatsachen-knopf" aria-expanded="false" aria-controls="tatsachen-film"/.test(tour));
+  t("Tatsachen-Film: Film und Standbild liegen im Depot", !!tSrc && da(join(WURZEL, tSrc)) && !!tPoster && da(join(WURZEL, tPoster)), `${tSrc} · ${tPoster}`);
+  t("Tatsachen-Film: startet nur auf Tipp und lädt nicht vorab", /\bcontrols\b/.test(tKopf) && !/\bautoplay\b/.test(tKopf) && /preload="none"/.test(tKopf));
+  const tVtt = tSpur && existsSync(join(WURZEL, tSpur)) ? readFileSync(join(WURZEL, tSpur), "utf8") : "";
+  t("Tatsachen-Film: der gesprochene Text liegt als Untertitel bei", /^WEBVTT/.test(tVtt) && (tVtt.match(/-->/g) || []).length === 3, tSpur || "keine Spur");
+  t("Tatsachen-Film: die drei Sätze stehen als Text unter dem Film", ((tat[2] || "").match(/<li><strong>/g) || []).length === 3);
+  t("Tour: der Stempel-Clip mit drei Stationen ist heraus", !/data-video="assets\/video\/siegel\.mp4"/.test(tour));
 }
 t("Startseite: der Truhen-Film blendet nach dem Ende zurück und beginnt nach einer Pause neu (keine harte Schleife)",
   !/class="vp-truhe-film"[^>]*\bloop\b/.test(start) && /film\.addEventListener\('ended', function \(\) \{\s*clearTimeout\(pause\);\s*pause = setTimeout\(function \(\) \{ film\.classList\.remove\('laeuft'\)/.test(start));

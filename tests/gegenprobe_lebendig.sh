@@ -67,5 +67,10 @@ fall "Film bei ruhiger Darstellung weg" "Einladung: bei ruhiger Darstellung oder
 fall "Erklärfilm fehlt"               "Tour: der Erklärfilm liegt im Depot" "rm assets/video/sage-in-einer-minute.mp4"
 fall "Erklärfilm startet selbst"      "Tour: der Erklärfilm startet nur auf Tipp" "sed -i 's|<video controls playsinline preload=\\\"none\\\" poster=\\\"assets/video/sage-in-einer-minute.webp\\\"|<video controls autoplay playsinline preload=\\\"none\\\" poster=\\\"assets/video/sage-in-einer-minute.webp\\\"|' index.html"
 fall "Tatsachen aus der Tour"         "Tour: die drei Tatsachen stehen weiter da" "sed -i 's|<strong>Geprüft wird bei dir.</strong>|<strong>Geprüft.</strong>|' index.html"
+fall "Tatsachen-Film steht offen da"   "Tatsachen-Film: liegt zugeklappt hinter dem Pilz-Knopf" "sed -i 's|<figure class=\\\"warum-film\\\" id=\\\"tatsachen-film\\\" hidden>|<figure class=\\\"warum-film\\\" id=\\\"tatsachen-film\\\">|' index.html"
+fall "Tatsachen-Film fehlt"            "Tatsachen-Film: Film und Standbild liegen im Depot" "rm assets/video/drei-tatsachen.mp4"
+fall "Tatsachen-Film startet selbst"   "Tatsachen-Film: startet nur auf Tipp und lädt nicht vorab" "sed -i 's|<video controls playsinline preload=\\\"none\\\" poster=\\\"assets/video/drei-tatsachen.webp\\\"|<video controls autoplay playsinline preload=\\\"none\\\" poster=\\\"assets/video/drei-tatsachen.webp\\\"|' index.html"
+fall "Tatsachen-Film ohne Untertitel"  "Tatsachen-Film: der gesprochene Text liegt als Untertitel bei" "rm assets/video/drei-tatsachen.de.vtt"
+fall "Stempel-Clip wieder in der Tour" "Tour: der Stempel-Clip mit drei Stationen ist heraus" "sed -i 's|<ol class=\\\"tatsachen-text\\\">|<span data-video=\\\"assets/video/siegel.mp4\\\"></span><ol class=\\\"tatsachen-text\\\">|' index.html"
 echo "═══ $gefangen gefangen · $durch durchgerutscht ═══"
 [ "$durch" -eq 0 ]

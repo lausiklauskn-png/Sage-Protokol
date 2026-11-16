@@ -36,6 +36,13 @@ for (const seite of SEITEN) {
     t(`${seite} · ${name}: Clip liegt im Depot`, !!video && da(join(basis, video)));
     t(`${seite} · ${name}: Standbild liegt im Depot`, !!poster && da(join(basis, poster)));
     t(`${seite} · ${name}: nichts wird von einem fremden Host geholt`, !/^(https?:)?\/\//.test(video || "") && !/^(https?:)?\/\//.test(poster || ""));
+    const ton = (attr.match(/data-ton="([^"]+)"/) || [])[1];
+    if (ton) {
+      const n = (innen.match(/<li>/g) || []).length;
+      const fehlt = Array.from({ length: n }, (_, i) => ton.replace("{n}", String(i + 1))).filter((p) => !da(join(basis, p)));
+      t(`${seite} · ${name}: je Station liegt eine Tonspur im Depot`, /\{n\}/.test(ton) && n > 0 && fehlt.length === 0, fehlt.join(", ") || `${n} Spuren`);
+      t(`${seite} · ${name}: die Tonspur kommt von keinem fremden Host`, !/^(https?:)?\/\//.test(ton));
+    }
     const stationen = (innen.match(/<li>/g) || []).length;
     t(`${seite} · ${name}: mindestens zwei Stationen mit Text`, /class="sequenz-stationen"/.test(innen) && stationen >= 2, `${stationen} gefunden`);
   }
@@ -54,5 +61,10 @@ t("sequenz.js: lädt den Clip erst bei Sichtbarkeit (preload none + Intersection
 t("sequenz.js: achtet auf prefers-reduced-motion und Save-Data", /prefers-reduced-motion/.test(js) && /saveData/.test(js));
 t("sequenz.js: ein kaputter Clip nimmt den Knopf mit (kein toter Knopf)", /addEventListener\('error'[\s\S]{0,260}knopf\.remove\(\)/.test(js));
 
+t("sequenz.js: die Stimme entsteht erst beim Tipp (kein Audio-Element vorher, preload none)",
+  /tonKnopf\.addEventListener\('click'[\s\S]*?document\.createElement\('audio'\)[\s\S]*?ton\.preload = 'none'/.test(js) &&
+  (js.match(/createElement\('audio'\)/g) || []).length === 1);
+t("sequenz.js: eine fehlende Tonspur nimmt den Vorlese-Knopf mit (kein toter Knopf)", /ton\.addEventListener\('error'[\s\S]{0,200}tonKnopf\.remove\(\)/.test(js));
+t("sequenz.js: läuft die Stimme, setzt die Tonspur die Station (der Clip schaltet nicht weiter)", /if \(!spricht\) zeigen\(aktiv \+ 1\)/.test(js));
 console.log(`\n═══ ${figuren} Sequenzen · ${gruen} grün · ${rot} ROT ═══`);
 process.exit(rot ? 1 : 0);
