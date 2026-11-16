@@ -639,6 +639,8 @@
   .warum-sub { color: var(--muted); max-width: 56ch; margin: 0 0 1.6rem; }
   .vergleich-row { display: grid; grid-template-columns: 1fr; gap: 1.2rem; align-items: center; }
   @media (min-width: 720px) { .vergleich-row { grid-template-columns: 1fr auto 1fr; } }
+  .ueber-name { margin-top: 1rem; }
+  .ueber-name summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); font-size: 0.95rem; }
   .vergleich-col { padding: 1.4rem; background: var(--glass); border: 1px solid var(--line); border-radius: var(--r); }
   .vergleich-tag { font-family: "Geist Mono", monospace; font-size: 0.74rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
   .vergleich-svg { width: 100%; height: auto; max-width: 280px; display: block; margin: 0.4rem auto 0.8rem; }
@@ -2260,6 +2262,15 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <h2 id="ueber-title">Was bringt mir das?</h2>
       </header>
       <div class="ueber-body">
+        <p class="ueber-lede">Sage ist eine Suche zwischen kleinen Webseiten. Du fragst etwas, und nur die Seiten, die wirklich etwas zu deiner Frage wissen, antworten. Kein zentraler Server, keine Werbung, kein Tracking, kein Konto.</p>
+        <ul>
+          <li><strong>Deine Seiten finden sich gegenseitig.</strong> Sucht jemand im Rezeptbuch nach einem Cocktail, leitet das System still ans Mixarium weiter.</li>
+          <li><strong>Deine Inhalte bleiben bei dir.</strong> Niemand kopiert, niemand legt in fremder Datenbank ab.</li>
+          <li><strong>Du musst niemandem vertrauen.</strong> Es läuft komplett im Browser des Besuchers.</li>
+        </ul>
+        <div class="ueber-foot"><strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten eine Chance, wieder gefunden zu werden, ohne sich an einen Konzern verkaufen zu müssen.</div>
+        <details class="ueber-name">
+          <summary>Woher der Name kommt</summary>
         <dl class="name-glossar">
           <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
           <dd>Englisch <em>der Weise</em>, jemand, der Wissen sammelt, filtert und weitergibt. Botanisch der <em>Salbei</em>. Beides zusammen meint: aktives Verarbeiten, nicht nur Speichern.</dd>
@@ -2270,21 +2281,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </dl>
         <blockquote class="name-glossar-key">„Der Pilz hat Mycel. Dieses Netz hat <strong>Sage</strong> als Signalsprache."</blockquote>
         <p class="name-glossar-fuss">Zwischen den Knoten fließen keine rohen Daten, sondern Bedeutung: gefiltert, bewertet, zur Frage passend.</p>
-        <p class="ueber-lede">Sage ist eine Suche zwischen kleinen Webseiten. Du fragst etwas, und nur die Seiten, die wirklich etwas zu deiner Frage wissen, antworten. Kein zentraler Server, keine Werbung, kein Tracking, kein Konto.</p>
-        <h3>Was es dir jetzt schon bringt</h3>
-        <ul>
-          <li><strong>Deine Seiten finden sich gegenseitig.</strong> Sucht jemand im Rezeptbuch nach einem Cocktail, leitet das System still ans Mixarium weiter.</li>
-          <li><strong>Deine Inhalte bleiben bei dir.</strong> Niemand kopiert, niemand legt in fremder Datenbank ab.</li>
-          <li><strong>Du musst niemandem vertrauen.</strong> Es läuft komplett im Browser des Besuchers.</li>
-          <li><strong>Spam ist eingebaut gebremst.</strong> Ein Knoten antwortet nur bei passender Frage.</li>
-        </ul>
-        <h3>Was möglich wird, wenn es größer wird</h3>
-        <ul>
-          <li><strong>Andere schließen ihr Hobby an.</strong> Wandern, Schach, Modellbau, Bonsai: eine Schicht einbauen, plötzlich findbar.</li>
-          <li><strong>Eine Suche, die Big Tech nicht braucht.</strong> Nicht von einem Konzern abhängig.</li>
-          <li><strong>Frage über Themengrenzen hinweg.</strong> Das Mycel verbindet die Antworten ohne Vermittler.</li>
-        </ul>
-        <div class="ueber-foot"><strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten eine Chance, wieder gefunden zu werden, ohne sich an einen Konzern verkaufen zu müssen.</div>
+        </details>
         <div class="ueber-cta">
           <button type="button" class="primary" onclick="goWarum()">Sage in einer Minute: der Film →</button>
           <button type="button" onclick="closeUeberModal()">Schließen</button>

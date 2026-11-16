@@ -35,7 +35,7 @@
  * Anfangszustand.
  */
 
-import { mkdtempSync, writeFileSync, copyFileSync, rmSync, readdirSync, existsSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, copyFileSync, rmSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
@@ -211,12 +211,19 @@ async function lauf() {
    executable doesn't exist" — die Rueckfallzeile, weil der try-Block warf. */
 function chrom() {
   const heim = process.env.PLAYWRIGHT_BROWSERS_PATH || '/opt/pw-browsers';
+  /* CHROMIUM from the environment wins; then the container's link
+     `<heim>/chromium`, which points at the binary itself (no build number). */
+  for (const k of [process.env.CHROMIUM, join(heim, 'chromium')]) {
+    try { if (k && statSync(k).isFile()) return k; } catch {}
+  }
   try {
     const o = readdirSync(heim).filter((n) => /^chromium-\d+$/.test(n))
       .sort((x, y) => Number(y.split('-')[1]) - Number(x.split('-')[1]));
     for (const n of o) {
-      const w = join(heim, n, 'chrome-linux', 'chrome');
-      if (existsSync(w)) return w;
+      for (const u of ['chrome-linux64', 'chrome-linux']) {
+        const w = join(heim, n, u, 'chrome');
+        if (existsSync(w)) return w;
+      }
     }
   } catch { /* kein Browser-Heim — der Aufrufer meldet „nicht lauffaehig" */ }
   return join(heim, 'chromium', 'chrome-linux', 'chrome');
