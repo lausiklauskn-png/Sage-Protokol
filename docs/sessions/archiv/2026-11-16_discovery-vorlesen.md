@@ -45,7 +45,7 @@ Siehe PULS-Eintrag vom 2026-11-16 „Discovery liest vor …“. Dateien: `docs/
 - Lebenszyklus-Bildschirm behalten oder herausnehmen.
 - Forschungseintrag: Kimhub #471 (gemergt), Abschnitt 2026-11-16T01:54Z bis 02:15Z. Sage #1187 und #1188 gemergt.
 
-## Nachtrag, zweiter Abschnitt (06:01Z bis zum Merge): Drei Tatsachen und Observatorium
+## Nachtrag, zweiter Abschnitt (07:08Z bis 07:17Z): Drei Tatsachen und Observatorium
 
 - Siehe PULS-Eintrag „Drei Tatsachen als Film hinter dem Pilz …“. Dateien: `index.html`,
   `assets/sequenz.js`, `assets/video/drei-tatsachen.mp4`, `.webp`, `.de.vtt`,
@@ -56,3 +56,5 @@ Siehe PULS-Eintrag vom 2026-11-16 „Discovery liest vor …“. Dateien: `docs/
 - Tür-Film der Einladung: weiter offen, von Klaus in dieser Sitzung dreimal genannt. Guthaben 3,58.
 - Klaus sagte „Mikrofon“ für den Vorlese-Knopf; gebaut ist ein Lautsprecher-Zeichen mit dem Wort
   „Vorlesen“. Nicht mit ihm abgestimmt.
+- Forschungseintrag zum zweiten Abschnitt: Kimhub #473 (gemergt). Sage #1190 gemergt.
+- Klaus am Ende des Abschnitts: der Tür-Film bleibt vorerst liegen.
