@@ -44,6 +44,26 @@ const einlFilm = filme("docs/einladung/index.html", ["tuer-fahrt"], 1);
 t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehler, ruhiger Darstellung, Datensparen)",
   /fahrt\.addEventListener\('error'[\s\S]{0,200}filmModus = false; sec\.classList\.remove\('film-modus'\)/.test(einlFilm) &&
   /let filmModus = !!fahrt && !reducedMotion && !sparsam/.test(einlFilm));
+// Klaus 2026-11-16: "Wie zwei sich finden" as one short film with a narrator. It carries sound,
+// so it must not start by itself, must not load before the tap, and carries the spoken text as captions.
+{
+  const seite = "docs/einladung/demo-zusammenarbeit.html";
+  const html = existsSync(join(WURZEL, seite)) ? readFileSync(join(WURZEL, seite), "utf8") : "";
+  const basis = dirname(join(WURZEL, seite));
+  const v = (html.match(/<figure class="film">[\s\S]*?<\/figure>/) || [""])[0];
+  const kopf = (v.match(/<video\b([^>]*)>/) || [])[1] || "";
+  const src = (v.match(/<source src="([^"]+)"/) || [])[1], poster = (kopf.match(/poster="([^"]+)"/) || [])[1];
+  const spur = (v.match(/<track\b[^>]*src="([^"]+)"/) || [])[1];
+  t("Wie zwei sich finden: der Film liegt im Depot", !!src && da(join(basis, src)), src || "kein <source>");
+  t("Wie zwei sich finden: das Standbild liegt im Depot", !!poster && da(join(basis, poster)), poster || "kein poster");
+  t("Wie zwei sich finden: der Film startet nur auf Tipp (Bedienleiste, kein autoplay, lädt nicht vorab)",
+    /\bcontrols\b/.test(kopf) && !/\bautoplay\b/.test(kopf) && /preload="none"/.test(kopf));
+  t("Wie zwei sich finden: Film und Standbild kommen nicht von einem fremden Host",
+    !/^(https?:)?\/\//.test(src || "//") && !/^(https?:)?\/\//.test(poster || "//"));
+  const vtt = spur && existsSync(join(basis, spur)) ? readFileSync(join(basis, spur), "utf8") : "";
+  t("Wie zwei sich finden: der gesprochene Text liegt als Untertitel bei (vier Abschnitte)",
+    /^WEBVTT/.test(vtt) && (vtt.match(/-->/g) || []).length === 4, spur || "keine Spur");
+}
 t("Startseite: der Truhen-Film blendet nach dem Ende zurück und beginnt nach einer Pause neu (keine harte Schleife)",
   !/class="vp-truhe-film"[^>]*\bloop\b/.test(start) && /film\.addEventListener\('ended', function \(\) \{\s*clearTimeout\(pause\);\s*pause = setTimeout\(function \(\) \{ film\.classList\.remove\('laeuft'\)/.test(start));
 
