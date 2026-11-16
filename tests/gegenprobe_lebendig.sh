@@ -62,5 +62,7 @@ fall "Finde-Film ohne Standbild"    "Wie zwei sich finden: das Standbild liegt i
 fall "Finde-Film ohne Untertitel"   "Wie zwei sich finden: der gesprochene Text liegt als Untertitel bei" "rm docs/einladung/vendor/video/wie-zwei-sich-finden.de.vtt"
 fall "Schritte wieder unter dem Film" "Wie zwei sich finden: unter dem Film stehen keine Schritte" "sed -i 's|</figure>|</figure><div class=\\\"panel\\\">Schritt 1</div>|' docs/einladung/demo-zusammenarbeit.html"
 fall "Endknoten-Karte wieder offen"  "Klappkarten: die sechs benannten Karten liegen unter einem Knopf" "sed -i 's|data-back-anchor=\\\"endknoten\\\" data-klapp|data-back-anchor=\\\"endknoten\\\"|' index.html"
+fall "Schlüssel-Kasten ohne Breite"  "Einladung: der Schlüssel-Kasten hat am Handy eine Breite" "sed -i 's|#scene-5 .key-host { width: 100%; aspect-ratio: 5/4;|#scene-5 .key-host { aspect-ratio: 5/4;|' docs/einladung/index.html"
+fall "Film bei ruhiger Darstellung weg" "Einladung: bei ruhiger Darstellung oder Datensparen startet ein Knopf die Filme" "sed -i 's|if (reducedMotion \|\| sparsam) filmKnopf(host, beobachten); else beobachten();|if (reducedMotion \|\| sparsam) film.remove(); else beobachten();|' docs/einladung/index.html"
 echo "═══ $gefangen gefangen · $durch durchgerutscht ═══"
 [ "$durch" -eq 0 ]

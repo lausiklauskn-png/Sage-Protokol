@@ -379,6 +379,17 @@ em.gold { color: var(--gold); font-style: normal; }
 .audio-toggle[data-on="true"] { color: var(--gold); }
 .audio-toggle svg { width: 1.1rem; height: 1.1rem; fill: currentColor; }
 
+/* === Film auf Wunsch (Bewegung reduzieren, Datensparen) === */
+.film-start {
+  position: absolute; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 6;
+  width: 3.2rem; height: 3.2rem; border-radius: 50%;
+  background: rgba(10, 13, 16, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line); color: var(--gold); font-size: 1.1rem; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; padding-left: 0.2rem;
+}
+.film-start:hover { transform: translateX(-50%) scale(1.06); }
+@media print { .film-start { display: none; } }
+
 /* === Scroll-Indikator Sektion 1 === */
 .scroll-cue {
   position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
@@ -1072,7 +1083,9 @@ footer.foot h4 {
   .lang-switch button { padding: 0.4rem 0.6rem; font-size: 0.66rem; }
   footer.foot .foot-inner { grid-template-columns: 1fr; gap: 1.5rem; }
   .marginalia .num { font-size: 3rem; }
-  #scene-5 .key-host { aspect-ratio: 5/4; max-height: 50vh; margin: 0 auto; max-width: 36rem; }
+  /* width: without it the box collapsed to 0 × 0 here (auto margins in a grid cell, only absolutely
+     placed children) and the key was never visible on a phone (Klaus 2026-11-16, measured at 390 px). */
+  #scene-5 .key-host { width: 100%; aspect-ratio: 5/4; max-height: 50vh; margin: 0 auto; max-width: 36rem; }
 }
 
 /* === DER ÜBERHANG DER KAMERAFAHRTEN WIRD GECLIPPT (Klaus 2026-09-18, 2.) ===
@@ -1686,19 +1699,31 @@ document.querySelectorAll('#scene-1 .scene1-film, .szenen-film').forEach((film) 
   }, { threshold: film.classList.contains('scene1-film') ? 0.25 : 0.15 })
     .observe(film.classList.contains('scene1-film') ? film.parentElement : film);
 });
+// A round play button for films that must not start by themselves (reduce motion, data saving).
+function filmKnopf(ort, start) {
+  const k = document.createElement('button');
+  k.type = 'button'; k.className = 'film-start'; k.textContent = '▶';
+  k.setAttribute('aria-label', 'Film abspielen');
+  k.addEventListener('click', () => { k.remove(); start(); });
+  ort.appendChild(k);
+  return k;
+}
 // --- Key film: a seamless loop (it ends on its first picture), only while the key is in view ---
 document.querySelectorAll('#scene-5 .key-film').forEach((film) => {
   const sparsam = !!(navigator.connection && navigator.connection.saveData);
-  if (reducedMotion || sparsam || !('IntersectionObserver' in window)) { film.remove(); return; }
+  if (!('IntersectionObserver' in window)) { film.remove(); return; }
   const host = film.parentElement;
   film.addEventListener('playing', () => { film.classList.add('laeuft'); host.classList.add('film-an'); });
   film.addEventListener('error', () => { host.classList.remove('film-an'); film.remove(); });
-  new IntersectionObserver((e) => {
+  const beobachten = () => new IntersectionObserver((e) => {
     if (e[0].isIntersecting) {
       if (!film.src) film.src = film.dataset.src;
       film.play().catch(() => {});
     } else { film.pause(); film.classList.remove('laeuft'); host.classList.remove('film-an'); }
   }, { threshold: 0.3 }).observe(host);
+  // Klaus 2026-11-16 (phone): with "reduce motion" or data saving the film did not exist at all.
+  // It still does not start by itself there, but a button starts it on request.
+  if (reducedMotion || sparsam) filmKnopf(host, beobachten); else beobachten();
 });
 const isMobile      = matchMedia('(max-width: 900px)').matches;
 
@@ -1786,8 +1811,9 @@ document.querySelectorAll('section.scene').forEach(sec => {
   // the clearing. Without the film everything below works as before.
   const fahrt = sec.querySelector('.tuer-fahrt');
   const sparsam = !!(navigator.connection && navigator.connection.saveData);
-  let filmModus = !!fahrt && !reducedMotion && !sparsam && ('IntersectionObserver' in window);
-  if (filmModus) {
+  const filmMoeglich = !!fahrt && ('IntersectionObserver' in window);
+  let filmModus = filmMoeglich && !reducedMotion && !sparsam;
+  const filmEinrichten = () => {
     sec.classList.add('film-modus');
     let sichtbar = false, fertig = false;
     const los = () => {
@@ -1812,7 +1838,11 @@ document.querySelectorAll('section.scene').forEach(sec => {
         fertig = false; try { fahrt.currentTime = 0; } catch (_e) {}
       }
     }, { threshold: 0.55 }).observe(sec.querySelector('.doorway-stage'));
-  } else if (fahrt) fahrt.remove();
+  };
+  if (filmModus) filmEinrichten();
+  // reduce motion or data saving: the scroll-driven move stays, and a button starts the film on request
+  else if (filmMoeglich) filmKnopf(sec.querySelector('.doorway-stage'), () => { filmModus = true; filmEinrichten(); update(); });
+  else if (fahrt) fahrt.remove();
 
   let raf = 0;
   function update() {
