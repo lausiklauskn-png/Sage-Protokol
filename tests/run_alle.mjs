@@ -42,7 +42,8 @@
  *   node tests/run_alle.mjs           alle
  *   node tests/run_alle.mjs bau23     nur Dateien, deren Name das enthält
  */
-import { readdirSync } from "node:fs";
+import { readdirSync, mkdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { execFile } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -93,6 +94,20 @@ function fehltEinNachbar(code, text) {
   return m ? m[1].trim() : null;
 }
 
+/* Von einer roten Probe stand hier nur die letzte Zeile. Stirbt eine Probe an
+   einem Absturz, ist das die Versionszeile von Node, und der Grund steht
+   darüber. Die ganze Ausgabe geht deshalb in eine Datei AUSSERHALB des Depots
+   (ein Lauf schreibt nichts in den Baum), und ihr Pfad steht neben der Probe. */
+const ROT_ORDNER = join(tmpdir(), "sage-proben-rot");
+function ablegen(datei, text) {
+  try {
+    mkdirSync(ROT_ORDNER, { recursive: true });
+    const ziel = join(ROT_ORDNER, datei.replace(/[^A-Za-z0-9_.-]+/g, "_") + ".log");
+    writeFileSync(ziel, text, "utf8");
+    return ziel;
+  } catch { return null; }
+}
+
 function lauf(datei) {
   return new Promise((fertig) => {
     execFile("node", [join(HIER, datei)], { timeout: FRIST, maxBuffer: 8 * 1024 * 1024 },
@@ -108,7 +123,7 @@ function lauf(datei) {
         if (fehler.killed) return fertig({ datei, art: "rot", grund: "Frist von " + (FRIST / 1000) + " s überschritten" });
         // Die letzte nicht-leere Zeile trägt bei diesen Proben die Summe.
         const zeilen = text.trim().split("\n").filter((z) => z.trim());
-        return fertig({ datei, art: "rot", grund: zeilen[zeilen.length - 1] || "ohne Ausgabe" });
+        return fertig({ datei, art: "rot", grund: zeilen[zeilen.length - 1] || "ohne Ausgabe", ganz: ablegen(datei, text) });
       });
   });
 }
@@ -122,7 +137,7 @@ const fehlt = ergebnisse.filter((e) => e.art === "fehlt");
 
 if (rot.length) {
   console.log("\nROT — hier hat eine Probe wirklich etwas gefunden:");
-  for (const e of rot) console.log("  ✗ " + e.datei + "\n      " + e.grund);
+  for (const e of rot) console.log("  ✗ " + e.datei + "\n      " + e.grund + (e.ganz ? "\n      ganze Ausgabe: " + e.ganz : ""));
 }
 if (fehlt.length) {
   const pakete = [...new Set(fehlt.map((e) => e.grund))].join(", ");
