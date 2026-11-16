@@ -61,13 +61,16 @@ for (const r of repos) for (const n of NAMEN) {
 /* ⚠ KEINE NACHBARN HEISST NICHT LAUFFAEHIG, NICHT GRUEN. In einem Behaelter
    ohne die Geschwister-Klone gibt es nichts zu messen; das als bestanden zu
    melden waere der schlimmere Fehler. */
-if (!gefunden.length) {
-  console.log("⊘ NICHT LAUFFAEHIG — keine Nachbar-Depots mit Service-Worker gefunden.");
-  console.log("   Ungeprüft, nicht rot.\n");
-  process.exit(0);
-}
-
-ok(`es gibt Service-Worker zu pruefen (${gefunden.length})`, gefunden.length >= 10);
+/* Zu wenige Klone sind dasselbe in klein: die Probe heisst „im Netz", und mit
+   einer Handvoll Worker ist das Netz nicht gemessen. Bis zum 2026-11-16 war
+   das ROT (`>= 10` als Pruefung) und der leere Fall gruen (Rueckgabewert 0);
+   beides stand in der falschen Spalte (PFLEGE-LISTE § 12 und § 26). Jetzt: was
+   daliegt, wird geparst — ein kaputter Worker bleibt ROT —, und danach meldet
+   die Probe „nicht lauffaehig" (Rueckgabewert 3 UND die Zeile am Zeilenanfang,
+   siehe `run_alle.mjs`). */
+const MINDESTENS = 10;
+const zuWenige = gefunden.length < MINDESTENS;
+if (!zuWenige) ok(`es gibt Service-Worker zu pruefen (${gefunden.length})`, true);
 
 const kaputt = [];
 for (const p of gefunden) {
@@ -93,4 +96,10 @@ try {
 ok("… und die Pruefung faengt genau den Komma-Fall (`'a','b'` unter `'c'`)", merktEsWirklich);
 
 console.log(`\n═══ ${gruen} grün · ${rot} ROT ═══\n`);
-process.exit(rot > 0 ? 1 : 0);
+if (rot > 0) process.exit(1);
+if (zuWenige) {
+  console.log(`⊘ NACHBAR FEHLT: Nachbar-Klone mit Service-Worker — ${gefunden.length} gefunden, ` +
+              `${MINDESTENS} verlangt. Die gefundenen parsen; das Netz ist damit nicht gemessen.`);
+  process.exit(3);
+}
+process.exit(0);

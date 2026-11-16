@@ -646,6 +646,11 @@ Gesamtlauf danach: 135 grün, 3 rot, 2 nicht lauffähig.
 `smoke_service_worker_parst` („es gibt Service-Worker zu pruefen (1)“) melden rot statt nicht
 lauffähig, wenn nur Sage im Container liegt. Nicht geändert.
 
+**Erledigt am 2026-11-16 (Folgesitzung), zugleich § 12 und § 26:** beide melden Rückgabewert 3 und
+`⊘ NACHBAR FEHLT: … —`. `smoke_service_worker_parst` parst vorher, was daliegt; ein kaputter Worker
+bleibt rot (von Hand an einem Wegwerf-Nachbarn gemessen). Gesamtlauf: 136 grün, 0 rot, 4 nicht
+lauffähig. Mit allen Nachbar-Klonen nicht nachgemessen.
+
 ### Zwei Sitzungen am selben Auftrag — 2026-11-16
 
 Das Erklärvideo der Startseite wurde in zwei Sitzungen gleichzeitig gebaut; die zweite hat es erst beim
