@@ -644,6 +644,9 @@
   .vergleich-svg { width: 100%; height: auto; max-width: 280px; display: block; margin: 0.4rem auto 0.8rem; }
   .vergleich-text { color: var(--muted); font-size: 0.95rem; margin: 0; }
   .vergleich-pfeil { font-size: 2rem; color: var(--accent); text-align: center; }
+  .warum-film { margin: 1.6rem auto 0; max-width: 60rem; width: 100%; }
+  .warum-film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 18px; border: 1px solid var(--line); background: #05060f; }
+  @media print { .warum-film { display: none; } }
   .demo-questions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
   .demo-q-btn { font-size: 0.84rem; padding: 0.5rem 0.85rem; }
   .demo-q-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
@@ -2116,111 +2119,18 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           <span class="warum-pulse warum-pulse-3"></span>
           <img src="assets/mark.svg" alt="">
         </div>
-        <h1 class="warum-h1">Sage in fünf Bildern.</h1>
-        <p class="warum-lede">Eine kleine Tour durch das, was Sage anders macht, ohne Fremdwörter, mit echten Beispielen aus dem Alltag.</p>
-        <dl class="name-glossar">
-          <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
-          <dd>Englisch <em>der Weise</em>, botanisch der <em>Salbei</em>. Beides Bilder fürs aktive Verarbeiten. Etwas, das filtert und klärt.</dd>
-          <dt>Protokoll</dt>
-          <dd>Die Spielregel, nach der Knoten sich finden und reden. Bewusst mit einem L. Ein Gesprächsangebot.</dd>
-          <dt>SBKIM <span class="lautschrift">[Es-Be-Ka-I-Em]</span></dt>
-          <dd><em>Semantisches Bidirektionales KI-Matching</em>. Das Verfahren, nach dem zwei Seiten einander an Bedeutung erkennen. Das <em>Mycel</em> ist die Metapher für das Netz, nicht für den Namen.</dd>
-        </dl>
-        <blockquote class="name-glossar-key is-hero">„Der Pilz hat Mycel. Dieses Netz hat <strong>Sage</strong> als Signalsprache."</blockquote>
-        <div class="warum-scroll-hint" aria-hidden="true">↓ Weiterscrollen</div>
-      </section>
-      <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">01</span><h2>Bedeutung statt Adresse</h2></div>
-        <p class="warum-sub">Heute fließt fast alles durch eine Stelle: Google. Sage geht den umgekehrten Weg. Jeder Knoten weiß seins.</p>
-        <div class="vergleich-row">
-          <div class="vergleich-col">
-            <div class="vergleich-tag">Heute</div>
-            <svg viewBox="0 0 280 220" class="vergleich-svg" aria-hidden="true">
-              <line x1="140" y1="80" x2="40"  y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <line x1="140" y1="80" x2="100" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <line x1="140" y1="80" x2="180" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <line x1="140" y1="80" x2="240" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <circle cx="140" cy="80" r="32" fill="#F43F5E" fill-opacity="0.65"/>
-              <text x="140" y="86" text-anchor="middle" font-size="11" font-family="Geist Mono" fill="#FFF">Index</text>
-              <circle cx="40"  cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-              <circle cx="100" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-              <circle cx="180" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-              <circle cx="240" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-            </svg>
-            <p class="vergleich-text">Du musst die Adresse wissen oder den Index fragen. Kleine Webseiten gehen unter, weil der Index entscheidet, wer zählt.</p>
-          </div>
-          <div class="vergleich-pfeil">→</div>
-          <div class="vergleich-col">
-            <div class="vergleich-tag">Mit Sage</div>
-            <svg viewBox="0 0 280 220" class="vergleich-svg" aria-hidden="true">
-              <line x1="60"  y1="110" x2="140" y2="60"  stroke="#6EE7D3" stroke-opacity="0.6" stroke-width="1.4"/>
-              <line x1="140" y1="60"  x2="220" y2="110" stroke="#6EE7D3" stroke-opacity="0.6" stroke-width="1.4"/>
-              <line x1="60"  y1="110" x2="100" y2="180" stroke="#8B5CF6" stroke-opacity="0.55" stroke-width="1.2"/>
-              <line x1="220" y1="110" x2="180" y2="180" stroke="#8B5CF6" stroke-opacity="0.55" stroke-width="1.2"/>
-              <circle cx="60"  cy="110" r="14" fill="#6EE7D3"><animate attributeName="r" values="13;15;13" dur="3.4s" repeatCount="indefinite"/></circle>
-              <circle cx="140" cy="60"  r="14" fill="#F4B435"><animate attributeName="r" values="13;15;13" dur="3s" repeatCount="indefinite" begin="0.4s"/></circle>
-              <circle cx="220" cy="110" r="14" fill="#8B5CF6"><animate attributeName="r" values="13;15;13" dur="3.6s" repeatCount="indefinite" begin="0.8s"/></circle>
-              <circle cx="100" cy="180" r="12" fill="#8B5CF6"><animate attributeName="r" values="11;13;11" dur="3.2s" repeatCount="indefinite" begin="1.2s"/></circle>
-              <circle cx="180" cy="180" r="12" fill="#6EE7D3" fill-opacity="0.8"><animate attributeName="r" values="11;13;11" dur="3.8s" repeatCount="indefinite" begin="1.6s"/></circle>
-            </svg>
-            <p class="vergleich-text">Du fragst nach dem <em>was</em>, nicht nach dem <em>wo</em>. Knoten, die das Thema kennen, antworten. Die anderen schweigen höflich.</p>
-          </div>
-        </div>
-        <figure class="sequenz" data-video="assets/video/sternbild.mp4" data-poster="assets/video/sternbild.webp">
-          <ol class="sequenz-stationen">
-            <li><strong>Jeder Stern ist ein Knoten.</strong> Eine kleine App, die ihr Thema kennt. Keiner davon ist größer oder wichtiger als die anderen.</li>
-            <li><strong>Die Linien sind Bedeutung.</strong> Zwei Knoten verbinden sich, weil sie vom Gleichen handeln, nicht weil jemand ihre Adresse eingetragen hat.</li>
-            <li><strong>Es gibt keine Mitte.</strong> Fällt ein Stern aus, bleibt das Bild stehen. Genau das unterscheidet das Geflecht vom Index.</li>
-          </ol>
+        <h1 class="warum-h1">Sage in einer Minute.</h1>
+        <!-- Klaus 2026-11-16: one explainer film instead of the tour in five pictures. It carries sound,
+             so it starts only on a tap and loads nothing before; the spoken text lies beside it as captions. -->
+        <figure class="warum-film">
+          <video controls playsinline preload="none" poster="assets/video/sage-in-einer-minute.webp" aria-label="Film: Sage in einer Minute, mit Sprecher">
+            <source src="assets/video/sage-in-einer-minute.mp4" type="video/mp4">
+            <track kind="captions" srclang="de" label="Deutsch" src="assets/video/sage-in-einer-minute.de.vtt">
+          </video>
         </figure>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">02</span><h2>Probier es aus</h2></div>
-        <p class="warum-sub">Schau, wer antwortet, und wer höflich schweigt.</p>
-        <div class="demo-questions" id="demo-questions">
-          <button type="button" class="demo-q-btn" data-q="cocktail">„Cocktail mit Tequila ohne Limette"</button>
-          <button type="button" class="demo-q-btn" data-q="hefeteig">„Hefeteig für Pizza"</button>
-          <button type="button" class="demo-q-btn" data-q="honig">„Honig im Hefeteig"</button>
-          <button type="button" class="demo-q-btn" data-q="schach">„Schacheröffnung mit Bauernopfer"</button>
-          <button type="button" class="demo-q-btn" data-q="dach">„Dachschindeln verlegen"</button>
-        </div>
-        <div class="demo-stage">
-          <svg viewBox="0 0 600 300" class="demo-svg" id="demo-svg" aria-label="Mycel-Knoten-Geflecht für Live-Demo">
-            <g class="demo-links" stroke-opacity="0.35" stroke-width="1.2">
-              <line x1="120" y1="80"  x2="300" y2="60"  stroke="#8B5CF6"/>
-              <line x1="300" y1="60"  x2="480" y2="80"  stroke="#8B5CF6"/>
-              <line x1="120" y1="220" x2="300" y2="240" stroke="#8B5CF6"/>
-              <line x1="300" y1="240" x2="480" y2="220" stroke="#8B5CF6"/>
-              <line x1="120" y1="80"  x2="120" y2="220" stroke="#8B5CF6"/>
-              <line x1="480" y1="80"  x2="480" y2="220" stroke="#8B5CF6"/>
-              <line x1="300" y1="60"  x2="300" y2="240" stroke="#8B5CF6"/>
-            </g>
-            <g class="demo-sender" id="demo-sender">
-              <circle cx="40" cy="150" r="22" fill="#F4B435"/>
-              <text x="40" y="154" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#1a0d00" font-weight="700">DU</text>
-            </g>
-            <g id="demo-particle"></g>
-            <g class="demo-node" data-domain="rezeptbuch" transform="translate(120 80)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">REZEPT</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Kuchen, Brot</text></g>
-            <g class="demo-node" data-domain="mixarium" transform="translate(300 60)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">MIXARIUM</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Cocktails</text></g>
-            <g class="demo-node" data-domain="imker" transform="translate(480 80)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">IMKER</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Honig, Bienen</text></g>
-            <g class="demo-node" data-domain="schach" transform="translate(120 220)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">SCHACH</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Eröffnungen</text></g>
-            <g class="demo-node" data-domain="lehrer" transform="translate(300 240)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">LEHRER</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Schulrätsel</text></g>
-            <g class="demo-node" data-domain="wandern" transform="translate(480 220)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">WANDERN</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Touren, Karten</text></g>
-          </svg>
-          <div class="demo-result" id="demo-result"><div class="demo-result-empty">Noch keine Frage gestellt.</div></div>
-        </div>
-      </section>
-      <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">03</span><h2>Wie das Mycel wächst</h2></div>
-        <p class="warum-sub">Es fängt klein an. Eine PWA. Dann zwei. Dann mehr. Wer mitmacht, wird gefunden. Wer geht, fehlt, ohne das Geflecht zu zerreißen.</p>
-        <div class="wachstum-stage">
-          <svg viewBox="0 0 600 320" class="wachstum-svg" id="wachstum-svg" aria-label="Mycel-Wachstum-Animation"></svg>
-          <div class="wachstum-counter" id="wachstum-counter">1 Knoten</div>
-          <button type="button" class="wachstum-replay" onclick="restartWachstum()">↻ Wiederholen</button>
-        </div>
-      </section>
-      <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">04</span><h2>Drei Tatsachen</h2></div>
+        <div class="warum-section-head"><span class="warum-num">✓</span><h2>Drei Tatsachen</h2></div>
         <figure class="sequenz" data-video="assets/video/siegel.mp4" data-poster="assets/video/siegel.webp">
           <ol class="sequenz-stationen">
             <li><strong>Jede Karte ist unterschrieben.</strong> Ein Knoten stellt sich mit einer signierten Visitenkarte vor, der Spore. Wer sie verändert, bricht die Unterschrift.</li>
@@ -2247,16 +2157,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </div>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">05</span><h2>Was möglich wird</h2></div>
-        <ul class="zukunft-liste">
-          <li><strong>Hobbyisten dock'n an.</strong> Wandern, Schach, Imkerei, Modellbau: wer eine Seite hat, baut die Sage-Schicht ein und wird findbar.</li>
-          <li><strong>Frage über Themengrenzen hinweg.</strong> „Honig im Hefeteig" → das Rezeptbuch antwortet zum Teig, ein Imker-Knoten zum Honig.</li>
-          <li><strong>Eine Suche, die Big Tech nicht braucht.</strong> Wenn Google sich noch weiter zurückzieht, läuft Sage trotzdem.</li>
-          <li><strong>Wissen, das vergehen darf.</strong> Großmutters Rezepte, ein altes Wanderbuch: sie leben, solange jemand sie pflegt.</li>
-        </ul>
         <div class="warum-cta">
           <button type="button" class="primary" onclick="goScreen('overview', 'warum')">→ Zurück zur Sage</button>
-          <button type="button" onclick="goScreen('cycle')">Lebenszyklus ansehen</button>
         </div>
       </section>
     </main>
@@ -2384,7 +2286,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </ul>
         <div class="ueber-foot"><strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten eine Chance, wieder gefunden zu werden, ohne sich an einen Konzern verkaufen zu müssen.</div>
         <div class="ueber-cta">
-          <button type="button" class="primary" onclick="goWarum()">Vollständige Tour mit Live-Demo →</button>
+          <button type="button" class="primary" onclick="goWarum()">Sage in einer Minute: der Film →</button>
           <button type="button" onclick="closeUeberModal()">Schließen</button>
         </div>
       </div>

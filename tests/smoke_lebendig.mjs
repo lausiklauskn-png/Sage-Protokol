@@ -85,6 +85,23 @@ t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehle
   t("Wie zwei sich finden: der gesprochene Text liegt als Untertitel bei (sechs Abschnitte)",
     /^WEBVTT/.test(vtt) && (vtt.match(/-->/g) || []).length === 6, spur || "keine Spur");
 }
+// Klaus 2026-11-16: the tour screen is one explainer film; the try-it demo, the growth drawing and
+// the text sections around them are gone, "Drei Tatsachen" stays
+{
+  const tour = (start.match(/<main id="screen-warum"[\s\S]*?<\/main>/) || [""])[0];
+  const kopf = (tour.match(/<figure class="warum-film">\s*<video\b([^>]*)>/) || [])[1] || "";
+  const src = (tour.match(/<source src="([^"]+)"/) || [])[1], poster = (kopf.match(/poster="([^"]+)"/) || [])[1];
+  const spur = (tour.match(/<track\b[^>]*src="([^"]+)"/) || [])[1];
+  t("Tour: der Erklärfilm liegt im Depot", !!src && da(join(WURZEL, src)), src || "kein <source>");
+  t("Tour: das Standbild des Erklärfilms liegt im Depot", !!poster && da(join(WURZEL, poster)), poster || "kein poster");
+  t("Tour: der Erklärfilm startet nur auf Tipp (Bedienleiste, kein autoplay, lädt nicht vorab)",
+    /\bcontrols\b/.test(kopf) && !/\bautoplay\b/.test(kopf) && /preload="none"/.test(kopf));
+  const vtt = spur && existsSync(join(WURZEL, spur)) ? readFileSync(join(WURZEL, spur), "utf8") : "";
+  t("Tour: der gesprochene Text liegt als Untertitel bei", /^WEBVTT/.test(vtt) && (vtt.match(/-->/g) || []).length >= 5, spur || "keine Spur");
+  t("Tour: Frage-Demo, Wachstums-Zeichnung und die Abschnitte 01, 02, 03, 05 sind heraus",
+    !/id="demo-questions"/.test(tour) && !/id="wachstum-svg"/.test(tour) && !/warum-num">0[1235]</.test(tour));
+  t("Tour: die drei Tatsachen stehen weiter da", /Jede Karte ist unterschrieben/.test(tour) && /Geprüft wird bei dir/.test(tour) && /Das Siegel zeigt den Stand/.test(tour));
+}
 t("Startseite: der Truhen-Film blendet nach dem Ende zurück und beginnt nach einer Pause neu (keine harte Schleife)",
   !/class="vp-truhe-film"[^>]*\bloop\b/.test(start) && /film\.addEventListener\('ended', function \(\) \{\s*clearTimeout\(pause\);\s*pause = setTimeout\(function \(\) \{ film\.classList\.remove\('laeuft'\)/.test(start));
 
