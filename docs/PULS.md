@@ -47,7 +47,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Offen (Klaus 2026-11-16, dreimal genannt):** Tür-Film der Einladung: der Schlüssel fliegt hinein und verschwindet, die Tür ist dabei schon offen. Gewünscht: Tür zu, Schlüssel steckt sichtbar, dreht wie bei der Truhe, dann geht die Tür auf. Nicht gebaut; das Guthaben reicht für keinen Clip. · `assets/video/siegel.mp4` und `.webp` werden von keiner Seite mehr verwendet.
 
-Übergabe: [`sessions/archiv/2026-11-16_discovery-vorlesen.md`](sessions/archiv/2026-11-16_discovery-vorlesen.md) (Nachtrag)
+Sage #1190 gemergt. Forschungseintrag: Kimhub #473 (gemergt). Klaus danach: der Tür-Film bleibt vorerst liegen. Übergabe: [`sessions/archiv/2026-11-16_discovery-vorlesen.md`](sessions/archiv/2026-11-16_discovery-vorlesen.md) (Nachtrag)
 
 ## 2026-11-16 · Discovery liest vor, Fenster „Was bringt mir das?“ gekürzt, sechs Proben finden den Browser wieder (Hauptsitzung)
 
