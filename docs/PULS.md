@@ -51,7 +51,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Offen:** Klaus' Blick auf Film und Schlüssel · Ambient-Ton der Einladung: herausnehmen, ersetzen oder lassen · Schlüssel-Szene der Einladung und Übergang Schlüssel → Tür als Film · `sbkim-demo` bekommt den Film bisher nicht · Punkte 5 und 7 des Startbriefs · Pflege-Liste: `_pdf.mjs` trägt denselben festen Browser-Pfad.
 
-Übergabe: [`sessions/archiv/2026-11-16_film-wie-zwei-sich-finden.md`](sessions/archiv/2026-11-16_film-wie-zwei-sich-finden.md)
+Sage #1177 gemergt. Forschungseintrag: Kimhub #467 (gemergt). Übergabe: [`sessions/archiv/2026-11-16_film-wie-zwei-sich-finden.md`](sessions/archiv/2026-11-16_film-wie-zwei-sich-finden.md)
 
 ## 2026-11-15 · Zwei Filme: Schlüssel in die Truhe, Tür als laufender Film (Hauptsitzung)
 
