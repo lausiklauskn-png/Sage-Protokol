@@ -659,3 +659,10 @@ nicht ausgeführt: ein Lauf überschreibt `einladung.pdf`.
 Klaus hat die Klick-Sätze der Seite herausnehmen lassen. Vier Kurzhinweise der Lampen stehen in
 `src/modules/17_floating_widget.js` (Kanon, samt englischer Tafel) und sind nicht angefasst.
 
+### Tour der Startseite: Skripte und Dateien ohne Abnehmer — 2026-11-16
+
+Seit die Tour ein Film ist, stehen in `index.html` die Skripte der entfernten Abschnitte weiter
+(`DEMO_QUESTIONS`, `runDemo`, `firePartikel`, `WACHSTUM_NODES`, `startWachstum` und die Stile dazu); sie
+greifen ins Leere, ohne Fehler. `assets/video/sternbild.mp4` und `assets/video/sternbild.webp` werden
+von der Startseite nicht mehr verwendet. Nicht entfernt.
+

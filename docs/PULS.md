@@ -31,6 +31,20 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-16 · Startseite: Tour als ein Erklärfilm „Sage in einer Minute“ (Hauptsitzung)
+
+**Auftrag:** Klaus' Ja zu 161 Credits für das Erklärvideo, vierter Abschnitt derselben Sitzung. Schlüssel der Einladung am Handy und Truhe hat er als in Ordnung gemeldet.
+
+**Getan (`index.html`, Tour-Bildschirm):** „Sage in fünf Bildern“ ist „Sage in einer Minute“: ein Film mit Sprecher (`assets/video/sage-in-einer-minute.mp4`, 60 s, 1280×720, 7,0 MB; Untertitel `.de.vtt`, Standbild `.webp`), der nur auf Tipp startet. Heraus sind das Namens-Glossar im Kopf (es steht weiter im Fenster „Was bringt mir das?“), die Abschnitte „Bedeutung statt Adresse“, „Probier es aus“, „Wie das Mycel wächst“, „Was möglich wird“ und der Knopf „Lebenszyklus ansehen“. „Drei Tatsachen“ samt der drei Karten bleibt. Der Knopf im Fenster heißt „Sage in einer Minute: der Film →“. Der Film besteht aus zwei neuen Szenen (Frage und Antwort im Netz; ein Knoten kommt, einer geht) und drei Szenen aus „Wie zwei sich finden“ (Karten, Siegel prüfen, Match).
+
+**Higgsfield:** zwei Clips (10 s und 13 s, 161 Credits), dazu die zwei Tonspuren aus dem Abschnitt davor. Guthaben vorher 317,24, nachher 84,04; darin rund 72 Credits aus Buchungen, die nicht aus dieser Sitzung stammen (Tonspuren von 02:00 bis 02:01 UTC und frühere).
+
+**Gemessen:** `tests/smoke_lebendig.mjs` 117 grün · 0 rot, `tests/gegenprobe_lebendig.sh` 44 gefangen · 0 durch, `tests/smoke_startseite_bedienung.mjs` 42 · 0, `tests/smoke_sequenz.mjs` 22 · 0. Tour im Browser bei 1280×800 und 390×844: Film pausiert (962×541 und 358×201 px), kein Abruf vor dem Start, läuft danach, 60,3 s, eine Untertitel-Spur, kein Querlaufen, kein Seitenfehler. **Nicht gemessen:** Klaus' Geräte; ein Gesamtlauf.
+
+**Offen:** die letzte Szene zeigt das Netz so weit, dass der kommende und der gehende Knoten kaum zu erkennen sind · Fenster „Was bringt mir das?“ kürzen (Klaus: „vielleicht komplett verkürzen“) · Lebenszyklus-Bildschirm behalten oder herausnehmen · Discovery mit Arthurs Stimme · Pflege-Liste: tote Skripte der Tour, unbenutzte Sternbild-Dateien.
+
+Sage #1185 gemergt. Forschungseintrag: Kimhub #470 (gemergt). Übergabe: [`sessions/archiv/2026-11-16_erklaerfilm-startseite.md`](sessions/archiv/2026-11-16_erklaerfilm-startseite.md)
+
 ## 2026-11-16 · Einladung am Handy: Schlüssel sichtbar, Übergang im Hochformat, Filme auf Knopf; Knoten-Karte eingeklappt (Hauptsitzung)
 
 **Auftrag:** Klaus' Sichttest am Handy und an der Startseite, dritter Abschnitt derselben Sitzung: in der Einladung ist der Schlüssel am Handy nicht zu sehen, vor der Tür steht ein großer Leerraum, vom Übergang sieht man nur ein Licht an- und ausgehen („zu schmal“) · der Truhen-Film läuft am Handy, der Schlüssel soll sich aber rechts herum drehen · der Film „Wie zwei sich finden“ ist etwas unscharf · „Wer ist schon angedockt?“ gehört in eine Karte mit Knopf.
@@ -437,27 +451,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 - **Eingereiht:** PFLEGE-LISTE § 16 („~30 MB“ im Andock-Wizard, gemessen 118 MB).
 - **Kim-sync bleibt privat** (Klaus): nicht im Mycel eintragen.
 
-## 2026-10-15 · Mein In-and-Out-Book im Mycel eingetragen (Hauptsitzung)
-- **Getan:** Klaus' Spore (am Tablet im Andock-Wizard erzeugt, 14:15:19Z) byte-gleich als `sbkim/inoutbook_inbox.json` abgelegt; Prüf-Vermerk `sbkim/inoutbook_inbox.verify.md`; Zeile in `sbkim/NETZ-STAND.md`; Eintrag in `status.json` (`endknoten`, 23. Eintrag).
-- **Gemessen:** VALID (Modul-02-Pfad), id = SHA256(Pubkey), Manipulationsprobe fällt durch, kein `d` im JWK, L2 = 1, 11 Schnipsel. Sage-Cosinus **0.917311** (Depot-Maßstab) → `verified-match`.
-- **Nicht gemessen:** Raum-Beitritt (`established`), Raum-Maßstab. Im App-Depot liegt keine `sbkim/spore.json` (`sporeUrl` leer).
-- **Offen:** Kim-sync eintragen, sobald Klaus seine Spore schickt (Klaus: „erst einmal" nur das In-and-Out-Book).
+## Drei Sitzungen vom 2026-10-15 (In-and-Out-Book im Mycel · Sammel-Brief Schritt 3 · Schritt 2, Paket A4) — ausgelagert am 2026-11-16
 
-## 2026-10-15 · Sammel-Brief Schritt 3: Mein-In-and-Out-Book und Kim-sync als SBKIM-Knoten angedockt (Hauptsitzung)
-
-- **Getan:** zwei neue Knoten, Bauart Sende-Prüfer/Workflow-Needs (feste Leiste in der Kopfzeile, **kein Modul 17**): Mein-In-and-Out-Book #8 (Schublade `inoutbook`, Cache `inout-v8`, alle `?v=8`) und Kim-sync #19 (Schublade `kimsync`, Cache `kimsync-v15`). Je 13 Pflicht-Module byte-1:1 aus dem Kanon (23 `05a6eb42ec68`, 05b `37eee5b196b3`), in der App-Probe gepinnt; `window.SBKIM_DB_SUFFIX` im `<head>`; 05b als eigene `<script type="module">`-Zeile, nicht in der Nachlade-Kette; Identität `assets/siegel-inhalt.js` (Beschreibung ohne Post-Inhalt bzw. ohne Raum-Code); `sicherheit.html` daneben; alles im Vorrat. Kim-sync: noble ist die vorhandene Datei aus Kimboard (sha gleich Kanon), kein zweites Exemplar; `assets/pruefer-mail.js` byte-1:1 dazu. Register `sbkim/DB-SUFFIXE.md` um `inoutbook`, `kimsync` und das fehlende `workflowneeds` ergänzt.
-- **Gemessen:** In-and-Out-Book `npm test` 158 → **231 grün · 0 ROT**; Kim-sync 249 → **336 grün · 0 ROT** (alle 249 alten Zeilen unverändert). Im Chromium je 4 Breiten: Kette bis zum Ende, alle Pflicht-Module da, Siegel stellt sich aus, Andock-Wizard öffnet, keine Seitenfehler, Kopfleiste ohne Überlauf, **keine WebSocket-Erzeugung und kein Abruf außer Haus beim Laden**. Gegenprobe: In-and-Out `KNOTEN:` 14/14 gefangen (6 nachgezogene Altfälle 6/6), Kim-sync neue `tests/gegenprobe-knoten.sh` 17/17. Erst 3 bzw. 1 Fall blind (Text-Wächter, WebSocket nur übers Netz-Ereignis gezählt, zweimal ein toter CSS-Eingriff) — geschärft. Verteiler `--nachbarn` ohne `--schreiben`: beide Träger gefunden, Knoten-Module gleich Kanon. Sage `run_alle` 117 grün · 1 rot (`smoke_service_worker_parst`, auch auf `main`) · 2 nicht lauffähig. Auf `main` nachgezählt, danach Zweige gehoben.
-- **Benannt, nicht angefasst:** Datei-Post (kein Ja von Klaus). In-and-Out-Book `modules/25_pseudonym.js` hängt dem Kanon 86 Zeilen nach. Kim-sync: im frischen Gerät liegt das Willkommen-Fenster modal über der Leiste; bei 320 px bleibt dem Titel 0 px (main 18 px); Siegel/Verbinden-Fenster bleiben auf Russisch Deutsch. Register: Sende-Prüfer, Workflow-Calculate, Workflow-PDF fehlen dort, nicht gemessen.
-- **Offen:** erste Spore je App am Gerät (Klaus, Siegel → Andock-Wizard), danach ⟳. Tablet nicht gemessen. Weiter mit Schritt 4.
-
-## 2026-10-15 · Sammel-Brief Schritt 2, Paket A4: Bau 23.R in Alis-Moderaum, Perfect-Skin-Fashion, Perfect-Skin-Beauty — Schritt 2 erledigt (Hauptsitzung)
-
-- **Getan:** `kanon-verteilen --schreiben --nur 02_spore,05b_nostr_relay,16_siegel,23_rendezvous` in einem Lauf. In allen drei: 02 `6789fe6e903a`, 16 `d84fa539e76e`, 23 `3caa0bb1fbe7` (549 Zeilen, Generationen-Sprung), 23-UI `fc47f16b24d5` → Kanon. 05b lag auf der Juni-Fassung `030aa2d26014` → mitgenommen (`37eee5b196b3`). Pins in `tools/drift-guard.mjs` nachgezogen; Alis-Moderaum Cache v24→v25, die beiden Perfect-Skin-Seiten haben keinen Service-Worker. Herkunfts-Riegel: keine Handarbeit. Keine in HTML eingebetteten Kopien. PRs Alis-Moderaum #72 · Perfect-Skin-Fashion #44 · Perfect-Skin-Beauty #72, gemergt; auf `main` nachgezählt (02 `0cbf0664e2a7`, 05b `37eee5b196b3`, 16 `7c12bc487d44`, 23 `05a6eb42ec68` mit `RDV_LABEL_MAX = 200`, 23-UI `efecd89ea80d`), danach Zweige gehoben.
-- **Gemessen:** `npm test` je Rückgabewert 0 — Alis-Moderaum 55/55 (vorher 55/55), Perfect-Skin-Fashion 66 grün (vorher 66), Perfect-Skin-Beauty 18 + 25 (vorher 18 + 25). `npm run gegenprobe` 18/18 · 17/17 · 19/19 bemerkt. Gegenprobe von Hand (alte 23 zurück): je Drift-Guard `ABGEWICHEN: modules/23_rendezvous.js`, rc=1; danach wiederhergestellt. `index.html` je im Chromium bis zum Ende der Nachlade-Kette: Rendezvous, UI, Relais, Siegel, Spore da. Glue `assets/*.js` ohne `innerHTML` für fremden Text.
-- **Benannt, nicht angefasst:** alle drei `index.html` werfen `Unexpected token 'export'` — die Nachlade-Kette lädt `modules/noble-secp256k1.js` (ES-Modul) als klassisches Skript; **auch auf `main`** so, 05b importiert noble selbst. 03 und 04 hängen weiter zurück (60 / 109 Zeilen).
-- **Knoten „Muster Werbetechnik":** über den Mitschnitt `mycel-karte/mitschnitt/mycel-lauf-2026-09-10.json` (Spore `Gq_Mt8o_…`, Endpunkt `…github.io/Mein-Workfloh-Page/`) und die Spore im Repo (`sbkim/spore.json`, gleiche `id`) belegt: **Mein-Workfloh-Page**. Trägt dieselben alten Fassungen (23 `3caa0bb1fbe7`, 05b Juni). Nur gelesen — der Name fällt unter „NIE anfassen: *-Page", das Repo ist aber ein arbeitender Knoten mit eigener Schublade (`workflohpage`). Entscheid bei Klaus.
-- **`docs/observatorium/tools/mycelknoten.html`:** bettet 01–05, 07, 15, 16, 17 ein, **kein 23**. 02 weicht 198 Zeilen, 16 581 Zeilen vom Kanon ab. Nach der Regel (Siegel-Ehrlichkeit) nicht nachgezogen. `innerHTML`-Stellen: fremde Werte über `textContent`/`escapeAttr`, sonst fester Text.
-- **Offen:** Mein-Workfloh-Page (Klaus). Tablet nicht gemessen. Weiter mit Schritt 3.
+> **↓ Ausgelagert.** Die Einträge stehen **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-38.md`](sessions/archiv/2026-11_puls-auslagerung-38.md)
+> (23 Zeilen). Nichts gekürzt.
 
 ## Vier Sitzungen vom 2026-10-15 (Sammel-Brief Schritt 2, Pakete A3, A2 und A1 · Schutzschichten freigegeben) — ausgelagert am 2026-11-16
 
