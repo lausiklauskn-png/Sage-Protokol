@@ -35,7 +35,7 @@ catch { console.log("⊘ nicht lauffähig: playwright-core fehlt (npm install)")
 const PORT = 9060 + (process.pid % 30);
 const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1"], { cwd: wurzel, stdio: "ignore" });
 for (let i = 0; i < 120; i++) {
-  try { const a = await fetch(`http://127.0.0.1:${PORT}/mycel-karte/index.html`); if (a.ok) break; } catch {}
+  try { const a = await fetch(`http://127.0.0.1:${PORT}/mycel-karte/index.html`); await a.arrayBuffer(); if (a.ok) break; } catch {}
   await new Promise((r) => setTimeout(r, 50));
 }
 const browser = await chromium.launch({ executablePath: chrom() });

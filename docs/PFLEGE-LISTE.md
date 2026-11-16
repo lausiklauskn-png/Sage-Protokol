@@ -606,7 +606,7 @@ Deckung unter 30 % (`--max-restfehler`, `--min-deckung`, `--trotzdem`). Bewacht 
 stehen auf drei Messungen: 6,8 (passend), 17,2 und 17,1 (unpassend). Die Original-Clips von Tür und
 Lichtung liegen nicht im Depot; ob sie unter 12 bleiben, ist nicht gemessen.
 
-### `smoke_sicherheit_seite` ist im Gesamtlauf rot und einzeln grün — 2026-11-15
+### ✅ `smoke_sicherheit_seite` ist im Gesamtlauf rot und einzeln grün — 2026-11-15
 
 `node tests/run_alle.mjs` meldet die Probe rot (Ausgabe endet mit der Node-Versionszeile eines
 Absturzes), `node tests/smoke_sicherheit_seite.mjs` allein läuft 28 grün · 0 rot durch. Einmal
@@ -617,6 +617,22 @@ derselben Schlusszeile, danach einzeln 28 grün · 0 rot, auch aus dem Ordner `t
 dem Gesamtlauf liefen noch drei `python3 -m http.server` (Ports 8982, 9012, 8855) aus Proben, die rot
 geendet hatten; die Sicherheits-Probe würfelt ihren Port aus 8300 bis 9199. Ob ein belegter Port die
 Ursache ist, ist nicht belegt: der Läufer zeigt von einer roten Probe nur die letzte Zeile.
+
+**Erledigt am 2026-11-16:** `tests/run_alle.mjs` legt die ganze Ausgabe einer roten Probe ab. Im
+nächsten Gesamtlauf stand der Grund da: `AssertionError … assert(!this.paused)` aus Nodes eigenem
+HTTP-Teil (undici), ausgelöst vom Warte-Abruf der Probe (`fetch` ohne Auslesen der Antwort), wenn der
+Server die Verbindung schließt. Die Probe liest die Antwort jetzt ganz aus, ebenso sieben weitere
+Proben mit demselben Abruf. Der belegte Port war nicht die Ursache. Nicht gemessen: ein Gesamtlauf
+danach.
+
+### Drei „bekannt rote“ Proben scheitern am Browser-Pfad — 2026-11-16
+
+Aus der abgelegten Ausgabe des Gesamtlaufs: `smoke_bau23_mycel_platz` und `smoke_bau23_uebersetzung`
+suchen `/opt/pw-browsers/chromium/chrome-linux/chrome`, `pinnwand/_smoke_mikrofon`
+`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`. Im Container liegt der Browser unter
+`/opt/pw-browsers/chromium` (Verweis auf Build 1243, `chrome-linux64`). Die drei brechen vor ihrer
+ersten Browser-Prüfung ab; was sie messen würden, ist hier seit unbekannter Zeit ungemessen. Nicht
+geändert.
 
 ### ✅ `docs/einladung/_smoke.mjs` startet im Container nicht — 2026-11-15
 

@@ -31,6 +31,28 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-16 · Musik statt Summton, Schlüssel-Szene und Übergang als Film, Match-Szene, Truhen-Schlüssel bis zum Bart im Schloss (Hauptsitzung)
+
+**Auftrag:** Klaus' Sichttest und Antworten am selben Abend: der Ton der Einladung soll durch einen besseren ersetzt werden · Schlüssel-Szene und Übergang zur Tür als Film · die Sicherheits-Probe im Gesamtlauf beheben · beim Truhen-Film geht nur ein Stift ins Schloss, der Bart nicht. Während der Sitzung dazu: Text und Knoten-Zeichnung unter dem Film weg, im Film das Match über die Bedeutungssuche erklären; in Szene 2 sieht die türkise Blase auf die eigene Karte; die türkise Blase hat zwei Zungen; der Schlüssel gehört nur bis zum Bart ins Schloss, nicht bis zum Anschlag.
+
+**Getan, Einladung (`docs/einladung/index.html`):** der Lautsprecher-Knopf spielt `vendor/audio/ambient.mp3` (60 s, 601 KB, Schleife, lädt erst beim Tipp) statt dreier Sinustöne. Der Schlüssel der Szene 5 dreht sich einmal um seine Achse (`vendor/video/scene-5-schluessel.mp4`, 6 s, Schleife, 158 KB). Der Tür-Film beginnt mit dem Schlüssel, der zum Schloss fliegt, und geht in die bisherige Tür-Fahrt über (`vendor/video/scene-5-schluessel-tuer.mp4`, 15 s, 1,8 MB; `scene-5-tuer-fahrt.mp4` ist heraus). Die Sektion ist im Film-Modus 300 statt 240 Fensterhöhen lang.
+
+**Getan, „Wie zwei sich finden“ (`docs/einladung/demo-zusammenarbeit.html`):** der Film ist 57 s lang (4,3 MB): neue Szene zum Match (Symbole steigen auf, Paare finden sich, ein Ring füllt sich; Arthur: „Treffer: fünfundachtzig Prozent“), Szene 2 neu (die goldene Blase hält ihre Karte hin, die türkise prüft sie), Szene 4 neu (Mund geschlossen, das Netz am Ende ohne Ringe), der Satz zur Brücke neu gesprochen. Die sechs Schritte, die Knoten-Zeichnung und der Schlusstext unter dem Film sind heraus; die Seite trägt kein Skript mehr.
+
+**Getan, Startseite:** `assets/video/truhe-schluessel.mp4` neu (10 s, 318 KB, stumm), aus zwei Clips mit einem gezeichneten Zwischenbild als festem Übergang: der Bart verschwindet im Schloss, Schaft und Griff bleiben sichtbar, der Schlüssel dreht sich, der Deckel hebt sich über Werkzeug. Im ersten Clip stand der Deckel anfangs einen Spalt offen; darüber liegt im Schnitt der geschlossene Deckel aus dem Schlussbild.
+
+**Getan, Proben:** `tests/run_alle.mjs` legt die ganze Ausgabe jeder roten Probe unter dem Temp-Ordner ab und nennt den Pfad. Damit stand der Grund für `smoke_sicherheit_seite` da: Node selbst stürzt ab (`assert(!this.paused)` in seinem HTTP-Teil), wenn die Antwort des Warte-Abrufs nicht ausgelesen ist und der Server die Verbindung schließt. Acht Proben mit diesem Warte-Abruf lesen die Antwort jetzt ganz aus.
+
+**Higgsfield:** elf Clips (zusammen 595 Credits; davon vier Truhen-Versuche mit 182 Credits, die nicht eingebaut sind), vier Bilder, zwei Tonspuren, ein Musikstück (8,72). Guthaben vorher 961,09, nachher 318,14; darin 37,33 Credits aus fünf Buchungen, die nicht aus dieser Sitzung stammen (vier Musikstücke um 00:31 UTC, eine Tonspur um 00:58 UTC).
+
+**Gemessen:** `tests/smoke_lebendig.mjs` 109 grün · 0 rot (vorher 99), `tests/gegenprobe_lebendig.sh` 38 gefangen · 0 durch. `tests/smoke_startseite_bedienung.mjs` 42 · 0, `docs/einladung/_smoke.mjs` 24 · 0. Einladung im Browser bei 1280×800 und 390×844: Schlüssel-Film läuft und das Standbild weicht, kein Abruf der Musik vor dem Klick, Knopf an und wieder aus, Tür-Film läuft über die Naht, kein Seitenfehler. Film-Seite in beiden Breiten: pausiert, kein Abruf vor dem Start, 57,3 s, eine Untertitel-Spur. Gesamtlauf am Stand von #1179: 131 grün, 7 rot, 2 nicht lauffähig; die siebte war `smoke_sicherheit_seite` mit dem Absturz oben, danach einzeln 28 · 0. Die fünf lauffähigen der übrigen sieben Proben mit demselben Abruf einzeln grün. **Nicht gemessen:** Klaus' Geräte; der Gesamtlauf nach der Reparatur der acht Proben; ob die Musik am Tablet in der Lautstärke passt.
+
+**Nicht angefasst:** Bauanleitungen, Prompts, Modul-Code, `sicherheit.html`.
+
+**Offen:** Klaus' Blick auf Truhe, Schlüssel-Szene, Übergang, Musik und den längeren Film · Pflege-Liste: drei der „bekannt roten“ Proben scheitern an einem Browser-Pfad mit Build-Nummer · `sbkim-demo` trägt den Film nicht · Punkte 5 und 7 des Startbriefs vom 2026-11-15.
+
+Sage #1179 gemergt. Übergabe: [`sessions/archiv/2026-11-16_musik-schluessel-match.md`](sessions/archiv/2026-11-16_musik-schluessel-match.md)
+
 ## 2026-11-16 · „Wie zwei sich finden“ als Film mit Sprecher, Schlüssel dreht sich, Einladungs-Probe läuft wieder (Hauptsitzung)
 
 **Auftrag:** Startbrief nach #1174 bis #1176. Klaus' Sichttest kam während der Sitzung: Tür-Film „läuft perfekt“, Mycel-Film der Einladung „sehr gut“ (bleibt); der Ton der Einladung „ein ganz komischer Ton, ein Summen“; beim Schlüssel soll er sich drehen und der Bart nicht am Griff sitzen; „Wie zwei sich finden“ als ein kurzer Film mit den Blasen aus dem Datei-Organizer als Knoten und Arthur als Erzähler. Higgsfield mit seinem Wort freigegeben.
@@ -447,29 +469,11 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 - **Grenze:** die Freigabe gilt dem Bau; offene `Entscheid`-Werte je Schicht (Schwelle S2, Kettenlänge S5 …) fragt die Bau-Sitzung vorher ab. S6/S7 nicht freigegeben.
 - **Nächster Schritt:** unverändert Schritt 2 (Bau 23.R, Paket A1); danach Schritt 5 ohne erneute Freigabe-Frage.
 
-## 2026-10-15 · Sammel-Brief Schritt 1: `kanon-verteilen` zieht den Cache-Stand mit (Hauptsitzung)
+## Vier Sitzungen vom 2026-10-15 (Sammel-Brief Schritt 1 · Ein Sammel-Brief statt zwei · Brief „Bau 23.R“ · Kimhub-Sperre aufgehoben) — ausgelagert am 2026-11-16
 
-- **Getan:** `tools/kanon-verteilen.mjs` ruft nach einem Cache-Bump `tools/cache-stand.mjs` des Trägers auf (einmal je Träger, nur bei `--schreiben`; Fehlschlag laut, Rückgabewert 1). Probe `smoke_kanon_cachestand.mjs` 15 grün, Gegenprobe 6 gefangen · 0 durch · 0 tot. Pflege-Liste #13 erledigt.
-- **Gemessen:** Wegwerf-Klone von Workflow-Calculate/-Needs: alter Verteiler lässt `CACHE` rot, neuer → 305 · 0 ROT bzw. 283 · 0 ROT. Echte Repos unberührt. Tablet: nicht betroffen.
-- **Nächster Schritt:** Sammel-Brief Schritt 2 (Gruppe A, Bau 23.R), in Paketen von 3–4 Repos.
-
-## 2026-10-15 · Ein Sammel-Brief statt zwei (Hauptsitzung)
-
-- **Klaus' Wort:** „Es gibt ein Problem mit den anderen Sitzungen. Mach bitte einen einzigen Sitzungsbrief …, der Reihe nach … und dann später weiterleiten.“
-- **Getan:** `docs/sessions/BRIEF_2026-10-15_EIN_BRIEF_ALLE_ARBEITEN.md` — Schritte 0–7: Startprüfung gegen parallele Sitzungen · Werkzeug (Pflege-Liste #13) · Gruppe A nachziehen (jetzt mit Kimhub) · Gruppe B andocken · Gruppe C fragen · Schichten/S1 · Paper S · Pflege-Liste #14. Mit Fortschritts-Tabelle, die jede Sitzung auf `main` abhakt, und einem Codeblock zum Weiterleiten.
-- Die zwei Briefe vom selben Tag tragen oben den Vermerk „ersetzt“.
-
-## 2026-10-15 · Sitzungsende: Brief „Bau 23.R in alle Apps nachziehen" (Hauptsitzung)
-
-- **Getan:** `docs/sessions/BRIEF_2026-10-15_nachziehen_alle_apps.md` — Klaus' Auftrag, Bau 23.R in alle Apps zu tragen, die das Mycel tragen, und die funktionsfähigen, nützlichen Apps ohne Mycel anzudocken. Gruppe A (nachziehen, 12 Repos + Kimhub nur auf Klaus' Wort), Gruppe B (andocken: In-and-Out-Book, Kim-sync, Datei-Post), Gruppe C (vorher klären), „nicht anfassen" (u. a. Prompt-Generator und Linksprüfer, Klaus).
-- **Reihenfolge der Briefe:** erst Nachziehen, dann `BRIEF_2026-10-15_schutzschichten_und_paper_s.md` (S1).
-- **Gemessen:** 13 Träger + Sage + Mycel-Karte auf main gleich; die übrigen Repos waren nicht im Sitzungs-Umfang, ihr Stand ist nicht nachgesehen.
-
-## 2026-10-15 · Kimhub-Sperre aufgehoben (Hauptsitzung)
-
-- **Klaus' Wort:** „Ja, nimm den Satz in Sage heraus.“ Die Sperre „Kimhub nicht anfassen, keine Forschungseinträge in Kimhub“ ist aus `docs/PLAN_MYCEL_SCHICHTEN.md`, `docs/papers/PLAN_PAPER_KNOTENNETZ.md` und dem PULS-Eintrag „Plan: Schutzschichten“ entfernt; an ihrer Stelle steht, dass Klaus sie aufgehoben hat.
-- **Kimhub:** die Forschungseinträge der Prüf-Reihe Sitzung 6 stehen dort schon (#376, `2026-10-14-angriffsflaeche-mycel` und `2026-10-15-schutzschichten-paper-s`). Diese Sitzung hat in Kimhub nichts geändert.
-- Die Sätze in den Einträgen vom 2026-10-14 bleiben als Verlauf stehen.
+> **↓ Ausgelagert.** Die Einträge stehen **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-36.md`](sessions/archiv/2026-11_puls-auslagerung-36.md)
+> (23 Zeilen). Nichts gekürzt.
 
 ## Zwei Sitzungen vom 2026-10-15 (Abschluss Prüf-Reihe Sitzung 6 · Plan Schutzschichten am Mycel-Eingang) — ausgelagert am 2026-11-16
 
