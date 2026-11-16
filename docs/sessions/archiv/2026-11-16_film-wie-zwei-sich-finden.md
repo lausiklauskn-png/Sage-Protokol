@@ -40,4 +40,4 @@ Siehe PULS-Eintrag vom 2026-11-16. Dateien: `docs/einladung/demo-zusammenarbeit.
 
 - Klaus' Blick auf den Film (Ton, Tempo, Szene 2: die Lupe liegt auf der eigenen Karte der türkisen
   Blase) und auf den Schlüssel (die Spitze bleibt vor dem Schloss sichtbar).
-- Forschungseintrag: in Kimhub `forschung/`.
+- Forschungseintrag: Kimhub #467 (gemergt), Abschnitt 2026-11-15T23:38Z bis 2026-11-16T00:17Z. Sage #1177 gemergt.
