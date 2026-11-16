@@ -53,9 +53,15 @@ t("Einladung: der Schlüssel-Film läuft als Schleife und weicht ohne Film dem S
   t("Einladung: kein erzeugter Summton mehr", !/createOscillator/.test(einlFilm));
   t("Einladung: lädt die Musik nicht, geht der Knopf wieder aus", /audioEl\.addEventListener\('error', audioAus\)/.test(einlFilm) && /\.catch\(audioAus\)/.test(einlFilm));
 }
+// Klaus 2026-11-16 (phone): the key box had no width at phone size and collapsed to nothing;
+// with "reduce motion" or data saving the films are offered behind a button instead of being removed
+t("Einladung: der Schlüssel-Kasten hat am Handy eine Breite", /#scene-5 \.key-host \{ width: 100%; aspect-ratio: 5\/4;/.test(einlFilm));
+t("Einladung: bei ruhiger Darstellung oder Datensparen startet ein Knopf die Filme",
+  /if \(reducedMotion \|\| sparsam\) filmKnopf\(host, beobachten\); else beobachten\(\);/.test(einlFilm) &&
+  /else if \(filmMoeglich\) filmKnopf\(sec\.querySelector\('\.doorway-stage'\)/.test(einlFilm));
 t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehler, ruhiger Darstellung, Datensparen)",
   /fahrt\.addEventListener\('error'[\s\S]{0,200}filmModus = false; sec\.classList\.remove\('film-modus'\)/.test(einlFilm) &&
-  /let filmModus = !!fahrt && !reducedMotion && !sparsam/.test(einlFilm));
+  /let filmModus = filmMoeglich && !reducedMotion && !sparsam/.test(einlFilm));
 // Klaus 2026-11-16: "Wie zwei sich finden" as one short film with a narrator. It carries sound,
 // so it must not start by itself, must not load before the tap, and carries the spoken text as captions.
 {
