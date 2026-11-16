@@ -15,6 +15,9 @@
  *   · it stops when scrolled away, and there is always a pause button
  *   · prefers-reduced-motion / Save-Data: no autoplay, the still image and a play button instead
  *   · a clip that cannot load leaves the still image; a missing still leaves the text
+ *   · optional voice: data-ton="assets/audio/x-{n}.mp3" (one track per station, {n} = 1…N) adds a
+ *     "read aloud" button. Nothing is fetched before the tap. While the voice runs, the station
+ *     follows the track instead of the clip; the text stays for everyone who cannot hear it.
  *
  * No dependencies, no storage, no network beyond the two files named in the markup.
  */
@@ -31,6 +34,10 @@
     'border:1px solid rgba(255,255,255,.35);background:rgba(5,5,15,.62);color:#fff;font:600 1rem system-ui,sans-serif;',
     'cursor:pointer;padding:0 14px;backdrop-filter:blur(6px)}',
     '.sequenz-knopf:hover,.sequenz-knopf:focus-visible{background:rgba(5,5,15,.85);border-color:var(--sequenz-akzent,#F4B435);outline:none}',
+    '.sequenz-ton{position:absolute;left:10px;bottom:10px;min-height:44px;border-radius:999px;',
+    'border:1px solid rgba(255,255,255,.35);background:rgba(5,5,15,.62);color:#fff;font:600 .9rem system-ui,sans-serif;',
+    'cursor:pointer;padding:0 16px;backdrop-filter:blur(6px)}',
+    '.sequenz-ton:hover,.sequenz-ton:focus-visible,.sequenz-ton[aria-pressed="true"]{background:rgba(5,5,15,.85);border-color:var(--sequenz-akzent,#F4B435);outline:none}',
     '.sequenz-lauf{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--sequenz-akzent,#F4B435)}',
     '.sequenz-text{padding:1rem 1.2rem 1.1rem}',
     '.sequenz.bereit .sequenz-stationen{list-style:none;margin:0;padding:0;display:grid}',
@@ -71,8 +78,9 @@
     if (!punkteTexte.length) return;
     fig.dataset.sequenzBereit = '1';
     var en = (fig.closest('[lang]') || document.documentElement).lang.slice(0, 2) === 'en';
-    var T = en ? { play: 'Play', pause: 'Pause', station: 'Step' }
-               : { play: 'Abspielen', pause: 'Anhalten', station: 'Station' };
+    var T = en ? { play: 'Play', pause: 'Pause', station: 'Step', vor: 'Read aloud', aus: 'Stop voice' }
+               : { play: 'Abspielen', pause: 'Anhalten', station: 'Station', vor: 'Vorlesen', aus: 'Stimme anhalten' };
+    var tonMuster = fig.getAttribute('data-ton');
 
     var buehne = document.createElement('div');
     buehne.className = 'sequenz-buehne';
@@ -111,6 +119,7 @@
     text.appendChild(punkte);
 
     var aktiv = 0, sichtbar = false, gewollt = !ruhig, geladen = false, kaputt = false, haltTimer = 0;
+    var spricht = false, ton = null, tonKnopf = null;
 
     function zeigen(i) {
       aktiv = (i + punkteTexte.length) % punkteTexte.length;
@@ -139,7 +148,47 @@
     function abgleichen() {
       clearTimeout(haltTimer);
       if (gewollt && sichtbar) abspielen(); else video.pause();
+      if (spricht && !(gewollt && sichtbar)) schweigen();
       beschriften();
+    }
+    function tonBeschriften() {
+      if (!tonKnopf) return;
+      tonKnopf.textContent = spricht ? '\u275A\u275A ' + T.aus : '\uD83D\uDD0A ' + T.vor;
+      tonKnopf.setAttribute('aria-pressed', spricht ? 'true' : 'false');
+      fig.setAttribute('data-spricht', spricht ? '1' : '0');
+    }
+    function schweigen() {
+      spricht = false;
+      if (ton) ton.pause();
+      tonBeschriften();
+    }
+    function sprich(n) {
+      if (n >= punkteTexte.length) { schweigen(); zeigen(0); return; }
+      zeigen(n);
+      ton.src = tonMuster.replace('{n}', String(n + 1));
+      var p = ton.play();
+      if (p && p.catch) p.catch(function () { schweigen(); });
+    }
+    if (tonMuster) {
+      tonKnopf = document.createElement('button');
+      tonKnopf.type = 'button';
+      tonKnopf.className = 'sequenz-ton';
+      buehne.appendChild(tonKnopf);
+      tonKnopf.addEventListener('click', function () {
+        if (spricht) { schweigen(); return; }
+        if (!ton) {
+          ton = document.createElement('audio');
+          ton.preload = 'none';
+          ton.addEventListener('ended', function () { if (spricht) sprich(aktiv + 1); });
+          // fail-soft: a missing track takes the dead button away, clip and text stay
+          ton.addEventListener('error', function () { if (ton.getAttribute('src')) { schweigen(); tonKnopf.remove(); tonKnopf = null; } });
+        }
+        spricht = true; gewollt = true;
+        tonBeschriften();
+        abgleichen();
+        sprich(0);
+      });
+      tonBeschriften();
     }
 
     punkteTexte.forEach(function (_li, n) {
@@ -147,6 +196,7 @@
       b.type = 'button';
       b.setAttribute('aria-label', T.station + ' ' + (n + 1));
       b.addEventListener('click', function () {
+        if (spricht) { sprich(n); return; }
         zeigen(n);
         if (geladen && !kaputt) { try { video.currentTime = 0; } catch (_e) { /* not seekable yet */ } }
         abgleichen();
@@ -161,7 +211,7 @@
     });
     video.addEventListener('ended', function () {
       haltTimer = setTimeout(function () {
-        zeigen(aktiv + 1);
+        if (!spricht) zeigen(aktiv + 1);   // while the voice runs, the track sets the station
         if (gewollt && sichtbar) { video.currentTime = 0; abspielen(); }
       }, HALT_MS);
     });

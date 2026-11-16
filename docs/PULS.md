@@ -31,6 +31,24 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-16 · „Drei Tatsachen“ als Film hinter dem Pilz, Observatorium-Bild liest vor (Hauptsitzung)
+
+**Auftrag:** Klaus' Sichttest an der Tour: beim Stempel-Clip kommt dreimal dasselbe Siegel herunter, zu jeder Tatsache; gesprochen sei besser als Text. Gewünscht: Unterschrift auf der Karte, Lupe auf der Unterschrift, dann ein mehrfarbiges Siegel mit den Modulen als Blasen, Arthur spricht; der Film liegt hinter dem pulsierenden Pilz über „Sage in einer Minute“. Beim Observatorium-Bild der Startseite: Arthur liest die drei Punkte, erst auf Knopfdruck; vorher läuft das Bild stumm. Klaus danach: der Text bleibt für Menschen, die schlecht hören. Guthaben: „versuche das zu nehmen“.
+
+**Getan, Tour (`index.html`):** der pulsierende Pilz ist ein Knopf (`#tatsachen-knopf`, darunter die Zeile „Drei Tatsachen ▸“). Er klappt den Film `assets/video/drei-tatsachen.mp4` auf (31 s, 3,6 MB, Untertitel `.de.vtt`, Standbild `.webp`) und startet ihn; ein zweiter Tipp klappt zu und hält an. Unter dem Film stehen die drei Sätze als Text. Der Stempel-Clip mit drei Stationen ist aus der Tour heraus; die drei Karten darunter heißen „Was das für dich heißt“. Beim Verlassen des Tour-Bildschirms halten alle Filme dort an.
+
+**Getan, Startseite:** `assets/sequenz.js` kennt `data-ton="…-{n}.mp3"` (eine Tonspur je Station). Das Observatorium-Bild trägt damit einen Knopf „🔊 Vorlesen“; das Bild läuft vorher stumm, der Text bleibt stehen, die Station folgt der Stimme. Tonspuren `assets/audio/observatorium-1.mp3` bis `-3.mp3`. Der Knopf „Ins Observatorium“ ist unverändert.
+
+**Wie der Film gebaut ist:** drei Bilder (`gpt_image_2_6`), zwei Clips von je 4 s (`seedance_2_0`, Stufe `fast`, 720p, je 10 Credits) mit den Bildern als Startbild, im Schnitt auf 10 s gedehnt und am Ende gehalten; Szene 3 ist der vorhandene Stempel-Clip, der in das gezeichnete Siegel überblendet. Drei Tonspuren Arthur.
+
+**Higgsfield:** Guthaben vorher 27,33, nachher 3,58 (zwei Clips 20, drei Bilder, sechs Tonspuren). Zwischen den Abschnitten dieser Sitzung fehlten 56,71 Credits, die nicht aus ihr stammen.
+
+**Gemessen:** `tests/smoke_lebendig.mjs` 123 grün · 0 rot, `tests/gegenprobe_lebendig.sh` 49 gefangen · 0 durch, `tests/smoke_sequenz.mjs` 23 · 0 (von Hand: fehlende Tonspur und entfernter Riegel fallen je an ihrer Prüfung um), `tests/smoke_startseite_bedienung.mjs` 42 · 0. Im Browser bei 390×844 und 1280×800: Tatsachen-Film zugeklappt, kein Abruf vor dem Tipp, läuft nach dem Tipp, eine Untertitel-Spur, hält beim Zuklappen und beim Verlassen; Observatorium-Bild läuft stumm, kein Ton-Abruf vor dem Tipp, nach dem Tipp Spur 1, zweiter Tipp hält an; kein Querlaufen, kein Seitenfehler. **Nicht gemessen:** Klaus' Geräte; ein Gesamtlauf; der Klang.
+
+**Offen (Klaus 2026-11-16, dreimal genannt):** Tür-Film der Einladung: der Schlüssel fliegt hinein und verschwindet, die Tür ist dabei schon offen. Gewünscht: Tür zu, Schlüssel steckt sichtbar, dreht wie bei der Truhe, dann geht die Tür auf. Nicht gebaut; das Guthaben reicht für keinen Clip. · `assets/video/siegel.mp4` und `.webp` werden von keiner Seite mehr verwendet.
+
+Übergabe: [`sessions/archiv/2026-11-16_discovery-vorlesen.md`](sessions/archiv/2026-11-16_discovery-vorlesen.md) (Nachtrag)
+
 ## 2026-11-16 · Discovery liest vor, Fenster „Was bringt mir das?“ gekürzt, sechs Proben finden den Browser wieder (Hauptsitzung)
 
 **Auftrag:** Startbrief nach #1177 bis #1184 (zehn offene Punkte). Klaus' Antworten in der Sitzung: Discovery-Vorlesen bestellen und bauen · gekürzt wird das Fenster „Was bringt mir das?“ · das Erklärvideo baut „diese Sitzung“. Dazu sein Sichttest am Tür-Film der Einladung und der Wunsch nach einer Geschenkbox-Seite.
