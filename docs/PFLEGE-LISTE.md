@@ -634,6 +634,24 @@ suchen `/opt/pw-browsers/chromium/chrome-linux/chrome`, `pinnwand/_smoke_mikrofo
 ersten Browser-Prüfung ab; was sie messen würden, ist hier seit unbekannter Zeit ungemessen. Nicht
 geändert.
 
+**Erledigt am 2026-11-16 (Folgesitzung):** die drei und drei weitere mit demselben Muster
+(`smoke_bau24r_reinigung_browser`, `smoke_sbkim_demo_knoten`, `docs/discovery/_smoke.mjs`) nehmen
+`CHROMIUM` aus der Umgebung, sonst `/opt/pw-browsers/chromium`. Gemessen: 19 · 8 · 24 grün, Demo 49
+grün, Discovery 16 Prüfungen grün; `bau24r` bleibt nicht lauffähig (Nachbar-Klon Workflow-PDF fehlt).
+Gesamtlauf danach: 135 grün, 3 rot, 2 nicht lauffähig.
+
+### Zwei Proben sind im Container rot, weil Nachbar-Klone fehlen — 2026-11-16
+
+`smoke_geraetename_netzweit` („NICHTS GEPRÜFT: keines der Knoten-Repos liegt neben Sage“) und
+`smoke_service_worker_parst` („es gibt Service-Worker zu pruefen (1)“) melden rot statt nicht
+lauffähig, wenn nur Sage im Container liegt. Nicht geändert.
+
+### Zwei Sitzungen am selben Auftrag — 2026-11-16
+
+Das Erklärvideo der Startseite wurde in zwei Sitzungen gleichzeitig gebaut; die zweite hat es erst beim
+Öffnen ihres PRs an der PR-Nummer gesehen. Vor dem Bau wurde `origin/main` geholt, während des Baus
+nicht mehr. Die Higgsfield-Buchungsliste zeigte die Clips der anderen Sitzung schon vorher.
+
 ### ✅ `docs/einladung/_smoke.mjs` startet im Container nicht — 2026-11-15
 
 Die Probe ruft `chromium.launch()` ohne Pfad und sucht `chromium_headless_shell-1194`; im Container
