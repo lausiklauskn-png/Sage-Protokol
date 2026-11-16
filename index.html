@@ -639,8 +639,6 @@
   .warum-sub { color: var(--muted); max-width: 56ch; margin: 0 0 1.6rem; }
   .vergleich-row { display: grid; grid-template-columns: 1fr; gap: 1.2rem; align-items: center; }
   @media (min-width: 720px) { .vergleich-row { grid-template-columns: 1fr auto 1fr; } }
-  .erklaer-film { margin: 0; }
-  .erklaer-film video { display: block; width: 100%; height: auto; aspect-ratio: 16/9; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: #05060f; }
   .ueber-name { margin-top: 1rem; }
   .ueber-name summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); font-size: 0.95rem; }
   .vergleich-col { padding: 1.4rem; background: var(--glass); border: 1px solid var(--line); border-radius: var(--r); }
@@ -648,6 +646,9 @@
   .vergleich-svg { width: 100%; height: auto; max-width: 280px; display: block; margin: 0.4rem auto 0.8rem; }
   .vergleich-text { color: var(--muted); font-size: 0.95rem; margin: 0; }
   .vergleich-pfeil { font-size: 2rem; color: var(--accent); text-align: center; }
+  .warum-film { margin: 1.6rem auto 0; max-width: 60rem; width: 100%; }
+  .warum-film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 18px; border: 1px solid var(--line); background: #05060f; }
+  @media print { .warum-film { display: none; } }
   .demo-questions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
   .demo-q-btn { font-size: 0.84rem; padding: 0.5rem 0.85rem; }
   .demo-q-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
@@ -2120,75 +2121,18 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           <span class="warum-pulse warum-pulse-3"></span>
           <img src="assets/mark.svg" alt="">
         </div>
-        <h1 class="warum-h1">Sage in vier Bildern.</h1>
-        <p class="warum-lede">Eine kleine Tour durch das, was Sage anders macht, ohne Fremdwörter, mit echten Beispielen aus dem Alltag.</p>
-        <dl class="name-glossar">
-          <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
-          <dd>Englisch <em>der Weise</em>, botanisch der <em>Salbei</em>. Beides Bilder fürs aktive Verarbeiten. Etwas, das filtert und klärt.</dd>
-          <dt>Protokoll</dt>
-          <dd>Die Spielregel, nach der Knoten sich finden und reden. Bewusst mit einem L. Ein Gesprächsangebot.</dd>
-          <dt>SBKIM <span class="lautschrift">[Es-Be-Ka-I-Em]</span></dt>
-          <dd><em>Semantisches Bidirektionales KI-Matching</em>. Das Verfahren, nach dem zwei Seiten einander an Bedeutung erkennen. Das <em>Mycel</em> ist die Metapher für das Netz, nicht für den Namen.</dd>
-        </dl>
-        <blockquote class="name-glossar-key is-hero">„Der Pilz hat Mycel. Dieses Netz hat <strong>Sage</strong> als Signalsprache."</blockquote>
-        <div class="warum-scroll-hint" aria-hidden="true">↓ Weiterscrollen</div>
-      </section>
-      <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">01</span><h2>Bedeutung statt Adresse</h2></div>
-        <p class="warum-sub">Heute fließt fast alles durch eine Stelle: Google. Sage geht den umgekehrten Weg. Jeder Knoten weiß seins.</p>
-        <div class="vergleich-row">
-          <div class="vergleich-col">
-            <div class="vergleich-tag">Heute</div>
-            <svg viewBox="0 0 280 220" class="vergleich-svg" aria-hidden="true">
-              <line x1="140" y1="80" x2="40"  y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <line x1="140" y1="80" x2="100" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <line x1="140" y1="80" x2="180" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <line x1="140" y1="80" x2="240" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
-              <circle cx="140" cy="80" r="32" fill="#F43F5E" fill-opacity="0.65"/>
-              <text x="140" y="86" text-anchor="middle" font-size="11" font-family="Geist Mono" fill="#FFF">Index</text>
-              <circle cx="40"  cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-              <circle cx="100" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-              <circle cx="180" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-              <circle cx="240" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
-            </svg>
-            <p class="vergleich-text">Du musst die Adresse wissen oder den Index fragen. Kleine Webseiten gehen unter, weil der Index entscheidet, wer zählt.</p>
-          </div>
-          <div class="vergleich-pfeil">→</div>
-          <div class="vergleich-col">
-            <div class="vergleich-tag">Mit Sage</div>
-            <svg viewBox="0 0 280 220" class="vergleich-svg" aria-hidden="true">
-              <line x1="60"  y1="110" x2="140" y2="60"  stroke="#6EE7D3" stroke-opacity="0.6" stroke-width="1.4"/>
-              <line x1="140" y1="60"  x2="220" y2="110" stroke="#6EE7D3" stroke-opacity="0.6" stroke-width="1.4"/>
-              <line x1="60"  y1="110" x2="100" y2="180" stroke="#8B5CF6" stroke-opacity="0.55" stroke-width="1.2"/>
-              <line x1="220" y1="110" x2="180" y2="180" stroke="#8B5CF6" stroke-opacity="0.55" stroke-width="1.2"/>
-              <circle cx="60"  cy="110" r="14" fill="#6EE7D3"><animate attributeName="r" values="13;15;13" dur="3.4s" repeatCount="indefinite"/></circle>
-              <circle cx="140" cy="60"  r="14" fill="#F4B435"><animate attributeName="r" values="13;15;13" dur="3s" repeatCount="indefinite" begin="0.4s"/></circle>
-              <circle cx="220" cy="110" r="14" fill="#8B5CF6"><animate attributeName="r" values="13;15;13" dur="3.6s" repeatCount="indefinite" begin="0.8s"/></circle>
-              <circle cx="100" cy="180" r="12" fill="#8B5CF6"><animate attributeName="r" values="11;13;11" dur="3.2s" repeatCount="indefinite" begin="1.2s"/></circle>
-              <circle cx="180" cy="180" r="12" fill="#6EE7D3" fill-opacity="0.8"><animate attributeName="r" values="11;13;11" dur="3.8s" repeatCount="indefinite" begin="1.6s"/></circle>
-            </svg>
-            <p class="vergleich-text">Du fragst nach dem <em>was</em>, nicht nach dem <em>wo</em>. Knoten, die das Thema kennen, antworten. Die anderen schweigen höflich.</p>
-          </div>
-        </div>
-        <figure class="sequenz" data-video="assets/video/sternbild.mp4" data-poster="assets/video/sternbild.webp">
-          <ol class="sequenz-stationen">
-            <li><strong>Jeder Stern ist ein Knoten.</strong> Eine kleine App, die ihr Thema kennt. Keiner davon ist größer oder wichtiger als die anderen.</li>
-            <li><strong>Die Linien sind Bedeutung.</strong> Zwei Knoten verbinden sich, weil sie vom Gleichen handeln, nicht weil jemand ihre Adresse eingetragen hat.</li>
-            <li><strong>Es gibt keine Mitte.</strong> Fällt ein Stern aus, bleibt das Bild stehen. Genau das unterscheidet das Geflecht vom Index.</li>
-          </ol>
-        </figure>
-      </section>
-      <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">02</span><h2>Fragen und wachsen</h2></div>
-        <figure class="erklaer-film">
-          <video controls playsinline preload="none" poster="assets/video/mycel-erklaert.webp" aria-label="Film: wie das Mycel antwortet und wächst, 22 Sekunden, mit Sprecher">
-            <source src="assets/video/mycel-erklaert.mp4" type="video/mp4">
-            <track kind="captions" srclang="de" label="Deutsch" src="assets/video/mycel-erklaert.de.vtt">
+        <h1 class="warum-h1">Sage in einer Minute.</h1>
+        <!-- Klaus 2026-11-16: one explainer film instead of the tour in five pictures. It carries sound,
+             so it starts only on a tap and loads nothing before; the spoken text lies beside it as captions. -->
+        <figure class="warum-film">
+          <video controls playsinline preload="none" poster="assets/video/sage-in-einer-minute.webp" aria-label="Film: Sage in einer Minute, mit Sprecher">
+            <source src="assets/video/sage-in-einer-minute.mp4" type="video/mp4">
+            <track kind="captions" srclang="de" label="Deutsch" src="assets/video/sage-in-einer-minute.de.vtt">
           </video>
         </figure>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">03</span><h2>Drei Tatsachen</h2></div>
+        <div class="warum-section-head"><span class="warum-num">✓</span><h2>Drei Tatsachen</h2></div>
         <figure class="sequenz" data-video="assets/video/siegel.mp4" data-poster="assets/video/siegel.webp">
           <ol class="sequenz-stationen">
             <li><strong>Jede Karte ist unterschrieben.</strong> Ein Knoten stellt sich mit einer signierten Visitenkarte vor, der Spore. Wer sie verändert, bricht die Unterschrift.</li>
@@ -2215,13 +2159,6 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </div>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">04</span><h2>Was möglich wird</h2></div>
-        <ul class="zukunft-liste">
-          <li><strong>Hobbyisten dock'n an.</strong> Wandern, Schach, Imkerei, Modellbau: wer eine Seite hat, baut die Sage-Schicht ein und wird findbar.</li>
-          <li><strong>Frage über Themengrenzen hinweg.</strong> „Honig im Hefeteig" → das Rezeptbuch antwortet zum Teig, ein Imker-Knoten zum Honig.</li>
-          <li><strong>Eine Suche, die Big Tech nicht braucht.</strong> Wenn Google sich noch weiter zurückzieht, läuft Sage trotzdem.</li>
-          <li><strong>Wissen, das vergehen darf.</strong> Großmutters Rezepte, ein altes Wanderbuch: sie leben, solange jemand sie pflegt.</li>
-        </ul>
         <div class="warum-cta">
           <button type="button" class="primary" onclick="goScreen('overview', 'warum')">→ Zurück zur Sage</button>
         </div>
@@ -2346,7 +2283,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <p class="name-glossar-fuss">Zwischen den Knoten fließen keine rohen Daten, sondern Bedeutung: gefiltert, bewertet, zur Frage passend.</p>
         </details>
         <div class="ueber-cta">
-          <button type="button" class="primary" onclick="goWarum()">Vollständige Tour mit Live-Demo →</button>
+          <button type="button" class="primary" onclick="goWarum()">Sage in einer Minute: der Film →</button>
           <button type="button" onclick="closeUeberModal()">Schließen</button>
         </div>
       </div>
@@ -3688,12 +3625,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   function stopWachstum() { if (wachstumTimer) { clearTimeout(wachstumTimer); wachstumTimer = null; } }
   function restartWachstum() { stopWachstum(); startWachstum(); }
   function startWarum() { startWachstum(); }
-  function stopWarum()  {
-    stopWachstum();
-    // The narrated film must not keep talking after the tour screen is left.
-    const film = document.querySelector('.erklaer-film video');
-    if (film && !film.paused) film.pause();
-  }
+  function stopWarum()  { stopWachstum(); }
 
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.demo-q-btn');
