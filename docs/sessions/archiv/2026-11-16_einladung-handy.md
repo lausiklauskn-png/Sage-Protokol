@@ -34,4 +34,4 @@ liest die Stilregel).
 ## Offen
 
 - Klaus' Blick am Handy auf Schlüssel, Tür-Film und Truhe.
-- Forschungseintrag: in Kimhub `forschung/`.
+- Forschungseintrag: Kimhub #469 (gemergt), Abschnitt 2026-11-16T01:29Z bis 01:39Z. Sage #1182 und #1183 gemergt.

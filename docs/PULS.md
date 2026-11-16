@@ -47,7 +47,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Offen (Klaus 2026-11-16):** Tour-Bildschirm der Startseite („Probier es aus“, „Wie das Mycel wächst“, Lebenszyklus) durch ein Erklärvideo mit den Blasen ersetzen, Text heraus; Drehbuch und Kosten stehen im Startbrief · Discovery: Arthur liest die Texte vor, die Seite läuft mit · „Sage in 6 Bildern“ kürzen.
 
-Sage #1182 und #1183 gemergt. Übergabe: [`sessions/archiv/2026-11-16_einladung-handy.md`](sessions/archiv/2026-11-16_einladung-handy.md)
+Sage #1182 und #1183 gemergt. Forschungseintrag: Kimhub #469 (gemergt). Übergabe: [`sessions/archiv/2026-11-16_einladung-handy.md`](sessions/archiv/2026-11-16_einladung-handy.md)
 
 ## 2026-11-16 · Musik statt Summton, Schlüssel-Szene und Übergang als Film, Match-Szene, Truhen-Schlüssel bis zum Bart im Schloss (Hauptsitzung)
 
