@@ -133,7 +133,8 @@ t("Einladung: der Schlüssel-Kasten läuft an den Rändern aus", /#scene-5 \.key
 // Startseite: Vollbild, Klappkarten, Meilenstein-Kachel, Sonne (Klaus 2026-11-15)
 t("Galaxien-Screens: füllen offen das ganze Fenster", /\.sonnen-screen\.active, \.observatorium-screen\.active \{ position: fixed; inset: 0;/.test(start));
 const klapp = [...start.matchAll(/data-back-anchor="([^"]+)" data-klapp/g)].map((m) => m[1]);
-t("Klappkarten: die fünf benannten Karten liegen unter einem Knopf", ["module-list", "stationen", "reading", "sage-identitaet", "andock"].every((k) => klapp.includes(k)), klapp.join(","));
+// Klaus 2026-11-16: the long list of docked nodes goes under a button as well
+t("Klappkarten: die sechs benannten Karten liegen unter einem Knopf", ["module-list", "endknoten", "stationen", "reading", "sage-identitaet", "andock"].every((k) => klapp.includes(k)), klapp.join(","));
 t("Klappkarten: Einladung und Discovery bleiben offen", !klapp.includes("einladung") && !klapp.includes("discovery"));
 t("Klappkarten: der Inhalt startet versteckt und der Kopf ist bedienbar", /inhalt\.hidden = true/.test(start) && /kopf\.setAttribute\('role', 'button'\)/.test(start) && /e\.key === 'Enter'/.test(start));
 t("Meilenstein: die ganze Kachel schaltet auf und zu", /if \(kachel && !e\.target\.closest\('a, \.ms-link'\)\) kachel\.classList\.toggle\('is-open'\)/.test(start) && !/class="ms-bot" onclick=/.test(start));
