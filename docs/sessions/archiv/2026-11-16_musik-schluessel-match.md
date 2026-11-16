@@ -33,4 +33,4 @@ Griff im Schloss) hat Klaus verworfen: nur der Bart gehört hinein.
 ## Offen
 
 - Klaus' Blick auf alles Neue am Handy und am Tab S6.
-- Forschungseintrag: in Kimhub `forschung/`.
+- Forschungseintrag: Kimhub #468 (gemergt), Abschnitt 2026-11-16T00:46Z bis 01:13Z. Sage #1179 und #1180 gemergt.
