@@ -571,7 +571,7 @@ bei `maxY + rowH * 0.55` gesetzt.
 **Erledigt am 2026-11-15:** die Zeile steht unter der Namenszeile, die Zusatz-Reihen sind nachgerückt.
 Bewacht von `tests/smoke_topologie_beschriftung.mjs` (am Stand davor rot in allen drei Breiten).
 
-### Einladung Szene 1: der Mycel-Film liegt noch als Film über dem Bild — 2026-11-15
+### ✅ Einladung Szene 1: der Mycel-Film liegt noch als Film über dem Bild — 2026-11-15
 
 Tür und Lichtung sind auf die Licht-Schicht umgestellt (`tools/licht-film-bauen.py`), Szene 1 nicht.
 Ob der Film dort auf dem Monitor ebenso unscharf wirkt, ist nicht angesehen.
@@ -581,6 +581,9 @@ anderes Motiv als `vendor/img/scene-1-mycel.webp` (Wurzeln mit hellem Geflecht i
 Standbild zeigt leuchtende Pilze über einem goldenen Geflecht). `tools/licht-film-bauen.py` findet
 keine Lage: Clip deckt 14 % des Rahmens, Restfehler 17,2 von 255. Aus diesem Clip entsteht keine
 Licht-Schicht; dafür bräuchte es einen Clip mit dem Standbild als Startbild. Nichts geändert.
+
+**Klaus am 2026-11-16 (Sichttest):** „Das erste Video in der Einladung mit dem Pilzstrang und den
+Fäden, sehr gut.“ Der Film bleibt, wie er ist.
 
 ### ✅ Topologie im Hochformat: lange Modul-Namen liegen aufeinander — 2026-11-15
 
@@ -608,6 +611,12 @@ Lichtung liegen nicht im Depot; ob sie unter 12 bleiben, ist nicht gemessen.
 `node tests/run_alle.mjs` meldet die Probe rot (Ausgabe endet mit der Node-Versionszeile eines
 Absturzes), `node tests/smoke_sicherheit_seite.mjs` allein läuft 28 grün · 0 rot durch. Einmal
 beobachtet, im Container, während 139 Proben nacheinander liefen. Ursache nicht untersucht.
+
+**Zweite Beobachtung am 2026-11-15 (dritte Folgesitzung):** im Gesamtlauf (140 Proben) wieder rot mit
+derselben Schlusszeile, danach einzeln 28 grün · 0 rot, auch aus dem Ordner `tests/` gestartet. Nach
+dem Gesamtlauf liefen noch drei `python3 -m http.server` (Ports 8982, 9012, 8855) aus Proben, die rot
+geendet hatten; die Sicherheits-Probe würfelt ihren Port aus 8300 bis 9199. Ob ein belegter Port die
+Ursache ist, ist nicht belegt: der Läufer zeigt von einer roten Probe nur die letzte Zeile.
 
 ### ✅ `docs/einladung/_smoke.mjs` startet im Container nicht — 2026-11-15
 

@@ -31,6 +31,28 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-16 · „Wie zwei sich finden“ als Film mit Sprecher, Schlüssel dreht sich, Einladungs-Probe läuft wieder (Hauptsitzung)
+
+**Auftrag:** Startbrief nach #1174 bis #1176. Klaus' Sichttest kam während der Sitzung: Tür-Film „läuft perfekt“, Mycel-Film der Einladung „sehr gut“ (bleibt); der Ton der Einladung „ein ganz komischer Ton, ein Summen“; beim Schlüssel soll er sich drehen und der Bart nicht am Griff sitzen; „Wie zwei sich finden“ als ein kurzer Film mit den Blasen aus dem Datei-Organizer als Knoten und Arthur als Erzähler. Higgsfield mit seinem Wort freigegeben.
+
+**Getan, „Wie zwei sich finden“ (`docs/einladung/demo-zusammenarbeit.html`):** über den sechs Schritten steht ein Film (`vendor/video/wie-zwei-sich-finden.mp4`, 40 s, 1280×720, 3,2 MB, mit Ton), Standbild `vendor/img/wie-zwei-sich-finden.webp`, Untertitel `vendor/video/wie-zwei-sich-finden.de.vtt`. Er startet nur auf Tipp und lädt vorher nicht. Vier Szenen: zwei Blasen (Rezeptbuch, Cocktail-Tool) hängen ihre Karte heraus · die eine prüft das Siegel mit der Lupe · eine Brücke aus Licht entsteht · Brief hin, Drink zurück, eine dritte Blase dockt an, die Kamera fährt zurück auf ein weites Netz. Sprecher: die Higgsfield-Stimme „Arthur“ (ElevenLabs), vier Sätze, im Depot als Untertitel wortgleich. Die Sternen-Szene der Einladung verweist wie bisher auf diese Seite.
+
+**Getan, Startseite:** `assets/video/truhe-schluessel.mp4` neu (7 s, 640×480, 129 KB, stumm): der Bart sitzt an der Spitze, der Schlüssel dreht sich, der Deckel hebt sich. Die Spitze bleibt dabei vor dem Schloss sichtbar.
+
+**Getan, Einladung (`docs/einladung/index.html`):** das Standbild unter dem Tür-Film wurde nur ausgeblendet, wenn der Film zwischen 0,7 und 1,5 s eine Zeitmeldung schickte; es wird jetzt bei jeder Zeitmeldung nachgezogen, bis es weg ist. `tests/smoke_startseite_bedienung.mjs` wartet auf diesen Zustand, statt ihn im selben Augenblick zu lesen.
+
+**Getan, Proben:** `docs/einladung/_smoke.mjs` trug einen festen Browser-Pfad mit Build-Nummer (1194, im Container liegt 1243) und startete nicht; es nimmt jetzt `CHROMIUM`, sonst `/opt/pw-browsers/chromium`, sonst Playwrights eigenen. Der Probe-Server beantwortet `/favicon.ico` mit 204.
+
+**Higgsfield:** ein Schlüssel-Clip (7 s, 49 Credits), vier Szenen (11 + 9 + 10 + 10 s, zusammen 280 Credits), zwei Bilder und vier Tonspuren (zusammen unter 3 Credits); alle Clips Seedance 2.5, 720p, ohne Ton. Guthaben vorher 1.291,94, nachher 961,09.
+
+**Gemessen:** `docs/einladung/_smoke.mjs` 24 grün · 0 rot, `_gegenprobe.sh` 14 gefangen · 0 durch · 0 tote Anker. `tests/smoke_lebendig.mjs` 99 grün · 0 rot (vorher 94), `tests/gegenprobe_lebendig.sh` 34 gefangen · 0 durch (vier neue Fälle). `tests/smoke_startseite_bedienung.mjs` vor der Änderung einzeln und im Gesamtlauf 41 grün · 1 rot (Standbild-Prüfung), danach dreimal 42 grün · 0 rot. Film-Seite im Browser bei 1280×800 und 390×844: steht pausiert, kein Abruf des Films vor dem Start, nach dem Start läuft er mit Ton, eine Untertitel-Spur, kein Querlaufen, kein Seitenfehler. Gesamtlauf 140 Proben: 132 grün, 6 rot, 2 nicht lauffähig; die sechs sind die aus den Einträgen darunter. `smoke_sicherheit_seite` war im ersten Gesamtlauf der Sitzung wieder rot und im zweiten grün (Pflege-Liste). **Nicht gemessen:** Klaus' Geräte mit dem neuen Film und dem neuen Schlüssel; ob der Ton am Tablet zur Lautstärke der übrigen Seite passt.
+
+**Nicht angefasst:** Bauanleitungen, Prompts, Modul-Code, `sicherheit.html`; der Ambient-Ton der Einladung (Lautsprecher-Knopf, drei Sinustöne aus dem Browser), nach dem Klaus gefragt ist.
+
+**Offen:** Klaus' Blick auf Film und Schlüssel · Ambient-Ton der Einladung: herausnehmen, ersetzen oder lassen · Schlüssel-Szene der Einladung und Übergang Schlüssel → Tür als Film · `sbkim-demo` bekommt den Film bisher nicht · Punkte 5 und 7 des Startbriefs · Pflege-Liste: `_pdf.mjs` trägt denselben festen Browser-Pfad.
+
+Übergabe: [`sessions/archiv/2026-11-16_film-wie-zwei-sich-finden.md`](sessions/archiv/2026-11-16_film-wie-zwei-sich-finden.md)
+
 ## 2026-11-15 · Zwei Filme: Schlüssel in die Truhe, Tür als laufender Film (Hauptsitzung)
 
 **Auftrag:** Klaus am selben Abend: „Schlüssel steckt sich in die Werkzeugkiste“ und die Tür der Einladung als laufendes Video statt Sequenzen, die mit dem Scrollen bewegt werden. Higgsfield mit seinem Wort freigegeben.
@@ -449,44 +471,23 @@ weg (Bericht § 4). Benannt: der Kanon-Knopf verschwindet nach `appinstalled` er
 - **Kimhub:** die Forschungseinträge der Prüf-Reihe Sitzung 6 stehen dort schon (#376, `2026-10-14-angriffsflaeche-mycel` und `2026-10-15-schutzschichten-paper-s`). Diese Sitzung hat in Kimhub nichts geändert.
 - Die Sätze in den Einträgen vom 2026-10-14 bleiben als Verlauf stehen.
 
-## 2026-10-15 · Abschluss Prüf-Reihe Sitzung 6 · Plan Paper S (Hauptsitzung)
+## Zwei Sitzungen vom 2026-10-15 (Abschluss Prüf-Reihe Sitzung 6 · Plan Schutzschichten am Mycel-Eingang) — ausgelagert am 2026-11-16
 
-- **Getan:** `docs/papers/PLAN_PAPER_KNOTENNETZ.md` (Paper S „Sicherer Umgang im Knotennetz", Ergänzung zum SBKIM-Paper; Natur als eigenes Kapitel, Klaus' Lesart „Störungen als Prüfmechanismus" gekennzeichnet), Zeiger in `PLAN_PAPERS.md`, Antragsmappe neu erzeugt. Abschluss `docs/sessions/archiv/2026-10-15_abschluss_pruef-reihe-sitzung6.md`, Folge-Brief `docs/sessions/BRIEF_2026-10-15_schutzschichten_und_paper_s.md`. Pflege-Liste #13, #14.
-- **Kimhub:** Klaus meldet die Gegenprobe dort als durch und hat die Forschungseinträge freigegeben. Diese Sitzung konnte Kimhub nicht einbinden (Zugriff abgelehnt); die Einträge stehen als Material im Abschluss, Abschnitt 5.
-- **Nächster Schritt:** Folge-Brief — Klaus' Freigabe der Schichten, dann S1 (Fragen unterschreiben) und die fünf noch offenen Träger.
+> **↓ Ausgelagert.** Die Einträge stehen **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-35.md`](sessions/archiv/2026-11_puls-auslagerung-35.md)
+> (12 Zeilen). Nichts gekürzt.
 
-## 2026-10-15 · Plan: Schutzschichten am Mycel-Eingang (Hauptsitzung)
+## Eine Sitzung vom 2026-10-14 (Prüf-Reihe Sitzung 6 (Planmodus): Ist das Mycel ein Angriffspunkt?) — ausgelagert am 2026-11-16
 
-- **Getan:** `docs/PLAN_MYCEL_SCHICHTEN.md` angelegt — Abhak-Liste S1–S7 nach Klaus' Frage, ob sich die mehrstufigen Artgrenzen der Natur aufs Mycel übertragen lassen. Kein Code.
-- **Klaus' Wort:** „Bürgen mit in den Plan-Brief aufnehmen“ → S5. Sein Einwand „man kann sich selber einen Bürgen ausstellen“ steht als Regel darin: eine Bürgschaft zählt nur, wenn der Leser dem Bürgen schon traut; dazu kurze Kette, Haftung, Widerruf, Ablauf, Anker.
-- **Stand Rollout Bau 23.R:** auf `main` von Sage und 13 Trägern nachgezählt (`RDV_LABEL_MAX = 200`), Mycel-Karte mit `sicher()`. Nicht ausgerollt: PWA-Toolpoint, Kimseek, SB-KIMTool-Point, family-project, Kim-Bell.
-- **Offen:** alle Schichten außer dem Planpunkt S5 warten auf Klaus' Freigabe; Vorschlag S1 → S2 → S5 → S3 → S4.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-35.md`](sessions/archiv/2026-11_puls-auslagerung-35.md)
+> (16 Zeilen). Nichts gekürzt.
 
-## 2026-10-14 · Prüf-Reihe Sitzung 6 (Planmodus): Ist das Mycel ein Angriffspunkt?
+## Eine Sitzung vom 2026-10-14 (Prüf-Reihe Sitzung 4: Kim-sync zeichnet empfangene Bilder neu, 04/22/2) — ausgelagert am 2026-11-16
 
-⛔ Kimhub nicht angefasst, keine Forschungseinträge in Kimhub (Gegenprobe läuft dort). Satz weitergeben, bis Klaus ihn aufhebt.
-
-**Befund:** [`sessions/archiv/2026-10-14_angriffsflaeche_mycel.md`](sessions/archiv/2026-10-14_angriffsflaeche_mycel.md), Proben daneben. Gemessen mit echten Modulen und frisch signierten Sporen:
-- Modul 23 liest `verifyForeignSpore(...) !== false`, Modul 02 liefert `{valid,reason}` → **die Kartenechtheit im Raum wirkt nicht**. Die Probe dazu stellte einen Prüfer mit `true/false`.
-- `collapseByName` vor der Prüfung → eine fremde Karte gleichen Namens verdrängt die echte.
-- Antworten (`sbkim-query-res`) sind nicht an den gefragten Knoten gebunden; ein Mithörer antwortet in dessen Namen.
-- Prüfliste vor dem Richter (04.J): klassisch DE/EN ausgeschlossen; umformuliert, Französisch, Homoglyph stehen im Prompt.
-- `domainVector` nicht an den Text gebunden; Vektor-Kopie trifft den Andock-Riegel mit 1.0.
-- Gelesen: `innerHTML` mit fremdem Namen in `mycel-karte/index.html` (Ereignis-Protokoll) und Kimboard („Kontakt senden").
-
-**Klaus' Wahl:** Punkte 1–4 freigegeben (Echtheit `.valid`, Namen nach der Prüfung zusammenfassen, Antworten binden, die zwei HTML-Stellen escapen). Module 10/11/12 nach 1–3; 14 erst danach (vergrößert sonst die Fläche).
-
-**Gebaut (Bau 23.R + 02.Z):** Echtheit liest `.valid`, Prüfung vor dem Zusammenfassen, `gleicherName`; Antworten mit Spore + Unterschrift, nur der gefragte Knoten, unbestätigte nicht an den Richter; Modul 02 `signDetached`/`verifyDetached`; Aspekt in Modul 16; INTERFACES zuerst. Mycel-Karte (#32 im Original, Kopie hier) und Kimboard „Kontakt senden“: fremder Name als Text — **in der alten Fassung lief in beiden ein Skript (gemessen)**. Proben: `smoke_bau23r` 18 grün · Gegenprobe 10/10 · `smoke_mycel_karte_log` alt 3 ROT/neu 4 grün. Voller Lauf: 117 grün, 1 rot (`smoke_geraetename_netzweit`: „keines der Knoten-Repos liegt neben Sage“, auch ohne diese Änderung), 1 nicht lauffähig.
-**Offen:** Rollout 02/16/23/23-UI in alle Träger (`kanon-verteilen`), `mycelknoten.html` (02/16 eingebettet, kein 23) nicht nachgezogen. Nicht am Tablet gemessen.
-
-## 2026-10-14 · Prüf-Reihe Sitzung 4: Kim-sync zeichnet empfangene Bilder neu, 04/22/24 in den letzten Trägern, Mycel-Knoten
-
-**Gebaut (Kimhub nicht angefasst):**
-- **Kim-sync #18:** jedes empfangene Bild wird neu gezeichnet, bevor es gespeichert, gezeigt oder heruntergeladen wird (EXIF/XMP/PNG-Text und Angehängtes weg). Nicht zeichenbar → nicht gezeigt, nie das Original. Probe 250 grün · Gegenprobe 7 gefangen · 0 durchgerutscht.
-- **PWA-Toolpoint #166 · Kimseek #91 · SB-KIMTool-Point #184:** `kanon-verteilen --nur 04_match,24_ocr_eingabe` und danach `--nur 22_such_widget` (22 hing ebenfalls zurück und ruft 24 auf). Herkunfts-Riegel: alles Kanon. Prüfliste je Träger direkt nach 04, gepinnt, im Browser `prueflisteGeladen === true`, ohne die Zeile `false`. Kimseeks `brain.html` zeigt ausgeschlossene Kandidaten, nennt den Grund eines abgeschalteten Richters, hält bei verstecktem Text einmal an. SB-KIMTool-Point trägt die Liste auch inline in `such-werkzeug.html`.
-- **`docs/observatorium/tools/mycelknoten.html`:** Modul 04 nachgezogen, Prüfliste direkt dahinter (gespiegelt nach SB-KIMTool-Point). Im Browser alt und neu gleich: Init-Kette fertig, Siegel zertifiziert, Andocken VALID; neu `prueflisteGeladen === true`.
-
-**Offen:** die übrigen Module der Mycel-Knoten-Seite (01/02/03/05/15/16/17) stehen in einer älteren Generation — das heutige Siegel verlangt 05b, das sich nicht einbetten lässt (README dort) · BookLedgerPro-Arbeitsbaum 317 Commits hinter origin (Automat lässt ihn aus) · nichts am Tablet gemessen.
+> **↓ Ausgelagert.** Der Eintrag steht **wortwörtlich** in
+> [`docs/sessions/archiv/2026-11_puls-auslagerung-35.md`](sessions/archiv/2026-11_puls-auslagerung-35.md)
+> (8 Zeilen). Nichts gekürzt.
 
 ## Eine Sitzung vom 2026-10-14 (Prüfung vor dem KI-Richter (04.J), Reinigung vor der Texterkennung (24) — ausgelagert am 2026-11-15
 
