@@ -639,6 +639,10 @@
   .warum-sub { color: var(--muted); max-width: 56ch; margin: 0 0 1.6rem; }
   .vergleich-row { display: grid; grid-template-columns: 1fr; gap: 1.2rem; align-items: center; }
   @media (min-width: 720px) { .vergleich-row { grid-template-columns: 1fr auto 1fr; } }
+  .erklaer-film { margin: 0; }
+  .erklaer-film video { display: block; width: 100%; height: auto; aspect-ratio: 16/9; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); background: #05060f; }
+  .ueber-name { margin-top: 1rem; }
+  .ueber-name summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); font-size: 0.95rem; }
   .vergleich-col { padding: 1.4rem; background: var(--glass); border: 1px solid var(--line); border-radius: var(--r); }
   .vergleich-tag { font-family: "Geist Mono", monospace; font-size: 0.74rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
   .vergleich-svg { width: 100%; height: auto; max-width: 280px; display: block; margin: 0.4rem auto 0.8rem; }
@@ -2116,7 +2120,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           <span class="warum-pulse warum-pulse-3"></span>
           <img src="assets/mark.svg" alt="">
         </div>
-        <h1 class="warum-h1">Sage in fünf Bildern.</h1>
+        <h1 class="warum-h1">Sage in vier Bildern.</h1>
         <p class="warum-lede">Eine kleine Tour durch das, was Sage anders macht, ohne Fremdwörter, mit echten Beispielen aus dem Alltag.</p>
         <dl class="name-glossar">
           <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
@@ -2175,52 +2179,16 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </figure>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">02</span><h2>Probier es aus</h2></div>
-        <p class="warum-sub">Schau, wer antwortet, und wer höflich schweigt.</p>
-        <div class="demo-questions" id="demo-questions">
-          <button type="button" class="demo-q-btn" data-q="cocktail">„Cocktail mit Tequila ohne Limette"</button>
-          <button type="button" class="demo-q-btn" data-q="hefeteig">„Hefeteig für Pizza"</button>
-          <button type="button" class="demo-q-btn" data-q="honig">„Honig im Hefeteig"</button>
-          <button type="button" class="demo-q-btn" data-q="schach">„Schacheröffnung mit Bauernopfer"</button>
-          <button type="button" class="demo-q-btn" data-q="dach">„Dachschindeln verlegen"</button>
-        </div>
-        <div class="demo-stage">
-          <svg viewBox="0 0 600 300" class="demo-svg" id="demo-svg" aria-label="Mycel-Knoten-Geflecht für Live-Demo">
-            <g class="demo-links" stroke-opacity="0.35" stroke-width="1.2">
-              <line x1="120" y1="80"  x2="300" y2="60"  stroke="#8B5CF6"/>
-              <line x1="300" y1="60"  x2="480" y2="80"  stroke="#8B5CF6"/>
-              <line x1="120" y1="220" x2="300" y2="240" stroke="#8B5CF6"/>
-              <line x1="300" y1="240" x2="480" y2="220" stroke="#8B5CF6"/>
-              <line x1="120" y1="80"  x2="120" y2="220" stroke="#8B5CF6"/>
-              <line x1="480" y1="80"  x2="480" y2="220" stroke="#8B5CF6"/>
-              <line x1="300" y1="60"  x2="300" y2="240" stroke="#8B5CF6"/>
-            </g>
-            <g class="demo-sender" id="demo-sender">
-              <circle cx="40" cy="150" r="22" fill="#F4B435"/>
-              <text x="40" y="154" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#1a0d00" font-weight="700">DU</text>
-            </g>
-            <g id="demo-particle"></g>
-            <g class="demo-node" data-domain="rezeptbuch" transform="translate(120 80)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">REZEPT</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Kuchen, Brot</text></g>
-            <g class="demo-node" data-domain="mixarium" transform="translate(300 60)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">MIXARIUM</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Cocktails</text></g>
-            <g class="demo-node" data-domain="imker" transform="translate(480 80)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">IMKER</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Honig, Bienen</text></g>
-            <g class="demo-node" data-domain="schach" transform="translate(120 220)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">SCHACH</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Eröffnungen</text></g>
-            <g class="demo-node" data-domain="lehrer" transform="translate(300 240)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">LEHRER</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Schulrätsel</text></g>
-            <g class="demo-node" data-domain="wandern" transform="translate(480 220)"><circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><text y="-2" text-anchor="middle" font-size="10" font-family="Geist Mono" fill="#EEEEFF" font-weight="700">WANDERN</text><text y="11" text-anchor="middle" font-size="9" font-family="Geist Mono" fill="#94A3B8">Touren, Karten</text></g>
-          </svg>
-          <div class="demo-result" id="demo-result"><div class="demo-result-empty">Noch keine Frage gestellt.</div></div>
-        </div>
+        <div class="warum-section-head"><span class="warum-num">02</span><h2>Fragen und wachsen</h2></div>
+        <figure class="erklaer-film">
+          <video controls playsinline preload="none" poster="assets/video/mycel-erklaert.webp" aria-label="Film: wie das Mycel antwortet und wächst, 22 Sekunden, mit Sprecher">
+            <source src="assets/video/mycel-erklaert.mp4" type="video/mp4">
+            <track kind="captions" srclang="de" label="Deutsch" src="assets/video/mycel-erklaert.de.vtt">
+          </video>
+        </figure>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">03</span><h2>Wie das Mycel wächst</h2></div>
-        <p class="warum-sub">Es fängt klein an. Eine PWA. Dann zwei. Dann mehr. Wer mitmacht, wird gefunden. Wer geht, fehlt, ohne das Geflecht zu zerreißen.</p>
-        <div class="wachstum-stage">
-          <svg viewBox="0 0 600 320" class="wachstum-svg" id="wachstum-svg" aria-label="Mycel-Wachstum-Animation"></svg>
-          <div class="wachstum-counter" id="wachstum-counter">1 Knoten</div>
-          <button type="button" class="wachstum-replay" onclick="restartWachstum()">↻ Wiederholen</button>
-        </div>
-      </section>
-      <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">04</span><h2>Drei Tatsachen</h2></div>
+        <div class="warum-section-head"><span class="warum-num">03</span><h2>Drei Tatsachen</h2></div>
         <figure class="sequenz" data-video="assets/video/siegel.mp4" data-poster="assets/video/siegel.webp">
           <ol class="sequenz-stationen">
             <li><strong>Jede Karte ist unterschrieben.</strong> Ein Knoten stellt sich mit einer signierten Visitenkarte vor, der Spore. Wer sie verändert, bricht die Unterschrift.</li>
@@ -2247,7 +2215,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </div>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">05</span><h2>Was möglich wird</h2></div>
+        <div class="warum-section-head"><span class="warum-num">04</span><h2>Was möglich wird</h2></div>
         <ul class="zukunft-liste">
           <li><strong>Hobbyisten dock'n an.</strong> Wandern, Schach, Imkerei, Modellbau: wer eine Seite hat, baut die Sage-Schicht ein und wird findbar.</li>
           <li><strong>Frage über Themengrenzen hinweg.</strong> „Honig im Hefeteig" → das Rezeptbuch antwortet zum Teig, ein Imker-Knoten zum Honig.</li>
@@ -2256,7 +2224,6 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </ul>
         <div class="warum-cta">
           <button type="button" class="primary" onclick="goScreen('overview', 'warum')">→ Zurück zur Sage</button>
-          <button type="button" onclick="goScreen('cycle')">Lebenszyklus ansehen</button>
         </div>
       </section>
     </main>
@@ -2358,6 +2325,15 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <h2 id="ueber-title">Was bringt mir das?</h2>
       </header>
       <div class="ueber-body">
+        <p class="ueber-lede">Sage ist eine Suche zwischen kleinen Webseiten. Du fragst etwas, und nur die Seiten, die wirklich etwas zu deiner Frage wissen, antworten. Kein zentraler Server, keine Werbung, kein Tracking, kein Konto.</p>
+        <ul>
+          <li><strong>Deine Seiten finden sich gegenseitig.</strong> Sucht jemand im Rezeptbuch nach einem Cocktail, leitet das System still ans Mixarium weiter.</li>
+          <li><strong>Deine Inhalte bleiben bei dir.</strong> Niemand kopiert, niemand legt in fremder Datenbank ab.</li>
+          <li><strong>Du musst niemandem vertrauen.</strong> Es läuft komplett im Browser des Besuchers.</li>
+        </ul>
+        <div class="ueber-foot"><strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten eine Chance, wieder gefunden zu werden, ohne sich an einen Konzern verkaufen zu müssen.</div>
+        <details class="ueber-name">
+          <summary>Woher der Name kommt</summary>
         <dl class="name-glossar">
           <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
           <dd>Englisch <em>der Weise</em>, jemand, der Wissen sammelt, filtert und weitergibt. Botanisch der <em>Salbei</em>. Beides zusammen meint: aktives Verarbeiten, nicht nur Speichern.</dd>
@@ -2368,21 +2344,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </dl>
         <blockquote class="name-glossar-key">„Der Pilz hat Mycel. Dieses Netz hat <strong>Sage</strong> als Signalsprache."</blockquote>
         <p class="name-glossar-fuss">Zwischen den Knoten fließen keine rohen Daten, sondern Bedeutung: gefiltert, bewertet, zur Frage passend.</p>
-        <p class="ueber-lede">Sage ist eine Suche zwischen kleinen Webseiten. Du fragst etwas, und nur die Seiten, die wirklich etwas zu deiner Frage wissen, antworten. Kein zentraler Server, keine Werbung, kein Tracking, kein Konto.</p>
-        <h3>Was es dir jetzt schon bringt</h3>
-        <ul>
-          <li><strong>Deine Seiten finden sich gegenseitig.</strong> Sucht jemand im Rezeptbuch nach einem Cocktail, leitet das System still ans Mixarium weiter.</li>
-          <li><strong>Deine Inhalte bleiben bei dir.</strong> Niemand kopiert, niemand legt in fremder Datenbank ab.</li>
-          <li><strong>Du musst niemandem vertrauen.</strong> Es läuft komplett im Browser des Besuchers.</li>
-          <li><strong>Spam ist eingebaut gebremst.</strong> Ein Knoten antwortet nur bei passender Frage.</li>
-        </ul>
-        <h3>Was möglich wird, wenn es größer wird</h3>
-        <ul>
-          <li><strong>Andere schließen ihr Hobby an.</strong> Wandern, Schach, Modellbau, Bonsai: eine Schicht einbauen, plötzlich findbar.</li>
-          <li><strong>Eine Suche, die Big Tech nicht braucht.</strong> Nicht von einem Konzern abhängig.</li>
-          <li><strong>Frage über Themengrenzen hinweg.</strong> Das Mycel verbindet die Antworten ohne Vermittler.</li>
-        </ul>
-        <div class="ueber-foot"><strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten eine Chance, wieder gefunden zu werden, ohne sich an einen Konzern verkaufen zu müssen.</div>
+        </details>
         <div class="ueber-cta">
           <button type="button" class="primary" onclick="goWarum()">Vollständige Tour mit Live-Demo →</button>
           <button type="button" onclick="closeUeberModal()">Schließen</button>
@@ -3726,7 +3688,12 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   function stopWachstum() { if (wachstumTimer) { clearTimeout(wachstumTimer); wachstumTimer = null; } }
   function restartWachstum() { stopWachstum(); startWachstum(); }
   function startWarum() { startWachstum(); }
-  function stopWarum()  { stopWachstum(); }
+  function stopWarum()  {
+    stopWachstum();
+    // The narrated film must not keep talking after the tour screen is left.
+    const film = document.querySelector('.erklaer-film video');
+    if (film && !film.paused) film.pause();
+  }
 
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.demo-q-btn');

@@ -176,6 +176,24 @@ p { color: var(--ink-sec); }
   transition: opacity 0.6s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .intro-skip:hover { color: var(--gold-hi); border-color: var(--gold-soft); }
+/* Vorlesen: Arthur liest die Seite vor, die Seite läuft mit */
+.vorlesen {
+  position: fixed; left: 1rem; bottom: 1rem; z-index: 6;
+  display: flex; gap: 0.5rem; flex-wrap: wrap; max-width: calc(100vw - 2rem);
+}
+.vorlesen button {
+  min-height: 44px; padding: 0.5rem 1.1rem; border-radius: 999px;
+  background: rgba(10,13,16,0.72); color: var(--ink);
+  border: 1px solid var(--gold-soft); font: inherit; font-size: 0.9rem;
+  cursor: pointer; backdrop-filter: blur(6px);
+}
+.vorlesen button:hover, .vorlesen button[aria-pressed="true"] { color: var(--gold-hi); border-color: var(--gold-hi); }
+.vl-aktiv { outline: 1px solid var(--gold-soft); outline-offset: 0.9rem; border-radius: 12px; }
+body.vl-laeuft.vl-ohne-text .fungus { grid-template-columns: 1fr; }
+body.vl-laeuft.vl-ohne-text .fungus-body { display: none; }
+body.vl-laeuft.vl-ohne-text .fungus-figure { max-width: 46rem; width: 100%; margin: 0 auto; order: 0; }
+body.vl-laeuft .fungus, body.vl-laeuft .whisper { opacity: 1; transform: none; }
+@media print { .vorlesen { display: none; } }
 .scroll-hint {
   position: fixed; left: 50%; bottom: 1.6rem; transform: translateX(-50%);
   z-index: 5; color: var(--ink-mute); font-size: 0.74rem;
@@ -369,6 +387,12 @@ footer .colophon { color: var(--ink-mute); font-size: 0.78rem; margin-top: 1.8re
 </div>
 
 <div class="scroll-hint" id="scroll-hint">Scrollen</div>
+
+<div class="vorlesen" id="vorlesen">
+  <button id="vl-knopf" type="button" aria-pressed="false">▶ Vorlesen</button>
+  <button id="vl-text" type="button" aria-pressed="false" hidden>Text ausblenden</button>
+</div>
+<audio id="vl-ton" preload="none"></audio>
 
 <main>
 
@@ -589,6 +613,71 @@ window.DISCOVERY_FUNGI = [
   } else {
     document.querySelectorAll('.fungus, .whisper').forEach((el) => el.classList.add('in-view'));
   }
+})();
+</script>
+
+<script>
+// Read-aloud: one recorded track per station (audio/00.mp3 … 15.mp3). The page scrolls the
+// station to the middle, plays its track and moves on when the track ends. Nothing is
+// fetched before the first tap.
+(function vorlesen(){
+  const knopf = document.getElementById('vl-knopf');
+  const textKnopf = document.getElementById('vl-text');
+  const ton = document.getElementById('vl-ton');
+  if (!knopf || !ton) return;
+  const q = (sel) => document.querySelector(sel);
+  const stationen = [q('#hero .inner'), q('#anker .narrow'), q('#anker .anchor-grid'), q('#galerie .gallery-head')]
+    .concat(Array.from(document.querySelectorAll('#fungus-list .fungus')))
+    .concat([q('#schluss .inner')]);
+  if (stationen.length !== 16 || stationen.some((e) => !e)) { knopf.hidden = true; return; }
+  const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let i = -1, laeuft = false;
+
+  function ziel(el) { return el.querySelector('.fungus-figure, .schluss-figure') || el; }
+  function zeige(n) {
+    stationen.forEach((e, k) => e.classList.toggle('vl-aktiv', k === n));
+    if (n < 0) return;
+    const z = (document.body.classList.contains('vl-ohne-text') || innerWidth < 760) ? ziel(stationen[n]) : stationen[n];
+    z.scrollIntoView({ block: 'center', behavior: ruhig ? 'auto' : 'smooth' });
+  }
+  function stand() {
+    document.body.classList.toggle('vl-laeuft', laeuft);
+    knopf.textContent = laeuft ? '⏸ Pause' : (i >= 0 ? '▶ Weiter vorlesen' : '▶ Vorlesen');
+    knopf.setAttribute('aria-pressed', String(laeuft));
+    textKnopf.hidden = i < 0;
+  }
+  function spiele(n) {
+    if (n >= stationen.length) { ende(); return; }
+    i = n; laeuft = true; stand(); zeige(i);
+    ton.src = 'audio/' + String(i).padStart(2, '0') + '.mp3';
+    ton.play().catch(() => { laeuft = false; stand(); });
+  }
+  function ende() {
+    laeuft = false; i = -1; ton.removeAttribute('src'); zeige(-1); stand();
+  }
+  function naechsteAmBlick() {
+    const mitte = innerHeight / 2; let best = 0, abstand = Infinity;
+    stationen.forEach((e, k) => {
+      const r = e.getBoundingClientRect(); const d = Math.abs((r.top + r.bottom) / 2 - mitte);
+      if (d < abstand) { abstand = d; best = k; }
+    });
+    return scrollY < innerHeight * 0.5 ? 0 : best;
+  }
+  knopf.addEventListener('click', () => {
+    if (laeuft) { ton.pause(); laeuft = false; stand(); return; }
+    if (i >= 0 && ton.src) { laeuft = true; stand(); zeige(i); ton.play().catch(() => { laeuft = false; stand(); }); return; }
+    const skip = document.getElementById('intro-skip');
+    if (skip && skip.style.opacity !== '0') skip.click();
+    spiele(naechsteAmBlick());
+  });
+  textKnopf.addEventListener('click', () => {
+    const aus = document.body.classList.toggle('vl-ohne-text');
+    textKnopf.setAttribute('aria-pressed', String(aus));
+    textKnopf.textContent = aus ? 'Text einblenden' : 'Text ausblenden';
+    if (i >= 0) requestAnimationFrame(() => zeige(i));
+  });
+  ton.addEventListener('ended', () => spiele(i + 1));
+  ton.addEventListener('error', () => { if (ton.getAttribute('src')) { laeuft = false; stand(); } });
 })();
 </script>
 

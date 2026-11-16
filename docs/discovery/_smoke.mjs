@@ -68,6 +68,8 @@ page.on('console', m => {
   if (m.type() === 'error' && !/Failed to load resource/i.test(t)) errs.push('CONSOLE ERR: ' + t);
   if (m.type() === 'warning') warns.push('CONSOLE WARN: ' + t);
 });
+const tonAbrufe = [];
+page.on('request', q => { if (/\.mp3(\?|$)/.test(q.url())) tonAbrufe.push(q.url()); });
 page.on('response', r => {
   if (r.status() === 404 && !/assets\/discovery\//.test(r.url())) bad404.push(r.url());
 });
@@ -96,6 +98,21 @@ await page.locator('#intro-skip').click();
 await page.waitForTimeout(1600);
 const heroRevealed = await page.evaluate(() => document.getElementById('hero').classList.contains('revealed'));
 
+// Vorlesen: kein Ton vor dem Tipp; der Tipp startet Station 0; das Ende einer Spur holt die nächste.
+const tonVorTipp = tonAbrufe.length;
+await page.locator('#vl-knopf').click();
+await page.waitForFunction(() => /audio\/00\.mp3$/.test(document.getElementById('vl-ton').src), null, { timeout: 5000 }).catch(() => {});
+const vl0 = await page.evaluate(() => ({
+  src: document.getElementById('vl-ton').src, laeuft: document.body.classList.contains('vl-laeuft'),
+  aktiv: document.querySelectorAll('.vl-aktiv').length
+}));
+await page.evaluate(() => document.getElementById('vl-ton').dispatchEvent(new Event('ended')));
+const vl1 = await page.evaluate(() => document.getElementById('vl-ton').src);
+await page.locator('#vl-text').click();
+const vlOhneText = await page.evaluate(() => getComputedStyle(document.querySelector('.fungus-body')).display);
+const tonDateien = Array.from({ length: 16 }, (_, i) => resolve(__dirname, 'audio', String(i).padStart(2, '0') + '.mp3'))
+  .filter(p => fs.existsSync(p) && fs.statSync(p).size > 20000).length;
+
 console.log('--- Smoke-Test Discovery-Expedition ---');
 console.log('Cosmos-Canvas:    ', canvas);
 console.log('Hero-Titel:       ', JSON.stringify((heroTitle||'').slice(0, 60)));
@@ -117,6 +134,11 @@ const checks = {
   schlussFig:   schlussFig === 1,
   footerLinks:  footerLinks === 4,
   heroRevealed: heroRevealed === true,
+  keinTonVorTipp: tonVorTipp === 0,
+  vorlesenStartet: /audio\/00\.mp3$/.test(vl0.src) && vl0.laeuft && vl0.aktiv === 1,
+  vorlesenLaeuftWeiter: /audio\/01\.mp3$/.test(vl1),
+  textAusblendbar: vlOhneText === 'none',
+  sechzehnTonspuren: tonDateien === 16,
   zeroErrors:   errs.length === 0,
   noUnexpected404: bad404.length === 0
 };
