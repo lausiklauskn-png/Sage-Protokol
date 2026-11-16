@@ -51,7 +51,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Offen:** Klaus' Blick auf Truhe, Schlüssel-Szene, Übergang, Musik und den längeren Film · Pflege-Liste: drei der „bekannt roten“ Proben scheitern an einem Browser-Pfad mit Build-Nummer · `sbkim-demo` trägt den Film nicht · Punkte 5 und 7 des Startbriefs vom 2026-11-15.
 
-Sage #1179 gemergt. Übergabe: [`sessions/archiv/2026-11-16_musik-schluessel-match.md`](sessions/archiv/2026-11-16_musik-schluessel-match.md)
+Sage #1179 und #1180 gemergt. Forschungseintrag: Kimhub #468 (gemergt). Übergabe: [`sessions/archiv/2026-11-16_musik-schluessel-match.md`](sessions/archiv/2026-11-16_musik-schluessel-match.md)
 
 ## 2026-11-16 · „Wie zwei sich finden“ als Film mit Sprecher, Schlüssel dreht sich, Einladungs-Probe läuft wieder (Hauptsitzung)
 
