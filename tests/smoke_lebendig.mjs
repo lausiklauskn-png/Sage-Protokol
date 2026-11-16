@@ -41,6 +41,18 @@ filme("index.html", ["vp-truhe-film"], 1);
 filme("docs/einladung/index.html", ["szenen-film"], 2);
 // Klaus 2026-11-15: the door opens as one running film; without it the scroll-driven move stays
 const einlFilm = filme("docs/einladung/index.html", ["tuer-fahrt"], 1);
+// Klaus 2026-11-16: the key turns as a short loop; the hum of three sine tones is replaced by music
+filme("docs/einladung/index.html", ["key-film"], 1);
+t("Einladung: der Schlüssel-Film läuft als Schleife und weicht ohne Film dem Standbild",
+  /class="key-film"[^>]*\bloop\b/.test(einlFilm) && /film\.addEventListener\('error', \(\) => \{ host\.classList\.remove\('film-an'\); film\.remove\(\); \}\)/.test(einlFilm));
+{
+  const m = (einlFilm.match(/const AUDIO_SRC = '([^']+)'/) || [])[1];
+  t("Einladung: die Musik liegt im Depot", !!m && da(join(WURZEL, "docs/einladung", m)), m || "kein AUDIO_SRC");
+  t("Einladung: die Musik lädt erst beim Tipp und kommt nicht von einem fremden Host",
+    /audioEl\.preload = 'none'/.test(einlFilm) && !/<audio\b/.test(einlFilm) && !/^(https?:)?\/\//.test(m || "//"));
+  t("Einladung: kein erzeugter Summton mehr", !/createOscillator/.test(einlFilm));
+  t("Einladung: lädt die Musik nicht, geht der Knopf wieder aus", /audioEl\.addEventListener\('error', audioAus\)/.test(einlFilm) && /\.catch\(audioAus\)/.test(einlFilm));
+}
 t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehler, ruhiger Darstellung, Datensparen)",
   /fahrt\.addEventListener\('error'[\s\S]{0,200}filmModus = false; sec\.classList\.remove\('film-modus'\)/.test(einlFilm) &&
   /let filmModus = !!fahrt && !reducedMotion && !sparsam/.test(einlFilm));
@@ -58,11 +70,14 @@ t("Einladung: ohne Tür-Film bleibt die Fahrt beim Scrollen (Rückfall bei Fehle
   t("Wie zwei sich finden: das Standbild liegt im Depot", !!poster && da(join(basis, poster)), poster || "kein poster");
   t("Wie zwei sich finden: der Film startet nur auf Tipp (Bedienleiste, kein autoplay, lädt nicht vorab)",
     /\bcontrols\b/.test(kopf) && !/\bautoplay\b/.test(kopf) && /preload="none"/.test(kopf));
+  // Klaus 2026-11-16: the film says it all; the six steps, the node drawing and the closing text are gone
+  t("Wie zwei sich finden: unter dem Film stehen keine Schritte, keine Knoten-Zeichnung und kein Skript mehr",
+    !/<svg\b/.test(html) && !/<script\b/.test(html) && !/class="(stage|panel|controls|closing)"/.test(html));
   t("Wie zwei sich finden: Film und Standbild kommen nicht von einem fremden Host",
     !/^(https?:)?\/\//.test(src || "//") && !/^(https?:)?\/\//.test(poster || "//"));
   const vtt = spur && existsSync(join(basis, spur)) ? readFileSync(join(basis, spur), "utf8") : "";
-  t("Wie zwei sich finden: der gesprochene Text liegt als Untertitel bei (vier Abschnitte)",
-    /^WEBVTT/.test(vtt) && (vtt.match(/-->/g) || []).length === 4, spur || "keine Spur");
+  t("Wie zwei sich finden: der gesprochene Text liegt als Untertitel bei (sechs Abschnitte)",
+    /^WEBVTT/.test(vtt) && (vtt.match(/-->/g) || []).length === 6, spur || "keine Spur");
 }
 t("Startseite: der Truhen-Film blendet nach dem Ende zurück und beginnt nach einer Pause neu (keine harte Schleife)",
   !/class="vp-truhe-film"[^>]*\bloop\b/.test(start) && /film\.addEventListener\('ended', function \(\) \{\s*clearTimeout\(pause\);\s*pause = setTimeout\(function \(\) \{ film\.classList\.remove\('laeuft'\)/.test(start));
@@ -113,7 +128,7 @@ t("Discovery: kein Film bei „Bewegung reduzieren“ oder Save-Data", /prefers-
 const einl = readFileSync(join(WURZEL, "docs/einladung/index.html"), "utf8");
 t("Einladung: der Szenen-Film liegt als Licht über dem Standbild", /\.szenen-film \{[^}]*mix-blend-mode: screen/.test(einl) && /\.szenen-film\.laeuft \{ opacity: 1; \}/.test(einl));
 t("Einladung: die Tür-Szene legt nach oben und unten ein weiches Band über die Naht", /section\.scene-doorway::before, section\.scene-doorway::after \{/.test(einl) && /section\.scene-doorway::before \{ top: -42vh; \}/.test(einl) && /section\.scene-doorway::after \{\s*bottom: -16vh; height: 58vh;/.test(einl));
-t("Einladung: der Schlüssel-Kasten läuft an den Rändern aus", /#scene-5 \.key-host \.key-image, #scene-5 \.key-host canvas \{\s*-webkit-mask-image/.test(einl));
+t("Einladung: der Schlüssel-Kasten läuft an den Rändern aus", /#scene-5 \.key-host \.key-image, #scene-5 \.key-host \.key-film, #scene-5 \.key-host canvas \{\s*-webkit-mask-image/.test(einl));
 
 // Startseite: Vollbild, Klappkarten, Meilenstein-Kachel, Sonne (Klaus 2026-11-15)
 t("Galaxien-Screens: füllen offen das ganze Fenster", /\.sonnen-screen\.active, \.observatorium-screen\.active \{ position: fixed; inset: 0;/.test(start));

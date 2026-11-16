@@ -750,6 +750,17 @@ em.gold { color: var(--gold); font-style: normal; }
 #scene-5 .key-host canvas {
   position: absolute; inset: 0; width: 100%; height: 100%;
 }
+#scene-5 .key-host .key-film {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  mix-blend-mode: screen; pointer-events: none;
+  opacity: 0; transition: opacity 1.2s ease;
+  animation: key-float 7s ease-in-out infinite alternate;
+}
+#scene-5 .key-host .key-film.laeuft { opacity: 1; }
+#scene-5 .key-host .key-image { transition: opacity 1.2s ease; }
+#scene-5 .key-host.film-an .key-image { opacity: 0; }
+@media print { #scene-5 .key-host .key-film { display: none; } }
 #scene-5 .text-col {
   position: relative;
   padding: 1.4rem 1.6rem;
@@ -840,7 +851,7 @@ section.scene-doorway .tuer-fahrt {
   pointer-events: none; opacity: 0; transition: opacity .5s ease; will-change: opacity;
 }
 section.scene-doorway .tuer-fahrt.laeuft { opacity: 1; }
-section.scene-doorway.film-modus { min-height: 240vh; }
+section.scene-doorway.film-modus { min-height: 300vh; }
 section.scene-doorway.film-modus .doorway-image {
   background-size: cover; background-position: var(--tuer-lage, 50% 50%); background-color: transparent;
 }
@@ -883,7 +894,7 @@ section.scene-doorway::after {
 /* Schlüsselbild und Funken-Schicht laufen an ihren Kastenrändern weich aus. Die Maske sitzt an
    den beiden Schichten selbst, nicht am Kasten: am Kasten würde sie die Schichten zu einer
    eigenen Gruppe machen, und das Schwarz des Bildes würde wieder deckend. */
-#scene-5 .key-host .key-image, #scene-5 .key-host canvas {
+#scene-5 .key-host .key-image, #scene-5 .key-host .key-film, #scene-5 .key-host canvas {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 20%, #000 80%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, #000 20%, #000 80%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
   -webkit-mask-composite: source-in; mask-composite: intersect;
@@ -1162,7 +1173,7 @@ footer.foot h4 {
 </nav>
 
 <!-- === Audio-Schalter === -->
-<button class="audio-toggle" data-on="false" aria-label="Ambient-Ton an/aus">
+<button class="audio-toggle" data-on="false" aria-label="Musik an/aus">
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path class="audio-icon-off" d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"></path>
   </svg>
@@ -1311,6 +1322,9 @@ footer.foot h4 {
            Sanfter Float-Effekt für Lebendigkeit. Frame-Rotation
            entfällt — Klaus möchte die Gesamtansicht des Schlüssels. -->
       <img class="key-image" src="./vendor/img/scene-5-key.webp" alt="" aria-hidden="true">
+      <!-- Klaus 2026-11-16: the key turns once around its own axis, as a short loop over the still.
+           Black background, laid on with `screen` like the still; without the film the still stays. -->
+      <video class="key-film" muted playsinline loop preload="none" aria-hidden="true" data-src="./vendor/video/scene-5-schluessel.mp4"></video>
       <!-- Sporen-Layer aus dem WebGL-key-canvas legt sich über das Bild
            (treibende Lichtfunken). Der 3D-Mesh-Schlüssel ist unsichtbar
            (keyGroup.visible = false), nur die Sporen bleiben sichtbar. -->
@@ -1338,8 +1352,9 @@ footer.foot h4 {
 <section class="scene scene-doorway" id="scene-5b" data-scene="5b" aria-hidden="true">
   <div class="doorway-stage">
     <div class="doorway-image"><video class="szenen-film" muted playsinline preload="none" aria-hidden="true" data-src="./vendor/video/scene-5-tuer.mp4"></video></div>
-    <!-- Klaus 2026-11-15: the door opens as one running film instead of a camera move driven by scrolling. -->
-    <video class="tuer-fahrt" muted playsinline preload="none" aria-hidden="true" data-src="./vendor/video/scene-5-tuer-fahrt.mp4"></video>
+    <!-- Klaus 2026-11-15: the door opens as one running film instead of a camera move driven by scrolling.
+         Klaus 2026-11-16: the film begins with the key flying to the lock (7 s), then the door opens (8 s). -->
+    <video class="tuer-fahrt" muted playsinline preload="none" aria-hidden="true" data-src="./vendor/video/scene-5-schluessel-tuer.mp4"></video>
     <div class="doorway-flash"></div>
   </div>
 </section>
@@ -1670,6 +1685,20 @@ document.querySelectorAll('#scene-1 .scene1-film, .szenen-film').forEach((film) 
     if (sichtbar) start(); else { film.pause(); film.classList.remove('laeuft'); }
   }, { threshold: film.classList.contains('scene1-film') ? 0.25 : 0.15 })
     .observe(film.classList.contains('scene1-film') ? film.parentElement : film);
+});
+// --- Key film: a seamless loop (it ends on its first picture), only while the key is in view ---
+document.querySelectorAll('#scene-5 .key-film').forEach((film) => {
+  const sparsam = !!(navigator.connection && navigator.connection.saveData);
+  if (reducedMotion || sparsam || !('IntersectionObserver' in window)) { film.remove(); return; }
+  const host = film.parentElement;
+  film.addEventListener('playing', () => { film.classList.add('laeuft'); host.classList.add('film-an'); });
+  film.addEventListener('error', () => { host.classList.remove('film-an'); film.remove(); });
+  new IntersectionObserver((e) => {
+    if (e[0].isIntersecting) {
+      if (!film.src) film.src = film.dataset.src;
+      film.play().catch(() => {});
+    } else { film.pause(); film.classList.remove('laeuft'); host.classList.remove('film-an'); }
+  }, { threshold: 0.3 }).observe(host);
 });
 const isMobile      = matchMedia('(max-width: 900px)').matches;
 
@@ -3025,47 +3054,41 @@ document.querySelectorAll('.fruiting-canvas-host').forEach(host => {
 })();
 
 // ---------------------------------------------------------------
-// Audio — Ambient-Pad nach User-Geste (Web Audio API, kein File-Asset)
+// Audio — ruhige Musik nach User-Geste (Klaus 2026-11-16: das Summen aus
+// drei Sinustönen passte nicht). Eine Datei im Depot, erst beim ersten Tipp
+// geladen, in Schleife, weich ein- und ausgeblendet. Lädt sie nicht, geht der
+// Knopf wieder aus, statt stumm "an" zu zeigen.
 // ---------------------------------------------------------------
 const audioBtn = document.querySelector('.audio-toggle');
-let audioCtx = null;
+const AUDIO_SRC = './vendor/audio/ambient.mp3';
+const AUDIO_LAUT = 0.55;
+let audioEl = null;
 let audioOn = false;
-let audioNodes = null;
-function startAudio() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  // Drei niedrige Sinus-Schwebungen + leiser Rauschen-Atem = Mycel-Pad
-  const out = audioCtx.createGain();
-  out.gain.value = 0.0;
-  out.connect(audioCtx.destination);
-  const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = 110;
-  const o2 = audioCtx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 110.7;
-  const o3 = audioCtx.createOscillator(); o3.type = 'sine'; o3.frequency.value = 164.5;
-  const g1 = audioCtx.createGain(); g1.gain.value = 0.18;
-  const g2 = audioCtx.createGain(); g2.gain.value = 0.14;
-  const g3 = audioCtx.createGain(); g3.gain.value = 0.08;
-  o1.connect(g1).connect(out);
-  o2.connect(g2).connect(out);
-  o3.connect(g3).connect(out);
-  // sanftes Filter
-  const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
-  // (Filter zwischen Gains und out: vereinfacht hier in den Master)
-  o1.start(); o2.start(); o3.start();
-  out.gain.linearRampToValueAtTime(0.65, audioCtx.currentTime + 1.8);
-  audioNodes = { out, oscs: [o1, o2, o3] };
+let audioFade = 0;
+function audioBlende(ziel, danach) {
+  clearInterval(audioFade);
+  audioFade = setInterval(() => {
+    const v = audioEl.volume, d = ziel - v;
+    if (Math.abs(d) < 0.04) { audioEl.volume = ziel; clearInterval(audioFade); if (danach) danach(); return; }
+    audioEl.volume = Math.max(0, Math.min(1, v + Math.sign(d) * 0.04));
+  }, 60);
 }
-function stopAudio() {
-  if (!audioNodes) return;
-  audioNodes.out.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 0.6);
-  setTimeout(() => {
-    audioNodes.oscs.forEach(o => { try { o.stop(); } catch(e){} });
-    audioNodes = null;
-  }, 700);
+function audioAus() {
+  audioOn = false; audioBtn.dataset.on = 'false';
+  if (audioEl) audioBlende(0, () => audioEl.pause());
+}
+function startAudio() {
+  if (!audioEl) {
+    audioEl = new Audio(); audioEl.loop = true; audioEl.preload = 'none'; audioEl.volume = 0;
+    audioEl.addEventListener('error', audioAus);
+    audioEl.src = AUDIO_SRC;
+  }
+  audioEl.play().then(() => audioBlende(AUDIO_LAUT)).catch(audioAus);
 }
 audioBtn.addEventListener('click', () => {
-  audioOn = !audioOn;
-  audioBtn.dataset.on = audioOn ? 'true' : 'false';
-  if (audioOn) startAudio(); else stopAudio();
+  if (audioOn) { audioAus(); return; }
+  audioOn = true; audioBtn.dataset.on = 'true';
+  startAudio();
 });
 
 // ---------------------------------------------------------------
