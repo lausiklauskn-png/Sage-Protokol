@@ -43,4 +43,4 @@ Siehe PULS-Eintrag vom 2026-11-16 „Discovery liest vor …“. Dateien: `docs/
 - Klaus' Ohr und Blick: Vorlesen auf der Discovery-Seite am Handy, Fenster „Was bringt mir das?“.
 - Tür-Film: Tür zu, Schlüssel bleibt stecken, dreht links herum, Tür geht auf.
 - Lebenszyklus-Bildschirm behalten oder herausnehmen.
-- Forschungseintrag in Kimhub: siehe PULS-Nachtrag.
+- Forschungseintrag: Kimhub #471 (gemergt), Abschnitt 2026-11-16T01:54Z bis 02:15Z. Sage #1187 und #1188 gemergt.
