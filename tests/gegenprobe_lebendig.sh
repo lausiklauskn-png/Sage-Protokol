@@ -64,5 +64,8 @@ fall "Schritte wieder unter dem Film" "Wie zwei sich finden: unter dem Film steh
 fall "Endknoten-Karte wieder offen"  "Klappkarten: die sechs benannten Karten liegen unter einem Knopf" "sed -i 's|data-back-anchor=\\\"endknoten\\\" data-klapp|data-back-anchor=\\\"endknoten\\\"|' index.html"
 fall "Schlüssel-Kasten ohne Breite"  "Einladung: der Schlüssel-Kasten hat am Handy eine Breite" "sed -i 's|#scene-5 .key-host { width: 100%; aspect-ratio: 5/4;|#scene-5 .key-host { aspect-ratio: 5/4;|' docs/einladung/index.html"
 fall "Film bei ruhiger Darstellung weg" "Einladung: bei ruhiger Darstellung oder Datensparen startet ein Knopf die Filme" "sed -i 's|if (reducedMotion \|\| sparsam) filmKnopf(host, beobachten); else beobachten();|if (reducedMotion \|\| sparsam) film.remove(); else beobachten();|' docs/einladung/index.html"
+fall "Erklärfilm fehlt"               "Tour: der Erklärfilm liegt im Depot" "rm assets/video/sage-in-einer-minute.mp4"
+fall "Erklärfilm startet selbst"      "Tour: der Erklärfilm startet nur auf Tipp" "sed -i 's|<video controls playsinline preload=\\\"none\\\" poster=\\\"assets/video/sage-in-einer-minute.webp\\\"|<video controls autoplay playsinline preload=\\\"none\\\" poster=\\\"assets/video/sage-in-einer-minute.webp\\\"|' index.html"
+fall "Tatsachen aus der Tour"         "Tour: die drei Tatsachen stehen weiter da" "sed -i 's|<strong>Geprüft wird bei dir.</strong>|<strong>Geprüft.</strong>|' index.html"
 echo "═══ $gefangen gefangen · $durch durchgerutscht ═══"
 [ "$durch" -eq 0 ]
