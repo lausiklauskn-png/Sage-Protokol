@@ -571,7 +571,7 @@ bei `maxY + rowH * 0.55` gesetzt.
 **Erledigt am 2026-11-15:** die Zeile steht unter der Namenszeile, die Zusatz-Reihen sind nachgerückt.
 Bewacht von `tests/smoke_topologie_beschriftung.mjs` (am Stand davor rot in allen drei Breiten).
 
-### Einladung Szene 1: der Mycel-Film liegt noch als Film über dem Bild — 2026-11-15
+### ✅ Einladung Szene 1: der Mycel-Film liegt noch als Film über dem Bild — 2026-11-15
 
 Tür und Lichtung sind auf die Licht-Schicht umgestellt (`tools/licht-film-bauen.py`), Szene 1 nicht.
 Ob der Film dort auf dem Monitor ebenso unscharf wirkt, ist nicht angesehen.
@@ -581,6 +581,9 @@ anderes Motiv als `vendor/img/scene-1-mycel.webp` (Wurzeln mit hellem Geflecht i
 Standbild zeigt leuchtende Pilze über einem goldenen Geflecht). `tools/licht-film-bauen.py` findet
 keine Lage: Clip deckt 14 % des Rahmens, Restfehler 17,2 von 255. Aus diesem Clip entsteht keine
 Licht-Schicht; dafür bräuchte es einen Clip mit dem Standbild als Startbild. Nichts geändert.
+
+**Klaus am 2026-11-16 (Sichttest):** „Das erste Video in der Einladung mit dem Pilzstrang und den
+Fäden, sehr gut.“ Der Film bleibt, wie er ist.
 
 ### ✅ Topologie im Hochformat: lange Modul-Namen liegen aufeinander — 2026-11-15
 
@@ -609,12 +612,31 @@ Lichtung liegen nicht im Depot; ob sie unter 12 bleiben, ist nicht gemessen.
 Absturzes), `node tests/smoke_sicherheit_seite.mjs` allein läuft 28 grün · 0 rot durch. Einmal
 beobachtet, im Container, während 139 Proben nacheinander liefen. Ursache nicht untersucht.
 
-### `docs/einladung/_smoke.mjs` startet im Container nicht — 2026-11-15
+**Zweite Beobachtung am 2026-11-15 (dritte Folgesitzung):** im Gesamtlauf (140 Proben) wieder rot mit
+derselben Schlusszeile, danach einzeln 28 grün · 0 rot, auch aus dem Ordner `tests/` gestartet. Nach
+dem Gesamtlauf liefen noch drei `python3 -m http.server` (Ports 8982, 9012, 8855) aus Proben, die rot
+geendet hatten; die Sicherheits-Probe würfelt ihren Port aus 8300 bis 9199. Ob ein belegter Port die
+Ursache ist, ist nicht belegt: der Läufer zeigt von einer roten Probe nur die letzte Zeile.
+
+### ✅ `docs/einladung/_smoke.mjs` startet im Container nicht — 2026-11-15
 
 Die Probe ruft `chromium.launch()` ohne Pfad und sucht `chromium_headless_shell-1194`; im Container
 liegt der Browser unter `/opt/pw-browsers/chromium`. Sie bricht vor der ersten Prüfung ab, am
 unveränderten `main` ebenso. Die Einladung ist in dieser Zeit nur über
 `tests/smoke_startseite_bedienung.mjs` (drei Prüfungen) und `tests/smoke_lebendig.mjs` gemessen.
+
+**Erledigt am 2026-11-15 (dritte Folgesitzung):** im Skript stand ein fester Pfad mit Build-Nummer
+(`chromium_headless_shell-1194`); im Container liegt Build 1243. Die Probe nimmt jetzt `CHROMIUM` aus
+der Umgebung, sonst `/opt/pw-browsers/chromium`, sonst den Browser, den Playwright selbst findet.
+Danach lief sie und war in einer Prüfung rot (`zeroErrors`): ein 404 auf `/favicon.ico`, das Chromium
+von sich aus abfragt; die Seite nennt keines. Der Probe-Server beantwortet diese eine Adresse mit 204.
+Gemessen: 24 grün · 0 rot; `docs/einladung/_gegenprobe.sh` 14 gefangen · 0 durchgerutscht · 0 tote Anker.
+
+### `docs/einladung/_pdf.mjs` trägt denselben festen Browser-Pfad — 2026-11-15
+
+`_pdf.mjs` (baut `einladung.pdf`) ruft `chromium.launch` mit
+`/opt/pw-browsers/chromium_headless_shell-1194/…`, den es im Container nicht gibt. Nicht geändert und
+nicht ausgeführt: ein Lauf überschreibt `einladung.pdf`.
 
 ### Lampen-Texte aus Modul 17 tragen „Klick öffnet …“ — 2026-11-15
 

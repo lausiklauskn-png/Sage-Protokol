@@ -24,6 +24,9 @@ const mime = {
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
   if (p === '/') p = '/index.html';
+  // Chromium fragt /favicon.ico von sich aus ab; die Seite nennt keines. Ohne
+  // diese Zeile meldet die Konsole ein 404, das nicht von der Seite stammt.
+  if (p === '/favicon.ico') { res.writeHead(204); return res.end(); }
   const full = resolve(__dirname, '.' + p);
   if (!full.startsWith(__dirname)) { res.writeHead(403); return res.end(); }
   fs.readFile(full, (err, data) => {
@@ -37,10 +40,14 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const port = server.address().port;
 const fileUrl = `http://127.0.0.1:${port}/index.html`;
 
-const browser = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell',
-  args: ['--no-sandbox', '--use-gl=swiftshader', '--enable-webgl']
-});
+// Browser: CHROMIUM aus der Umgebung, sonst der feste Platz im Container, sonst
+// der, den Playwright selbst findet. Ein Pfad mit Build-Nummer veraltet mit
+// jedem neuen Container (bis 2026-11-15 stand hier ...headless_shell-1194).
+const args = ['--no-sandbox', '--use-gl=swiftshader', '--enable-webgl'];
+const kandidat = process.env.CHROMIUM || '/opt/pw-browsers/chromium';
+const browser = await chromium.launch(
+  fs.existsSync(kandidat) ? { executablePath: kandidat, args } : { args }
+);
 const ctx  = await browser.newContext({
   viewport: { width: 1440, height: 900 },
   ignoreHTTPSErrors: true

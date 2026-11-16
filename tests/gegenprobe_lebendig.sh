@@ -12,6 +12,7 @@ fall() { # name · erwartete rote Zeile · Sabotage-Befehl (läuft im Kopie-Ordn
   cp "$QUELLE/index.html" "$A/"; cp "$QUELLE/assets/schwarzes-loch.js" "$A/assets/"
   cp -r "$QUELLE/assets/video" "$A/assets/"; cp "$QUELLE/docs/einladung/index.html" "$A/docs/einladung/"
   cp -r "$QUELLE/docs/einladung/vendor/video" "$A/docs/einladung/vendor/"
+  cp "$QUELLE/docs/einladung/demo-zusammenarbeit.html" "$A/docs/einladung/"; mkdir -p "$A/docs/einladung/vendor/img"; cp "$QUELLE/docs/einladung/vendor/img/wie-zwei-sich-finden.webp" "$A/docs/einladung/vendor/img/"
   mkdir -p "$A/assets/discovery"; cp "$QUELLE/assets/milchstrasse-web.webp" "$QUELLE/assets/observatorium-galaxien-bg.jpg" "$A/assets/"; cp "$QUELLE/assets/discovery/galaxie-hintergrund.webp" "$A/assets/discovery/"; cp -r "$QUELLE/assets/galaxien" "$A/assets/"
   mkdir -p "$A/docs/discovery"; cp "$QUELLE/docs/discovery/index.html" "$A/docs/discovery/"; cp -r "$QUELLE/assets/discovery/licht" "$A/assets/discovery/"; cp "$QUELLE"/assets/discovery/*.webp "$A/assets/discovery/"
   ( cd "$A" && eval "$3" )
@@ -52,5 +53,9 @@ fall "Topologie ohne Einpassung"    "richtet sich nach der Fensterhöhe"    "sed
 fall "Naht-Band fehlt"              "ein weiches Band über die Naht"       "sed -i 's|  bottom: -16vh; height: 58vh;|  height: 58vh;|' docs/einladung/index.html"
 fall "Schlüssel-Kasten hart"        "läuft an den Rändern aus"             "sed -i 's|#scene-5 .key-host .key-image, #scene-5 .key-host canvas {|#scene-5 .nichts {|' docs/einladung/index.html"
 fall "Licht wieder grell"           "liegt gedämpft über dem Bild"         "sed -i 's|.licht-film.laeuft { opacity: 0.3; }|.licht-film.laeuft { opacity: 1; }|' docs/discovery/index.html"
+fall "Finde-Film fehlt"             "Wie zwei sich finden: der Film liegt im Depot" "rm docs/einladung/vendor/video/wie-zwei-sich-finden.mp4"
+fall "Finde-Film startet selbst"    "Wie zwei sich finden: der Film startet nur auf Tipp" "sed -i 's|<video controls playsinline preload=\"none\"|<video controls autoplay playsinline preload=\"none\"|' docs/einladung/demo-zusammenarbeit.html"
+fall "Finde-Film ohne Standbild"    "Wie zwei sich finden: das Standbild liegt im Depot" "rm docs/einladung/vendor/img/wie-zwei-sich-finden.webp"
+fall "Finde-Film ohne Untertitel"   "Wie zwei sich finden: der gesprochene Text liegt als Untertitel bei" "rm docs/einladung/vendor/video/wie-zwei-sich-finden.de.vtt"
 echo "═══ $gefangen gefangen · $durch durchgerutscht ═══"
 [ "$durch" -eq 0 ]
