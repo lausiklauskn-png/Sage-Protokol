@@ -80,7 +80,7 @@ async function lauf() {
     .catch(async () => chromium.launch({ args: ['--no-sandbox'] }));
   try {
     const url = (f) => `http://127.0.0.1:${PORT}/${f}`;
-    for (let i = 0; i < 50; i++) { try { const r = await fetch(url('markt.html')); if (r.ok) break; } catch {} await new Promise(r => setTimeout(r, 100)); }
+    for (let i = 0; i < 50; i++) { try { const r = await fetch(url('markt.html')); await r.arrayBuffer(); if (r.ok) break; } catch {} await new Promise(r => setTimeout(r, 100)); }
     const ctx = await browser.newContext();
     const p = await ctx.newPage();
     const fremd = [];

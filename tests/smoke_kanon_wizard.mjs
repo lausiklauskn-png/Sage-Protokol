@@ -359,7 +359,7 @@ async function browserTeil() {
   const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1"],
     { cwd: basis, stdio: "ignore" });
   for (let i = 0; i < 160; i++) {
-    try { const a = await fetch(`http://127.0.0.1:${PORT}/mit.html`); if (a.ok) break; } catch { /* noch nicht oben */ }
+    try { const a = await fetch(`http://127.0.0.1:${PORT}/mit.html`); await a.arrayBuffer(); if (a.ok) break; } catch { /* noch nicht oben */ }
     await new Promise((r) => setTimeout(r, 50));
   }
   const browser = await chromium.launch({ executablePath: chrom() });

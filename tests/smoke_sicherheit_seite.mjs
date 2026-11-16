@@ -112,7 +112,9 @@ if (!chromium) {
   const url = (f) => `http://127.0.0.1:${PORT}/${f}`;
   try {
     // wait for the server
-    for (let i = 0; i < 50; i++) { try { const r = await fetch(url('sicherheit.html')); if (r.ok) break; } catch (_e) {} await new Promise((r) => setTimeout(r, 100)); }
+    // read the answer to its end: a body left open crashed node itself (assertion in its
+    // http parser) when the server closed the connection, seen only in the full run
+    for (let i = 0; i < 50; i++) { try { const r = await fetch(url('sicherheit.html')); await r.arrayBuffer(); if (r.ok) break; } catch (_e) {} await new Promise((r) => setTimeout(r, 100)); }
     const ctx = await browser.newContext({ viewport: { width: 900, height: 800 }, locale: 'de-DE', reducedMotion: 'reduce' });
     const p = await ctx.newPage();
     const aussen = [], fehler = [];

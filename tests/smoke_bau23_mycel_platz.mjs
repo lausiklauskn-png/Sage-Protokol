@@ -71,7 +71,7 @@ async function lauf() {
   const server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1'],
     { cwd: basis, stdio: 'ignore' });
   for (let i = 0; i < 120; i++) {
-    try { const a = await fetch(`http://127.0.0.1:${PORT}/mit.html`); if (a.ok) break; } catch {}
+    try { const a = await fetch(`http://127.0.0.1:${PORT}/mit.html`); await a.arrayBuffer(); if (a.ok) break; } catch {}
     await new Promise((r) => setTimeout(r, 50));
   }
 
