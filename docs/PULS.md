@@ -49,7 +49,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 **Offen (Klaus 2026-11-16):** Tür-Film der Einladung: die Tür soll zu sein, der Schlüssel fliegt hinein und bleibt stecken, dreht links herum, dann geht die Tür auf; braucht einen neuen Clip, Kosten sind genannt, Ja steht aus · Lebenszyklus-Bildschirm behalten oder herausnehmen · „Wie zwei sich finden“ schärfer nur mit neuen Clips in 1080p (57 s zu 16 Credits je Sekunde übersteigen das Guthaben).
 
-Sage #1187 gemergt. Geschenkbox: außerhalb des Depots veröffentlicht (Klaus' Konto). Übergabe: [`sessions/archiv/2026-11-16_discovery-vorlesen.md`](sessions/archiv/2026-11-16_discovery-vorlesen.md)
+Sage #1187 gemergt. Forschungseintrag: Kimhub #471 (gemergt). Geschenkbox: außerhalb des Depots veröffentlicht (Klaus' Konto). Übergabe: [`sessions/archiv/2026-11-16_discovery-vorlesen.md`](sessions/archiv/2026-11-16_discovery-vorlesen.md)
 
 ## 2026-11-16 · Startseite: Tour als ein Erklärfilm „Sage in einer Minute“ (Hauptsitzung)
 
