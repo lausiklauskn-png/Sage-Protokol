@@ -86,7 +86,7 @@ const srv = await new Promise((res) => {
   });
   s.listen(0, "127.0.0.1", () => res(s));
 });
-const exe = ["/opt/pw-browsers/chromium-1194/chrome-linux/chrome"].find(existsSync);
+const exe = [process.env.CHROMIUM, "/opt/pw-browsers/chromium"].find((k) => k && existsSync(k));
 const browser = await pw.chromium.launch(exe ? { executablePath: exe } : {});
 try {
   const page = await browser.newPage();

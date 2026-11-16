@@ -32,11 +32,14 @@
  */
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = '/home/user/Sage-Protokol/pinnwand';
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+// CHROMIUM from the environment, else the container's link without a build
+// number, else whatever Playwright finds on its own.
+const EXE = [process.env.CHROMIUM, '/opt/pw-browsers/chromium'].find((k) => k && existsSync(k));
 const PORT = 8498;
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) pass++; else { fail++; console.log('  FAIL ' + m); } };
@@ -71,7 +74,7 @@ const SPION = `
 
 let browser;
 try {
-  browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
+  browser = await chromium.launch(EXE ? { executablePath: EXE, args: ['--no-sandbox'] } : { args: ['--no-sandbox'] });
 
   async function seite(locale) {
     const ctx = await browser.newContext({ locale, viewport: { width: 900, height: 800 } });

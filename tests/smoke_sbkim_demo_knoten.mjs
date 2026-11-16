@@ -64,8 +64,11 @@ try { pw = await import("playwright-core"); } catch {
 }
 const kandidaten = ["/opt/pw-browsers/chromium", "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"];
 let exe = null;
-try { for (const d of (await import("node:fs")).readdirSync("/opt/pw-browsers")) kandidaten.push("/opt/pw-browsers/" + d + "/chrome-linux/chrome"); } catch {}
-exe = kandidaten.find((p) => existsSync(p) && !p.endsWith("/chromium")) || null;
+const fsm = await import("node:fs");
+if (process.env.CHROMIUM) kandidaten.unshift(process.env.CHROMIUM);
+try { for (const d of fsm.readdirSync("/opt/pw-browsers")) for (const u of ["chrome-linux64", "chrome-linux"]) kandidaten.push("/opt/pw-browsers/" + d + "/" + u + "/chrome"); } catch {}
+// "/opt/pw-browsers/chromium" is a link to the binary in this container; elsewhere it may be a folder.
+exe = kandidaten.find((p) => { try { return fsm.statSync(p).isFile(); } catch { return false; } }) || null;
 if (!exe) { console.log("⊘ Teil 2 nicht lauffähig: kein Chromium gefunden."); process.exit(rot ? 1 : 2); }
 
 const TYP = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".json": "application/json",

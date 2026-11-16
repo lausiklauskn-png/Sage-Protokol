@@ -46,10 +46,11 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const port = server.address().port;
 const fileUrl = `http://127.0.0.1:${port}/docs/discovery/index.html`;
 
-const browser = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell',
-  args: ['--no-sandbox', '--use-gl=swiftshader', '--enable-webgl']
-});
+const args = ['--no-sandbox', '--use-gl=swiftshader', '--enable-webgl'];
+const kandidat = process.env.CHROMIUM || '/opt/pw-browsers/chromium';
+const browser = await chromium.launch(
+  fs.existsSync(kandidat) ? { executablePath: kandidat, args } : { args }
+);
 const ctx  = await browser.newContext({ viewport: { width: 1440, height: 900 }, ignoreHTTPSErrors: true });
 const page = await ctx.newPage();
 
