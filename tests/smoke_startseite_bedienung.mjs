@@ -46,6 +46,11 @@ try {
     seite.on('pageerror', (e) => fehler.push(e.message));
     await seite.goto(`http://127.0.0.1:${PORT}/index.html?sl=live`, { waitUntil: 'load' });
     await seite.waitForFunction(() => document.querySelectorAll('#topology-svg .topo-node').length > 5, null, { timeout: 20000 });
+    // Since 2026-11-26 the black hole is built only after load, when its card comes near the screen (PageSpeed).
+    // Without scrolling there, `zustand` stays empty and every full-screen check below would be skipped as „no WebGL2“.
+    await seite.evaluate(() => document.querySelector('.blackhole-scene').scrollIntoView());
+    await seite.waitForFunction(() => !!document.querySelector('.blackhole-scene').__sl, null, { timeout: 20000 });
+    await seite.evaluate(() => window.scrollTo(0, 0));
 
     const lage = await seite.evaluate(() => {
       const eins = (q) => { const e = document.querySelector(q); return e ? { tag: e.tagName, href: e.getAttribute('href'), rolle: e.getAttribute('role'), tab: e.tabIndex } : null; };
@@ -81,6 +86,7 @@ try {
     // ---- full screen of the black hole ----
     const voll = await browser.newPage({ viewport: { width: breite, height: hoehe } });
     await voll.goto(`http://127.0.0.1:${PORT}/index.html?sl=live`, { waitUntil: 'load' });
+    await voll.evaluate(() => document.querySelector('.blackhole-scene').scrollIntoView());
     await voll.waitForFunction(() => { const z = document.querySelector('.blackhole-scene'); return !!z && !!z.__sl; }, null, { timeout: 20000 });
     if (lage.zustand !== 'live') { console.log('  ⊘ ' + b + 'Vollbild nicht messbar: kein WebGL2 in diesem Browser (Zustand „' + lage.zustand + '")'); await voll.close(); continue; }
     await voll.evaluate(() => document.querySelector('.blackhole-scene').__sl.oeffnen());

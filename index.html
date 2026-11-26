@@ -5372,30 +5372,92 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="assets/schwarzes-loch.js"></script>
   <script>
     // Fail-soft: without the script or without WebGL2 the CSS black hole stays as it was.
+    // Klaus 2026-11-26 (PageSpeed Handy 86): building the WebGL scene cost two long tasks of ~0.7 s each
+    // during start-up (measured locally with Lighthouse, 4x CPU throttling). It now starts only after the page
+    // has loaded AND the card comes near the screen; until then the CSS black hole is what you see.
     (function () {
       var szene = document.querySelector('.blackhole-scene');
       if (!szene || !window.SchwarzesLoch) return;
-      window.SchwarzesLoch.einbauen(szene, {
-        knopf: document.getElementById('bh-steuern'),
-        video: 'assets/video/schwarzes-loch.mp4',
-        poster: 'assets/video/schwarzes-loch.webp'
-      });
+      var gebaut = false;
+      function bauen() {
+        if (gebaut) return; gebaut = true;
+        window.SchwarzesLoch.einbauen(szene, {
+          knopf: document.getElementById('bh-steuern'),
+          video: 'assets/video/schwarzes-loch.mp4',
+          poster: 'assets/video/schwarzes-loch.webp'
+        });
+      }
+      function beobachten() {
+        if (!('IntersectionObserver' in window)) { bauen(); return; }
+        var io = new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting) { io.disconnect(); bauen(); }
+        }, { rootMargin: '200px' });
+        io.observe(szene);
+      }
+      function spaeter() {
+        if ('requestIdleCallback' in window) requestIdleCallback(beobachten, { timeout: 3000 });
+        else setTimeout(beobachten, 500);
+      }
+      if (document.readyState === 'complete') spaeter();
+      else window.addEventListener('load', spaeter, { once: true });
     })();
   </script>
-  <script src="src/modules/00_doku_fenster.js"></script>
-  <script src="src/modules/01_storage.js"></script>
-  <script src="src/modules/02_spore.js"></script>
 <script>/* Sprachmodell vom eigenen Server (Klaus 2026-10-13, Weg A: die App setzt die Adresse, Modul 03 bleibt neutral). Antwortet er nicht, nimmt Modul 03 Hugging Face. */window.SBKIM_MODEL_ROOT=window.SBKIM_MODEL_ROOT||"https://family-projekt.de/models/";</script>
-  <script src="src/modules/03_embedding.js"></script>
-  <script src="src/modules/04_match.js"></script>
-  <script src="assets/pruefer-mail.js"></script>
-  <script src="src/modules/05_anastomose.js"></script>
   <script type="module" src="src/modules/05b_nostr_relay.js"></script>
-  <script src="src/modules/06_heterokaryose.js"></script>
-  <script src="src/modules/07_apoptose.js"></script>
-  <script src="src/modules/08_ui_demo.js"></script>
-  <script src="src/modules/15_membran.js"></script>
-  <script src="src/modules/16_siegel.js"></script>
+  <!-- SBKIM-Kette NACH dem Laden (Klaus 2026-11-26, PageSpeed Handy 86: „Verzögerung beim Rendering 2.360 ms“ am
+       LCP-Element p.hero-claim). Die 24 Skripte standen hier als gewöhnliche <script>-Zeilen und liefen vor dem ersten
+       Bild. Jetzt hängt sie ein kleiner Lader nach dem Laden in der Leerlauf-Pause an (oder sofort bei der ersten
+       Berührung), in DERSELBEN Reihenfolge (async=false). Vorbild PWA Toolpoint (assets/sbkim-init.js), dort 85 → 95–100.
+       Modul 05b bleibt eine eigene type="module"-Zeile (LEHREN § 4, Falle 2); es greift erst zur Laufzeit auf die
+       anderen Module zu. Die Module selbst warten auf DOMContentLoaded nur, solange readyState „loading“ ist. -->
+  <script>
+  (function () {
+    var KETTE = [
+      "src/modules/00_doku_fenster.js",
+      "src/modules/01_storage.js",
+      "src/modules/02_spore.js",
+      "src/modules/03_embedding.js",
+      "src/modules/04_match.js",
+      "assets/pruefer-mail.js",
+      "src/modules/05_anastomose.js",
+      "src/modules/06_heterokaryose.js",
+      "src/modules/07_apoptose.js",
+      "src/modules/08_ui_demo.js",
+      "src/modules/15_membran.js",
+      "src/modules/16_siegel.js",
+      "assets/siegel-inhalt.js",
+      "assets/sbkim-andock-wizard.js",
+      "src/modules/18_tool_pwa.js",
+      "src/modules/20_schluessel_safe.js",
+      "src/modules/21_spracheingabe.js",
+      "src/modules/23_rendezvous.js",
+      "src/modules/23_rendezvous_ui.js",
+      "src/modules/24_ocr_eingabe.js",
+      "sbkim/sage-suchkorpus.js",
+      "sbkim/sage-knoten-korpus.js",
+      "sbkim-init.js",
+      "assets/studio-sage.js"
+    ];
+    var los = false;
+    function laden() {
+      if (los) return; los = true;
+      KETTE.forEach(function (pfad) {
+        var s = document.createElement("script");
+        s.src = pfad; s.async = false;
+        document.body.appendChild(s);
+      });
+    }
+    ["pointerdown", "keydown", "touchstart"].forEach(function (art) {
+      window.addEventListener(art, laden, { once: true, passive: true, capture: true });
+    });
+    function spaeter() {
+      if ("requestIdleCallback" in window) requestIdleCallback(laden, { timeout: 2500 });
+      else setTimeout(laden, 300);
+    }
+    if (document.readyState === "complete") spaeter();
+    else window.addEventListener("load", spaeter, { once: true });
+  })();
+  </script>
   <!-- A18 (2026-09-14): die Trennlinie. siegel-inhalt.js trägt nur noch die
        IDENTITÄT dieses Knotens (window.SBKIM_SIEGEL_WIZ) und wird nie
        verteilt; sbkim-andock-wizard.js ist der netzweit byte-gleiche KANON
@@ -5404,22 +5466,10 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
        Injizieren, aber wer sie danebenlegt, soll sie auch davor sehen.
        Modul 16 bleibt unangetastet; der Kanon self-mountet via
        MutationObserver. Vertrag: docs/INTERFACES.md 11.9. -->
-  <script src="assets/siegel-inhalt.js"></script>
-  <script src="assets/sbkim-andock-wizard.js"></script>
-  <script src="src/modules/18_tool_pwa.js"></script>
-  <script src="src/modules/20_schluessel_safe.js"></script>
-  <script src="src/modules/21_spracheingabe.js"></script>
   <!-- 22 Such-Widget bewusst NICHT hier: mit 62 KiB die groesste Einzeldatei
        der Seite, davon laut PageSpeed 34 KiB beim Start ungenutzt. `sbkim-init.js`
        holt sie in einer Ruhepause nach dem Laden nach (oder sofort bei der
        ersten Beruehrung) -- siehe dort `ladeSpaeter`. Klaus 2026-08-09. -->
-  <script src="src/modules/23_rendezvous.js"></script>
-  <script src="src/modules/23_rendezvous_ui.js"></script>
-  <script src="src/modules/24_ocr_eingabe.js"></script>
-  <script src="sbkim/sage-suchkorpus.js"></script>
-  <script src="sbkim/sage-knoten-korpus.js"></script>
-  <script src="sbkim-init.js"></script>
-  <script src="assets/studio-sage.js"></script>
   <script src="assets/installieren.js?v=6" data-name="Sage·Protokol" data-vor="hard-reload-btn"></script>
   <script>
   // Einladung-Türschwelle (2026-05-28): Feenstaub am Cursor, Klick öffnet
