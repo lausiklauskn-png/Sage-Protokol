@@ -31,6 +31,29 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## 2026-11-26 · Startseite: Schwarzes Loch und SBKIM-Kette erst nach dem Laden (Sitzung aus Rezeptbuch/Mixarium)
+
+**Anlass:** Klaus' PageSpeed vom 26.11. (Handy 86, „Verzögerung beim Rendering 2.360 ms“ an `p.hero-claim`).
+
+**Getan:**
+- Das WebGL-Schwarze-Loch (`assets/schwarzes-loch.js`) wird erst nach `load` gebaut, und zwar wenn die Karte in die Nähe des Schirms kommt (IntersectionObserver, 200 px Rand). Bis dahin steht das CSS-Schwarze-Loch da.
+- Die 24 SBKIM-Skripte (00 … `studio-sage.js`) hängt ein kleiner Lader nach dem Laden in der Leerlauf-Pause an, oder sofort bei der ersten Berührung. Die Reihenfolge bleibt gleich (`async=false`). 05b bleibt eine eigene `type="module"`-Zeile (LEHREN § 4).
+- `tests/smoke_startseite_bedienung.mjs`: scrollt jetzt zum Schwarzen Loch, bevor es misst. Ohne diesen Schritt bliebe `zustand` leer, und alle Vollbild-Prüfungen würden als „kein WebGL2“ übersprungen.
+
+**Gemessen** (Lighthouse lokal mit `family-project/tools/lh-messen.mjs`, Handy, 4× gedrosselt):
+
+| | Leistung | TBT | LCP |
+|---|---|---|---|
+| vorher (`main`), 2 Läufe | 65 · 74 | 1.280 · 990 ms | 3,5 · 2,7 s |
+| nur die Kette verschoben, 3 Läufe | 69 · 71 · 71 | 1.060–1.270 ms | 2,8–2,9 s |
+| dazu das Schwarze Loch später, 3 Läufe | **95 · 93 · 93** | **40–80 ms** | 2,9–3,1 s |
+
+Am Computer gemessen: 99. Der Hauptgewinn kommt vom Schwarzen Loch: es erzeugte zwei lange Aufgaben von je etwa 0,7 s. Die Kette allein hat wenig gebracht.
+
+Im Browser nachgesehen: Nach dem Laden sind 20 `Sbkim*`-Module da, das Siegel steht auf „gold“, und die Konsole meldet keine Fehler (vorher wie nachher). Das Schwarze Loch steht beim Laden noch nicht und läuft „live“, sobald man hinscrollt. `node tests/run_alle.mjs`: 136 grün. Rot ist nur `pinnwand/_smoke_mikrofon.mjs`; die Probe startet `python3` nicht (ENOENT) und ist auf `main` genauso rot. 3 Proben waren nicht lauffähig (Nachbar-Klone fehlen).
+
+**Offen:** LCP bleibt bei etwa 3 s. Der Rest ist Render-Verzögerung (Stil, Schriften), nicht untersucht. Der Briefkasten-Knopf 📬 verschiebt die Seite um 0,002 (CLS). Nicht am Tablet gemessen, nicht mit PageSpeed gemessen.
+
 ## 2026-11-16 · Zwei Proben melden „nicht lauffähig“ statt rot, Gesamtlauf nach den Seitenänderungen (Hauptsitzung)
 
 **Auftrag:** Startbrief nach #1177 bis #1192 (zehn Punkte). Die Punkte 1 bis 5 und 9 warten auf Klaus; gebaut wurde aus Punkt 6.
