@@ -32,7 +32,7 @@ hält die nativen Proben grün (`tools/native/test-native.mjs` u. a.), nicht nur
 | 2 | Meine-Familienakte | **Pseudonymisieren als eigenes Werkzeug**, wie in der Private Akte: eigener Knopf/Bereich statt nur „Pseudo“ im Kopf, für alle Dateien (nicht nur Mails), verständlich; Kern von PseudoDoc mit Pin (Rückweg-Prüfung, Bereinigen), Maske bleibt hier Quelle; das alte Fenster geht darin auf (kein zweites) | dieser Brief + Familienakte `CLAUDE.md` (Pseudo-Abschnitte) |
 | 3 | Meine-Familienakte | F1–F4 Eingang mit großer KI sortieren (nutzt Schritt 1 und 2) | `docs/BRIEF_SITZUNG_2026-11-29_KI-SORTIEREN-EINGANG.md` |
 | 4 | Private-Akte | Organizer-Klon und Pseudo-Werkzeug auf den neuen Stand ziehen (Pins), Weg „Mit großer KI sortieren“ dort sichtbar | `CLAUDE.md` dort |
-| 5 | Privat-Brain-Pro | Auskunft Art. 15, Stufe 1–2 (ohne Modell) | `BRIEF_SITZUNG_2026-11-29_AUSKUNFT-ART15.md` |
+| 5 | — | **entfällt hier**: Auskunft Art. 15 läuft als eigene Sitzung ab Montag 30.11. (Klaus 28.11.); nicht anfassen | `BRIEF_SITZUNG_2026-11-29_AUSKUNFT-ART15.md` |
 | 6 | Privat-Brain-Pro + Private-Akte | Lokaler Assistent L0–L2. **Zu Hause in beiden** (Klaus 28.11.): Kern einmal in Private Brain Pro, byte-gleich mit Pin in die Private Akte | `BRIEF_SITZUNG_2026-11-29_LOKALER-ASSISTENT.md` |
 | 7 | alle angefassten | **APK und Windows bauen**: je App die nächste freie Fassung in allen Versionsdateien, CI-Bau Android + Windows grün, Pakete und SHA-256 bereit. Dann **ein Wort von Klaus („Ja, veröffentlichen“)** und veröffentlichen wie im jeweiligen CLAUDE.md beschrieben (Update-Server, Release, Spezial), Nachweis `VEROEFFENTLICHUNG-<fassung>.json`. Danach kurze Liste fertig/offen und Brief für die nächste Sitzung | `CLAUDE.md` je Repo (Pro-Abschnitt) |
 
