@@ -8,6 +8,12 @@ gebaut werden, bis es fertig ist, soweit es geht … möglichst viele Token spar
 `Datei-Organizer` · `PseudoDoc` · `Meine-Familienakte` · `Private-Akte` · `Privat-Brain-Pro` (Kimhub erst später; Forschungseinträge
 holt Klaus später nach).
 
+## Ziel: fertige Pro-Apps (Klaus 28.11.)
+
+*„Am Ende lieber APK-Apps und Windows-Apps fertig haben als eine PWA.“* Die Pro-Fassungen liegen **in denselben Repos**
+(`android/`, `windows/`, `tools/native`, Workflows `android.yml`/`windows.yml`); es gibt keine getrennten Pro-Repos. Jeder Schritt
+hält die nativen Proben grün (`tools/native/test-native.mjs` u. a.), nicht nur die Web-Proben.
+
 ## Arbeitsweise (Freibrief)
 
 - **Kein Warten auf Klaus:** Vorschauen entfallen, Fragen beantwortet die Sitzung selbst aus den Briefen. Design kommt aus der Wirts-App.
@@ -28,7 +34,7 @@ holt Klaus später nach).
 | 4 | Private-Akte | Organizer-Klon und Pseudo-Werkzeug auf den neuen Stand ziehen (Pins), Weg „Mit großer KI sortieren“ dort sichtbar | `CLAUDE.md` dort |
 | 5 | Privat-Brain-Pro | Auskunft Art. 15, Stufe 1–2 (ohne Modell) | `BRIEF_SITZUNG_2026-11-29_AUSKUNFT-ART15.md` |
 | 6 | Privat-Brain-Pro + Private-Akte | Lokaler Assistent L0–L2. **Zu Hause in beiden** (Klaus 28.11.): Kern einmal in Private Brain Pro, byte-gleich mit Pin in die Private Akte | `BRIEF_SITZUNG_2026-11-29_LOKALER-ASSISTENT.md` |
-| 7 | alle | Abschluss: kurzer Abschlussbrief je Repo, Liste „was ist fertig / was offen“, Vorschlag zum Veröffentlichen (Fassungen nennen), Brief für die nächste Sitzung | — |
+| 7 | alle angefassten | **APK und Windows bauen**: je App die nächste freie Fassung in allen Versionsdateien, CI-Bau Android + Windows grün, Pakete und SHA-256 bereit. Dann **ein Wort von Klaus („Ja, veröffentlichen“)** und veröffentlichen wie im jeweiligen CLAUDE.md beschrieben (Update-Server, Release, Spezial), Nachweis `VEROEFFENTLICHUNG-<fassung>.json`. Danach kurze Liste fertig/offen und Brief für die nächste Sitzung | `CLAUDE.md` je Repo (Pro-Abschnitt) |
 
 Reicht das Budget nicht, wird nach jedem fertigen Schritt sauber aufgehört; der nächste Schritt steht dann oben in „Stand“.
 
